@@ -1,11 +1,10 @@
 import { store } from "quasar/wrappers";
 import { InjectionKey } from "vue";
 import { Router } from "vue-router";
-import {
-  createStore,
-  Store as VuexStore,
-  useStore as vuexUseStore,
-} from "vuex";
+import { CrossTabClient, badge, badgeEn, log } from "@logux/client";
+import { badgeStyles } from "@logux/client/badge/styles";
+import { createStoreCreator } from "@logux/vuex";
+import { Store as VuexStore, useStore as vuexUseStore } from "vuex";
 import { Showcase } from "./showcase/state";
 
 import counter from "./counter";
@@ -52,6 +51,19 @@ declare module "vuex" {
   }
 }
 
+// Initialize logux client
+const client = new CrossTabClient({
+  server:
+    process.env.NODE_ENV === "development"
+      ? "ws://localhost:31337"
+      : "wss://logux.example.com",
+  subprotocol: "1.0.0",
+  userId: "anonymous", // TODO
+  token: "", // TODO
+});
+
+const createStore = createStoreCreator(client);
+
 export default store(function (/* { ssrContext } */) {
   const Store = createStore<StateInterface>({
     modules: {
@@ -64,6 +76,11 @@ export default store(function (/* { ssrContext } */) {
     // for dev mode and --debug builds only
     strict: !!process.env.DEBUGGING,
   });
+
+  badge(Store.client, { messages: badgeEn, styles: badgeStyles });
+  log(Store.client);
+  console.log("store client start");
+  Store.client.start();
 
   return Store;
 });
