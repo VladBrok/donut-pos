@@ -8,7 +8,9 @@ import {
 } from "vuex";
 import { Showcase } from "./showcase/state";
 
+import counter from "./counter";
 import showcase from "./showcase";
+import { ICounter } from "./counter/state";
 
 // import example from './module-example'
 // import { ExampleStateInterface } from './module-example/state';
@@ -28,6 +30,7 @@ export interface StateInterface {
   // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
   example: unknown;
   showcase: Showcase;
+  counter: ICounter;
 }
 
 // provide typings for `this.$store`
@@ -53,6 +56,7 @@ export default store(function (/* { ssrContext } */) {
     modules: {
       // example
       showcase,
+      counter,
     },
 
     // enable strict mode (adds overhead!)
