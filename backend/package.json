@@ -1,0 +1,20 @@
+{
+  "name": "donut-backend",
+  "version": "0.0.1",
+  "description": "Donut, a POS system",
+  "main": "index.ts",
+  "private": true,
+  "type": "module",
+  "author": "VladBrok",
+  "scripts": {
+    "start": "npm run build && node dist/index.js",
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.9",
+    "tsx": "^3.14.0",
+    "typescript": "^5.2.2"
+  }
+}
