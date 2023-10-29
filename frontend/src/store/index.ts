@@ -3,9 +3,10 @@ import { InjectionKey } from "vue";
 import { Router } from "vue-router";
 import { CrossTabClient, badge, badgeEn, log } from "@logux/client";
 import { badgeStyles } from "@logux/client/badge/styles";
-import { createStoreCreator } from "@logux/vuex";
+import { LoguxVuexStore, createStoreCreator } from "@logux/vuex";
 import { Store as VuexStore, useStore as vuexUseStore } from "vuex";
 import { Showcase } from "./showcase/state";
+import { useStore as loguxUseStore } from "@logux/vuex";
 
 import counter from "./counter";
 import showcase from "./showcase";
@@ -35,7 +36,7 @@ export interface StateInterface {
 // provide typings for `this.$store`
 declare module "@vue/runtime-core" {
   interface ComponentCustomProperties {
-    $store: VuexStore<StateInterface>;
+    $store: LoguxVuexStore<StateInterface>;
   }
 }
 
@@ -86,5 +87,5 @@ export default store(function (/* { ssrContext } */) {
 });
 
 export function useStore() {
-  return vuexUseStore(storeKey);
+  return loguxUseStore(storeKey);
 }

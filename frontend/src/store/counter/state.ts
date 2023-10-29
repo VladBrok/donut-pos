@@ -4,7 +4,7 @@ export interface ICounter {
 
 function state(): ICounter {
   return {
-    count: 0,
+    count: -1,
   };
 }
 

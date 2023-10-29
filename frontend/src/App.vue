@@ -14,15 +14,11 @@
 </template>
 
 <script setup lang="ts">
+import { useSubscription } from "@logux/vuex";
 import { useStore } from "src/store";
 import { computed } from "vue";
 
 const $store = useStore();
-
-console.log("getters:", $store.getters["counter/count"]);
-
-const count = computed(() => $store.state.counter.count);
-
 const drawerState = computed({
   get: () => {
     console.log("get", $store.state.showcase.isDrawerOpen);
@@ -34,12 +30,18 @@ const drawerState = computed({
   },
 });
 
+let channels = computed(() => [`counter`]);
+let isSubscribing = useSubscription(channels, { store: $store as any });
+console.log("isSubscribing:", isSubscribing.value);
+
+const count = computed(() => $store.state.counter.count);
+
 const increment = () => {
-  $store.commit("counter/increment");
+  $store.commit.sync("counter/increment", { amount: 5 });
 };
 
 const decrement = () => {
-  $store.commit("counter/decrement");
+  $store.commit.sync("counter/decrement");
 };
 
 const incrementAsync = () => {
