@@ -1,4 +1,5 @@
 import { Server } from "@logux/server";
+import { someSharedMethod } from "donut-shared";
 
 let count = { value: 0 };
 
@@ -49,4 +50,6 @@ server.type("counter/decrement", {
   },
 });
 
-server.listen();
+server.listen().then(() => {
+  someSharedMethod();
+});

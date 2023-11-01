@@ -7,17 +7,19 @@
   "type": "module",
   "author": "VladBrok",
   "scripts": {
-    "start": "npm run build && node dist/index.js",
+    "start": "tsx src/index.ts",
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
     "@types/node": "^20.8.9",
+    "@types/ws": "^8.5.8",
     "tsx": "^3.14.0",
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@logux/server": "0.12.6"
+    "@logux/server": "0.12.6",
+    "donut-shared": "0.0.1"
   }
 }

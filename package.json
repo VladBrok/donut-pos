@@ -1,0 +1,8 @@
+{
+  "name": "donut-monorepo",
+  "workspaces": [
+    "frontend",
+    "backend",
+    "shared"
+  ]
+}

@@ -16,7 +16,7 @@
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
 import { useStore } from "src/store";
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 
 const $store = useStore();
 const drawerState = computed({
@@ -33,6 +33,12 @@ const drawerState = computed({
 let channels = computed(() => [`counter`]);
 let isSubscribing = useSubscription(channels, { store: $store as any });
 console.log("isSubscribing:", isSubscribing.value);
+
+import { someSharedMethod } from "donut-shared";
+
+onMounted(() => {
+  someSharedMethod();
+});
 
 const count = computed(() => $store.state.counter.count);
 

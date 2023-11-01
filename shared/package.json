@@ -1,0 +1,15 @@
+{
+  "name": "donut-shared",
+  "version": "0.0.1",
+  "description": "Donut, a POS system",
+  "productName": "Donut",
+  "author": "VladBrok",
+  "main": "index.ts",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.9.1",
+    "@typescript-eslint/parser": "^6.9.1",
+    "eslint": "^8.52.0"
+  }
+}
