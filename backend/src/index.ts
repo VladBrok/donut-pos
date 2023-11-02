@@ -1,10 +1,11 @@
 import { Server } from "@logux/server";
 import { log, loginAction } from "donut-shared";
-import { LogType } from "donut-shared/src/log.js";
 import { decodeJwt, encodeJwt } from "./lib/jwt.js";
 import * as db from "./lib/db.js";
 import { compareWithHash } from "./lib/crypt.js";
 import { loggedInAction } from "donut-shared/src/actions.js";
+
+// TODO: protect API, especially password, against brute force (? as far as I know, logux has some king of built-in mechanism for this, need check)
 
 const server = new Server(
   Server.loadOptions(process, {
