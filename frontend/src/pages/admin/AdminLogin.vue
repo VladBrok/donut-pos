@@ -33,11 +33,20 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { useStore } from "src/store";
+import { loginAction } from "donut-shared";
 
-const phone = ref("");
-const password = ref("");
+const $store = useStore();
+const phone = ref("+");
+const password = ref("1");
 
 const onSubmit = () => {
-  console.log("submit");
+  $store.commit.sync(
+    loginAction.type,
+    loginAction({
+      phone: phone.value,
+      password: password.value,
+    })
+  );
 };
 </script>
