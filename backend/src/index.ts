@@ -1,7 +1,10 @@
 import { Server } from "@logux/server";
-import { someSharedMethod } from "donut-shared";
-
-let count = { value: 0 };
+import { log, loginAction } from "donut-shared";
+import { LogType } from "donut-shared/src/log.js";
+import { decodeJwt, encodeJwt } from "./lib/jwt.js";
+import * as db from "./lib/db.js";
+import { compareWithHash } from "./lib/crypt.js";
+import { loggedInAction } from "donut-shared/src/actions.js";
 
 const server = new Server(
   Server.loadOptions(process, {
@@ -12,8 +15,49 @@ const server = new Server(
 );
 
 server.auth(({ userId, token }) => {
-  return true;
+  if (userId === "anonymous") {
+    return true;
+  }
+
+  const jwtPayload = decodeJwt(token);
+  return jwtPayload?.userId === userId;
 });
+
+server.type(loginAction, {
+  access(ctx) {
+    return ctx.userId === "anonymous";
+  },
+  async process(ctx, action, meta) {
+    const user = await db.findUserByPhone(action.payload.phone);
+    if (!user) {
+      await server.undo(
+        action,
+        meta,
+        `User with phone ${action.payload.phone} was not found`
+      );
+      return;
+    }
+
+    const isPasswordValid = await compareWithHash(
+      action.payload.password,
+      user.passwordHash
+    );
+    if (!isPasswordValid) {
+      await server.undo(action, meta, "Wrong password");
+      return;
+    }
+
+    const accessToken = encodeJwt({ userId: user.id }, "access");
+    const refreshToken = encodeJwt({ userId: user.id }, "refresh");
+    await db.deleteRefreshTokenOfUser(user.id);
+    await db.addRefreshToken(refreshToken, user.id);
+    await ctx.sendBack(
+      loggedInAction({ userId: user.id, accessToken, refreshToken })
+    );
+  },
+});
+
+const count = { value: 0 };
 
 server.channel("counter", {
   access(ctx, action, meta) {
@@ -51,5 +95,5 @@ server.type("counter/decrement", {
 });
 
 server.listen().then(() => {
-  someSharedMethod();
+  log("server started");
 });
