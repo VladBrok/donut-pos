@@ -1,11 +1,12 @@
 import { MutationTree } from "vuex";
-import { IAuthState } from "./state";
+import { AuthState } from "./state";
 import { loggedInAction } from "donut-shared";
-import { Keys, setItem } from "../../lib/local-storage";
+import { Keys, saveUserToStorage, setItem } from "../../lib/local-storage";
 
-const mutation: MutationTree<IAuthState> = {
-  loggedIn(state: IAuthState, action: ReturnType<typeof loggedInAction>) {
-    setItem(Keys.User, action.payload);
+const mutation: MutationTree<AuthState> = {
+  loggedIn(state: AuthState, action: ReturnType<typeof loggedInAction>) {
+    saveUserToStorage(action.payload);
+    Object.assign(state, action.payload);
   },
 };
 

@@ -11,14 +11,14 @@ import { Notify } from "quasar";
 import counter from "./counter";
 import auth from "./auth";
 import { ICounter } from "./counter/state";
-import { IAuthState } from "./auth/state";
+import { AuthState } from "./auth/state";
 
 export interface StateInterface {
   // Define your own store structure, using submodules if needed
   // example: ExampleStateInterface;
   // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
   counter: ICounter;
-  auth: IAuthState;
+  auth: AuthState;
 }
 
 // provide typings for `this.$store`

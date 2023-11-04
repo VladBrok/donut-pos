@@ -17,6 +17,14 @@ export function setItem<T extends object>(key: Keys, value: T): void {
   localStorage.setItem(key, str);
 }
 
-export function getUserFromStorage(): ReturnType<typeof loggedInAction> | null {
+export function saveUserToStorage(
+  user: ReturnType<typeof loggedInAction>["payload"]
+) {
+  setItem(Keys.User, user);
+}
+
+export function getUserFromStorage():
+  | ReturnType<typeof loggedInAction>["payload"]
+  | null {
   return getItem(Keys.User);
 }
