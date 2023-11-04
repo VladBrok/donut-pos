@@ -37,8 +37,8 @@ import { useStore } from "src/store";
 import { loginAction } from "donut-shared";
 
 const $store = useStore();
-const phone = ref("+");
-const password = ref("1");
+const phone = ref("+48000000000"); // TODO: remove
+const password = ref("1234"); // TODO: remove
 
 const onSubmit = () => {
   $store.commit.sync(

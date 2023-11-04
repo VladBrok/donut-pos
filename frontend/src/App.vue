@@ -1,8 +1,6 @@
 <template>
   <router-view />
-  <div>
-    <q-toggle v-model="drawerState" />
-  </div>
+  <div></div>
   <div>
     <div>
       {{ count }}
@@ -19,26 +17,10 @@ import { useStore } from "src/store";
 import { computed, onMounted } from "vue";
 
 const $store = useStore();
-const drawerState = computed({
-  get: () => {
-    console.log("get", $store.state.showcase.isDrawerOpen);
-    return $store.state.showcase.isDrawerOpen;
-  },
-  set: (val) => {
-    console.log("set", val);
-    $store.commit("showcase/updateIsOpen", val);
-  },
-});
 
 let channels = computed(() => [`counter`]);
 let isSubscribing = useSubscription(channels, { store: $store as any });
 console.log("isSubscribing:", isSubscribing.value);
-
-import { someSharedMethod } from "donut-shared";
-
-onMounted(() => {
-  someSharedMethod();
-});
 
 const count = computed(() => $store.state.counter.count);
 

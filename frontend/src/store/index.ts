@@ -4,33 +4,21 @@ import { Router } from "vue-router";
 import { CrossTabClient, badge, badgeEn, log } from "@logux/client";
 import { badgeStyles } from "@logux/client/badge/styles";
 import { LoguxVuexStore, createStoreCreator } from "@logux/vuex";
-import { Store as VuexStore, useStore as vuexUseStore } from "vuex";
-import { Showcase } from "./showcase/state";
+import { Store as VuexStore } from "vuex";
 import { useStore as loguxUseStore } from "@logux/vuex";
+import { Notify } from "quasar";
 
 import counter from "./counter";
-import showcase from "./showcase";
+import auth from "./auth";
 import { ICounter } from "./counter/state";
-
-// import example from './module-example'
-// import { ExampleStateInterface } from './module-example/state';
-
-/*
- * If not building with SSR mode, you can
- * directly export the Store instantiation;
- *
- * The function below can be async too; either use
- * async/await or return a Promise which resolves
- * with the Store instance.
- */
+import { IAuthState } from "./auth/state";
 
 export interface StateInterface {
   // Define your own store structure, using submodules if needed
   // example: ExampleStateInterface;
   // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
-  example: unknown;
-  showcase: Showcase;
   counter: ICounter;
+  auth: IAuthState;
 }
 
 // provide typings for `this.$store`
@@ -68,9 +56,8 @@ const createStore = createStoreCreator(client);
 export default store(function (/* { ssrContext } */) {
   const Store = createStore<StateInterface>({
     modules: {
-      // example
-      showcase,
       counter,
+      auth,
     },
 
     // enable strict mode (adds overhead!)
@@ -78,9 +65,32 @@ export default store(function (/* { ssrContext } */) {
     strict: !!process.env.DEBUGGING,
   });
 
+  Store.client.type("logux/undo", (action) => {
+    const reason = (action as any).reason;
+    if (!reason) {
+      return;
+    }
+
+    Notify.create({
+      type: "negative",
+      position: "top",
+      timeout: 6000,
+      message: reason,
+      // TODO: uncomment and set timeout to 1000000000 to make notification never hide
+      // actions: [
+      //   {
+      //     icon: "close",
+      //     color: "white",
+      //     round: true,
+      //     handler: () => {
+      //       /* ... */
+      //     },
+      //   },
+      // ],
+    });
+  });
   badge(Store.client, { messages: badgeEn, styles: badgeStyles });
   log(Store.client);
-  console.log("store client start");
   Store.client.start();
 
   return Store;

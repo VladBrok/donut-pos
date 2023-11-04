@@ -24,6 +24,12 @@ server.auth(({ userId, token }) => {
   return jwtPayload?.userId === userId;
 });
 
+server.channel<{ userId: string }>("users/:id", {
+  access(ctx) {
+    return ctx.params.userId === ctx.userId;
+  },
+});
+
 server.type(loginAction, {
   access(ctx) {
     return ctx.userId === "anonymous";
@@ -38,7 +44,6 @@ server.type(loginAction, {
       );
       return;
     }
-
     const isPasswordValid = await compareWithHash(
       action.payload.password,
       user.passwordHash
@@ -47,13 +52,17 @@ server.type(loginAction, {
       await server.undo(action, meta, "Wrong password");
       return;
     }
-
     const accessToken = encodeJwt({ userId: user.id }, "access");
     const refreshToken = encodeJwt({ userId: user.id }, "refresh");
     await db.deleteRefreshTokenOfUser(user.id);
     await db.addRefreshToken(refreshToken, user.id);
     await ctx.sendBack(
-      loggedInAction({ userId: user.id, accessToken, refreshToken })
+      loggedInAction({
+        userId: user.id,
+        permissions: user.permissions,
+        accessToken,
+        refreshToken,
+      })
     );
   },
 });

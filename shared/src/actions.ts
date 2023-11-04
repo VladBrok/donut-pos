@@ -11,4 +11,7 @@ export const loggedInAction = createAction<{
   userId: string;
   accessToken: string;
   refreshToken: string;
+  permissions: {
+    admin?: boolean;
+  };
 }>("auth/loggedIn");

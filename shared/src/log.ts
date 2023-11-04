@@ -1,9 +1,9 @@
 export enum LogType {
-  INFO = "INFO",
-  ERROR = "ERROR",
+  Info = "INFO",
+  Error = "ERROR",
 }
 
-export async function log<T>(message: T, type = LogType.INFO) {
+export async function log<T>(message: T, type = LogType.Info) {
   const date = new Date().toLocaleString("pl-PL", {
     year: "numeric",
     month: "2-digit",
