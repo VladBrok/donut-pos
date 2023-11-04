@@ -15,7 +15,6 @@ import { ANONYMOUS, IAuthState } from "./auth/state";
 import { getUserFromStorage } from "../lib/local-storage";
 import { log, logoutAction } from "donut-shared";
 import { LogType } from "donut-shared/src/log";
-import { logout } from "./auth/utils/logout";
 
 export interface StateInterface {
   // Define your own store structure, using submodules if needed

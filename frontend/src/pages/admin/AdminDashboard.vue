@@ -16,7 +16,6 @@
 import { log, logoutAction } from "donut-shared";
 import { useStore } from "src/store";
 import { computed } from "vue";
-import { useRouter } from "vue-router";
 import { ANONYMOUS } from "../../store/auth/state";
 
 const store = useStore();
@@ -24,7 +23,7 @@ const user = computed(() => store.state.auth.user);
 
 const logoutAdmin = () => {
   store.commit
-    .sync(
+    .crossTab(
       logoutAction({ accessToken: store.state.auth.user.accessToken || "" })
     )
     .then(() => {
