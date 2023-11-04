@@ -37,12 +37,12 @@ import { ref } from "vue";
 import { useStore } from "src/store";
 import { loginAction } from "donut-shared";
 
-const $store = useStore();
+const store = useStore();
 const phone = ref("+48000000000"); // TODO: remove
 const password = ref("1234"); // TODO: remove
 
 const onSubmit = () => {
-  $store.commit.sync(
+  store.commit.sync(
     loginAction.type,
     loginAction({
       phone: phone.value,

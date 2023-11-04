@@ -9,6 +9,6 @@
 import { useStore } from "src/store";
 import { computed } from "vue";
 
-const $store = useStore();
-const user = computed(() => $store.state.auth);
+const store = useStore();
+const user = computed(() => store.state.auth);
 </script>

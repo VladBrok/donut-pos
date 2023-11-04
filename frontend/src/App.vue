@@ -16,23 +16,23 @@ import { useSubscription } from "@logux/vuex";
 import { useStore } from "src/store";
 import { computed, onMounted } from "vue";
 
-const $store = useStore();
+const store = useStore();
 
 let channels = computed(() => [`counter`]);
-let isSubscribing = useSubscription(channels, { store: $store as any });
+let isSubscribing = useSubscription(channels, { store: store as any });
 console.log("isSubscribing:", isSubscribing.value);
 
-const count = computed(() => $store.state.counter.count);
+const count = computed(() => store.state.counter.count);
 
 const increment = () => {
-  $store.commit.sync("counter/increment", { amount: 5 });
+  store.commit.sync("counter/increment", { amount: 5 });
 };
 
 const decrement = () => {
-  $store.commit.sync("counter/decrement");
+  store.commit.sync("counter/decrement");
 };
 
 const incrementAsync = () => {
-  $store.dispatch("counter/increment");
+  store.dispatch("counter/increment");
 };
 </script>
