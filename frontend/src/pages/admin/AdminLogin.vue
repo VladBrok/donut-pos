@@ -42,12 +42,17 @@ const phone = ref("+48000000000"); // TODO: remove
 const password = ref("1234"); // TODO: remove
 
 const onSubmit = () => {
-  store.commit.sync(
-    loginAction.type,
-    loginAction({
-      phone: phone.value,
-      password: password.value,
-    })
-  );
+  // TODO: add loading indicator
+  store.commit
+    .sync(
+      loginAction.type,
+      loginAction({
+        phone: phone.value,
+        password: password.value,
+      })
+    )
+    .then(() => {
+      console.log("then");
+    });
 };
 </script>
