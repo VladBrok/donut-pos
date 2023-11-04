@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-md">
     <div>
-      <h1 class="text-h3 text-center">Login to Admin panel</h1>
+      <h1 class="text-h3 text-center">{{ t.loginPageTitle }}</h1>
     </div>
     <q-form @submit="onSubmit" class="q-gutter-md">
       <q-input
@@ -43,7 +43,9 @@ import { ref } from "vue";
 import { useStore } from "src/store";
 import { assert, log, loginAction } from "donut-shared";
 import { useRouter } from "vue-router";
+import { useI18nStore } from "../../lib/i18n";
 
+const t = useI18nStore();
 const store = useStore();
 const router = useRouter();
 const phone = ref("+48000000000"); // TODO: remove

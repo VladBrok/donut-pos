@@ -48,7 +48,8 @@ const client = new CrossTabClient({
   server:
     process.env.NODE_ENV === "development"
       ? "ws://localhost:31337"
-      : "wss://logux.example.com",
+      : "ws://localhost:31337",
+  // : "wss://logux.example.com",
   subprotocol: "1.0.0",
   userId: getUserFromStorage()?.userId || ANONYMOUS.userId,
   token: getUserFromStorage()?.accessToken || "",
