@@ -1,7 +1,7 @@
 import { store } from "quasar/wrappers";
 import { InjectionKey } from "vue";
 import { Router } from "vue-router";
-import { CrossTabClient, badge, badgeEn, log } from "@logux/client";
+import { CrossTabClient, badge, badgeEn, log as loguxLog } from "@logux/client";
 import { badgeStyles } from "@logux/client/badge/styles";
 import { LoguxVuexStore, createStoreCreator } from "@logux/vuex";
 import { Store as VuexStore } from "vuex";
@@ -11,14 +11,18 @@ import { Notify } from "quasar";
 import counter from "./counter";
 import auth from "./auth";
 import { ICounter } from "./counter/state";
-import { AuthState } from "./auth/state";
+import { ANONYMOUS, IAuthState } from "./auth/state";
+import { getUserFromStorage } from "../lib/local-storage";
+import { log, logoutAction } from "donut-shared";
+import { LogType } from "donut-shared/src/log";
+import { logout } from "./auth/utils/logout";
 
 export interface StateInterface {
   // Define your own store structure, using submodules if needed
   // example: ExampleStateInterface;
   // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
   counter: ICounter;
-  auth: AuthState;
+  auth: IAuthState;
 }
 
 // provide typings for `this.$store`
@@ -47,8 +51,8 @@ const client = new CrossTabClient({
       ? "ws://localhost:31337"
       : "wss://logux.example.com",
   subprotocol: "1.0.0",
-  userId: "anonymous", // TODO
-  token: "", // TODO
+  userId: getUserFromStorage()?.userId || ANONYMOUS.userId,
+  token: getUserFromStorage()?.accessToken || "",
 });
 
 const createStore = createStoreCreator(client);
@@ -76,21 +80,29 @@ export default store(function (/* { ssrContext } */) {
       position: "top",
       timeout: 6000,
       message: reason,
-      // TODO: uncomment and set timeout to 1000000000 to make notification never hide
-      // actions: [
-      //   {
-      //     icon: "close",
-      //     color: "white",
-      //     round: true,
-      //     handler: () => {
-      //       /* ... */
-      //     },
-      //   },
-      // ],
     });
   });
+
+  Store.client.node.catch((err) => {
+    log(JSON.stringify(err), LogType.Error);
+    if (err.name === "LoguxError") {
+      if (err.type === "wrong-credentials") {
+        Store.commit
+          .crossTab(
+            logoutAction({
+              accessToken: "",
+            })
+          )
+          .then(() => {
+            Store.client.changeUser(ANONYMOUS.userId);
+          });
+      }
+    }
+  });
+
   badge(Store.client, { messages: badgeEn, styles: badgeStyles });
-  log(Store.client);
+  loguxLog(Store.client);
+
   Store.client.start();
 
   return Store;

@@ -1,12 +1,17 @@
 import { MutationTree } from "vuex";
-import { AuthState } from "./state";
-import { loggedInAction } from "donut-shared";
-import { Keys, saveUserToStorage, setItem } from "../../lib/local-storage";
+import { ANONYMOUS, IAuthState } from "./state";
+import { log, loggedInAction } from "donut-shared";
+import { Keys, removeItem, saveUserToStorage } from "../../lib/local-storage";
 
-const mutation: MutationTree<AuthState> = {
-  loggedIn(state: AuthState, action: ReturnType<typeof loggedInAction>) {
+const mutation: MutationTree<IAuthState> = {
+  loggedIn(state: IAuthState, action: ReturnType<typeof loggedInAction>) {
     saveUserToStorage(action.payload);
-    Object.assign(state, action.payload);
+    state.user = action.payload;
+  },
+  logOut(state: IAuthState) {
+    removeItem(Keys.User);
+    state.user = ANONYMOUS;
+    (this.$router as any).push("/admin/login");
   },
 };
 

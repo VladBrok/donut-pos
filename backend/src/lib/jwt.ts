@@ -6,7 +6,9 @@ export interface JwtPayload {
   userId: string;
 }
 
-export const ACCESS_TOKEN_EXPIRATION_SECONDS = 20 * 60;
+// TODO:
+// export const ACCESS_TOKEN_EXPIRATION_SECONDS = 60 * 60;
+export const ACCESS_TOKEN_EXPIRATION_SECONDS = 5;
 
 export function decodeJwt(token: string): JwtPayload | null {
   let res = null;
@@ -21,11 +23,8 @@ export function decodeJwt(token: string): JwtPayload | null {
   return res;
 }
 
-export const encodeJwt = (
-  payload: JwtPayload,
-  type: "access" | "refresh"
-): string => {
+export const encodeJwt = (payload: JwtPayload): string => {
   return jwt.sign(payload, process.env.JWT_SECRET || "", {
-    ...(type === "access" && { expiresIn: ACCESS_TOKEN_EXPIRATION_SECONDS }),
+    expiresIn: ACCESS_TOKEN_EXPIRATION_SECONDS,
   });
 };

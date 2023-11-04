@@ -1,11 +1,12 @@
 import { Server } from "@logux/server";
-import { log, loginAction } from "donut-shared";
+import { assert, log, loginAction } from "donut-shared";
 import { decodeJwt, encodeJwt } from "./lib/jwt.js";
 import * as db from "./lib/db.js";
 import { compareWithHash } from "./lib/crypt.js";
-import { loggedInAction } from "donut-shared/src/actions.js";
+import { loggedInAction, logoutAction } from "donut-shared/src/actions.js";
 
 // TODO: protect API, especially password, against brute force (? as far as I know, logux has some king of built-in mechanism for this, need check)
+// TODO: on sensitive operations, such as password change, disconnect the user and require login again (to authorize these operations, token should be created no more than 3 minutes ago) (e.g. enter new password -> confirm that it's you -> change password -> logout)
 
 const server = new Server(
   Server.loadOptions(process, {
@@ -16,6 +17,8 @@ const server = new Server(
 );
 
 server.auth(({ userId, token }) => {
+  log(`auth: ${userId} ${token}`);
+
   if (userId === "anonymous") {
     return true;
   }
@@ -24,10 +27,11 @@ server.auth(({ userId, token }) => {
   return jwtPayload?.userId === userId;
 });
 
-server.channel<{ userId: string }>("users/:id", {
+server.channel<{ id: string }>("users/:id", {
   access(ctx) {
-    return ctx.params.userId === ctx.userId;
+    return ctx.params.id === ctx.userId;
   },
+  load(ctx) {}, // TODO: without this, client was sending /subscribe 2 times (recheck)
 });
 
 server.type(loginAction, {
@@ -52,18 +56,24 @@ server.type(loginAction, {
       await server.undo(action, meta, "Wrong password");
       return;
     }
-    const accessToken = encodeJwt({ userId: user.id }, "access");
-    const refreshToken = encodeJwt({ userId: user.id }, "refresh");
-    await db.deleteRefreshTokenOfUser(user.id);
-    await db.addRefreshToken(refreshToken, user.id);
+    const accessToken = encodeJwt({ userId: user.id });
     await ctx.sendBack(
       loggedInAction({
         userId: user.id,
         permissions: user.permissions,
         accessToken,
-        refreshToken,
       })
     );
+  },
+});
+
+server.type(logoutAction, {
+  access(ctx, action) {
+    const jwtPayload = decodeJwt(action.payload.accessToken);
+    return ctx.userId === jwtPayload?.userId;
+  },
+  resend(ctx) {
+    return `users/${ctx.userId}`;
   },
 });
 

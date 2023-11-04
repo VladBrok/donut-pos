@@ -5,7 +5,7 @@
     color="negative"
     label="Logout"
     icon="logout"
-    @click="logout"
+    @click="logoutAdmin"
   />
   <pre>
     {{ JSON.stringify(user, undefined, 4) }}
@@ -13,14 +13,22 @@
 </template>
 
 <script setup lang="ts">
-import { log } from "donut-shared";
+import { log, logoutAction } from "donut-shared";
 import { useStore } from "src/store";
 import { computed } from "vue";
+import { useRouter } from "vue-router";
+import { ANONYMOUS } from "../../store/auth/state";
 
 const store = useStore();
-const user = computed(() => store.state.auth);
+const user = computed(() => store.state.auth.user);
 
-const logout = () => {
-  log("logout");
+const logoutAdmin = () => {
+  store.commit
+    .sync(
+      logoutAction({ accessToken: store.state.auth.user.accessToken || "" })
+    )
+    .then(() => {
+      store.client.changeUser(ANONYMOUS.userId);
+    });
 };
 </script>

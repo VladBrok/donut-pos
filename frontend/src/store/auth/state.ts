@@ -1,17 +1,23 @@
 import { loggedInAction } from "donut-shared";
 import { getUserFromStorage } from "../../lib/local-storage";
 
-export type AuthState = Partial<ReturnType<typeof loggedInAction>["payload"]>;
+export interface IAuthState {
+  user: Partial<ReturnType<typeof loggedInAction>["payload"]>;
+}
 
-function state(): AuthState {
+export const ANONYMOUS = {
+  userId: "anonymous",
+};
+
+function state(): IAuthState {
   const fromStorage = getUserFromStorage();
   if (!fromStorage) {
     return {
-      userId: "anonymous",
+      user: ANONYMOUS,
     };
   }
 
-  return fromStorage;
+  return { user: fromStorage };
 }
 
 export default state;

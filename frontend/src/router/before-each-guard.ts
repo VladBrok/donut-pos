@@ -6,9 +6,13 @@ export const beforeEachGuard: NavigationGuardWithThis<undefined> = (
   from
 ) => {
   const store = useStore();
-  const user = store.state.auth;
+  const user = store.state.auth.user;
 
-  if (to.path.startsWith("/admin") && !user.permissions?.admin) {
+  if (
+    to.path.startsWith("/admin") &&
+    !to.path.startsWith("/admin/login") &&
+    !user.permissions?.admin
+  ) {
     return "/admin/login";
   }
 

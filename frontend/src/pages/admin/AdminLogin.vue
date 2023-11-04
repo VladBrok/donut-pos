@@ -26,7 +26,13 @@
       />
 
       <div>
-        <q-btn label="Submit" type="submit" color="primary" class="mx-auto" />
+        <q-btn
+          label="Submit"
+          :loading="isLoggingIn"
+          type="submit"
+          color="primary"
+          class="mx-auto"
+        />
       </div>
     </q-form>
   </div>
@@ -35,14 +41,17 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useStore } from "src/store";
-import { loginAction } from "donut-shared";
+import { assert, log, loginAction } from "donut-shared";
+import { useRouter } from "vue-router";
 
 const store = useStore();
+const router = useRouter();
 const phone = ref("+48000000000"); // TODO: remove
 const password = ref("1234"); // TODO: remove
+const isLoggingIn = ref(false);
 
 const onSubmit = () => {
-  // TODO: add loading indicator
+  isLoggingIn.value = true;
   store.commit
     .sync(
       loginAction.type,
@@ -52,7 +61,18 @@ const onSubmit = () => {
       })
     )
     .then(() => {
-      console.log("then");
-    });
+      log(`after login`);
+      assert(store.state.auth.user.userId);
+      assert(store.state.auth.user.accessToken);
+      store.client.changeUser(
+        store.state.auth.user.userId || "",
+        store.state.auth.user.accessToken || ""
+      );
+      return store.client.waitFor("synchronized");
+    })
+    .then(() => {
+      return router.push("/admin");
+    })
+    .finally(() => (isLoggingIn.value = false));
 };
 </script>

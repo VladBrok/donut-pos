@@ -10,8 +10,11 @@ export const loginAction = createAction<{
 export const loggedInAction = createAction<{
   userId: string;
   accessToken: string;
-  refreshToken: string;
   permissions: {
     admin?: boolean;
   };
 }>("auth/loggedIn");
+
+export const logoutAction = createAction<{
+  accessToken: string;
+}>("auth/logOut");

@@ -19,20 +19,10 @@ const mockUsers: UserModel[] = [
     },
   },
 ];
-const refreshTokens: string[] = [];
-
 export async function findUserByPhone(phone: string) {
   return mockUsers.find((x) => x.phone === phone);
 }
 
 export async function findUserById(id: string) {
   return mockUsers.find((x) => x.id === id);
-}
-
-export async function addRefreshToken(token: string, userId: string) {
-  refreshTokens.push(token);
-}
-
-export async function deleteRefreshTokenOfUser(userId: string) {
-  refreshTokens.splice(0, refreshTokens.length);
 }

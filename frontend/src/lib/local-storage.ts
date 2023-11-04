@@ -17,6 +17,10 @@ export function setItem<T extends object>(key: Keys, value: T): void {
   localStorage.setItem(key, str);
 }
 
+export function removeItem(key: Keys): void {
+  localStorage.removeItem(key);
+}
+
 export function saveUserToStorage(
   user: ReturnType<typeof loggedInAction>["payload"]
 ) {
