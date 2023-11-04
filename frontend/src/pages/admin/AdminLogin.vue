@@ -10,6 +10,7 @@
         label="Phone *"
         hint="Example: +48000110022"
         lazy-rules
+        type="tel"
         :rules="[
           (val) => (val && val.length > 0) || 'Please enter a phone number',
         ]"
