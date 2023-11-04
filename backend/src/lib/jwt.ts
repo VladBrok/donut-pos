@@ -6,9 +6,7 @@ export interface JwtPayload {
   userId: string;
 }
 
-// TODO:
-// export const ACCESS_TOKEN_EXPIRATION_SECONDS = 60 * 60;
-export const ACCESS_TOKEN_EXPIRATION_SECONDS = 5;
+export const ACCESS_TOKEN_EXPIRATION_SECONDS = 60 * 60;
 
 export function decodeJwt(token: string): JwtPayload | null {
   let res = null;

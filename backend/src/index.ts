@@ -17,8 +17,6 @@ const server = new Server(
 );
 
 server.auth(({ userId, token }) => {
-  log(`auth: ${userId} ${token}`);
-
   if (userId === "anonymous") {
     return true;
   }
