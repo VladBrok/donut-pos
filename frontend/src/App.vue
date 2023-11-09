@@ -4,10 +4,10 @@
 
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
-import { log } from "donut-shared";
 import { useStore } from "src/store";
-import { computed, onMounted, onUnmounted, watch, ref } from "vue";
+import { computed, watch, ref } from "vue";
 import { ANONYMOUS } from "./store/auth/state";
+import { log } from "donut-shared";
 
 const store = useStore();
 const userId = computed(() => store.state.auth.user.userId);
