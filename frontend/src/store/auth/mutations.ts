@@ -11,7 +11,7 @@ const mutation: MutationTree<IAuthState> = {
   logOut(state: IAuthState) {
     removeItem(Keys.User);
     state.user = ANONYMOUS;
-    (this.$router as any).push("/admin/login");
+    (this.$router as any)?.push("/admin/login");
   },
 };
 
