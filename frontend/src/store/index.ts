@@ -55,7 +55,10 @@ const client = new CrossTabClient({
   token: getUserFromStorage()?.accessToken || "",
 });
 
-const createStore = createStoreCreator(client);
+const createStore = createStoreCreator(client, {
+  // TODO: find out what it does
+  // saveStateEvery: 1,
+});
 
 export default store(function (/* { ssrContext } */) {
   const Store = createStore<StateInterface>({
@@ -71,6 +74,7 @@ export default store(function (/* { ssrContext } */) {
 
   Store.client.type("logux/undo", (action) => {
     const reason = (action as any).reason;
+
     if (!reason) {
       return;
     }
@@ -104,6 +108,9 @@ export default store(function (/* { ssrContext } */) {
   loguxLog(Store.client);
 
   Store.client.start();
+
+  // Hack to save the initial state to logux
+  Store.commit("save_initial_state_hack");
 
   return Store;
 });
