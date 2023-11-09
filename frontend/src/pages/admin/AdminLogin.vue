@@ -41,7 +41,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useStore } from "src/store";
-import { assert, log, loginAction } from "donut-shared";
+import { assert, loginAction } from "donut-shared";
 import { useRouter } from "vue-router";
 import { useI18nStore } from "../../lib/i18n";
 
@@ -52,18 +52,16 @@ const phone = ref("+48000000000"); // TODO: remove
 const password = ref("1234"); // TODO: remove
 const isLoggingIn = ref(false);
 
-const onSubmit = () => {
+const onSubmit = async () => {
   isLoggingIn.value = true;
   store.commit
     .sync(
-      loginAction.type,
       loginAction({
         phone: phone.value,
         password: password.value,
       })
     )
     .then(() => {
-      log(`after login`);
       assert(store.state.auth.user.userId);
       assert(store.state.auth.user.accessToken);
       store.client.changeUser(
@@ -75,6 +73,8 @@ const onSubmit = () => {
     .then(() => {
       return router.push("/admin");
     })
-    .finally(() => (isLoggingIn.value = false));
+    .finally(() => {
+      isLoggingIn.value = false;
+    });
 };
 </script>
