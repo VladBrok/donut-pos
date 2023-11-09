@@ -18,6 +18,8 @@
     }
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "scripts/**/*",
+    "drizzle/**/*"
   ]
 }

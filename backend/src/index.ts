@@ -1,7 +1,7 @@
 import { Server } from "@logux/server";
 import { assert, log, loginAction } from "donut-shared";
 import { decodeJwt, encodeJwt } from "./lib/jwt.js";
-import * as db from "./lib/db.js";
+import * as db from "./lib/db/index.js";
 import { compareWithHash } from "./lib/crypt.js";
 import { loggedInAction, logoutAction } from "donut-shared/src/actions.js";
 
@@ -15,6 +15,8 @@ const server = new Server(
     fileUrl: import.meta.url,
   })
 );
+
+db.connect();
 
 server.auth(({ userId, token }) => {
   if (userId === "anonymous") {
@@ -37,7 +39,7 @@ server.type(loginAction, {
     return ctx.userId === "anonymous";
   },
   async process(ctx, action, meta) {
-    const user = await db.findUserByPhone(action.payload.phone);
+    const user = await db.findEmployeeByPhone(action.payload.phone);
     if (!user) {
       await server.undo(
         action,
@@ -69,7 +71,7 @@ const count = { value: 0 };
 
 server.channel("counter", {
   async access(ctx, action, meta) {
-    const user = await db.findUserById(ctx.userId);
+    const user = await db.findEmployeeById(ctx.userId);
     return !!user?.permissions.admin;
   },
   load(ctx, action, meta) {
@@ -79,7 +81,7 @@ server.channel("counter", {
 
 server.type("counter/increment", {
   async access(ctx, action, meta) {
-    const user = await db.findUserById(ctx.userId);
+    const user = await db.findEmployeeById(ctx.userId);
     return !!user?.permissions.admin;
   },
   resend(ctx, action) {
@@ -93,7 +95,7 @@ server.type("counter/increment", {
 
 server.type("counter/decrement", {
   async access(ctx, action, meta) {
-    const user = await db.findUserById(ctx.userId);
+    const user = await db.findEmployeeById(ctx.userId);
     return !!user?.permissions.admin;
   },
   resend(ctx, action) {
