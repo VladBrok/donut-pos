@@ -15,7 +15,6 @@
       {{ count }}
     </div>
     <q-btn color="primary" @click="increment"> Increment </q-btn>
-    <q-btn color="primary" @click="incrementAsync"> Increment Async </q-btn>
     <q-btn color="primary" @click="decrement"> Decrement </q-btn>
   </div>
 </template>
@@ -36,10 +35,6 @@ const increment = () => {
 
 const decrement = () => {
   store.commit.sync("counter/decrement");
-};
-
-const incrementAsync = () => {
-  store.dispatch("counter/increment");
 };
 
 const logoutAdmin = () => {
