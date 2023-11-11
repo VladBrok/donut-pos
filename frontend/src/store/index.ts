@@ -57,6 +57,8 @@ const client = new CrossTabClient({
   subprotocol: "1.0.0",
   userId: getUserFromStorage()?.userId || ANONYMOUS.userId,
   token: getUserFromStorage()?.accessToken || "",
+  // Bug when using IndexedStore: disable server -> add actions to log -> reload the page -> add actions to log -> UI is not updated
+  // store: new IndexedStore(),
 });
 
 const createStore = createStoreCreator(client, {
@@ -105,7 +107,7 @@ export default store(function (/* { ssrContext } */) {
   });
 
   Store.client.node.catch((err) => {
-    logError(JSON.stringify(err));
+    logError(err);
     if (err.name === "LoguxError") {
       if (err.type === "wrong-credentials") {
         Store.commit.crossTab(
@@ -122,6 +124,7 @@ export default store(function (/* { ssrContext } */) {
     styles: badgeStyles,
   });
   loguxLog(Store.client);
+  // confirm(Store.client);
 
   Store.client.start();
 
