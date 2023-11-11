@@ -11,8 +11,8 @@ import { InjectionKey } from "vue";
 import { Router } from "vue-router";
 import { Store as VuexStore } from "vuex";
 
-import { UserNotFound, log, logoutAction } from "donut-shared";
-import { LogType } from "donut-shared/src/log";
+import { UserNotFound, logoutAction } from "donut-shared";
+import { logError, logWarn } from "donut-shared/src/log";
 import { useI18nStore } from "../lib/i18n";
 import { getUserFromStorage } from "../lib/local-storage";
 import auth from "./auth";
@@ -85,10 +85,7 @@ export default store(function (/* { ssrContext } */) {
 
     let message = "";
     if (!(t.value as any)[reason]) {
-      log(
-        LogType.Warn,
-        `translation for the undo reason "${reason}" was not found`
-      );
+      logWarn(`translation for the undo reason "${reason}" was not found`);
       message = reason;
     } else {
       message =
@@ -108,7 +105,7 @@ export default store(function (/* { ssrContext } */) {
   });
 
   Store.client.node.catch((err) => {
-    log(LogType.Error, JSON.stringify(err));
+    logError(JSON.stringify(err));
     if (err.name === "LoguxError") {
       if (err.type === "wrong-credentials") {
         Store.commit.crossTab(

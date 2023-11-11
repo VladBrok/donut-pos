@@ -1,10 +1,22 @@
-export enum LogType {
+enum LogType {
   Info = "INFO",
   Error = "ERROR",
   Warn = "WARN",
 }
 
-export async function log(type: LogType, ...messages: unknown[]) {
+export async function logInfo(...messages: unknown[]) {
+  await log(LogType.Info, messages);
+}
+
+export async function logWarn(...messages: unknown[]) {
+  await log(LogType.Warn, messages);
+}
+
+export async function logError(...messages: unknown[]) {
+  await log(LogType.Error, messages);
+}
+
+async function log(type: LogType, ...messages: unknown[]) {
   const date = new Date().toLocaleString("pl-PL", {
     year: "numeric",
     month: "2-digit",

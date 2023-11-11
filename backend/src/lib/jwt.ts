@@ -1,5 +1,4 @@
-import { log } from "donut-shared";
-import { LogType } from "donut-shared/src/log.js";
+import { logError } from "donut-shared/src/log.js";
 import jwt from "jsonwebtoken";
 
 export interface JwtPayload {
@@ -15,7 +14,7 @@ export function decodeJwt(token: string): JwtPayload | null {
       userId: (jwt.verify(token, process.env.JWT_SECRET || "") as any).userId,
     };
   } catch (err) {
-    log(LogType.Error, err);
+    logError(err);
     res = null;
   }
   return res;
