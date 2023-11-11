@@ -120,7 +120,7 @@ export default store(function (/* { ssrContext } */) {
      * When processing "dishes/create", the client will see a loader.
      * Do not forget to send "logux/processed" manually for the first action.
      *
-     * Logux recomments the first approach (Optimistic UI) for when a user changes data
+     * Logux recommends the first approach (Optimistic UI) for when a user changes data
      * (save the form, press the like button).
      * I think I will use the second approach for operations that are impossible to implement
      * with Optimistic UI, such as Login or Payment
