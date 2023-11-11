@@ -11,9 +11,7 @@
         hint="Example: +48000110022"
         lazy-rules
         type="tel"
-        :rules="[
-          (val) => (val && val.length > 0) || 'Please enter a phone number',
-        ]"
+        :rules="[(val) => (val && val.length > 0) || t.phoneRequired]"
       />
 
       <q-input
@@ -22,7 +20,7 @@
         label="Password *"
         type="password"
         lazy-rules
-        :rules="[(val) => (val && val.length > 0) || 'Please enter a password']"
+        :rules="[(val) => (val && val.length > 0) || t.passwordRequired]"
       />
 
       <div>
@@ -39,9 +37,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { useStore } from "src/store";
 import { assert, loginAction } from "donut-shared";
+import { useStore } from "src/store";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useI18nStore } from "../../lib/i18n";
 

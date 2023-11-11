@@ -20,6 +20,10 @@ export const i18n = createI18n(locale, {
 
 export const messages = i18n("admin", {
   loginPageTitle: "Login to Admin panel",
+
+  passwordRequired: "Please enter a password",
+  phoneRequired: "Please enter a phone number",
+
   [UserNotFound]: params("User with phone {phone} was not found"),
   [WrongPassword]: "Wrong password",
 });
