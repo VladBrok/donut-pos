@@ -60,7 +60,6 @@ const client = new CrossTabClient({
 });
 
 const createStore = createStoreCreator(client, {
-  // TODO: find out what it does and whether we need this
   // saveStateEvery: 1,
 });
 
