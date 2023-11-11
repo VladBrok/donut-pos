@@ -60,12 +60,20 @@ const onSubmit = async () => {
       })
     )
     .then(() => {
-      assert(store.state.auth.user.userId);
-      assert(store.state.auth.user.accessToken);
+      assert(
+        store.state.auth.user.userId,
+        "userId should have been set in state"
+      );
+      assert(
+        store.state.auth.user.accessToken,
+        "accessToken should have been set in state"
+      );
+
       store.client.changeUser(
         store.state.auth.user.userId || "",
         store.state.auth.user.accessToken || ""
       );
+
       return store.client.waitFor("synchronized");
     })
     .then(() => {

@@ -6,7 +6,10 @@
 import { useSubscription } from "@logux/vuex";
 import { useStore } from "src/store";
 import { computed, ref, watch } from "vue";
+import { useMutationsWatcher } from "./lib/composables/useMutationsWatcher";
 import { ANONYMOUS } from "./store/auth/state";
+
+useMutationsWatcher();
 
 const store = useStore();
 const userId = computed(() => store.state.auth.user.userId);
