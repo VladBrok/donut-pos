@@ -28,7 +28,7 @@ server.channel<{ id: string }>("users/:id", {
   access(ctx) {
     return ctx.params.id === ctx.userId;
   },
-  load(ctx) {}, // TODO: without this, client was sending /subscribe 2 times (recheck)
+  load(ctx) {}, // TODO: find out why without this client sends /subscribe 2 times
 });
 
 server.type(loginAction, {
