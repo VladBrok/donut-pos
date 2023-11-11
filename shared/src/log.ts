@@ -1,6 +1,7 @@
 export enum LogType {
   Info = "INFO",
   Error = "ERROR",
+  Warn = "WARN",
 }
 
 export async function log<T>(message: T, type = LogType.Info) {

@@ -1,5 +1,6 @@
-import { createI18n, localeFrom, browser } from "@nanostores/i18n";
+import { browser, createI18n, localeFrom, params } from "@nanostores/i18n";
 import { useStore as useNanoStore } from "@nanostores/vue";
+import { UserNotFound, WrongPassword } from "donut-shared";
 
 // TODO: implement auto-translations (https://github.com/nanostores/i18n#translation-process) ?
 
@@ -19,6 +20,8 @@ export const i18n = createI18n(locale, {
 
 export const messages = i18n("admin", {
   loginPageTitle: "Login to Admin panel",
+  [UserNotFound]: params("User with phone {phone} was not found"),
+  [WrongPassword]: "Wrong password",
 });
 
 export function useI18nStore() {

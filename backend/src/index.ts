@@ -1,9 +1,9 @@
 import { Server } from "@logux/server";
-import { assert, log, loginAction } from "donut-shared";
-import { decodeJwt, encodeJwt } from "./lib/jwt.js";
-import * as db from "./lib/db/index.js";
-import { compareWithHash } from "./lib/crypt.js";
+import { UserNotFound, WrongPassword, log, loginAction } from "donut-shared";
 import { loggedInAction } from "donut-shared/src/actions.js";
+import { compareWithHash } from "./lib/crypt.js";
+import * as db from "./lib/db/index.js";
+import { decodeJwt, encodeJwt } from "./lib/jwt.js";
 
 const server = new Server(
   Server.loadOptions(process, {
@@ -38,21 +38,19 @@ server.type(loginAction, {
   async process(ctx, action, meta) {
     const user = await db.findEmployeeByPhone(action.payload.phone);
     if (!user) {
-      await server.undo(
-        action,
-        meta,
-        `User with phone ${action.payload.phone} was not found`
-      );
+      await server.undo(action, meta, UserNotFound);
       return;
     }
+
     const isPasswordValid = await compareWithHash(
       action.payload.password,
       user.passwordHash
     );
     if (!isPasswordValid) {
-      await server.undo(action, meta, "Wrong password");
+      await server.undo(action, meta, WrongPassword);
       return;
     }
+
     const accessToken = encodeJwt({ userId: user.id });
     await ctx.sendBack(
       loggedInAction({
