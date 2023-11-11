@@ -77,10 +77,10 @@ export default store(function (/* { ssrContext } */) {
     strict: !!process.env.DEBUGGING,
   });
 
-  Store.client.type("logux/undo", (action) => {
+  Store.client.type("logux/undo", (undone) => {
     const t = useI18nStore();
 
-    const reason = (action as any).reason;
+    const reason = (undone as any).reason;
     if (!reason) {
       return;
     }
@@ -93,7 +93,7 @@ export default store(function (/* { ssrContext } */) {
       message =
         reason === UserNotFound
           ? t.value.userNotFound({
-              phone: (action as any).action.payload.phone,
+              phone: (undone as any).action.payload.phone,
             })
           : (t.value as any)[reason];
     }
