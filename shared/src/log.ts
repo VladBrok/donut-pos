@@ -4,7 +4,7 @@ export enum LogType {
   Warn = "WARN",
 }
 
-export async function log<T>(message: T, type = LogType.Info) {
+export async function log<T>(type: LogType, message: T) {
   const date = new Date().toLocaleString("pl-PL", {
     year: "numeric",
     month: "2-digit",

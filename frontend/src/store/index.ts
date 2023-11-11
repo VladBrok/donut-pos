@@ -86,8 +86,8 @@ export default store(function (/* { ssrContext } */) {
     let message = "";
     if (!(t.value as any)[reason]) {
       log(
-        `translation for the undo reason "${reason}" was not found`,
-        LogType.Warn
+        LogType.Warn,
+        `translation for the undo reason "${reason}" was not found`
       );
       message = reason;
     } else {
@@ -108,7 +108,7 @@ export default store(function (/* { ssrContext } */) {
   });
 
   Store.client.node.catch((err) => {
-    log(JSON.stringify(err), LogType.Error);
+    log(LogType.Error, JSON.stringify(err));
     if (err.name === "LoguxError") {
       if (err.type === "wrong-credentials") {
         Store.commit.crossTab(

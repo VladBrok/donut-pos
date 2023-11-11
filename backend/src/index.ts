@@ -1,6 +1,7 @@
 import { Server } from "@logux/server";
 import { UserNotFound, WrongPassword, log, loginAction } from "donut-shared";
 import { loggedInAction } from "donut-shared/src/actions.js";
+import { LogType } from "donut-shared/src/log.js";
 import { compareWithHash } from "./lib/crypt.js";
 import * as db from "./lib/db/index.js";
 import { decodeJwt, encodeJwt } from "./lib/jwt.js";
@@ -87,7 +88,6 @@ server.type("counter/increment", {
     return `counter`;
   },
   process(ctx, action, meta) {
-    log("process increment");
     count.value += action.amount || 1;
   },
 });
@@ -106,5 +106,5 @@ server.type("counter/decrement", {
 });
 
 server.listen().then(() => {
-  log("server started");
+  log(LogType.Info, "server started");
 });

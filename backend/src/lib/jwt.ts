@@ -15,7 +15,7 @@ export function decodeJwt(token: string): JwtPayload | null {
       userId: (jwt.verify(token, process.env.JWT_SECRET || "") as any).userId,
     };
   } catch (err) {
-    log(err, LogType.Error);
+    log(LogType.Error, err);
     res = null;
   }
   return res;
