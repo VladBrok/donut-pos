@@ -8,7 +8,7 @@
   "author": "VladBrok",
   "scripts": {
     "start": "tsx src/index.ts",
-    "dev": "tsx watch src/index.ts",
+    "dev": "export NODE_ENV=development && tsx watch src/index.ts",
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "pull-db": "tsx scripts/pull-db.ts"

@@ -5,15 +5,15 @@ enum LogType {
 }
 
 export async function logInfo(...messages: unknown[]) {
-  await log(LogType.Info, messages);
+  await log(LogType.Info, ...messages);
 }
 
 export async function logWarn(...messages: unknown[]) {
-  await log(LogType.Warn, messages);
+  await log(LogType.Warn, ...messages);
 }
 
 export async function logError(...messages: unknown[]) {
-  await log(LogType.Error, messages);
+  await log(LogType.Error, ...messages);
 }
 
 async function log(type: LogType, ...messages: unknown[]) {
