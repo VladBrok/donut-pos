@@ -12,7 +12,7 @@ import { Router } from "vue-router";
 import { Store as VuexStore } from "vuex";
 
 import { UserNotFound, logoutAction } from "donut-shared";
-import { logError, logWarn } from "donut-shared/src/log";
+import { logError, logInfo, logWarn } from "donut-shared/src/log";
 import { useI18nStore } from "../lib/i18n";
 import { getUserFromStorage } from "../lib/local-storage";
 import auth from "./auth";
@@ -77,10 +77,11 @@ export default store(function (/* { ssrContext } */) {
     strict: !!process.env.DEBUGGING,
   });
 
-  Store.client.type("logux/undo", (undone) => {
+  Store.client.type("logux/undo", (undoneAction) => {
     const t = useI18nStore();
+    const undone = undoneAction as any;
 
-    const reason = (undone as any).reason;
+    const reason = undone.reason;
     if (!reason) {
       return;
     }
@@ -93,16 +94,69 @@ export default store(function (/* { ssrContext } */) {
       message =
         reason === UserNotFound
           ? t.value.userNotFound({
-              phone: (undone as any).action.payload.phone,
+              phone: undone.action.payload.phone,
             })
           : (t.value as any)[reason];
     }
 
+    /**
+     * TODO: user should be able to retry certain actions in case of error.
+     *
+     * For example, "Wrong password" error shouldn't have the retry ability
+     * because it doesn't make sense.
+     * However, when user creates a dish with description, photo, etc.,
+     * optimistic UI shows an update, but the server encounters an error during
+     * saving changes to the database. In this case, client will see how the dish
+     * disappears and they would be forced to enter the data once again just to try again.
+     *
+     * The retry should be available only for the user that created this action,
+     * other clients that received this action via resend should simply see how it gets undone
+     *
+     * ALTERNATIVE solution: pessimistic UI
+     * For each mutation, create two actions, for example: "dishes/create" and "dishes/created".
+     * First will just send action to the server. The server will update DB.
+     * If successfull, the server will call `.process` with "dishes/created".
+     * The "dishes/created" will be resent to all clients. Clients will listed to it and update UI.
+     * When processing "dishes/create", the client will see a loader.
+     * Do not forget to send "logux/processed" manually for the first action.
+     */
+    const canRetry = false;
+    const timeout = canRetry ? 1000000000 : 6000;
+    const buttons = canRetry
+      ? [
+          {
+            label: "Retry",
+            color: "yellow",
+            handler: () => {
+              logInfo("retry:", undone.action);
+              Store.commit
+                .sync(undone.action)
+                .then(() => {
+                  logInfo("retry success:", undone.action);
+                })
+                .catch(() => {
+                  logError("retry error:", undone.action);
+                });
+            },
+          },
+          {
+            label: "Dismiss",
+            color: "white",
+            handler: () => {
+              /* */
+            },
+          },
+        ]
+      : undefined;
+
     Notify.create({
       type: "negative",
       position: "top",
-      timeout: 6000,
+      timeout: timeout,
       message: message,
+      multiLine: true,
+      group: false,
+      actions: buttons,
     });
   });
 
