@@ -2,8 +2,6 @@ import { browser, createI18n, localeFrom, params } from "@nanostores/i18n";
 import { useStore as useNanoStore } from "@nanostores/vue";
 import { UserNotFound, WrongPassword } from "donut-shared";
 
-// TODO: implement auto-translations (https://github.com/nanostores/i18n#translation-process) ?
-
 export const locale = localeFrom(
   // atom("pl"),
   browser({
