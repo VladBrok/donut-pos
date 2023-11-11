@@ -87,7 +87,7 @@ export default store(function (/* { ssrContext } */) {
     let message = "";
     if (!(t.value as any)[reason]) {
       log(
-        `translation for the undo reason ${reason} was not found`,
+        `translation for the undo reason "${reason}" was not found`,
         LogType.Warn
       );
       message = reason;
@@ -112,25 +112,25 @@ export default store(function (/* { ssrContext } */) {
     log(JSON.stringify(err), LogType.Error);
     if (err.name === "LoguxError") {
       if (err.type === "wrong-credentials") {
-        Store.commit
-          .crossTab(
-            logoutAction({
-              accessToken: "",
-            })
-          )
-          .then(() => {
-            Store.client.changeUser(ANONYMOUS.userId);
-          });
+        Store.commit.crossTab(
+          logoutAction({
+            accessToken: "",
+          })
+        );
       }
     }
   });
 
-  badge(Store.client, { messages: badgeEn, styles: badgeStyles });
+  badge(Store.client, {
+    messages: badgeEn,
+    styles: badgeStyles,
+  });
   loguxLog(Store.client);
 
   Store.client.start();
 
-  // Hack to save the initial state to logux
+  // Hack to save the initial state to logux.
+  // Without this, first `undo` may remove the whole state
   Store.commit("save_initial_state_hack");
 
   return Store;

@@ -11,6 +11,7 @@ export const ANONYMOUS = {
 
 function state(): IAuthState {
   const fromStorage = getUserFromStorage();
+
   if (!fromStorage) {
     return {
       user: ANONYMOUS,

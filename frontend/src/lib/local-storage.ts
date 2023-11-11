@@ -22,7 +22,7 @@ export function removeItem(key: Keys): void {
 }
 
 export function saveUserToStorage(
-  user: ReturnType<typeof loggedInAction>["payload"]
+  user: Partial<ReturnType<typeof loggedInAction>["payload"]>
 ) {
   setItem(Keys.User, user);
 }

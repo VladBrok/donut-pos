@@ -52,7 +52,11 @@ server.type(loginAction, {
     }
 
     const accessToken = encodeJwt({ userId: user.id });
-    await ctx.sendBack(
+    await server.log.add(
+      { id: meta.id, type: "logux/processed" },
+      { clients: [ctx.clientId], status: "processed" }
+    );
+    ctx.sendBack(
       loggedInAction({
         userId: user.id,
         permissions: user.permissions,

@@ -37,15 +37,13 @@
 </template>
 
 <script setup lang="ts">
-import { assert, loginAction } from "donut-shared";
+import { loginAction } from "donut-shared";
 import { useStore } from "src/store";
 import { ref } from "vue";
-import { useRouter } from "vue-router";
 import { useI18nStore } from "../../lib/i18n";
 
 const t = useI18nStore();
 const store = useStore();
-const router = useRouter();
 const phone = ref("+48000000000"); // TODO: remove
 const password = ref("1234"); // TODO: remove
 const isLoggingIn = ref(false);
@@ -59,26 +57,6 @@ const onSubmit = async () => {
         password: password.value,
       })
     )
-    .then(() => {
-      assert(
-        store.state.auth.user.userId,
-        "userId should have been set in state"
-      );
-      assert(
-        store.state.auth.user.accessToken,
-        "accessToken should have been set in state"
-      );
-
-      store.client.changeUser(
-        store.state.auth.user.userId || "",
-        store.state.auth.user.accessToken || ""
-      );
-
-      return store.client.waitFor("synchronized");
-    })
-    .then(() => {
-      return router.push("/admin");
-    })
     .finally(() => {
       isLoggingIn.value = false;
     });
