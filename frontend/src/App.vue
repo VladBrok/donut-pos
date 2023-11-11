@@ -19,5 +19,5 @@ const channels = computed(() =>
   userId.value === ANONYMOUS.userId ? [] : [`counter`, `users/${userId.value}`]
 );
 let isSubscribing = useSubscription(channels, { store: store as any });
-log(LogType.Info, 1);
+log(LogType.Info, 1, null, "wow", { obj: "yes" }, [1, 2, { no: "oop" }], false);
 </script>

@@ -4,7 +4,7 @@ export enum LogType {
   Warn = "WARN",
 }
 
-export async function log<T>(type: LogType, message: T) {
+export async function log(type: LogType, ...messages: unknown[]) {
   const date = new Date().toLocaleString("pl-PL", {
     year: "numeric",
     month: "2-digit",
@@ -14,5 +14,17 @@ export async function log<T>(type: LogType, message: T) {
     timeZone: "Europe/Warsaw",
   });
 
-  console.log(`[${date}] ${type}: ${message}`);
+  const message = messages
+    .map((x) =>
+      typeof x === "object" || typeof x === "boolean" || x == null
+        ? JSON.stringify(x)
+        : x
+    )
+    .join(" ");
+
+  if (process.env.NODE_ENV === "development") {
+    console.log(`[${date}] ${type}:`, ...messages);
+  } else {
+    console.log(`[${date}] ${type}: ${message}`);
+  }
 }
