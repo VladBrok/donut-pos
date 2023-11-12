@@ -1,7 +1,7 @@
+import { DefaultLogger, eq } from "drizzle-orm";
 import { PostgresJsDatabase, drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import { employee, role } from "../../../drizzle/schema.js";
-import { DefaultLogger, eq } from "drizzle-orm";
+import { employee, role } from "../../../migrations/schema.js";
 import { DbLogWriter } from "./log-writer.js";
 import { EmployeeModel } from "./models.js";
 import { employeeAdapter } from "./schema-to-model-adapters.js";

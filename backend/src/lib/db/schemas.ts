@@ -1,4 +1,4 @@
-import { employee, role } from "../../../drizzle/schema.js";
+import { employee, role } from "../../../migrations/schema.js";
 
 export type SelectEmployeeSchema = {
   [employee._.name]: typeof employee.$inferSelect;
