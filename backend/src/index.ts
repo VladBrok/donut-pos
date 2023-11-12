@@ -1,15 +1,8 @@
 import { Server } from "@logux/server";
-import {
-  ANONYMOUS,
-  USER_NOT_FOUND,
-  WRONG_PASSWORD,
-  loginAction,
-} from "donut-shared";
-import { loggedInAction } from "donut-shared/src/actions.js";
 import { logInfo } from "donut-shared/src/log.js";
-import { compareWithHash } from "./lib/crypt.js";
 import * as db from "./lib/db/index.js";
-import { decodeJwt, encodeJwt } from "./lib/jwt.js";
+import authModule from "./modules/auth-module.js";
+import counterModule from "./modules/counter-module.js";
 
 const server = new Server(
   Server.loadOptions(process, {
@@ -18,96 +11,15 @@ const server = new Server(
     fileUrl: import.meta.url,
   })
 );
-
 db.connect();
 
-server.auth(({ userId, token }) => {
-  if (userId === ANONYMOUS.userId) {
-    return true;
-  }
-
-  const jwtPayload = decodeJwt(token);
-  return jwtPayload?.userId === userId;
-});
-
+authModule(server);
+counterModule(server);
 server.channel<{ id: string }>("users/:id", {
   access(ctx) {
     return ctx.params.id === ctx.userId;
   },
   load(ctx) {}, // TODO: find out why without this client sends /subscribe 2 times
-});
-
-server.type(loginAction, {
-  access(ctx) {
-    return ctx.userId === ANONYMOUS.userId;
-  },
-  async process(ctx, action, meta) {
-    const user = await db.findEmployeeByPhone(action.payload.phone);
-    if (!user) {
-      await server.undo(action, meta, USER_NOT_FOUND);
-      return;
-    }
-
-    const isPasswordValid = await compareWithHash(
-      action.payload.password,
-      user.passwordHash
-    );
-    if (!isPasswordValid) {
-      await server.undo(action, meta, WRONG_PASSWORD);
-      return;
-    }
-
-    const accessToken = encodeJwt({ userId: user.id });
-    await server.log.add(
-      { id: meta.id, type: "logux/processed" },
-      { clients: [ctx.clientId], status: "processed" }
-    );
-    ctx.sendBack(
-      loggedInAction({
-        userId: user.id,
-        permissions: user.permissions,
-        accessToken,
-      })
-    );
-  },
-});
-
-const count = { value: 0 };
-
-server.channel("counter", {
-  async access(ctx, action, meta) {
-    const user = await db.findEmployeeById(ctx.userId);
-    return !!user?.permissions.admin;
-  },
-  load(ctx, action, meta) {
-    return { type: "counter/init", count: count.value };
-  },
-});
-
-server.type("counter/increment", {
-  async access(ctx, action, meta) {
-    const user = await db.findEmployeeById(ctx.userId);
-    return !!user?.permissions.admin;
-  },
-  resend(ctx, action) {
-    return `counter`;
-  },
-  process(ctx, action, meta) {
-    count.value += action.amount || 1;
-  },
-});
-
-server.type("counter/decrement", {
-  async access(ctx, action, meta) {
-    const user = await db.findEmployeeById(ctx.userId);
-    return !!user?.permissions.admin;
-  },
-  resend(ctx, action) {
-    return `counter`;
-  },
-  process(ctx, action, meta) {
-    count.value -= action.amount || 1;
-  },
 });
 
 server.listen().then(() => {
