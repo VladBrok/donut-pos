@@ -1,4 +1,5 @@
-import { CrossTabClient, IndexedStore } from "@logux/client";
+import { CrossTabClient } from "@logux/client";
+import { MemoryStore } from "@logux/core";
 import { ANONYMOUS } from "donut-shared";
 import { getUserFromStorage } from "../local-storage";
 
@@ -12,6 +13,6 @@ export function createClient() {
     subprotocol: "1.0.0",
     userId: getUserFromStorage()?.userId || ANONYMOUS.userId,
     token: getUserFromStorage()?.accessToken || "",
-    store: new IndexedStore(),
+    store: new MemoryStore(),
   });
 }
