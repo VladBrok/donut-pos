@@ -1,36 +1,29 @@
+import { log as logLoguxEvents } from "@logux/client";
+import {
+  LoguxVuexStore,
+  createStoreCreator,
+  useStore as loguxUseStore,
+} from "@logux/vuex";
 import { store } from "quasar/wrappers";
 import { InjectionKey } from "vue";
 import { Router } from "vue-router";
-import { CrossTabClient, badge, badgeEn, log } from "@logux/client";
-import { badgeStyles } from "@logux/client/badge/styles";
-import { LoguxVuexStore, createStoreCreator } from "@logux/vuex";
-import { Store as VuexStore, useStore as vuexUseStore } from "vuex";
-import { Showcase } from "./showcase/state";
-import { useStore as loguxUseStore } from "@logux/vuex";
+import { Store as VuexStore } from "vuex";
 
+import { assert } from "donut-shared";
+import { createClient } from "../lib/logux/create-client";
+import { setErrorHandler } from "../lib/logux/set-error-handler";
+import { setUndoHandler } from "../lib/logux/set-undo-handler";
+import { watchSyncStatus } from "../lib/logux/watch-sync-status";
+import auth from "./auth";
+import { IAuthState } from "./auth/state";
 import counter from "./counter";
-import showcase from "./showcase";
 import { ICounter } from "./counter/state";
-
-// import example from './module-example'
-// import { ExampleStateInterface } from './module-example/state';
-
-/*
- * If not building with SSR mode, you can
- * directly export the Store instantiation;
- *
- * The function below can be async too; either use
- * async/await or return a Promise which resolves
- * with the Store instance.
- */
 
 export interface StateInterface {
   // Define your own store structure, using submodules if needed
   // example: ExampleStateInterface;
-  // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
-  example: unknown;
-  showcase: Showcase;
   counter: ICounter;
+  auth: IAuthState;
 }
 
 // provide typings for `this.$store`
@@ -52,36 +45,43 @@ declare module "vuex" {
   }
 }
 
-// Initialize logux client
-const client = new CrossTabClient({
-  server:
-    process.env.NODE_ENV === "development"
-      ? "ws://localhost:31337"
-      : "wss://logux.example.com",
-  subprotocol: "1.0.0",
-  userId: "anonymous", // TODO
-  token: "", // TODO
+const client = createClient();
+const createStore = createStoreCreator(client, {
+  // saveStateEvery: 1,
 });
 
-const createStore = createStoreCreator(client);
-
 export default store(function (/* { ssrContext } */) {
+  const modules = {
+    counter,
+    auth,
+  };
+
+  for (const module of Object.values(modules)) {
+    assert(
+      typeof module.state !== "function",
+      "Function state is not supported by this version of logux/vuex"
+    );
+  }
+
   const Store = createStore<StateInterface>({
-    modules: {
-      // example
-      showcase,
-      counter,
-    },
+    modules: modules,
 
     // enable strict mode (adds overhead!)
     // for dev mode and --debug builds only
     strict: !!process.env.DEBUGGING,
   });
 
-  badge(Store.client, { messages: badgeEn, styles: badgeStyles });
-  log(Store.client);
-  console.log("store client start");
+  setUndoHandler(Store);
+  setErrorHandler(Store);
+  watchSyncStatus(Store.client);
+  logLoguxEvents(Store.client);
+  // confirm(Store.client);
+
   Store.client.start();
+
+  // Hack to save the initial state to logux.
+  // Without this, first `undo` may remove the whole state
+  Store.commit("save_initial_state_hack");
 
   return Store;
 });

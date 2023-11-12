@@ -7,6 +7,7 @@ import {
 import { StateInterface } from "../store";
 
 import routes from "./routes";
+import { beforeEachGuard } from "./before-each-guard";
 
 /*
  * If not building with SSR mode, you can
@@ -31,6 +32,8 @@ export default route<StateInterface>(function (/* { store, ssrContext } */) {
     // quasar.conf.js -> build -> publicPath
     history: createHistory(process.env.VUE_ROUTER_BASE),
   });
+
+  Router.beforeEach(beforeEachGuard);
 
   return Router;
 });

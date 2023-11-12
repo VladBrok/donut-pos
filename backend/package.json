@@ -8,18 +8,30 @@
   "author": "VladBrok",
   "scripts": {
     "start": "tsx src/index.ts",
-    "dev": "tsx watch src/index.ts",
+    "dev": "export NODE_ENV=development && tsx watch src/index.ts",
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "pull-db": "tsx scripts/pull-db.ts"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.1",
+    "@types/jsonwebtoken": "^9.0.4",
     "@types/node": "^20.8.9",
     "@types/ws": "^8.5.8",
+    "@typescript-eslint/eslint-plugin": "^6.9.1",
+    "@typescript-eslint/parser": "^6.9.1",
+    "drizzle-kit": "^0.19.13",
+    "eslint": "^8.52.0",
     "tsx": "^3.14.0",
     "typescript": "^5.2.2"
   },
   "dependencies": {
     "@logux/server": "0.12.6",
-    "donut-shared": "0.0.1"
+    "bcrypt": "5.1.1",
+    "donut-shared": "0.0.1",
+    "dotenv": "16.3.1",
+    "drizzle-orm": "0.28.6",
+    "jsonwebtoken": "9.0.2",
+    "postgres": "3.4.3"
   }
 }

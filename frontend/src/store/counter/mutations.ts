@@ -6,7 +6,6 @@ const mutation: MutationTree<ICounter> = {
     state.count = action.count;
   },
   increment(state: ICounter, payload) {
-    console.log(payload);
     state.count += payload?.amount ?? 1;
   },
   decrement(state: ICounter) {

@@ -3,8 +3,18 @@ import { RouteRecordRaw } from "vue-router";
 const routes: RouteRecordRaw[] = [
   {
     path: "/",
-    component: () => import("layouts/MainLayout.vue"),
-    children: [{ path: "", component: () => import("pages/IndexPage.vue") }],
+    // component: () => import("layouts/MainLayout.vue"),
+    // children: [{ path: "", component: () => import("pages/IndexPage.vue") }],
+    redirect: "/admin/login",
+  },
+
+  {
+    path: "/admin",
+    component: () => import("pages/admin/AdminDashboard.vue"),
+  },
+  {
+    path: "/admin/login",
+    component: () => import("pages/admin/AdminLogin.vue"),
   },
 
   {

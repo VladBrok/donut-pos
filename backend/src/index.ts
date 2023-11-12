@@ -1,7 +1,7 @@
 import { Server } from "@logux/server";
-import { someSharedMethod } from "donut-shared";
-
-let count = { value: 0 };
+import * as db from "./lib/db/index.js";
+import authModule from "./modules/auth-module.js";
+import counterModule from "./modules/counter-module.js";
 
 const server = new Server(
   Server.loadOptions(process, {
@@ -10,46 +10,15 @@ const server = new Server(
     fileUrl: import.meta.url,
   })
 );
+db.connect();
 
-server.auth(({ userId, token }) => {
-  return true;
+authModule(server);
+counterModule(server);
+server.channel<{ id: string }>("users/:id", {
+  access(ctx) {
+    return ctx.params.id === ctx.userId;
+  },
+  load(ctx) {}, // TODO: find out why without this client sends /subscribe 2 times
 });
 
-server.channel("counter", {
-  access(ctx, action, meta) {
-    return true;
-  },
-  load(ctx, action, meta) {
-    return { type: "counter/init", count: count.value };
-  },
-});
-
-server.type("counter/increment", {
-  access(ctx, action, meta) {
-    return true;
-  },
-  resend(ctx, action) {
-    return `counter`;
-  },
-  process(ctx, action, meta) {
-    console.log("increment process:", action);
-    count.value += action.amount || 1;
-  },
-});
-
-server.type("counter/decrement", {
-  access(ctx, action, meta) {
-    return true;
-  },
-  resend(ctx, action) {
-    return `counter`;
-  },
-  process(ctx, action, meta) {
-    console.log("decrement process:", action);
-    count.value -= action.amount || 1;
-  },
-});
-
-server.listen().then(() => {
-  someSharedMethod();
-});
+server.listen();

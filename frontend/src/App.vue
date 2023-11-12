@@ -1,56 +1,34 @@
 <template>
   <router-view />
-  <div>
-    <q-toggle v-model="drawerState" />
-  </div>
-  <div>
-    <div>
-      {{ count }}
-    </div>
-    <q-btn color="primary" @click="increment"> Increment </q-btn>
-    <q-btn color="primary" @click="incrementAsync"> Increment Async </q-btn>
-    <q-btn color="primary" @click="decrement"> Decrement </q-btn>
-  </div>
 </template>
 
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
+import { ANONYMOUS } from "donut-shared/src/constants";
 import { useStore } from "src/store";
-import { computed, onMounted } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
+import { useMutationsWatcher } from "./lib/composables/useMutationsWatcher";
 
-const $store = useStore();
-const drawerState = computed({
-  get: () => {
-    console.log("get", $store.state.showcase.isDrawerOpen);
-    return $store.state.showcase.isDrawerOpen;
-  },
-  set: (val) => {
-    console.log("set", val);
-    $store.commit("showcase/updateIsOpen", val);
-  },
+useMutationsWatcher();
+const store = useStore();
+const userId = ref(store.state.auth.user.userId);
+const channels = computed(() => {
+  return userId.value === ANONYMOUS.userId
+    ? []
+    : [`counter`, `users/${userId.value}`];
 });
-
-let channels = computed(() => [`counter`]);
-let isSubscribing = useSubscription(channels, { store: $store as any });
-console.log("isSubscribing:", isSubscribing.value);
-
-import { someSharedMethod } from "donut-shared";
+let isSubscribing = useSubscription(channels, { store: store as any });
+const unsubscribe = ref(() => {
+  /* */
+});
 
 onMounted(() => {
-  someSharedMethod();
+  unsubscribe.value = store.client.on("user", (newId) => {
+    userId.value = newId;
+  });
 });
 
-const count = computed(() => $store.state.counter.count);
-
-const increment = () => {
-  $store.commit.sync("counter/increment", { amount: 5 });
-};
-
-const decrement = () => {
-  $store.commit.sync("counter/decrement");
-};
-
-const incrementAsync = () => {
-  $store.dispatch("counter/increment");
-};
+onUnmounted(() => {
+  unsubscribe.value();
+});
 </script>

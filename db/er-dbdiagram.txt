@@ -1,0 +1,207 @@
+Table address {
+  id UUID [pk]
+  geo_lat TEXT
+  geo_lon TEXT
+  city TEXT
+  street TEXT
+  building TEXT
+  floor_number INT
+  room TEXT
+}
+
+Table client {
+  id UUID [pk]
+  address_id UUID
+  first_name TEXT
+  last_name TEXT
+  phone TEXT
+  is_phone_verified TEXT
+  password_hash TEXT
+  registered_at TIMESTAMP
+  Indexes {
+    address_id [name: 'client_address_id_idx']
+    phone [name: 'client_phone_idx']
+  }
+}
+
+Table work_schedule {
+  id UUID [pk]
+  sale_point_id UUID
+  day_of_week INT // 0 - Sunday, 1 - Monday, ...
+  start TIME
+  end TIME
+  pause_start TIME
+  pause_end TIME
+  Indexes {
+    sale_point_id [name: 'work_schedule_sale_point_id_idx']
+  } 
+}
+
+Table permission {
+  id UUID [pk]
+  code_name TEXT // e.g. "create_menu"
+}
+
+Table role {
+  id UUID [pk]
+  code_name TEXT // e.g. "admin"
+}
+
+Table role_to_permission {
+  id UUID [pk]
+  role_id UUID
+  permission_id UUID
+  Indexes {
+    role_id [name: 'role_to_permission_role_id_idx']
+    permission_id [name: 'role_to_permission_permission_id_idx']
+  } 
+}
+
+Table employee {
+  id UUID [pk]
+  role_id UUID
+  first_name TEXT
+  last_name TEXT
+  phone TEXT
+  is_phone_verified TEXT
+  password_hash TEXT
+  registered_at TIMESTAMP
+  Indexes {
+    role_id [name: 'employee_role_id_idx']
+    phone [name: 'employee_phone_idx']
+  }
+}
+
+Table dish {
+  id UUID [pk]
+  category_id UUID
+  name TEXT
+  image_url TEXT
+  description TEXT
+  price NUMERIC(8, 2)
+  weight NUMERIC(8, 2)
+  is_active BOOLEAN
+  Indexes {
+    category_id [name: 'dish_category_id_idx']
+  }
+}
+
+Table dish_category {
+  id UUID [pk]
+  name TEXT
+  image_url TEXT
+}
+
+Table sale_point {
+  id UUID [pk]
+  address_id UUID
+  name TEXT
+  phone TEXT
+  is_default BOOLEAN
+  Indexes {
+    address_id [name: 'sale_point_address_id_idx']
+  }
+}
+
+Table dish_to_sale_point {
+  id UUID [pk]
+  dish_id UUID
+  sale_point_id UUID
+  Indexes {
+    dish_id [name: 'dish_to_sale_point_dish_id_idx']
+    sale_point_id [name: 'dish_to_sale_point_sale_point_id_idx']
+  }
+}
+
+Table modification {
+  id UUID [pk]
+  name TEXT
+  image_url TEXT
+  weight NUMERIC(8, 2)
+  price NUMERIC(8, 2)
+}
+
+Table dish_to_modification {
+  id UUID [pk]
+  dish_id UUID
+  modification_id UUID
+  Indexes {
+    dish_id [name: 'dish_to_modification_dish_id_idx']
+    modification_id [name: 'dish_to_modification_modification_id_idx']
+  }
+}
+
+Table order_status {
+  id UUID [pk]
+  code_name TEXT // "creating" | "created" | "cooking" | "cooked" | "payed"
+}
+
+Table order_to_order_status {
+  id UUID [pk]
+  order_id UUID
+  order_status_id UUID
+  date TIMESTAMP // current status of the order is the most recent
+  Indexes {
+    order_id [name: 'order_to_order_status_order_id_idx']
+    order_status_id [name: 'order_to_order_status_order_status_id_idx']
+  }
+}
+
+Table order {
+  id UUID [pk]
+  client_id UUID
+  employee_id UUID
+  sale_point_id UUID
+  number TEXT // e.g. 29-01-23-KL1C
+  table_number TEXT
+  comment TEXT
+  Indexes {
+    client_id [name: 'order_client_id_idx']
+    employee_id [name: 'order_employee_id_idx']
+    sale_point_id [name: 'order_sale_point_id_idx']
+    number [name: 'order_number_idx']
+  }
+}
+
+Table order_to_dish {
+  id UUID [pk]
+  order_id UUID
+  dish_id UUID
+  dish_count INT
+  Indexes {
+    order_id [name: 'order_to_dish_order_id_idx']
+    dish_id [name: 'order_to_dish_dish_id_idx']
+  }
+}
+
+Table order_to_dish_to_modification {
+  id UUID [pk]
+  order_to_dish_id UUID
+  modification_id UUID
+  modification_count INT
+  Indexes {
+    order_to_dish_id [name: 'order_to_dish_to_modification_order_to_dish_id_idx']
+    modification_id [name: 'order_to_dish_to_modification_modification_id_idx']
+  }
+}
+
+Ref: client.address_id > address.id
+Ref: dish.category_id > dish_category.id
+Ref: work_schedule.sale_point_id > sale_point.id
+Ref: role_to_permission.role_id > role.id
+Ref: role_to_permission.permission_id > permission.id
+Ref: employee.role_id > role.id
+Ref: sale_point.address_id > address.id
+Ref: dish_to_sale_point.dish_id > dish.id
+Ref: dish_to_sale_point.sale_point_id > sale_point.id
+Ref: order.employee_id > employee.id
+Ref: order.client_id > client.id
+Ref: order.sale_point_id > sale_point.id
+Ref: order_to_dish.order_id > order.id
+Ref: order_to_dish.dish_id > dish.id
+Ref: dish_to_modification.dish_id > dish.id
+Ref: dish_to_modification.modification_id > modification.id
+Ref: order_to_dish_to_modification.order_to_dish_id > order_to_dish.id
+Ref: order_to_dish_to_modification.modification_id > modification.id
+Ref: order_to_order_status.order_id > order.id
+Ref: order_to_order_status.order_status_id > order_status.id
