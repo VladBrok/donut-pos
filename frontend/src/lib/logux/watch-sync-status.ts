@@ -63,7 +63,7 @@ export function watchSyncStatus(client: CrossTabClient) {
       });
     } else if (current === "protocolError") {
       updateStatusNotification({
-        icon: "cached",
+        icon: "sync_problem",
         type: "warning",
         message: t.value.protocolErrorMessage,
         caption: t.value.protocolErrorCaption,
