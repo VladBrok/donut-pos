@@ -41,11 +41,8 @@ export default function authModule(server: Server) {
       }
 
       const accessToken = encodeJwt({ userId: user.id });
-      await server.log.add(
-        { id: meta.id, type: "logux/processed" },
-        { clients: [ctx.clientId], status: "processed" }
-      );
-      ctx.sendBack(
+
+      await ctx.sendBack(
         loggedInAction({
           userId: user.id,
           permissions: user.permissions,

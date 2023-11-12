@@ -20,11 +20,6 @@ export const useMutationsWatcher = () => {
       switch (mutation.type) {
         case loggedInAction.type: {
           saveUserToStorage(state.auth.user);
-          store.client.changeUser(
-            state.auth.user.userId || "",
-            state.auth.user.accessToken || ""
-          );
-          router.push("/admin");
           break;
         }
 

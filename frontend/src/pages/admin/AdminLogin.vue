@@ -40,6 +40,7 @@
 import { loginAction } from "donut-shared";
 import { useStore } from "src/store";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import { useI18nStore } from "../../lib/i18n";
 
 const t = useI18nStore();
@@ -47,6 +48,7 @@ const store = useStore();
 const phone = ref("+48000000000"); // TODO: remove
 const password = ref("1234"); // TODO: remove
 const isLoggingIn = ref(false);
+const router = useRouter();
 
 const onSubmit = async () => {
   isLoggingIn.value = true;
@@ -57,6 +59,13 @@ const onSubmit = async () => {
         password: password.value,
       })
     )
+    .then(() => {
+      store.client.changeUser(
+        store.state.auth.user.userId || "",
+        store.state.auth.user.accessToken || ""
+      );
+      router.push("/admin");
+    })
     .finally(() => {
       isLoggingIn.value = false;
     });
