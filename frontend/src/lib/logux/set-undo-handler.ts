@@ -43,10 +43,14 @@ export function setUndoHandler(Store: LoguxVuexStore) {
      * The retry should be available only for the user that created this action,
      * other clients that received this action via resend should simply see how it gets undone
      *
-     * ALTERNATIVE solution: pessimistic UI (see login implementation)
+     * ALTERNATIVE solution: pessimistic UI (see login implementation, or just use .sync)
      *
      * Logux recommends Optimistic UI for when a user changes data
-     * (save the form, press the like button) and Pessimistic UI for other operations
+     * (save the form, press the like button) and Pessimistic UI for other operations.
+     *
+     * But here https://habr.com/ru/articles/491170/ they advice against Optimistic UI
+     *
+     * ALTERNATIVE: see notes (page with the list of errors)
      */
     const canRetry = false;
     const timeout = canRetry ? NO_TIMEOUT : ERROR_TIMEOUT_MS;

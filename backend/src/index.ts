@@ -1,5 +1,4 @@
 import { Server } from "@logux/server";
-import { logInfo } from "donut-shared/src/log.js";
 import * as db from "./lib/db/index.js";
 import authModule from "./modules/auth-module.js";
 import counterModule from "./modules/counter-module.js";
@@ -22,6 +21,4 @@ server.channel<{ id: string }>("users/:id", {
   load(ctx) {}, // TODO: find out why without this client sends /subscribe 2 times
 });
 
-server.listen().then(() => {
-  logInfo("server started");
-});
+server.listen();
