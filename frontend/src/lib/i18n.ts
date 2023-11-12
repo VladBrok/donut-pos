@@ -18,9 +18,15 @@ export const i18n = createI18n(locale, {
 
 export const messages = i18n("admin", {
   loginPageTitle: "Login to Admin panel",
-
   passwordRequired: "Please enter a password",
   phoneRequired: "Please enter a phone number",
+
+  disconnectedMessage: "Cannot connect to the server",
+  disconnectedCaption: "Your changes have not been saved",
+  protocolErrorMessage: "Saving is not working",
+  protocolErrorCaption: "Refresh the page",
+  sending: "Saving changes",
+  synchronized: "Saved",
 
   [USER_NOT_FOUND]: params("User with phone {phone} was not found"),
   [WRONG_PASSWORD]: "Wrong password",

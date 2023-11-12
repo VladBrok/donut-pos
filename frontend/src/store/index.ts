@@ -1,27 +1,19 @@
-import {
-  CrossTabClient,
-  IndexedStore,
-  badge,
-  badgeEn,
-  log as loguxLog,
-} from "@logux/client";
-import { badgeStyles } from "@logux/client/badge/styles";
+import { log as logLoguxEvents } from "@logux/client";
 import {
   LoguxVuexStore,
   createStoreCreator,
   useStore as loguxUseStore,
 } from "@logux/vuex";
-import { Notify } from "quasar";
 import { store } from "quasar/wrappers";
 import { InjectionKey } from "vue";
 import { Router } from "vue-router";
 import { Store as VuexStore } from "vuex";
 
-import { USER_NOT_FOUND, assert, logoutAction } from "donut-shared";
-import { ANONYMOUS } from "donut-shared/src/constants";
-import { logError, logInfo, logWarn } from "donut-shared/src/log";
-import { useI18nStore } from "../lib/i18n";
-import { getUserFromStorage } from "../lib/local-storage";
+import { assert } from "donut-shared";
+import { createClient } from "../lib/logux/create-client";
+import { setErrorHandler } from "../lib/logux/set-error-handler";
+import { setUndoHandler } from "../lib/logux/set-undo-handler";
+import { watchSyncStatus } from "../lib/logux/watch-sync-status";
 import auth from "./auth";
 import { IAuthState } from "./auth/state";
 import counter from "./counter";
@@ -30,7 +22,6 @@ import { ICounter } from "./counter/state";
 export interface StateInterface {
   // Define your own store structure, using submodules if needed
   // example: ExampleStateInterface;
-  // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
   counter: ICounter;
   auth: IAuthState;
 }
@@ -54,19 +45,7 @@ declare module "vuex" {
   }
 }
 
-// Initialize logux client
-const client = new CrossTabClient({
-  server:
-    process.env.NODE_ENV === "development"
-      ? "ws://localhost:31337"
-      : "ws://localhost:31337",
-  // : "wss://logux.example.com",
-  subprotocol: "1.0.0",
-  userId: getUserFromStorage()?.userId || ANONYMOUS.userId,
-  token: getUserFromStorage()?.accessToken || "",
-  store: new IndexedStore(),
-});
-
+const client = createClient();
 const createStore = createStoreCreator(client, {
   // saveStateEvery: 1,
 });
@@ -92,112 +71,10 @@ export default store(function (/* { ssrContext } */) {
     strict: !!process.env.DEBUGGING,
   });
 
-  Store.client.type("logux/undo", (undoneAction) => {
-    const t = useI18nStore();
-    const undone = undoneAction as any;
-
-    const reason = undone.reason;
-    if (!reason) {
-      return;
-    }
-
-    let message = "";
-    if (!(t.value as any)[reason]) {
-      logWarn(`translation for the undo reason "${reason}" was not found`);
-      message = reason;
-    } else {
-      message =
-        reason === USER_NOT_FOUND
-          ? t.value.userNotFound({
-              phone: undone.action.payload.phone,
-            })
-          : (t.value as any)[reason];
-    }
-
-    /**
-     * TODO: user should be able to retry certain actions in case of error.
-     *
-     * For example, "Wrong password" error shouldn't have the retry ability
-     * because it doesn't make sense.
-     * However, when user creates a dish with description, photo, etc.,
-     * optimistic UI shows an update, but the server encounters an error during
-     * saving changes to the database. In this case, client will see how the dish
-     * disappears and they would be forced to enter the data once again just to try again.
-     *
-     * The retry should be available only for the user that created this action,
-     * other clients that received this action via resend should simply see how it gets undone
-     *
-     * ALTERNATIVE solution: pessimistic UI
-     * For each mutation, create two actions, for example: "dishes/create" and "dishes/created".
-     * First will just send action to the server. The server will update DB.
-     * If successfull, the server will call `.process` with "dishes/created".
-     * The "dishes/created" will be resent to all clients. Clients will listed to it and update UI.
-     * When processing "dishes/create", the client will see a loader.
-     * Do not forget to send "logux/processed" manually for the first action.
-     *
-     * Logux recommends the first approach (Optimistic UI) for when a user changes data
-     * (save the form, press the like button).
-     * I think I will use the second approach for operations that are impossible to implement
-     * with Optimistic UI, such as Login or Payment
-     */
-    const canRetry = false;
-    const timeout = canRetry ? 1000000000 : 6000;
-    const buttons = canRetry
-      ? [
-          {
-            label: "Retry",
-            color: "yellow",
-            handler: () => {
-              logInfo("retry:", undone.action);
-              Store.commit
-                .sync(undone.action)
-                .then(() => {
-                  logInfo("retry success:", undone.action);
-                })
-                .catch(() => {
-                  logError("retry error:", undone.action);
-                });
-            },
-          },
-          {
-            label: "Dismiss",
-            color: "white",
-            handler: () => {
-              /* */
-            },
-          },
-        ]
-      : undefined;
-
-    Notify.create({
-      type: "negative",
-      position: "top",
-      timeout: timeout,
-      message: message,
-      multiLine: true,
-      group: false,
-      actions: buttons,
-    });
-  });
-
-  Store.client.node.catch((err) => {
-    logError(err);
-    if (err.name === "LoguxError") {
-      if (err.type === "wrong-credentials") {
-        Store.commit.crossTab(
-          logoutAction({
-            accessToken: "",
-          })
-        );
-      }
-    }
-  });
-
-  badge(Store.client, {
-    messages: badgeEn,
-    styles: badgeStyles,
-  });
-  loguxLog(Store.client);
+  setUndoHandler(Store);
+  setErrorHandler(Store);
+  watchSyncStatus(Store.client);
+  logLoguxEvents(Store.client);
   // confirm(Store.client);
 
   Store.client.start();
