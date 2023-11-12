@@ -1,2 +1,2 @@
-export const UserNotFound = "userNotFound";
-export const WrongPassword = "wrongPassword";
+export const USER_NOT_FOUND = "userNotFound";
+export const WRONG_PASSWORD = "wrongPassword";

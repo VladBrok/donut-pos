@@ -1,6 +1,7 @@
 import { loggedInAction } from "donut-shared";
+import { ANONYMOUS } from "donut-shared/src/constants";
 import { MutationTree } from "vuex";
-import { ANONYMOUS, IAuthState } from "./state";
+import { IAuthState } from "./state";
 
 const mutation: MutationTree<IAuthState> = {
   loggedIn(state: IAuthState, action: ReturnType<typeof loggedInAction>) {

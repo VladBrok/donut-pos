@@ -1,6 +1,6 @@
 import { browser, createI18n, localeFrom, params } from "@nanostores/i18n";
 import { useStore as useNanoStore } from "@nanostores/vue";
-import { UserNotFound, WrongPassword } from "donut-shared";
+import { USER_NOT_FOUND, WRONG_PASSWORD } from "donut-shared";
 
 export const locale = localeFrom(
   // atom("pl"),
@@ -22,8 +22,8 @@ export const messages = i18n("admin", {
   passwordRequired: "Please enter a password",
   phoneRequired: "Please enter a phone number",
 
-  [UserNotFound]: params("User with phone {phone} was not found"),
-  [WrongPassword]: "Wrong password",
+  [USER_NOT_FOUND]: params("User with phone {phone} was not found"),
+  [WRONG_PASSWORD]: "Wrong password",
 });
 
 export function useI18nStore() {

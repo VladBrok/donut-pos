@@ -1,5 +1,10 @@
 import { Server } from "@logux/server";
-import { UserNotFound, WrongPassword, loginAction } from "donut-shared";
+import {
+  ANONYMOUS,
+  USER_NOT_FOUND,
+  WRONG_PASSWORD,
+  loginAction,
+} from "donut-shared";
 import { loggedInAction } from "donut-shared/src/actions.js";
 import { logInfo } from "donut-shared/src/log.js";
 import { compareWithHash } from "./lib/crypt.js";
@@ -17,7 +22,7 @@ const server = new Server(
 db.connect();
 
 server.auth(({ userId, token }) => {
-  if (userId === "anonymous") {
+  if (userId === ANONYMOUS.userId) {
     return true;
   }
 
@@ -34,12 +39,12 @@ server.channel<{ id: string }>("users/:id", {
 
 server.type(loginAction, {
   access(ctx) {
-    return ctx.userId === "anonymous";
+    return ctx.userId === ANONYMOUS.userId;
   },
   async process(ctx, action, meta) {
     const user = await db.findEmployeeByPhone(action.payload.phone);
     if (!user) {
-      await server.undo(action, meta, UserNotFound);
+      await server.undo(action, meta, USER_NOT_FOUND);
       return;
     }
 
@@ -48,7 +53,7 @@ server.type(loginAction, {
       user.passwordHash
     );
     if (!isPasswordValid) {
-      await server.undo(action, meta, WrongPassword);
+      await server.undo(action, meta, WRONG_PASSWORD);
       return;
     }
 

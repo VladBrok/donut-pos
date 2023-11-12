@@ -2,10 +2,8 @@ export interface ICounter {
   count: number;
 }
 
-function state(): ICounter {
-  return {
-    count: -1,
-  };
-}
+const state: ICounter = {
+  count: -1,
+};
 
 export default state;

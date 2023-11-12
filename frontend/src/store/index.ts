@@ -1,4 +1,10 @@
-import { CrossTabClient, badge, badgeEn, log as loguxLog } from "@logux/client";
+import {
+  CrossTabClient,
+  IndexedStore,
+  badge,
+  badgeEn,
+  log as loguxLog,
+} from "@logux/client";
 import { badgeStyles } from "@logux/client/badge/styles";
 import {
   LoguxVuexStore,
@@ -11,12 +17,13 @@ import { InjectionKey } from "vue";
 import { Router } from "vue-router";
 import { Store as VuexStore } from "vuex";
 
-import { UserNotFound, logoutAction } from "donut-shared";
+import { USER_NOT_FOUND, assert, logoutAction } from "donut-shared";
+import { ANONYMOUS } from "donut-shared/src/constants";
 import { logError, logInfo, logWarn } from "donut-shared/src/log";
 import { useI18nStore } from "../lib/i18n";
 import { getUserFromStorage } from "../lib/local-storage";
 import auth from "./auth";
-import { ANONYMOUS, IAuthState } from "./auth/state";
+import { IAuthState } from "./auth/state";
 import counter from "./counter";
 import { ICounter } from "./counter/state";
 
@@ -57,8 +64,7 @@ const client = new CrossTabClient({
   subprotocol: "1.0.0",
   userId: getUserFromStorage()?.userId || ANONYMOUS.userId,
   token: getUserFromStorage()?.accessToken || "",
-  // Bug when using IndexedStore: disable server -> add actions to log -> reload the page -> add actions to log -> UI is not updated
-  // store: new IndexedStore(),
+  store: new IndexedStore(),
 });
 
 const createStore = createStoreCreator(client, {
@@ -66,11 +72,20 @@ const createStore = createStoreCreator(client, {
 });
 
 export default store(function (/* { ssrContext } */) {
+  const modules = {
+    counter,
+    auth,
+  };
+
+  for (const module of Object.values(modules)) {
+    assert(
+      typeof module.state !== "function",
+      "Function state is not supported by this version of logux/vuex"
+    );
+  }
+
   const Store = createStore<StateInterface>({
-    modules: {
-      counter,
-      auth,
-    },
+    modules: modules,
 
     // enable strict mode (adds overhead!)
     // for dev mode and --debug builds only
@@ -92,7 +107,7 @@ export default store(function (/* { ssrContext } */) {
       message = reason;
     } else {
       message =
-        reason === UserNotFound
+        reason === USER_NOT_FOUND
           ? t.value.userNotFound({
               phone: undone.action.payload.phone,
             })

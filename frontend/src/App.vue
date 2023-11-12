@@ -4,10 +4,10 @@
 
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
+import { ANONYMOUS } from "donut-shared/src/constants";
 import { useStore } from "src/store";
 import { computed } from "vue";
 import { useMutationsWatcher } from "./lib/composables/useMutationsWatcher";
-import { ANONYMOUS } from "./store/auth/state";
 
 useMutationsWatcher();
 

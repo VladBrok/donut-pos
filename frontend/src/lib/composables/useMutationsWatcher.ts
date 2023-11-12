@@ -1,8 +1,8 @@
 import { assert, loggedInAction, logoutAction } from "donut-shared";
+import { ANONYMOUS } from "donut-shared/src/constants";
 import { useStore } from "src/store";
 import { onMounted, onUnmounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import { ANONYMOUS } from "../../store/auth/state";
 import { Keys, removeItem, saveUserToStorage } from "../local-storage";
 
 /**
