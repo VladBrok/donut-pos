@@ -6,7 +6,7 @@ import { useRouter } from "vue-router";
 import { Keys, removeItem, saveUserToStorage } from "../local-storage";
 
 /**
- * Setup listener that executes side effects when specific mutations happen
+ * Setup listener that executes side effects when specific mutation happens
  * @description
  * Store mutations should be pure. Side-effects related to mutations should be executed here
  */
