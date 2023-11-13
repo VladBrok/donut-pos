@@ -2,7 +2,7 @@
   <q-layout view="hHh lpR fFf" class="bg-grey-3">
     <q-header elevated class="bg-primary text-white">
       <q-toolbar>
-        <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
+        <q-btn dense flat round icon="menu" @click="toggleDrawer" />
         <q-toolbar-title>
           {{ $route.meta.title || "" }}
         </q-toolbar-title>
@@ -75,7 +75,7 @@ const menuList = [
   },
 ];
 
-function toggleLeftDrawer() {
+function toggleDrawer() {
   isDrawerOpen.value = !isDrawerOpen.value;
 }
 
