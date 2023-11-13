@@ -36,13 +36,16 @@
                 {{ menuItem.label }}
               </q-item-section>
             </q-item>
+            <q-separator v-if="index !== menuList.length - 1" />
           </template>
         </q-list>
       </q-scroll-area>
     </q-drawer>
 
     <q-page-container>
-      <router-view />
+      <q-page padding>
+        <router-view />
+      </q-page>
     </q-page-container>
   </q-layout>
 </template>
