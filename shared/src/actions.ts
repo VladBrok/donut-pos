@@ -19,11 +19,6 @@ export const logoutAction = createAction<{
   accessToken: string;
 }>("auth/logOut");
 
-export const createDishCategoryAction = createAction<{
-  name: string;
-  imageUrl: string;
-}>("dishCategories/create");
-
 export const loadDishCategoriesAction = createAction<{
   categories: {
     id: string;
@@ -31,6 +26,11 @@ export const loadDishCategoriesAction = createAction<{
     imageUrl: string;
   }[];
 }>("dishCategories/load");
+
+export const createDishCategoryAction = createAction<{
+  name: string;
+  imageUrl: string;
+}>("dishCategories/create");
 
 export const updteDishCategoryAction = createAction<{
   id: string;
