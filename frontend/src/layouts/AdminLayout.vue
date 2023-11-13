@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="hHh lpR fFf" class="bg-grey-2">
+  <q-layout view="hHh lpR fFf" class="bg-grey-3">
     <q-header elevated class="bg-primary text-white">
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
@@ -12,7 +12,14 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>
+    <q-drawer
+      show-if-above
+      v-model="isDrawerOpen"
+      side="left"
+      bordered
+      :breakpoint="0"
+      :width="200"
+    >
       <q-scroll-area class="fit">
         <q-list>
           <template v-for="(menuItem, index) in menuList" :key="index">
@@ -23,7 +30,9 @@
               :to="menuItem.to"
             >
               <q-item-section avatar>
-                <q-icon :name="menuItem.icon" />
+                <q-icon :name="menuItem.icon" size="sm">
+                  <q-tooltip> {{ menuItem.label }} </q-tooltip>
+                </q-icon>
               </q-item-section>
               <q-item-section>
                 {{ menuItem.label }}
@@ -46,7 +55,7 @@ import { ref } from "vue";
 import { useI18nStore } from "../lib/i18n";
 import { useStore } from "../store";
 
-const leftDrawerOpen = ref(false);
+const isDrawerOpen = ref(false);
 const t = useI18nStore();
 const store = useStore();
 
@@ -66,7 +75,7 @@ const menuList = [
 ];
 
 function toggleLeftDrawer() {
-  leftDrawerOpen.value = !leftDrawerOpen.value;
+  isDrawerOpen.value = !isDrawerOpen.value;
 }
 
 function logout() {
