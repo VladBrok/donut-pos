@@ -1,12 +1,6 @@
 <template>
   <h1>dashboard</h1>
-  <q-btn
-    outline
-    color="negative"
-    label="Logout"
-    icon="logout"
-    @click="logout"
-  />
+  <q-btn outline color="negative" label="Logout" icon="logout" />
   <pre>
     {{ JSON.stringify(user, undefined, 4) }}
   </pre>
@@ -20,7 +14,6 @@
 </template>
 
 <script setup lang="ts">
-import { logoutAction } from "donut-shared";
 import { useStore } from "src/store";
 import { computed } from "vue";
 
@@ -34,11 +27,5 @@ const increment = () => {
 
 const decrement = () => {
   store.commit.sync("counter/decrement");
-};
-
-const logout = () => {
-  store.commit.crossTab(
-    logoutAction({ accessToken: store.state.auth.user.accessToken || "" })
-  );
 };
 </script>
