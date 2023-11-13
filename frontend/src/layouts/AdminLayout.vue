@@ -30,9 +30,7 @@
               :to="menuItem.to"
             >
               <q-item-section avatar>
-                <q-icon :name="menuItem.icon" size="sm">
-                  <q-tooltip> {{ menuItem.label }} </q-tooltip>
-                </q-icon>
+                <q-icon :name="menuItem.icon" size="sm"> </q-icon>
               </q-item-section>
               <q-item-section>
                 {{ menuItem.label }}
