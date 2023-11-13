@@ -2,6 +2,7 @@ import { Server } from "@logux/server";
 import * as db from "./lib/db/index.js";
 import authModule from "./modules/auth-module.js";
 import counterModule from "./modules/counter-module.js";
+import dishCategoriesModule from "./modules/dish-categories-module.js";
 
 const server = new Server(
   Server.loadOptions(process, {
@@ -13,6 +14,7 @@ const server = new Server(
 db.connect();
 
 authModule(server);
+dishCategoriesModule(server);
 counterModule(server);
 server.channel<{ id: string }>("users/:id", {
   access(ctx) {

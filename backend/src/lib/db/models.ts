@@ -1,3 +1,5 @@
+import { loadDishCategoriesAction } from "donut-shared";
+
 export interface EmployeeModel {
   id: string;
   phone: string;
@@ -6,3 +8,7 @@ export interface EmployeeModel {
     admin?: boolean;
   };
 }
+
+export type DishCategoryModel = ReturnType<
+  typeof loadDishCategoriesAction
+>["payload"]["categories"][number];

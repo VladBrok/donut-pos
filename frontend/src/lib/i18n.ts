@@ -17,10 +17,18 @@ export const i18n = createI18n(locale, {
 });
 
 export const messages = i18n("admin", {
+  // Dashboard
+  dashboard: "Dashboard",
+  logout: "Logout",
+  dishCategories: "Categories",
+  dishes: "Dishes",
+
+  // Login page
   loginPageTitle: "Login to Admin panel",
   passwordRequired: "Please enter a password",
   phoneRequired: "Please enter a phone number",
 
+  // Logux statuses
   disconnectedMessage: "Cannot connect to the server",
   disconnectedCaption: "Your changes have not been saved",
   protocolErrorMessage: "Saving is not working",
@@ -28,6 +36,7 @@ export const messages = i18n("admin", {
   sending: "Saving changes",
   synchronized: "Saved",
 
+  // Errors
   [USER_NOT_FOUND]: params("User with phone {phone} was not found"),
   [WRONG_PASSWORD]: "Wrong password",
 });

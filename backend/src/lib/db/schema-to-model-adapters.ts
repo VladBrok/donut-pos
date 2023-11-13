@@ -1,5 +1,5 @@
-import { EmployeeModel } from "./models.js";
-import { SelectEmployeeSchema } from "./schemas.js";
+import { DishCategoryModel, EmployeeModel } from "./models.js";
+import { DishCategorySchema, SelectEmployeeSchema } from "./schemas.js";
 
 export const employeeAdapter = (
   data?: SelectEmployeeSchema | null
@@ -16,4 +16,14 @@ export const employeeAdapter = (
       admin: data.role?.codeName === "admin",
     },
   };
+};
+
+export const dishCategoryAdapter = (
+  data: DishCategorySchema[]
+): DishCategoryModel[] => {
+  return data.map((x) => ({
+    id: x.id,
+    name: x.name || "",
+    imageUrl: x.imageUrl || "",
+  }));
 };

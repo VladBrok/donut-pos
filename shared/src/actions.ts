@@ -18,3 +18,30 @@ export const loggedInAction = createAction<{
 export const logoutAction = createAction<{
   accessToken: string;
 }>("auth/logOut");
+
+export const loadDishCategoriesAction = createAction<{
+  categories: {
+    id: string;
+    name: string;
+    imageUrl: string;
+  }[];
+}>("dishCategories/load");
+
+export const createDishCategoryAction = createAction<{
+  name: string;
+  imageUrl: string;
+}>("dishCategories/create");
+
+export const updateDishCategoryAction = createAction<{
+  id: string;
+  name: string;
+  imageUrl: string;
+}>("dishCategories/update");
+
+export const deleteDishCategoryAction = createAction<{
+  id: string;
+}>("dishCategories/delete");
+
+export const CHANNELS = {
+  DISH_CATEGORIES: "dishCategories",
+};

@@ -1,10 +1,13 @@
 import { DefaultLogger, eq } from "drizzle-orm";
 import { PostgresJsDatabase, drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import { employee, role } from "../../../migrations/schema.js";
+import { dishCategory, employee, role } from "../../../migrations/schema.js";
 import { DbLogWriter } from "./log-writer.js";
-import { EmployeeModel } from "./models.js";
-import { employeeAdapter } from "./schema-to-model-adapters.js";
+import { DishCategoryModel, EmployeeModel } from "./models.js";
+import {
+  dishCategoryAdapter,
+  employeeAdapter,
+} from "./schema-to-model-adapters.js";
 
 let db = null as unknown as PostgresJsDatabase<Record<string, never>>;
 
@@ -39,4 +42,10 @@ export async function findEmployeeById(
   )[0];
 
   return employeeAdapter(data);
+}
+
+export async function getAllDishCategories(): Promise<DishCategoryModel[]> {
+  const data = await db.select().from(dishCategory);
+
+  return dishCategoryAdapter(data);
 }
