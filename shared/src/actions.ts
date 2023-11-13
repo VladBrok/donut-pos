@@ -32,7 +32,7 @@ export const createDishCategoryAction = createAction<{
   imageUrl: string;
 }>("dishCategories/create");
 
-export const updteDishCategoryAction = createAction<{
+export const updateDishCategoryAction = createAction<{
   id: string;
   name: string;
   imageUrl: string;

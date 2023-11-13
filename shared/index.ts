@@ -6,7 +6,7 @@ export {
   loggedInAction,
   loginAction,
   logoutAction,
-  updteDishCategoryAction,
+  updateDishCategoryAction,
 } from "./src/actions.js";
 export { assert } from "./src/assert.js";
 export { ANONYMOUS } from "./src/constants.js";
