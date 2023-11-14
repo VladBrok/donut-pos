@@ -1,4 +1,4 @@
-import { DefaultLogger, eq } from "drizzle-orm";
+import { DefaultLogger, asc, eq } from "drizzle-orm";
 import { PostgresJsDatabase, drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { dishCategory, employee, role } from "../../../migrations/schema.js";
@@ -45,7 +45,14 @@ export async function findEmployeeById(
 }
 
 export async function getAllDishCategories(): Promise<DishCategoryModel[]> {
-  const data = await db.select().from(dishCategory);
+  const data = await db
+    .select()
+    .from(dishCategory)
+    .orderBy(asc(dishCategory.name));
 
   return dishCategoryAdapter(data);
+}
+
+export async function deleteDishCategory(id: string) {
+  return await db.delete(dishCategory).where(eq(dishCategory.id, id));
 }

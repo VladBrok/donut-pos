@@ -29,7 +29,7 @@
           :loading="isLoggingIn"
           type="submit"
           color="primary"
-          class="mx-auto"
+          class="q-mx-auto"
         />
       </div>
     </q-form>

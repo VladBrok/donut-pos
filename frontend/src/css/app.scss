@@ -2,14 +2,20 @@
 
 /* === Utility classes === */
 
-.text-center {
-  text-align: center;
-}
-
-.mx-auto {
-  margin: 0 auto;
-}
-
 .d-block {
   display: block;
+}
+
+.w-fit {
+  width: fit-content;
+}
+
+/* === Quasar styles overrides === */
+
+.q-table th {
+  font-size: 13px;
+}
+
+.q-table tbody td {
+  font-size: 14px;
 }
