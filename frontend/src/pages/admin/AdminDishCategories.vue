@@ -115,7 +115,6 @@ const columns: any[] = [
     label: "#",
     field: "index",
     align: "center",
-    classes: "text-body1",
   },
   {
     name: "image",
