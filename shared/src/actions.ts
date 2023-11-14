@@ -42,7 +42,7 @@ export const deleteDishCategoryAction = createAction<{
   id: string;
 }>("dishCategories/delete");
 
-export const deletedDishCategoryAction = createAction<{
+export const dishCategoryDeletedAction = createAction<{
   id: string;
 }>("dishCategories/deleted");
 

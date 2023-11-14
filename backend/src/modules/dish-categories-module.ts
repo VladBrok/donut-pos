@@ -4,7 +4,7 @@ import {
   deleteDishCategoryAction,
   loadDishCategoriesAction,
 } from "donut-shared";
-import { deletedDishCategoryAction } from "donut-shared/src/actions.js";
+import { dishCategoryDeletedAction } from "donut-shared/src/actions.js";
 import { DISH_CATEGORY_NOT_FOUND } from "donut-shared/src/errors.js";
 import * as db from "../lib/db/index.js";
 
@@ -38,14 +38,14 @@ export default function dishCategoriesModule(server: Server) {
       }
 
       await server.process(
-        deletedDishCategoryAction({
+        dishCategoryDeletedAction({
           id,
         })
       );
     },
   });
 
-  server.type(deletedDishCategoryAction, {
+  server.type(dishCategoryDeletedAction, {
     async access() {
       return false;
     },
