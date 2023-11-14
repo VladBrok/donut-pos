@@ -22,6 +22,9 @@ export const messages = i18n("admin", {
   logout: "Logout",
   dishCategories: "Categories",
   dishes: "Dishes",
+  image: "Image",
+  name: "Name",
+  perPage: "Records per page",
 
   // Login page
   loginPageTitle: "Login to Admin panel",

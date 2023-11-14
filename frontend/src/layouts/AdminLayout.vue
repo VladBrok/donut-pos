@@ -17,7 +17,6 @@
       v-model="isDrawerOpen"
       side="left"
       bordered
-      :breakpoint="0"
       :width="200"
     >
       <q-scroll-area class="fit">
@@ -43,7 +42,7 @@
     </q-drawer>
 
     <q-page-container>
-      <q-page padding>
+      <q-page padding class="q-pt-xl">
         <router-view />
       </q-page>
     </q-page-container>
