@@ -56,6 +56,7 @@
       </template>
     </q-table>
 
+    <!-- TODO: extract generic confirmation dialog -->
     <q-dialog
       :model-value="!!confirmDelete"
       @update:model-value="confirmDelete = null"
