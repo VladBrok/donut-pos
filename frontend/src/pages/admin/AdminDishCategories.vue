@@ -15,6 +15,9 @@
       style="max-width: 500px"
       class="q-mx-auto"
     >
+      <template v-slot:top-right>
+        <q-btn color="primary" icon="add" :label="t.addDishCategory" />
+      </template>
       <template v-slot:body-cell-index="props">
         <q-td :props="props">
           {{ props.rowIndex + 1 }}
@@ -33,11 +36,12 @@
             flat
             size="md"
             icon="mode_edit"
-            color="secondary"
+            color="primary"
             dense
             class="q-mr-sm"
             @click="onEdit(props.row.id)"
-          ></q-btn>
+          >
+          </q-btn>
           <q-btn
             flat
             size="md"
@@ -45,7 +49,8 @@
             color="negative"
             dense
             @click="onDelete(props.row.id)"
-          ></q-btn>
+          >
+          </q-btn>
         </q-td>
       </template>
     </q-table>

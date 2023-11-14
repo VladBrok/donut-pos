@@ -1,6 +1,6 @@
 <template>
-  <q-layout view="hHh lpR fFf" class="bg-grey-3">
-    <q-header elevated class="bg-primary text-white">
+  <q-layout view="lHh lpR fFf" class="bg-grey-3">
+    <q-header elevated class="bg-white text-black">
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="toggleDrawer" />
         <q-toolbar-title>
@@ -16,10 +16,11 @@
       show-if-above
       v-model="isDrawerOpen"
       side="left"
-      bordered
       :width="200"
+      bordered
     >
       <q-scroll-area class="fit">
+        <!-- TODO: add logo here -->
         <q-list>
           <template v-for="(menuItem, index) in menuList" :key="index">
             <q-item
