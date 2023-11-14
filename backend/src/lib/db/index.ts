@@ -52,3 +52,7 @@ export async function getAllDishCategories(): Promise<DishCategoryModel[]> {
 
   return dishCategoryAdapter(data);
 }
+
+export async function deleteDishCategory(id: string) {
+  return await db.delete(dishCategory).where(eq(dishCategory.id, id));
+}

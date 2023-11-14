@@ -42,6 +42,10 @@ export const deleteDishCategoryAction = createAction<{
   id: string;
 }>("dishCategories/delete");
 
+export const deletedDishCategoryAction = createAction<{
+  id: string;
+}>("dishCategories/deleted");
+
 export const CHANNELS = {
   DISH_CATEGORIES: "dishCategories",
 };

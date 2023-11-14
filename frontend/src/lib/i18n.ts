@@ -1,6 +1,7 @@
 import { browser, createI18n, localeFrom, params } from "@nanostores/i18n";
 import { useStore as useNanoStore } from "@nanostores/vue";
 import { USER_NOT_FOUND, WRONG_PASSWORD } from "donut-shared";
+import { DISH_CATEGORY_NOT_FOUND } from "donut-shared/src/errors";
 
 export const locale = localeFrom(
   // atom("pl"),
@@ -43,6 +44,7 @@ export const messages = i18n("admin", {
   // Errors
   [USER_NOT_FOUND]: params("User with phone {phone} was not found"),
   [WRONG_PASSWORD]: "Wrong password",
+  [DISH_CATEGORY_NOT_FOUND]: "Dish category was not found",
 });
 
 export function useI18nStore() {
