@@ -5,7 +5,7 @@
         <!-- TODO: extract photo input component -->
         <q-file
           ref="fileInputRef"
-          v-model="imageBlob"
+          v-model="imageFile"
           filled
           class="d-none"
           @update:model-value="onFileSelected()"
@@ -41,13 +41,7 @@
     </q-card>
 
     <div class="row justify-end q-gutter-sm">
-      <q-btn
-        :label="t.cancel"
-        @click="() => router.back()"
-        type="submit"
-        color="dark"
-        flat
-      />
+      <q-btn :label="t.cancel" @click="() => router.back()" color="dark" flat />
       <q-btn
         :label="t.save"
         :loading="isCreating"
@@ -74,13 +68,14 @@ const router = useRouter();
 const fileInputRef = ref<QFile>();
 const isCreating = ref(false);
 const name = ref("");
-const imageBlob = ref<Blob | null>(null);
+const imageFile = ref<File | null>(null);
 // TODO: set image or placeholder everywhere on FE
 const imageUrl = ref(MISSING_PHOTO_PLACEHOLDER_URL);
 
 onUnmounted(() => {
-  if (imageBlob.value) {
+  if (imageFile.value) {
     URL.revokeObjectURL(imageUrl.value);
+    imageFile.value = null;
   }
 });
 
@@ -102,19 +97,22 @@ const triggerUpload = () => {
   fileInputRef.value.pickFiles();
 };
 
+// TODO: use qImg in table instead of avatar because it has cool loader
+
 const onFileSelected = () => {
-  if (imageBlob.value) {
+  if (imageFile.value) {
     URL.revokeObjectURL(imageUrl.value);
-    imageUrl.value = URL.createObjectURL(imageBlob.value);
+    imageUrl.value = URL.createObjectURL(imageFile.value);
+    imageFile.value = null;
   }
 };
 
 const onSubmit = async () => {
   console.log(imageUrl.value);
   const imageBase64 =
-    !imageBlob.value || imageUrl.value === MISSING_PHOTO_PLACEHOLDER_URL
+    !imageFile.value || imageUrl.value === MISSING_PHOTO_PLACEHOLDER_URL
       ? ""
-      : await blobToBase64(imageBlob.value);
+      : await blobToBase64(imageFile.value);
   console.log(imageBase64);
   // TODO: server shoud accept base64 and upload it to https://api.imgbb.com/. Be careful with the note above (base64 format...)
 
