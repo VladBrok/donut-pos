@@ -32,6 +32,12 @@ export const createDishCategoryAction = createAction<{
   imageUrl: string;
 }>("dishCategories/create");
 
+export const dishCategoryCreatedAction = createAction<{
+  id: string;
+  name: string;
+  imageUrl: string;
+}>("dishCategories/created");
+
 export const updateDishCategoryAction = createAction<{
   id: string;
   name: string;

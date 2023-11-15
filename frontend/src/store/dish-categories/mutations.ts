@@ -1,5 +1,8 @@
 import { loadDishCategoriesAction } from "donut-shared";
-import { dishCategoryDeletedAction } from "donut-shared/src/actions";
+import {
+  dishCategoryCreatedAction,
+  dishCategoryDeletedAction,
+} from "donut-shared/src/actions";
 import { MutationTree } from "vuex";
 import { IDishCategoriesState } from "./state";
 
@@ -17,6 +20,12 @@ const mutation: MutationTree<IDishCategoriesState> = {
     state.categories = state.categories.filter(
       (x) => x.id !== action.payload.id
     );
+  },
+  created(
+    state: IDishCategoriesState,
+    action: ReturnType<typeof dishCategoryCreatedAction>
+  ) {
+    state.categories.push(action.payload);
   },
 };
 

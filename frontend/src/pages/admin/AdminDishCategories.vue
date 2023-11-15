@@ -12,12 +12,20 @@
       :columns="columns"
       row-key="name"
       :rows-per-page-label="t.perPage"
-      style="max-width: 550px"
+      style="max-width: 600px"
       class="q-mx-auto"
       :loading="isDeleting"
+      :pagination="{
+        rowsPerPage: ROWS_PER_TABLE_PAGE,
+      }"
     >
       <template v-slot:top-right>
-        <q-btn color="primary" icon="add" :label="t.addDishCategory" />
+        <q-btn
+          color="primary"
+          icon="add"
+          :label="t.addDishCategory"
+          @click="addCategory"
+        />
       </template>
       <template v-slot:body-cell-index="props">
         <q-td :props="props">
@@ -90,12 +98,17 @@
 
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
-import { CHANNELS, assert, deleteDishCategoryAction } from "donut-shared";
+import {
+  CHANNELS,
+  assert,
+  createDishCategoryAction,
+  deleteDishCategoryAction,
+} from "donut-shared";
 import { logInfo } from "donut-shared/src/log";
 import { Notify } from "quasar";
 import { useStore } from "src/store";
 import { computed, ref } from "vue";
-import { SUCCESS_TIMEOUT_MS } from "../../lib/constants";
+import { ROWS_PER_TABLE_PAGE, SUCCESS_TIMEOUT_MS } from "../../lib/constants";
 import { useI18nStore } from "../../lib/i18n";
 import { capitalize } from "../../lib/utils/capitalize";
 import { IDishCategoriesState } from "../../store/dish-categories/state";
@@ -166,5 +179,15 @@ const onDeleteConfirmed = () => {
 
 const onEdit = (row: IDishCategoriesState["categories"][number]) => {
   logInfo("edit:", row);
+};
+
+// TODO: remove
+const addCategory = () => {
+  store.commit.sync(
+    createDishCategoryAction({
+      imageUrl: "",
+      name: "my new category",
+    })
+  );
 };
 </script>
