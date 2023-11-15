@@ -1,4 +1,5 @@
 <template>
+  <!-- TODO: add labels and hits to i18n -->
   <div class="q-pa-md">
     <div>
       <h1 class="text-h3 text-center">{{ t.loginPageTitle }}</h1>

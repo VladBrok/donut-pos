@@ -22,12 +22,17 @@ export const messages = i18n("admin", {
   dashboard: "Dashboard",
   logout: "Logout",
   dishCategories: "Categories",
+  createDishCategory: "Create dish category",
   dishes: "Dishes",
   image: "Image",
   name: "Name",
   perPage: "Records per page",
   addDishCategory: "Add category",
   deleteSuccess: "Deleted successfully",
+  fieldRequired: "The field is required",
+  save: "Save",
+  cancel: "Cancel",
+  uploadImage: "Upload image",
 
   // Login page
   loginPageTitle: "Login to Admin panel",
