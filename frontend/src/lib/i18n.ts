@@ -27,6 +27,7 @@ export const messages = i18n("admin", {
   name: "Name",
   perPage: "Records per page",
   addDishCategory: "Add category",
+  deleteSuccess: "Deleted successfully",
 
   // Login page
   loginPageTitle: "Login to Admin panel",

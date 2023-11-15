@@ -49,7 +49,7 @@
             icon="o_delete"
             color="negative"
             dense
-            @click="onDelete(props.row)"
+            @click="onDeleteAttempt(props.row)"
           >
           </q-btn>
         </q-td>
@@ -92,8 +92,10 @@
 import { useSubscription } from "@logux/vuex";
 import { CHANNELS, assert, deleteDishCategoryAction } from "donut-shared";
 import { logInfo } from "donut-shared/src/log";
+import { Notify } from "quasar";
 import { useStore } from "src/store";
 import { computed, ref } from "vue";
+import { SUCCESS_TIMEOUT_MS } from "../../lib/constants";
 import { useI18nStore } from "../../lib/i18n";
 import { capitalize } from "../../lib/utils/capitalize";
 import { IDishCategoriesState } from "../../store/dish-categories/state";
@@ -132,7 +134,7 @@ const columns: any[] = [
   { name: "actions", label: "", align: "right" },
 ];
 
-const onDelete = (row: IDishCategoriesState["categories"][number]) => {
+const onDeleteAttempt = (row: IDishCategoriesState["categories"][number]) => {
   confirmDelete.value = row;
 };
 
@@ -147,6 +149,16 @@ const onDeleteConfirmed = () => {
         id: toDelete,
       })
     )
+    .then(() => {
+      Notify.create({
+        type: "positive",
+        position: "top",
+        timeout: SUCCESS_TIMEOUT_MS,
+        message: t.value.deleteSuccess,
+        multiLine: true,
+        group: false,
+      });
+    })
     .finally(() => {
       isDeleting.value = false;
     });
