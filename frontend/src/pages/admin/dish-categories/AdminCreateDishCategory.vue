@@ -11,7 +11,12 @@
           :label="`${t.categoryNameLabel} *`"
           lazy-rules
           type="text"
-          :rules="dishCategoryNameRules(t)"
+          :rules="[
+            (val) => (!!val && val.length > 0) || t.fieldRequired,
+            (val) =>
+              val.length <= MAX_DISH_CATEGORY_NAME_LENGTH ||
+              t.maxLength({ max: MAX_DISH_CATEGORY_NAME_LENGTH }),
+          ]"
         />
       </q-card-section>
     </q-card>
@@ -30,6 +35,7 @@
 
 <script setup lang="ts">
 import { createDishCategoryAction } from "donut-shared";
+import { MAX_DISH_CATEGORY_NAME_LENGTH } from "donut-shared/src/constants";
 import { Notify } from "quasar";
 import { useStore } from "src/store";
 import { ref } from "vue";
@@ -38,7 +44,6 @@ import PhotoUpload from "../../../components/PhotoUpload.vue";
 import { blobToBase64 } from "../../../lib/blob-to-base64";
 import { ERROR_TIMEOUT_MS, SUCCESS_TIMEOUT_MS } from "../../../lib/constants";
 import { useI18nStore } from "../../../lib/i18n";
-import { dishCategoryNameRules } from "../../../lib/validation-rules";
 
 const t = useI18nStore();
 const store = useStore();

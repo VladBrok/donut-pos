@@ -30,6 +30,8 @@ export const messages = i18n("admin", {
   addDishCategory: "Add category",
   fieldRequired: "The field is required",
   maxLength: params("Max length is {max}"),
+  maxFileSize: params("Max file size is {max} mb"),
+  allowedFilesAre: params("Allowed file types are {allowed}"),
   save: "Save",
   cancel: "Cancel",
   uploadImage: "Upload image",
