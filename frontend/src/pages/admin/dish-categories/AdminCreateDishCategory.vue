@@ -32,7 +32,7 @@
         </div>
         <q-input
           v-model="name"
-          label="Category name *"
+          :label="`${t.categoryNameLabel} *`"
           lazy-rules
           type="text"
           :rules="[(val) => (val && val.length > 0) || t.fieldRequired]"

@@ -18,7 +18,7 @@ export const i18n = createI18n(locale, {
 });
 
 export const messages = i18n("admin", {
-  // Dashboard
+  // Admin dashboard
   dashboard: "Dashboard",
   logout: "Logout",
   dishCategories: "Categories",
@@ -32,11 +32,15 @@ export const messages = i18n("admin", {
   save: "Save",
   cancel: "Cancel",
   uploadImage: "Upload image",
+  categoryNameLabel: "Category name",
 
-  // Login page
+  // Admin login page
   loginPageTitle: "Login to Admin panel",
   passwordRequired: "Please enter a password",
   phoneRequired: "Please enter a phone number",
+  phoneLabel: "Phone",
+  phoneExample: "Example",
+  passwordLabel: "Password",
 
   // Logux statuses
   disconnectedMessage: "Cannot connect to the server",
