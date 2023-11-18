@@ -59,6 +59,7 @@ import { Notify, QFile } from "quasar";
 import { useStore } from "src/store";
 import { onUnmounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import { blobToBase64 } from "../../../lib/blob-to-base64";
 import { ERROR_TIMEOUT_MS, SUCCESS_TIMEOUT_MS } from "../../../lib/constants";
 import { useI18nStore } from "../../../lib/i18n";
 
@@ -79,23 +80,6 @@ onUnmounted(() => {
     imageFile.value = null;
   }
 });
-
-// TODO: extract
-function blobToBase64(blob: Blob) {
-  return new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      let result = reader.result as string;
-      const idx = result.indexOf("base64,");
-      result = result.slice(idx + 7);
-      resolve(result);
-    };
-    reader.onerror = () => {
-      reject(`Failed to convert blob to base64.`);
-    };
-    reader.readAsDataURL(blob);
-  });
-}
 
 const triggerUpload = () => {
   assert(fileInputRef.value, "file input component is missing");
