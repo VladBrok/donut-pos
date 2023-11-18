@@ -1,6 +1,8 @@
 import { Server } from "@logux/server";
 import * as db from "../lib/db/index.js";
 
+// TODO: delete
+
 export default function counterModule(server: Server) {
   const count = { value: 0 };
 

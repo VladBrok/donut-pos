@@ -13,6 +13,7 @@ import { IMAGE_UPLOAD_FAIL } from "donut-shared/src/errors.js";
 import { logError } from "donut-shared/src/log.js";
 import * as db from "../lib/db/index.js";
 import { uploadImage } from "../lib/images.js";
+import { hasAdminPermission } from "../lib/permissions.js";
 
 export default function dishCategoriesModule(server: Server) {
   server.channel(CHANNELS.DISH_CATEGORIES, {
@@ -27,9 +28,7 @@ export default function dishCategoriesModule(server: Server) {
 
   server.type(createDishCategoryAction, {
     async access(ctx) {
-      // TODO: extract dup #1
-      const user = await db.findEmployeeById(ctx.userId);
-      return !!user?.permissions.admin;
+      return await hasAdminPermission(ctx.userId);
     },
     async process(ctx, action, meta) {
       let uploadedImage = null;
@@ -60,9 +59,7 @@ export default function dishCategoriesModule(server: Server) {
 
   server.type(deleteDishCategoryAction, {
     async access(ctx, action, meta) {
-      // TODO: extract dup #1
-      const user = await db.findEmployeeById(ctx.userId);
-      return !!user?.permissions.admin;
+      return await hasAdminPermission(ctx.userId);
     },
     async process(ctx, action, meta) {
       const id = action.payload.id;
