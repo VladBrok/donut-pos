@@ -3,4 +3,4 @@ export const ANONYMOUS = {
 };
 
 export const MISSING_PHOTO_PLACEHOLDER_URL =
-  "https://i.ibb.co/WxHxYtZ/no-image-2.jpg";
+  "https://i.ibb.co/DzSX5s3/placeholder.png";

@@ -59,7 +59,7 @@ import { Notify, QFile } from "quasar";
 import { useStore } from "src/store";
 import { onUnmounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import { SUCCESS_TIMEOUT_MS } from "../../../lib/constants";
+import { ERROR_TIMEOUT_MS, SUCCESS_TIMEOUT_MS } from "../../../lib/constants";
 import { useI18nStore } from "../../../lib/i18n";
 
 const t = useI18nStore();
@@ -82,14 +82,16 @@ onUnmounted(() => {
 
 // TODO: extract
 function blobToBase64(blob: Blob) {
-  return new Promise<string>((resolve) => {
-    // TODO: handle error
+  return new Promise<string>((resolve, reject) => {
     const reader = new FileReader();
     reader.onloadend = () => {
       let result = reader.result as string;
       const idx = result.indexOf("base64,");
       result = result.slice(idx + 7);
       resolve(result);
+    };
+    reader.onerror = () => {
+      reject(`Failed to convert blob to base64.`);
     };
     reader.readAsDataURL(blob);
   });
@@ -108,10 +110,23 @@ const onFileSelected = () => {
 };
 
 const onSubmit = async () => {
-  const imageBase64 =
-    !imageFile.value || imageUrl.value === MISSING_PHOTO_PLACEHOLDER_URL
-      ? ""
-      : await blobToBase64(imageFile.value);
+  let imageBase64 = "";
+  try {
+    imageBase64 =
+      !imageFile.value || imageUrl.value === MISSING_PHOTO_PLACEHOLDER_URL
+        ? ""
+        : await blobToBase64(imageFile.value);
+  } catch {
+    Notify.create({
+      type: "negative",
+      position: "top",
+      timeout: ERROR_TIMEOUT_MS,
+      message: t.value.imageCorrupted,
+      multiLine: true,
+      group: false,
+    });
+    return;
+  }
 
   isCreating.value = true;
   store.commit
@@ -122,7 +137,6 @@ const onSubmit = async () => {
       })
     )
     .then(() => {
-      // TODO: extract "create success", "delete success"... (dup)
       Notify.create({
         type: "positive",
         position: "top",

@@ -58,6 +58,7 @@ export const messages = i18n("admin", {
   [USER_NOT_FOUND]: params("User with phone {phone} was not found"),
   [WRONG_PASSWORD]: "Wrong password",
   [IMAGE_UPLOAD_FAIL]: "Failed to upload the image",
+  imageCorrupted: "The image is corrupted. Try to choose a different one",
 });
 
 export function useI18nStore() {
