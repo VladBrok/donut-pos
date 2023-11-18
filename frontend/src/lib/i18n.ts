@@ -34,6 +34,7 @@ export const messages = i18n("admin", {
   uploadImage: "Upload image",
   categoryNameLabel: "Category name",
   deleteButton: "Delete",
+  confirm: "Confirm",
 
   // Admin login page
   loginPageTitle: "Login to Admin panel",

@@ -2,34 +2,10 @@
   <q-form @submit="onSubmit" class="q-gutter-md max-w-sm q-mx-auto">
     <q-card class="q-pa-md">
       <q-card-section>
-        <!-- TODO: extract photo input component -->
-        <q-file
-          ref="fileInputRef"
-          v-model="imageFile"
-          filled
-          class="d-none"
-          @update:model-value="onFileSelected()"
-        ></q-file>
-        <div class="row justify-center q-mb-lg">
-          <div class="image-md relative-position">
-            <q-img
-              :src="imageUrl"
-              fit="cover"
-              class="image-md rounded-borders"
-            />
-            <q-btn
-              class="absolute-bottom-right-offset"
-              icon="upload"
-              round
-              color="primary"
-              @click="triggerUpload"
-            >
-              <q-tooltip>
-                {{ t.uploadImage }}
-              </q-tooltip>
-            </q-btn>
-          </div>
-        </div>
+        <photo-upload
+          v-model:url="imageUrl"
+          v-model:file="imageFile"
+        ></photo-upload>
         <q-input
           v-model="name"
           :label="`${t.categoryNameLabel} *`"
@@ -53,12 +29,12 @@
 </template>
 
 <script setup lang="ts">
-import { assert, createDishCategoryAction } from "donut-shared";
-import { MISSING_PHOTO_PLACEHOLDER_URL } from "donut-shared/src/constants";
-import { Notify, QFile } from "quasar";
+import { createDishCategoryAction } from "donut-shared";
+import { Notify } from "quasar";
 import { useStore } from "src/store";
-import { onUnmounted, ref } from "vue";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
+import PhotoUpload from "../../../components/PhotoUpload.vue";
 import { blobToBase64 } from "../../../lib/blob-to-base64";
 import { ERROR_TIMEOUT_MS, SUCCESS_TIMEOUT_MS } from "../../../lib/constants";
 import { useI18nStore } from "../../../lib/i18n";
@@ -67,38 +43,17 @@ const t = useI18nStore();
 const store = useStore();
 const router = useRouter();
 
-const fileInputRef = ref<QFile>();
 const isCreating = ref(false);
 const name = ref("");
-const imageFile = ref<File | null>(null);
-const imageUrl = ref(MISSING_PHOTO_PLACEHOLDER_URL);
-
-onUnmounted(() => {
-  if (imageFile.value) {
-    URL.revokeObjectURL(imageUrl.value);
-    imageFile.value = null;
-  }
-});
-
-const triggerUpload = () => {
-  assert(fileInputRef.value, "file input component is missing");
-  fileInputRef.value.pickFiles();
-};
-
-const onFileSelected = () => {
-  if (imageFile.value) {
-    URL.revokeObjectURL(imageUrl.value);
-    imageUrl.value = URL.createObjectURL(imageFile.value);
-  }
-};
+const imageUrl = ref("");
+const imageFile = ref<File>();
 
 const onSubmit = async () => {
   let imageBase64 = "";
   try {
-    imageBase64 =
-      !imageFile.value || imageUrl.value === MISSING_PHOTO_PLACEHOLDER_URL
-        ? ""
-        : await blobToBase64(imageFile.value);
+    if (imageUrl.value && imageFile.value) {
+      imageBase64 = await blobToBase64(imageFile.value);
+    }
   } catch {
     Notify.create({
       type: "negative",
