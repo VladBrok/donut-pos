@@ -8,11 +8,11 @@
     />
     <q-table
       v-else
+      class="q-mx-auto max-w-md sticky-last-column-table"
       :rows="store.state.dishCategories.categories"
       :columns="columns"
       row-key="name"
       :rows-per-page-label="t.perPage"
-      class="q-mx-auto max-w-md"
       :loading="isDeleting"
       :pagination="{
         rowsPerPage: ROWS_PER_TABLE_PAGE,
@@ -64,7 +64,6 @@
         </q-td>
       </template>
     </q-table>
-    <!-- TODO: make actions on the right side of the table (sticky) -->
 
     <confirm-dialog
       :model-value="!!confirmDelete"

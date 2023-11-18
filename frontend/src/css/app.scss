@@ -41,6 +41,19 @@
 
 /* === Quasar styles overrides === */
 
+.sticky-last-column-table thead tr:last-child th:last-child,
+.sticky-last-column-table td:last-child {
+  background-color: $grey-1;
+  border-left: 1px solid $table-border-color;
+}
+
+.sticky-last-column-table td:last-child,
+.sticky-last-column-table th:last-child {
+  position: sticky;
+  right: 0;
+  z-index: 1;
+}
+
 .q-table th {
   font-size: 13px;
 }
