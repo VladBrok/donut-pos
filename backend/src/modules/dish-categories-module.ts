@@ -1,6 +1,5 @@
 import { Server } from "@logux/server";
 import {
-  CHANNELS,
   deleteDishCategoryAction,
   loadDishCategoriesAction,
 } from "donut-shared";
@@ -11,9 +10,11 @@ import {
   dishCategoryUpdatedAction,
   updateDishCategoryAction,
 } from "donut-shared/src/actions.js";
+import { CHANNELS } from "donut-shared/src/constants.js";
 import { IMAGE_UPLOAD_FAIL } from "donut-shared/src/errors.js";
 import { logError } from "donut-shared/src/log.js";
 import * as db from "../lib/db/index.js";
+import { DishCategoryModel } from "../lib/db/models.js";
 import { uploadImage } from "../lib/images.js";
 import { hasAdminPermission } from "../lib/permissions.js";
 
@@ -66,17 +67,21 @@ export default function dishCategoriesModule(server: Server) {
     async process(ctx, action, meta) {
       let uploadedImage = null;
       try {
-        uploadedImage = await uploadImage(action.payload.imageBase64);
+        if (action.payload.imageBase64) {
+          uploadedImage = await uploadImage(action.payload.imageBase64);
+        }
       } catch (e) {
         logError(e);
         await server.undo(action, meta, IMAGE_UPLOAD_FAIL);
         return;
       }
 
-      const updated = await db.updateDishCategory({
+      const toUpdate: Partial<DishCategoryModel> & { imageBase64?: string } = {
         ...action.payload,
-        imageUrl: uploadedImage.url,
-      });
+        ...(uploadedImage && { imageUrl: uploadedImage.url }),
+      };
+      delete toUpdate.imageBase64;
+      const updated = await db.updateDishCategory(toUpdate);
       await server.process(dishCategoryUpdatedAction(updated));
     },
   });

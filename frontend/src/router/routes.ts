@@ -31,9 +31,21 @@ const routes: RouteRecordRaw[] = [
       {
         path: "dish-categories/create",
         component: () =>
-          import("src/pages/admin/dish-categories/AdminCreateDishCategory.vue"),
+          import(
+            "src/pages/admin/dish-categories/AdminCreateUpdateDishCategory.vue"
+          ),
         meta: {
           title: t.value.createDishCategory,
+        },
+      },
+      {
+        path: "dish-categories/update/:id",
+        component: () =>
+          import(
+            "src/pages/admin/dish-categories/AdminCreateUpdateDishCategory.vue"
+          ),
+        meta: {
+          title: t.value.updateDishCategory,
         },
       },
       {

@@ -64,7 +64,10 @@ export async function createDishCategory(data: Omit<DishCategoryModel, "id">) {
   return toCreate;
 }
 
-export async function updateDishCategory(data: DishCategoryModel) {
-  await db.update(dishCategory).set(data).where(eq(dishCategory.id, data.id));
+export async function updateDishCategory(data: Partial<DishCategoryModel>) {
+  await db
+    .update(dishCategory)
+    .set(data)
+    .where(eq(dishCategory.id, data?.id || ""));
   return data;
 }

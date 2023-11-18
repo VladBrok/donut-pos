@@ -1,3 +1,7 @@
+export const CHANNELS = {
+  DISH_CATEGORIES: "dishCategories",
+};
+
 export const ANONYMOUS = {
   userId: "anonymous",
 };

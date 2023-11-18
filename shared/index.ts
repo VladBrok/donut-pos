@@ -1,5 +1,4 @@
 export {
-  CHANNELS,
   createDishCategoryAction,
   deleteDishCategoryAction,
   loadDishCategoriesAction,

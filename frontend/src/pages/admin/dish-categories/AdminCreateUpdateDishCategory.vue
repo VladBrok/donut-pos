@@ -1,5 +1,6 @@
 <template>
-  <q-form @submit="onSubmit" class="q-gutter-md max-w-sm q-mx-auto">
+  <big-spinner v-if="isSubscribing" />
+  <q-form v-else @submit="onSubmit" class="q-gutter-md max-w-sm q-mx-auto">
     <q-card class="q-pa-md">
       <q-card-section>
         <photo-upload
@@ -25,7 +26,7 @@
       <q-btn :label="t.cancel" @click="() => router.back()" color="dark" flat />
       <q-btn
         :label="t.save"
-        :loading="isCreating"
+        :loading="isSubmitting"
         type="submit"
         color="primary"
       />
@@ -34,12 +35,20 @@
 </template>
 
 <script setup lang="ts">
-import { createDishCategoryAction } from "donut-shared";
-import { MAX_DISH_CATEGORY_NAME_LENGTH } from "donut-shared/src/constants";
+import { useSubscription } from "@logux/vuex";
+import {
+  createDishCategoryAction,
+  updateDishCategoryAction,
+} from "donut-shared";
+import {
+  CHANNELS,
+  MAX_DISH_CATEGORY_NAME_LENGTH,
+} from "donut-shared/src/constants";
 import { Notify } from "quasar";
 import { useStore } from "src/store";
-import { ref } from "vue";
+import { computed, ref, watchEffect } from "vue";
 import { useRouter } from "vue-router";
+import BigSpinner from "../../../components/BigSpinner.vue";
 import PhotoUpload from "../../../components/PhotoUpload.vue";
 import { blobToBase64 } from "../../../lib/blob-to-base64";
 import { ERROR_TIMEOUT_MS, SUCCESS_TIMEOUT_MS } from "../../../lib/constants";
@@ -48,11 +57,29 @@ import { useI18nStore } from "../../../lib/i18n";
 const t = useI18nStore();
 const store = useStore();
 const router = useRouter();
-
-const isCreating = ref(false);
+const isSubmitting = ref(false);
 const name = ref("");
 const imageUrl = ref("");
 const imageFile = ref<File>();
+const id = computed(() => router.currentRoute.value.params.id);
+const originalCategory = computed(() => {
+  return id.value
+    ? store.state.dishCategories.categories.find((x) => x.id === id.value)
+    : undefined;
+});
+const channels = computed(() =>
+  id.value && !originalCategory.value ? [CHANNELS.DISH_CATEGORIES] : []
+);
+let isSubscribing = useSubscription(channels, { store: store as any });
+
+watchEffect(() => {
+  if (originalCategory.value) {
+    name.value = originalCategory.value.name;
+    imageUrl.value = originalCategory.value.imageUrl;
+  } else if (id.value && store.state.dishCategories.categories.length) {
+    router.push("/404");
+  }
+});
 
 const onSubmit = async () => {
   let imageBase64 = "";
@@ -72,27 +99,35 @@ const onSubmit = async () => {
     return;
   }
 
-  isCreating.value = true;
+  isSubmitting.value = true;
   store.commit
     .sync(
-      createDishCategoryAction({
-        name: name.value,
-        imageBase64: imageBase64,
-      })
+      originalCategory.value
+        ? updateDishCategoryAction({
+            id: originalCategory.value.id,
+            name: name.value,
+            imageBase64: imageBase64,
+          })
+        : createDishCategoryAction({
+            name: name.value,
+            imageBase64: imageBase64,
+          })
     )
     .then(() => {
       Notify.create({
         type: "positive",
         position: "top",
         timeout: SUCCESS_TIMEOUT_MS,
-        message: t.value.createSuccess,
+        message: originalCategory.value
+          ? t.value.updateSuccess
+          : t.value.createSuccess,
         multiLine: true,
         group: false,
       });
       router.push("/admin/dish-categories");
     })
     .finally(() => {
-      isCreating.value = false;
+      isSubmitting.value = false;
     });
 };
 </script>

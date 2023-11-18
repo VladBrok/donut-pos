@@ -23,6 +23,7 @@ export const messages = i18n("admin", {
   logout: "Logout",
   dishCategories: "Categories",
   createDishCategory: "Create dish category",
+  updateDishCategory: "Update dish category",
   dishes: "Dishes",
   image: "Image",
   name: "Name",
@@ -58,6 +59,7 @@ export const messages = i18n("admin", {
   // Success
   deleteSuccess: "Deleted successfully",
   createSuccess: "Created successfully",
+  updateSuccess: "Updated successfully",
 
   // Errors
   [USER_NOT_FOUND]: params("User with phone {phone} was not found"),

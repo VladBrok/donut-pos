@@ -1,11 +1,6 @@
 <template>
   <div>
-    <q-spinner-puff
-      v-if="isSubscribing"
-      color="primary"
-      size="4rem"
-      class="q-mx-auto d-block"
-    />
+    <big-spinner v-if="isSubscribing" />
     <q-table
       v-else
       class="q-mx-auto max-w-md sticky-last-column-table"
@@ -49,7 +44,7 @@
             color="primary"
             dense
             class="q-mr-sm"
-            @click="onEdit(props.row)"
+            :to="`/admin/dish-categories/update/${props.row.id}`"
           >
           </q-btn>
           <q-btn
@@ -89,11 +84,12 @@
 
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
-import { CHANNELS, assert, deleteDishCategoryAction } from "donut-shared";
-import { logInfo } from "donut-shared/src/log";
+import { assert, deleteDishCategoryAction } from "donut-shared";
+import { CHANNELS } from "donut-shared/src/constants";
 import { Notify } from "quasar";
 import { useStore } from "src/store";
 import { computed, ref } from "vue";
+import BigSpinner from "../../../components/BigSpinner.vue";
 import ConfirmDialog from "../../../components/ConfirmDialog.vue";
 import {
   ROWS_PER_TABLE_PAGE,
@@ -165,9 +161,5 @@ const onDeleteConfirmed = () => {
     .finally(() => {
       isDeleting.value = false;
     });
-};
-
-const onEdit = (row: IDishCategoriesState["categories"][number]) => {
-  logInfo("edit:", row);
 };
 </script>
