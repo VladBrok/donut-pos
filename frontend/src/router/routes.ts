@@ -51,20 +51,6 @@ const routes: RouteRecordRaw[] = [
     component: () => import("pages/admin/AdminLogin.vue"),
   },
 
-  {
-    path: "/user",
-    children: [
-      {
-        path: "profile",
-        component: () => import("src/pages/ProfilePage.vue"),
-      },
-      {
-        path: "feed",
-        component: () => import("src/pages/PostsPage.vue"),
-      },
-    ],
-  },
-
   // Always leave this as last one,
   // but you can also remove it
   {
