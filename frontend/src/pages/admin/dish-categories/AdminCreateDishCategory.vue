@@ -71,7 +71,6 @@ const fileInputRef = ref<QFile>();
 const isCreating = ref(false);
 const name = ref("");
 const imageFile = ref<File | null>(null);
-// TODO: set image or placeholder everywhere on FE
 const imageUrl = ref(MISSING_PHOTO_PLACEHOLDER_URL);
 
 onUnmounted(() => {

@@ -64,36 +64,27 @@
         </q-td>
       </template>
     </q-table>
+    <!-- TODO: make actions on the right side of the table (sticky) -->
 
-    <!-- TODO: extract generic confirmation dialog -->
-    <q-dialog
+    <confirm-dialog
       :model-value="!!confirmDelete"
       @update:model-value="confirmDelete = null"
-      persistent
     >
-      <q-card class="q-pa-xs">
-        <q-card-section>
-          <div class="text-h6">Confirm delete</div>
-        </q-card-section>
-        <q-separator inset />
-
-        <q-card-section class="text-body1">
-          Are you sure you want to delete category "{{
-            capitalize(confirmDelete?.name || "")
-          }}"?
-        </q-card-section>
-
-        <q-card-actions align="right">
-          <q-btn flat label="Cancel" v-close-popup />
-          <q-btn
-            flat
-            label="Delete"
-            color="negative"
-            @click="onDeleteConfirmed"
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
+      <template #body>
+        Are you sure you want to delete category
+        <span class="text-weight-bold"
+          >"{{ capitalize(confirmDelete?.name || "") }}"</span
+        >?
+      </template>
+      <template #confirmButton>
+        <q-btn
+          flat
+          :label="t.deleteButton"
+          color="negative"
+          @click="onDeleteConfirmed"
+        />
+      </template>
+    </confirm-dialog>
   </div>
 </template>
 
@@ -104,6 +95,7 @@ import { logInfo } from "donut-shared/src/log";
 import { Notify } from "quasar";
 import { useStore } from "src/store";
 import { computed, ref } from "vue";
+import ConfirmDialog from "../../../components/ConfirmDialog.vue";
 import {
   ROWS_PER_TABLE_PAGE,
   SUCCESS_TIMEOUT_MS,
