@@ -16,3 +16,4 @@ export {
   USER_NOT_FOUND,
   WRONG_PASSWORD,
 } from "./src/errors.js";
+export { getDishCategoryNameRules } from "./src/validation-rules.js";

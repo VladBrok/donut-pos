@@ -29,6 +29,7 @@ export const messages = i18n("admin", {
   perPage: "Records per page",
   addDishCategory: "Add category",
   fieldRequired: "The field is required",
+  maxLength: params("Max length is {max}"),
   save: "Save",
   cancel: "Cancel",
   uploadImage: "Upload image",

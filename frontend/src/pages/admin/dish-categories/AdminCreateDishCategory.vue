@@ -11,7 +11,7 @@
           :label="`${t.categoryNameLabel} *`"
           lazy-rules
           type="text"
-          :rules="[(val) => (val && val.length > 0) || t.fieldRequired]"
+          :rules="dishCategoryNameRules(t)"
         />
       </q-card-section>
     </q-card>
@@ -38,6 +38,7 @@ import PhotoUpload from "../../../components/PhotoUpload.vue";
 import { blobToBase64 } from "../../../lib/blob-to-base64";
 import { ERROR_TIMEOUT_MS, SUCCESS_TIMEOUT_MS } from "../../../lib/constants";
 import { useI18nStore } from "../../../lib/i18n";
+import { dishCategoryNameRules } from "../../../lib/validation-rules";
 
 const t = useI18nStore();
 const store = useStore();
