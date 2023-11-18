@@ -29,7 +29,7 @@ export const loadDishCategoriesAction = createAction<{
 
 export const createDishCategoryAction = createAction<{
   name: string;
-  imageUrl: string;
+  imageBase64: string;
 }>("dishCategories/create");
 
 export const dishCategoryCreatedAction = createAction<{

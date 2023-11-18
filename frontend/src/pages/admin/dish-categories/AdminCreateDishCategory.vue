@@ -53,12 +53,13 @@
 </template>
 
 <script setup lang="ts">
-import { assert } from "donut-shared";
+import { assert, createDishCategoryAction } from "donut-shared";
 import { MISSING_PHOTO_PLACEHOLDER_URL } from "donut-shared/src/constants";
-import { QFile } from "quasar";
+import { Notify, QFile } from "quasar";
 import { useStore } from "src/store";
 import { onUnmounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import { SUCCESS_TIMEOUT_MS } from "../../../lib/constants";
 import { useI18nStore } from "../../../lib/i18n";
 
 const t = useI18nStore();
@@ -80,14 +81,16 @@ onUnmounted(() => {
 });
 
 // TODO: extract
-/**
- * Note: The blob's result cannot be directly decoded as Base64 without first removing the Data-URL declaration preceding the Base64-encoded data. To retrieve only the Base64 encoded string, first remove data:/;base64, from the result.
- */
 function blobToBase64(blob: Blob) {
-  return new Promise((resolve) => {
+  return new Promise<string>((resolve) => {
     // TODO: handle error
     const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result);
+    reader.onloadend = () => {
+      let result = reader.result as string;
+      const idx = result.indexOf("base64,");
+      result = result.slice(idx + 7);
+      resolve(result);
+    };
     reader.readAsDataURL(blob);
   });
 }
@@ -97,47 +100,41 @@ const triggerUpload = () => {
   fileInputRef.value.pickFiles();
 };
 
-// TODO: use qImg in table instead of avatar because it has cool loader
-
 const onFileSelected = () => {
   if (imageFile.value) {
     URL.revokeObjectURL(imageUrl.value);
     imageUrl.value = URL.createObjectURL(imageFile.value);
-    imageFile.value = null;
   }
 };
 
 const onSubmit = async () => {
-  console.log(imageUrl.value);
   const imageBase64 =
     !imageFile.value || imageUrl.value === MISSING_PHOTO_PLACEHOLDER_URL
       ? ""
       : await blobToBase64(imageFile.value);
-  console.log(imageBase64);
-  // TODO: server shoud accept base64 and upload it to https://api.imgbb.com/. Be careful with the note above (base64 format...)
 
-  // isCreating.value = true;
-  // store.commit.sync(createDishCategoryAction({
-  //   name: name.value,
-  //   imageUrl:
-  // }))
-  // isLoggingIn.value = true;
-  // store.commit
-  //   .sync(
-  //     loginAction({
-  //       phone: phone.value,
-  //       password: password.value,
-  //     })
-  //   )
-  //   .then(() => {
-  //     store.client.changeUser(
-  //       store.state.auth.user.userId || "",
-  //       store.state.auth.user.accessToken || ""
-  //     );
-  //     router.push("/admin");
-  //   })
-  //   .finally(() => {
-  //     isLoggingIn.value = false;
-  //   });
+  isCreating.value = true;
+  store.commit
+    .sync(
+      createDishCategoryAction({
+        name: name.value,
+        imageBase64: imageBase64,
+      })
+    )
+    .then(() => {
+      // TODO: extract "create success", "delete success"... (dup)
+      Notify.create({
+        type: "positive",
+        position: "top",
+        timeout: SUCCESS_TIMEOUT_MS,
+        message: t.value.createSuccess,
+        multiLine: true,
+        group: false,
+      });
+      router.push("/admin/dish-categories");
+    })
+    .finally(() => {
+      isCreating.value = false;
+    });
 };
 </script>

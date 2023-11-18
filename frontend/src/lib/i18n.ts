@@ -1,7 +1,7 @@
 import { browser, createI18n, localeFrom, params } from "@nanostores/i18n";
 import { useStore as useNanoStore } from "@nanostores/vue";
 import { USER_NOT_FOUND, WRONG_PASSWORD } from "donut-shared";
-import { DISH_CATEGORY_NOT_FOUND } from "donut-shared/src/errors";
+import { IMAGE_UPLOAD_FAIL } from "donut-shared/src/errors";
 
 export const locale = localeFrom(
   // atom("pl"),
@@ -28,7 +28,6 @@ export const messages = i18n("admin", {
   name: "Name",
   perPage: "Records per page",
   addDishCategory: "Add category",
-  deleteSuccess: "Deleted successfully",
   fieldRequired: "The field is required",
   save: "Save",
   cancel: "Cancel",
@@ -47,10 +46,14 @@ export const messages = i18n("admin", {
   sending: "Saving changes",
   synchronized: "Saved",
 
+  // Success
+  deleteSuccess: "Deleted successfully",
+  createSuccess: "Created successfully",
+
   // Errors
   [USER_NOT_FOUND]: params("User with phone {phone} was not found"),
   [WRONG_PASSWORD]: "Wrong password",
-  [DISH_CATEGORY_NOT_FOUND]: "Dish category was not found",
+  [IMAGE_UPLOAD_FAIL]: "Failed to upload the image",
 });
 
 export function useI18nStore() {

@@ -9,8 +9,10 @@ import {
   dishCategoryCreatedAction,
   dishCategoryDeletedAction,
 } from "donut-shared/src/actions.js";
-import { DISH_CATEGORY_NOT_FOUND } from "donut-shared/src/errors.js";
+import { IMAGE_UPLOAD_FAIL } from "donut-shared/src/errors.js";
+import { logError } from "donut-shared/src/log.js";
 import * as db from "../lib/db/index.js";
+import { uploadImage } from "../lib/images.js";
 
 export default function dishCategoriesModule(server: Server) {
   server.channel(CHANNELS.DISH_CATEGORIES, {
@@ -30,7 +32,19 @@ export default function dishCategoriesModule(server: Server) {
       return !!user?.permissions.admin;
     },
     async process(ctx, action, meta) {
-      const created = await db.createDishCategory(action.payload);
+      let uploadedImage = null;
+      try {
+        uploadedImage = await uploadImage(action.payload.imageBase64);
+      } catch (e) {
+        logError(e);
+        await server.undo(action, meta, IMAGE_UPLOAD_FAIL);
+        return;
+      }
+
+      const created = await db.createDishCategory({
+        ...action.payload,
+        imageUrl: uploadedImage.url,
+      });
       await server.process(dishCategoryCreatedAction(created));
     },
   });
@@ -52,16 +66,7 @@ export default function dishCategoriesModule(server: Server) {
     },
     async process(ctx, action, meta) {
       const id = action.payload.id;
-      // TODO: use real id
-      const deleted = await db.deleteDishCategory(
-        "7db7a9bc-8323-11ee-b962-0242ac120002"
-      );
-
-      if (!deleted.length) {
-        await server.undo(action, meta, DISH_CATEGORY_NOT_FOUND);
-        return;
-      }
-
+      await db.deleteDishCategory(id);
       await server.process(
         dishCategoryDeletedAction({
           id,

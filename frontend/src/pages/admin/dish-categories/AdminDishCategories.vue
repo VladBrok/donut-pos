@@ -33,9 +33,11 @@
       </template>
       <template v-slot:body-cell-image="props">
         <q-td :props="props">
-          <q-avatar size="lg" rounded>
-            <img :src="props.row.imageUrl" />
-          </q-avatar>
+          <q-img
+            :src="props.row.imageUrl"
+            fit="cover"
+            class="rounded-borders image-sm"
+          />
         </q-td>
       </template>
       <template v-slot:body-cell-actions="props">
