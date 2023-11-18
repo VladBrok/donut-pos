@@ -8,6 +8,8 @@ import {
   createDishCategoryAction,
   dishCategoryCreatedAction,
   dishCategoryDeletedAction,
+  dishCategoryUpdatedAction,
+  updateDishCategoryAction,
 } from "donut-shared/src/actions.js";
 import { IMAGE_UPLOAD_FAIL } from "donut-shared/src/errors.js";
 import { logError } from "donut-shared/src/log.js";
@@ -49,6 +51,37 @@ export default function dishCategoriesModule(server: Server) {
   });
 
   server.type(dishCategoryCreatedAction, {
+    async access() {
+      return false;
+    },
+    resend() {
+      return CHANNELS.DISH_CATEGORIES;
+    },
+  });
+
+  server.type(updateDishCategoryAction, {
+    async access(ctx) {
+      return await hasAdminPermission(ctx.userId);
+    },
+    async process(ctx, action, meta) {
+      let uploadedImage = null;
+      try {
+        uploadedImage = await uploadImage(action.payload.imageBase64);
+      } catch (e) {
+        logError(e);
+        await server.undo(action, meta, IMAGE_UPLOAD_FAIL);
+        return;
+      }
+
+      const updated = await db.updateDishCategory({
+        ...action.payload,
+        imageUrl: uploadedImage.url,
+      });
+      await server.process(dishCategoryUpdatedAction(updated));
+    },
+  });
+
+  server.type(dishCategoryUpdatedAction, {
     async access() {
       return false;
     },

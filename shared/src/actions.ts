@@ -41,8 +41,14 @@ export const dishCategoryCreatedAction = createAction<{
 export const updateDishCategoryAction = createAction<{
   id: string;
   name: string;
-  imageUrl: string;
+  imageBase64: string;
 }>("dishCategories/update");
+
+export const dishCategoryUpdatedAction = createAction<{
+  id: string;
+  name: string;
+  imageUrl: string;
+}>("dishCategories/updated");
 
 export const deleteDishCategoryAction = createAction<{
   id: string;
