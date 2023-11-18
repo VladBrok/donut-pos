@@ -2,7 +2,7 @@
   <q-dialog>
     <q-card class="q-pa-xs">
       <q-card-section>
-        <div class="text-h6">Confirm</div>
+        <div class="text-h6">{{ t.confirm }}</div>
       </q-card-section>
       <q-separator inset />
 
@@ -17,3 +17,9 @@
     </q-card>
   </q-dialog>
 </template>
+
+<script setup lang="ts">
+import { useI18nStore } from "../lib/i18n";
+
+const t = useI18nStore();
+</script>
