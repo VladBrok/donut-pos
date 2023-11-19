@@ -93,3 +93,7 @@ export async function getAllDishes(): Promise<DishModel[]> {
 
   return dishAdapter(data);
 }
+
+export async function deleteDish(id: string) {
+  return await db.delete(dish).where(eq(dish.id, id));
+}

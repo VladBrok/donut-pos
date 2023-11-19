@@ -83,3 +83,11 @@ export const loadDishesAction = createAction<{
     } | null;
   }[];
 }>("dishes/load");
+
+export const deleteDishAction = createAction<{
+  id: string;
+}>("dishes/delete");
+
+export const dishDeletedAction = createAction<{
+  id: string;
+}>("dishes/deleted");
