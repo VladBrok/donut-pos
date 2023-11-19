@@ -1,6 +1,6 @@
 <template>
   <big-spinner v-if="isSubscribing" />
-  <q-form v-else @submit="onSubmit" class="q-gutter-md max-w-md q-mx-auto">
+  <q-form v-else @submit="onSubmit" class="max-w-md q-mx-auto">
     <q-card class="q-pa-md">
       <q-card-section>
         <photo-upload
@@ -69,7 +69,7 @@
         />
         <q-toggle v-model="isActive" :label="t.active" size="lg" left-label />
         <div class="icons-md">
-          <label class="q-mb-sm q-mt-sm d-block">{{ t.description }}</label>
+          <label class="q-mb-sm q-mt-md d-block">{{ t.description }}</label>
           <q-editor
             v-model="description"
             :placeholder="t.dishDescriptionPlaceholder"
@@ -135,7 +135,7 @@
       </q-card-section>
     </q-card>
 
-    <div class="row justify-end q-gutter-sm">
+    <div class="row justify-end q-gutter-sm q-mt-md">
       <q-btn :label="t.cancel" @click="() => router.back()" color="dark" flat />
       <q-btn
         :label="t.save"

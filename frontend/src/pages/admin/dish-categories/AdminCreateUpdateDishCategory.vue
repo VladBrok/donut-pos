@@ -1,6 +1,6 @@
 <template>
   <big-spinner v-if="isSubscribing" />
-  <q-form v-else @submit="onSubmit" class="q-gutter-md max-w-sm q-mx-auto">
+  <q-form v-else @submit="onSubmit" class="max-w-sm q-mx-auto">
     <q-card class="q-pa-md">
       <q-card-section>
         <photo-upload
@@ -22,7 +22,7 @@
       </q-card-section>
     </q-card>
 
-    <div class="row justify-end q-gutter-sm">
+    <div class="row justify-end q-gutter-sm q-mt-md">
       <q-btn :label="t.cancel" @click="() => router.back()" color="dark" flat />
       <q-btn
         :label="t.save"
