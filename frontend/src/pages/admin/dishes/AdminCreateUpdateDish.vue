@@ -75,7 +75,6 @@
             :placeholder="t.dishDescriptionPlaceholder"
             :toolbar="[
               ['bold', 'italic', 'strike', 'underline'],
-              ['token', 'hr', 'link', 'custom_btn'],
               [
                 {
                   label: $q.lang.editor.align,
@@ -168,6 +167,7 @@ import PhotoUpload from "../../../components/PhotoUpload.vue";
 import { blobToBase64 } from "../../../lib/blob-to-base64";
 import { ERROR_TIMEOUT_MS, SUCCESS_TIMEOUT_MS } from "../../../lib/constants";
 import { useI18nStore } from "../../../lib/i18n";
+import { sanitizeHtml } from "../../../lib/sanitize-html";
 
 const t = useI18nStore();
 const store = useStore();
@@ -205,7 +205,7 @@ watchEffect(() => {
     weight.value = originalDish.value.weight;
     categoryName.value = originalDish.value.category?.name || "";
     isActive.value = originalDish.value.isActive;
-    description.value = originalDish.value.description;
+    description.value = sanitizeHtml(originalDish.value.description);
   } else if (id.value && store.state.dishes.dishes.length) {
     router.push("/404");
   }
