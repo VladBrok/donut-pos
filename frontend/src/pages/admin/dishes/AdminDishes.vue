@@ -1,0 +1,218 @@
+<template>
+  <div>
+    <big-spinner v-if="isSubscribing" />
+    <q-table
+      v-else
+      class="q-mx-auto sticky-last-column-table"
+      :rows="store.state.dishes.dishes"
+      :columns="columns"
+      row-key="id"
+      :rows-per-page-label="t.perPage"
+      :loading="isDeleting"
+      :pagination="{
+        rowsPerPage: ROWS_PER_TABLE_PAGE,
+      }"
+    >
+      <template v-slot:top-right>
+        <q-btn
+          color="primary"
+          icon="add"
+          :label="t.addDish"
+          to="/admin/dishes/create"
+        />
+      </template>
+      <template v-slot:body-cell-index="props">
+        <q-td :props="props">
+          {{ props.rowIndex + 1 }}
+        </q-td>
+      </template>
+      <template v-slot:body-cell-image="props">
+        <q-td :props="props">
+          <q-img
+            :src="props.row.imageUrl"
+            fit="cover"
+            class="rounded-borders image-sm"
+          />
+        </q-td>
+      </template>
+      <template v-slot:body-cell-description="props">
+        <q-td :props="props">
+          {{ cutText(props.row.description, 30) }}
+          <q-tooltip>
+            {{ props.row.description }}
+          </q-tooltip>
+        </q-td>
+      </template>
+      <template v-slot:body-cell-active="props">
+        <q-td :props="props">
+          <q-radio
+            class="disabled-cursor-default"
+            :model-value="'true'"
+            checked-icon="task_alt"
+            unchecked-icon="close"
+            :val="props.row.isActive.toString()"
+            label=""
+            disable
+            :color="props.row.isActive ? 'positive' : 'negative'"
+            keep-color
+          />
+        </q-td>
+      </template>
+      <template v-slot:body-cell-actions="props">
+        <q-td :props="props" auto-width>
+          <q-btn
+            flat
+            size="md"
+            icon="mode_edit"
+            color="primary"
+            dense
+            class="q-mr-sm"
+            :to="`/admin/dishes/update/${props.row.id}`"
+          >
+          </q-btn>
+          <q-btn
+            flat
+            size="md"
+            icon="o_delete"
+            color="negative"
+            dense
+            @click="onDeleteAttempt(props.row)"
+          >
+          </q-btn>
+        </q-td>
+      </template>
+    </q-table>
+
+    <confirm-dialog
+      :model-value="!!confirmDelete"
+      @update:model-value="confirmDelete = null"
+    >
+      <template #body>
+        {{ t.confirmDishDelete }}
+        <span class="text-weight-bold"
+          >"{{ capitalize(confirmDelete?.name || "") }}"</span
+        >?
+      </template>
+      <template #confirmButton>
+        <q-btn
+          flat
+          :label="t.deleteButton"
+          color="negative"
+          @click="onDeleteConfirmed"
+        />
+      </template>
+    </confirm-dialog>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { useSubscription } from "@logux/vuex";
+import { assert } from "donut-shared";
+import { CHANNELS } from "donut-shared/src/constants";
+import { useStore } from "src/store";
+import { computed, ref } from "vue";
+import BigSpinner from "../../../components/BigSpinner.vue";
+import ConfirmDialog from "../../../components/ConfirmDialog.vue";
+import { NO_DATA, ROWS_PER_TABLE_PAGE } from "../../../lib/constants";
+import { cutText } from "../../../lib/cut-text";
+import { useI18nStore } from "../../../lib/i18n";
+import { capitalize } from "../../../lib/utils/capitalize";
+import { IDishesState } from "../../../store/dishes/state";
+
+const store = useStore();
+const channels = computed(() => {
+  return [CHANNELS.DISHES];
+});
+let isSubscribing = useSubscription(channels, { store: store as any });
+const t = useI18nStore();
+const confirmDelete = ref<null | IDishesState["dishes"][number]>(null);
+const isDeleting = ref(false);
+
+const columns: any[] = [
+  {
+    name: "index",
+    label: "#",
+    field: "index",
+    align: "center",
+  },
+  {
+    name: "image",
+    label: t.value.image,
+    align: "center",
+    field: "imageUrl",
+  },
+  {
+    name: "name",
+    label: t.value.name,
+    align: "center",
+    field: "name",
+    format: capitalize,
+  },
+  {
+    name: "category",
+    label: t.value.category,
+    align: "center",
+    field: (row: IDishesState["dishes"][number]) => {
+      return row.category?.name || NO_DATA;
+    },
+    format: capitalize,
+  },
+  {
+    name: "description",
+    label: t.value.description,
+    align: "center",
+    field: "description",
+  },
+  {
+    name: "price",
+    label: t.value.price,
+    align: "center",
+    field: "price",
+    format: (x: number) => x.toFixed(2),
+  },
+  {
+    name: "weight",
+    label: t.value.weight,
+    align: "center",
+    field: "weight",
+    format: (x: number) => x.toFixed(2),
+  },
+  {
+    name: "active",
+    label: t.value.active,
+    align: "center",
+    field: "isActive",
+  },
+  { name: "actions", label: "", align: "right" },
+];
+
+const onDeleteAttempt = (row: IDishesState["dishes"][number]) => {
+  confirmDelete.value = row;
+};
+
+const onDeleteConfirmed = () => {
+  assert(confirmDelete.value, "");
+  // const toDelete = confirmDelete.value.id;
+  // confirmDelete.value = null;
+  // isDeleting.value = true;
+  // store.commit
+  //   .sync(
+  //     deleteDishCategoryAction({
+  //       id: toDelete,
+  //     })
+  //   )
+  //   .then(() => {
+  //     Notify.create({
+  //       type: "positive",
+  //       position: "top",
+  //       timeout: SUCCESS_TIMEOUT_MS,
+  //       message: t.value.deleteSuccess,
+  //       multiLine: true,
+  //       group: false,
+  //     });
+  //   })
+  //   .finally(() => {
+  //     isDeleting.value = false;
+  //   });
+};
+</script>

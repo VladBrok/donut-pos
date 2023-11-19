@@ -58,6 +58,10 @@
   display: none;
 }
 
+.disabled-cursor-default.disabled * {
+  cursor: default !important;
+}
+
 .q-table th {
   font-size: 13px;
 }

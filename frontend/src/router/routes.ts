@@ -50,9 +50,25 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: "dishes",
-        component: () => import("pages/admin/AdminDishes.vue"),
+        component: () => import("src/pages/admin/dishes/AdminDishes.vue"),
         meta: {
           title: t.value.dishes,
+        },
+      },
+      {
+        path: "dishes/create",
+        component: () =>
+          import("src/pages/admin/dishes/AdminCreateUpdateDish.vue"),
+        meta: {
+          title: t.value.createDish,
+        },
+      },
+      {
+        path: "dishes/update/:id",
+        component: () =>
+          import("src/pages/admin/dishes/AdminCreateUpdateDish.vue"),
+        meta: {
+          title: t.value.updateDish,
         },
       },
     ],
