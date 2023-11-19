@@ -1,7 +1,7 @@
 import { browser, createI18n, localeFrom, params } from "@nanostores/i18n";
 import { useStore as useNanoStore } from "@nanostores/vue";
 import { USER_NOT_FOUND, WRONG_PASSWORD } from "donut-shared";
-import { DISH_CATEGORY_NOT_FOUND } from "donut-shared/src/errors";
+import { IMAGE_UPLOAD_FAIL } from "donut-shared/src/errors";
 
 export const locale = localeFrom(
   // atom("pl"),
@@ -18,20 +18,35 @@ export const i18n = createI18n(locale, {
 });
 
 export const messages = i18n("admin", {
-  // Dashboard
+  // Admin dashboard
   dashboard: "Dashboard",
   logout: "Logout",
   dishCategories: "Categories",
+  createDishCategory: "Create dish category",
+  updateDishCategory: "Update dish category",
   dishes: "Dishes",
   image: "Image",
   name: "Name",
   perPage: "Records per page",
   addDishCategory: "Add category",
+  fieldRequired: "The field is required",
+  maxLength: params("Max length is {max}"),
+  maxFileSize: params("Max file size is {max} mb"),
+  allowedFilesAre: params("Allowed file types are {allowed}"),
+  save: "Save",
+  cancel: "Cancel",
+  uploadImage: "Upload image",
+  categoryNameLabel: "Category name",
+  deleteButton: "Delete",
+  confirm: "Confirm",
 
-  // Login page
+  // Admin login page
   loginPageTitle: "Login to Admin panel",
   passwordRequired: "Please enter a password",
   phoneRequired: "Please enter a phone number",
+  phoneLabel: "Phone",
+  phoneExample: "Example",
+  passwordLabel: "Password",
 
   // Logux statuses
   disconnectedMessage: "Cannot connect to the server",
@@ -41,10 +56,16 @@ export const messages = i18n("admin", {
   sending: "Saving changes",
   synchronized: "Saved",
 
+  // Success
+  deleteSuccess: "Deleted successfully",
+  createSuccess: "Created successfully",
+  updateSuccess: "Updated successfully",
+
   // Errors
   [USER_NOT_FOUND]: params("User with phone {phone} was not found"),
   [WRONG_PASSWORD]: "Wrong password",
-  [DISH_CATEGORY_NOT_FOUND]: "Dish category was not found",
+  [IMAGE_UPLOAD_FAIL]: "Failed to upload the image",
+  imageCorrupted: "The image is corrupted. Try to choose a different one",
 });
 
 export function useI18nStore() {

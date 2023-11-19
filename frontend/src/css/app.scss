@@ -1,16 +1,62 @@
 // app global css in SCSS form
 
-/* === Utility classes === */
+/* ===== Utility classes ===== */
 
 .d-block {
   display: block;
+}
+
+.d-none {
+  display: none;
 }
 
 .w-fit {
   width: fit-content;
 }
 
-/* === Quasar styles overrides === */
+.image-md {
+  width: 150px;
+  height: 150px;
+}
+
+.image-sm {
+  width: 45px;
+  height: 45px;
+}
+
+.max-w-md {
+  max-width: 600px;
+}
+
+.max-w-sm {
+  max-width: 500px;
+}
+
+.absolute-bottom-right-offset {
+  position: absolute;
+  left: 100%;
+  top: 100%;
+  transform: translate(-50%, -50%);
+}
+
+/* ===== Quasar styles overrides ===== */
+
+.sticky-last-column-table thead tr:last-child th:last-child,
+.sticky-last-column-table td:last-child {
+  background-color: $grey-1;
+  border-left: 1px solid $table-border-color;
+}
+
+.sticky-last-column-table td:last-child,
+.sticky-last-column-table th:last-child {
+  position: sticky;
+  right: 0;
+  z-index: 1;
+}
+
+.show-validation-errors-only .q-field__control {
+  display: none;
+}
 
 .q-table th {
   font-size: 13px;

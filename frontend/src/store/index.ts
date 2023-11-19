@@ -16,15 +16,11 @@ import { setUndoHandler } from "../lib/logux/set-undo-handler";
 import { watchSyncStatus } from "../lib/logux/watch-sync-status";
 import auth from "./auth";
 import { IAuthState } from "./auth/state";
-import counter from "./counter";
-import { ICounter } from "./counter/state";
 import dishCategories from "./dish-categories";
 import { IDishCategoriesState } from "./dish-categories/state";
 
 export interface StateInterface {
   // Define your own store structure, using submodules if needed
-  // example: ExampleStateInterface;
-  counter: ICounter;
   auth: IAuthState;
   dishCategories: IDishCategoriesState;
 }
@@ -55,7 +51,6 @@ const createStore = createStoreCreator(client, {
 
 export default store(function (/* { ssrContext } */) {
   const modules = {
-    counter,
     auth,
     dishCategories,
   };

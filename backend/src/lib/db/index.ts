@@ -2,6 +2,7 @@ import { DefaultLogger, asc, eq } from "drizzle-orm";
 import { PostgresJsDatabase, drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { dishCategory, employee, role } from "../../../migrations/schema.js";
+import { generateUuid } from "../uuid.js";
 import { DbLogWriter } from "./log-writer.js";
 import { DishCategoryModel, EmployeeModel } from "./models.js";
 import {
@@ -55,4 +56,18 @@ export async function getAllDishCategories(): Promise<DishCategoryModel[]> {
 
 export async function deleteDishCategory(id: string) {
   return await db.delete(dishCategory).where(eq(dishCategory.id, id));
+}
+
+export async function createDishCategory(data: Omit<DishCategoryModel, "id">) {
+  const toCreate = { id: generateUuid(), ...data };
+  await db.insert(dishCategory).values(toCreate);
+  return toCreate;
+}
+
+export async function updateDishCategory(data: Partial<DishCategoryModel>) {
+  await db
+    .update(dishCategory)
+    .set(data)
+    .where(eq(dishCategory.id, data?.id || ""));
+  return data;
 }

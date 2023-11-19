@@ -1,23 +1,25 @@
 <template>
   <div>
-    <q-spinner-puff
-      v-if="isSubscribing"
-      color="primary"
-      size="4rem"
-      class="q-mx-auto d-block"
-    />
+    <big-spinner v-if="isSubscribing" />
     <q-table
       v-else
+      class="q-mx-auto max-w-md sticky-last-column-table"
       :rows="store.state.dishCategories.categories"
       :columns="columns"
       row-key="name"
       :rows-per-page-label="t.perPage"
-      style="max-width: 550px"
-      class="q-mx-auto"
       :loading="isDeleting"
+      :pagination="{
+        rowsPerPage: ROWS_PER_TABLE_PAGE,
+      }"
     >
       <template v-slot:top-right>
-        <q-btn color="primary" icon="add" :label="t.addDishCategory" />
+        <q-btn
+          color="primary"
+          icon="add"
+          :label="t.addDishCategory"
+          to="/admin/dish-categories/create"
+        />
       </template>
       <template v-slot:body-cell-index="props">
         <q-td :props="props">
@@ -26,9 +28,11 @@
       </template>
       <template v-slot:body-cell-image="props">
         <q-td :props="props">
-          <q-avatar size="lg" rounded>
-            <img :src="props.row.imageUrl" />
-          </q-avatar>
+          <q-img
+            :src="props.row.imageUrl"
+            fit="cover"
+            class="rounded-borders image-sm"
+          />
         </q-td>
       </template>
       <template v-slot:body-cell-actions="props">
@@ -40,7 +44,7 @@
             color="primary"
             dense
             class="q-mr-sm"
-            @click="onEdit(props.row)"
+            :to="`/admin/dish-categories/update/${props.row.id}`"
           >
           </q-btn>
           <q-btn
@@ -49,54 +53,51 @@
             icon="o_delete"
             color="negative"
             dense
-            @click="onDelete(props.row)"
+            @click="onDeleteAttempt(props.row)"
           >
           </q-btn>
         </q-td>
       </template>
     </q-table>
 
-    <!-- TODO: extract generic confirmation dialog -->
-    <q-dialog
+    <confirm-dialog
       :model-value="!!confirmDelete"
       @update:model-value="confirmDelete = null"
-      persistent
     >
-      <q-card class="q-pa-xs">
-        <q-card-section>
-          <div class="text-h6">Confirm delete</div>
-        </q-card-section>
-        <q-separator inset />
-
-        <q-card-section class="text-body1">
-          Are you sure you want to delete category "{{
-            capitalize(confirmDelete?.name || "")
-          }}"?
-        </q-card-section>
-
-        <q-card-actions align="right">
-          <q-btn flat label="Cancel" v-close-popup />
-          <q-btn
-            flat
-            label="Delete"
-            color="negative"
-            @click="onDeleteConfirmed"
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
+      <template #body>
+        Are you sure you want to delete category
+        <span class="text-weight-bold"
+          >"{{ capitalize(confirmDelete?.name || "") }}"</span
+        >?
+      </template>
+      <template #confirmButton>
+        <q-btn
+          flat
+          :label="t.deleteButton"
+          color="negative"
+          @click="onDeleteConfirmed"
+        />
+      </template>
+    </confirm-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
-import { CHANNELS, assert, deleteDishCategoryAction } from "donut-shared";
-import { logInfo } from "donut-shared/src/log";
+import { assert, deleteDishCategoryAction } from "donut-shared";
+import { CHANNELS } from "donut-shared/src/constants";
+import { Notify } from "quasar";
 import { useStore } from "src/store";
 import { computed, ref } from "vue";
-import { useI18nStore } from "../../lib/i18n";
-import { capitalize } from "../../lib/utils/capitalize";
-import { IDishCategoriesState } from "../../store/dish-categories/state";
+import BigSpinner from "../../../components/BigSpinner.vue";
+import ConfirmDialog from "../../../components/ConfirmDialog.vue";
+import {
+  ROWS_PER_TABLE_PAGE,
+  SUCCESS_TIMEOUT_MS,
+} from "../../../lib/constants";
+import { useI18nStore } from "../../../lib/i18n";
+import { capitalize } from "../../../lib/utils/capitalize";
+import { IDishCategoriesState } from "../../../store/dish-categories/state";
 
 const store = useStore();
 const channels = computed(() => {
@@ -132,7 +133,7 @@ const columns: any[] = [
   { name: "actions", label: "", align: "right" },
 ];
 
-const onDelete = (row: IDishCategoriesState["categories"][number]) => {
+const onDeleteAttempt = (row: IDishCategoriesState["categories"][number]) => {
   confirmDelete.value = row;
 };
 
@@ -147,12 +148,18 @@ const onDeleteConfirmed = () => {
         id: toDelete,
       })
     )
+    .then(() => {
+      Notify.create({
+        type: "positive",
+        position: "top",
+        timeout: SUCCESS_TIMEOUT_MS,
+        message: t.value.deleteSuccess,
+        multiLine: true,
+        group: false,
+      });
+    })
     .finally(() => {
       isDeleting.value = false;
     });
-};
-
-const onEdit = (row: IDishCategoriesState["categories"][number]) => {
-  logInfo("edit:", row);
 };
 </script>

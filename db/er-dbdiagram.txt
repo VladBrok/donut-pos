@@ -185,23 +185,23 @@ Table order_to_dish_to_modification {
   }
 }
 
-Ref: client.address_id > address.id
-Ref: dish.category_id > dish_category.id
-Ref: work_schedule.sale_point_id > sale_point.id
-Ref: role_to_permission.role_id > role.id
-Ref: role_to_permission.permission_id > permission.id
-Ref: employee.role_id > role.id
-Ref: sale_point.address_id > address.id
-Ref: dish_to_sale_point.dish_id > dish.id
-Ref: dish_to_sale_point.sale_point_id > sale_point.id
-Ref: order.employee_id > employee.id
-Ref: order.client_id > client.id
-Ref: order.sale_point_id > sale_point.id
-Ref: order_to_dish.order_id > order.id
-Ref: order_to_dish.dish_id > dish.id
-Ref: dish_to_modification.dish_id > dish.id
-Ref: dish_to_modification.modification_id > modification.id
-Ref: order_to_dish_to_modification.order_to_dish_id > order_to_dish.id
-Ref: order_to_dish_to_modification.modification_id > modification.id
-Ref: order_to_order_status.order_id > order.id
-Ref: order_to_order_status.order_status_id > order_status.id
+Ref: client.address_id > address.id [delete: set null]
+Ref: dish.category_id > dish_category.id [delete: set null]
+Ref: work_schedule.sale_point_id > sale_point.id [delete: set null]
+Ref: role_to_permission.role_id > role.id [delete: set null]
+Ref: role_to_permission.permission_id > permission.id [delete: set null]
+Ref: employee.role_id > role.id [delete: set null]
+Ref: sale_point.address_id > address.id [delete: set null]
+Ref: dish_to_sale_point.dish_id > dish.id [delete: set null]
+Ref: dish_to_sale_point.sale_point_id > sale_point.id [delete: set null]
+Ref: order.employee_id > employee.id [delete: set null]
+Ref: order.client_id > client.id [delete: set null]
+Ref: order.sale_point_id > sale_point.id [delete: set null]
+Ref: order_to_dish.order_id > order.id [delete: set null]
+Ref: order_to_dish.dish_id > dish.id [delete: set null]
+Ref: dish_to_modification.dish_id > dish.id [delete: set null]
+Ref: dish_to_modification.modification_id > modification.id [delete: set null]
+Ref: order_to_dish_to_modification.order_to_dish_id > order_to_dish.id [delete: set null]
+Ref: order_to_dish_to_modification.modification_id > modification.id [delete: set null]
+Ref: order_to_order_status.order_id > order.id [delete: set null]
+Ref: order_to_order_status.order_status_id > order_status.id [delete: set null]

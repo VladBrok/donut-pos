@@ -7,8 +7,8 @@
       <q-input
         filled
         v-model="phone"
-        label="Phone *"
-        hint="Example: +48000110022"
+        :label="`${t.phoneLabel} *`"
+        :hint="`${t.phoneExample}: +48000110022`"
         lazy-rules
         type="tel"
         :rules="[(val) => (val && val.length > 0) || t.phoneRequired]"
@@ -17,11 +17,19 @@
       <q-input
         filled
         v-model="password"
-        label="Password *"
-        type="password"
+        :label="`${t.passwordLabel} *`"
+        :type="isHidePassword ? 'password' : 'text'"
         lazy-rules
         :rules="[(val) => (val && val.length > 0) || t.passwordRequired]"
-      />
+      >
+        <template v-slot:append>
+          <q-icon
+            :name="isHidePassword ? 'visibility_off' : 'visibility'"
+            class="cursor-pointer"
+            @click="isHidePassword = !isHidePassword"
+          />
+        </template>
+      </q-input>
 
       <div>
         <q-btn
@@ -45,10 +53,12 @@ import { useI18nStore } from "../../lib/i18n";
 
 const t = useI18nStore();
 const store = useStore();
+const router = useRouter();
+
 const phone = ref("+48000000000"); // TODO: remove
 const password = ref("1234"); // TODO: remove
 const isLoggingIn = ref(false);
-const router = useRouter();
+const isHidePassword = ref(true);
 
 const onSubmit = async () => {
   isLoggingIn.value = true;

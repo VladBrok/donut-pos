@@ -1,12 +1,22 @@
 import { Server } from "@logux/server";
 import {
-  CHANNELS,
   deleteDishCategoryAction,
   loadDishCategoriesAction,
 } from "donut-shared";
-import { dishCategoryDeletedAction } from "donut-shared/src/actions.js";
-import { DISH_CATEGORY_NOT_FOUND } from "donut-shared/src/errors.js";
+import {
+  createDishCategoryAction,
+  dishCategoryCreatedAction,
+  dishCategoryDeletedAction,
+  dishCategoryUpdatedAction,
+  updateDishCategoryAction,
+} from "donut-shared/src/actions.js";
+import { CHANNELS } from "donut-shared/src/constants.js";
+import { IMAGE_UPLOAD_FAIL } from "donut-shared/src/errors.js";
+import { logError } from "donut-shared/src/log.js";
 import * as db from "../lib/db/index.js";
+import { DishCategoryModel } from "../lib/db/models.js";
+import { uploadImage } from "../lib/images.js";
+import { hasAdminPermission } from "../lib/permissions.js";
 
 export default function dishCategoriesModule(server: Server) {
   server.channel(CHANNELS.DISH_CATEGORIES, {
@@ -19,24 +29,79 @@ export default function dishCategoriesModule(server: Server) {
     },
   });
 
-  server.type(deleteDishCategoryAction, {
-    async access(ctx, action, meta) {
-      // TODO: extract
-      const user = await db.findEmployeeById(ctx.userId);
-      return !!user?.permissions.admin;
+  server.type(createDishCategoryAction, {
+    async access(ctx) {
+      return await hasAdminPermission(ctx.userId);
     },
     async process(ctx, action, meta) {
-      const id = action.payload.id;
-      // TODO: use real id
-      const deleted = await db.deleteDishCategory(
-        "7db7a9bc-8323-11ee-b962-0242ac120002"
-      );
-
-      if (!deleted.length) {
-        await server.undo(action, meta, DISH_CATEGORY_NOT_FOUND);
+      let uploadedImage = null;
+      try {
+        uploadedImage = await uploadImage(action.payload.imageBase64);
+      } catch (e) {
+        logError(e);
+        await server.undo(action, meta, IMAGE_UPLOAD_FAIL);
         return;
       }
 
+      const created = await db.createDishCategory({
+        ...action.payload,
+        imageUrl: uploadedImage.url,
+      });
+      await server.process(dishCategoryCreatedAction(created));
+    },
+  });
+
+  server.type(dishCategoryCreatedAction, {
+    async access() {
+      return false;
+    },
+    resend() {
+      return CHANNELS.DISH_CATEGORIES;
+    },
+  });
+
+  server.type(updateDishCategoryAction, {
+    async access(ctx) {
+      return await hasAdminPermission(ctx.userId);
+    },
+    async process(ctx, action, meta) {
+      let uploadedImage = null;
+      try {
+        if (action.payload.imageBase64) {
+          uploadedImage = await uploadImage(action.payload.imageBase64);
+        }
+      } catch (e) {
+        logError(e);
+        await server.undo(action, meta, IMAGE_UPLOAD_FAIL);
+        return;
+      }
+
+      const toUpdate: Partial<DishCategoryModel> & { imageBase64?: string } = {
+        ...action.payload,
+        ...(uploadedImage && { imageUrl: uploadedImage.url }),
+      };
+      delete toUpdate.imageBase64;
+      const updated = await db.updateDishCategory(toUpdate);
+      await server.process(dishCategoryUpdatedAction(updated));
+    },
+  });
+
+  server.type(dishCategoryUpdatedAction, {
+    async access() {
+      return false;
+    },
+    resend() {
+      return CHANNELS.DISH_CATEGORIES;
+    },
+  });
+
+  server.type(deleteDishCategoryAction, {
+    async access(ctx, action, meta) {
+      return await hasAdminPermission(ctx.userId);
+    },
+    async process(ctx, action, meta) {
+      const id = action.payload.id;
+      await db.deleteDishCategory(id);
       await server.process(
         dishCategoryDeletedAction({
           id,

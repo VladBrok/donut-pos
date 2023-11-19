@@ -184,42 +184,42 @@ CREATE INDEX "order_to_dish_to_modification_order_to_dish_id_idx" ON "order_to_d
 
 CREATE INDEX "order_to_dish_to_modification_modification_id_idx" ON "order_to_dish_to_modification" ("modification_id");
 
-ALTER TABLE "client" ADD FOREIGN KEY ("address_id") REFERENCES "address" ("id");
+ALTER TABLE "client" ADD FOREIGN KEY ("address_id") REFERENCES "address" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "dish" ADD FOREIGN KEY ("category_id") REFERENCES "dish_category" ("id");
+ALTER TABLE "dish" ADD FOREIGN KEY ("category_id") REFERENCES "dish_category" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "work_schedule" ADD FOREIGN KEY ("sale_point_id") REFERENCES "sale_point" ("id");
+ALTER TABLE "work_schedule" ADD FOREIGN KEY ("sale_point_id") REFERENCES "sale_point" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "role_to_permission" ADD FOREIGN KEY ("role_id") REFERENCES "role" ("id");
+ALTER TABLE "role_to_permission" ADD FOREIGN KEY ("role_id") REFERENCES "role" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "role_to_permission" ADD FOREIGN KEY ("permission_id") REFERENCES "permission" ("id");
+ALTER TABLE "role_to_permission" ADD FOREIGN KEY ("permission_id") REFERENCES "permission" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "employee" ADD FOREIGN KEY ("role_id") REFERENCES "role" ("id");
+ALTER TABLE "employee" ADD FOREIGN KEY ("role_id") REFERENCES "role" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "sale_point" ADD FOREIGN KEY ("address_id") REFERENCES "address" ("id");
+ALTER TABLE "sale_point" ADD FOREIGN KEY ("address_id") REFERENCES "address" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "dish_to_sale_point" ADD FOREIGN KEY ("dish_id") REFERENCES "dish" ("id");
+ALTER TABLE "dish_to_sale_point" ADD FOREIGN KEY ("dish_id") REFERENCES "dish" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "dish_to_sale_point" ADD FOREIGN KEY ("sale_point_id") REFERENCES "sale_point" ("id");
+ALTER TABLE "dish_to_sale_point" ADD FOREIGN KEY ("sale_point_id") REFERENCES "sale_point" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "order" ADD FOREIGN KEY ("employee_id") REFERENCES "employee" ("id");
+ALTER TABLE "order" ADD FOREIGN KEY ("employee_id") REFERENCES "employee" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "order" ADD FOREIGN KEY ("client_id") REFERENCES "client" ("id");
+ALTER TABLE "order" ADD FOREIGN KEY ("client_id") REFERENCES "client" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "order" ADD FOREIGN KEY ("sale_point_id") REFERENCES "sale_point" ("id");
+ALTER TABLE "order" ADD FOREIGN KEY ("sale_point_id") REFERENCES "sale_point" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "order_to_dish" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id");
+ALTER TABLE "order_to_dish" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "order_to_dish" ADD FOREIGN KEY ("dish_id") REFERENCES "dish" ("id");
+ALTER TABLE "order_to_dish" ADD FOREIGN KEY ("dish_id") REFERENCES "dish" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "dish_to_modification" ADD FOREIGN KEY ("dish_id") REFERENCES "dish" ("id");
+ALTER TABLE "dish_to_modification" ADD FOREIGN KEY ("dish_id") REFERENCES "dish" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "dish_to_modification" ADD FOREIGN KEY ("modification_id") REFERENCES "modification" ("id");
+ALTER TABLE "dish_to_modification" ADD FOREIGN KEY ("modification_id") REFERENCES "modification" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "order_to_dish_to_modification" ADD FOREIGN KEY ("order_to_dish_id") REFERENCES "order_to_dish" ("id");
+ALTER TABLE "order_to_dish_to_modification" ADD FOREIGN KEY ("order_to_dish_id") REFERENCES "order_to_dish" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "order_to_dish_to_modification" ADD FOREIGN KEY ("modification_id") REFERENCES "modification" ("id");
+ALTER TABLE "order_to_dish_to_modification" ADD FOREIGN KEY ("modification_id") REFERENCES "modification" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "order_to_order_status" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id");
+ALTER TABLE "order_to_order_status" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "order_to_order_status" ADD FOREIGN KEY ("order_status_id") REFERENCES "order_status" ("id");
+ALTER TABLE "order_to_order_status" ADD FOREIGN KEY ("order_status_id") REFERENCES "order_status" ("id") ON DELETE SET NULL;

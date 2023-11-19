@@ -22,9 +22,30 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: "dish-categories",
-        component: () => import("pages/admin/AdminDishCategories.vue"),
+        component: () =>
+          import("src/pages/admin/dish-categories/AdminDishCategories.vue"),
         meta: {
           title: t.value.dishCategories,
+        },
+      },
+      {
+        path: "dish-categories/create",
+        component: () =>
+          import(
+            "src/pages/admin/dish-categories/AdminCreateUpdateDishCategory.vue"
+          ),
+        meta: {
+          title: t.value.createDishCategory,
+        },
+      },
+      {
+        path: "dish-categories/update/:id",
+        component: () =>
+          import(
+            "src/pages/admin/dish-categories/AdminCreateUpdateDishCategory.vue"
+          ),
+        meta: {
+          title: t.value.updateDishCategory,
         },
       },
       {
@@ -40,20 +61,6 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/admin/login",
     component: () => import("pages/admin/AdminLogin.vue"),
-  },
-
-  {
-    path: "/user",
-    children: [
-      {
-        path: "profile",
-        component: () => import("src/pages/ProfilePage.vue"),
-      },
-      {
-        path: "feed",
-        component: () => import("src/pages/PostsPage.vue"),
-      },
-    ],
   },
 
   // Always leave this as last one,
