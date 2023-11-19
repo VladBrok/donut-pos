@@ -1,11 +1,17 @@
 import { DefaultLogger, asc, eq } from "drizzle-orm";
 import { PostgresJsDatabase, drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import { dishCategory, employee, role } from "../../../migrations/schema.js";
+import {
+  dish,
+  dishCategory,
+  employee,
+  role,
+} from "../../../migrations/schema.js";
 import { generateUuid } from "../uuid.js";
 import { DbLogWriter } from "./log-writer.js";
-import { DishCategoryModel, EmployeeModel } from "./models.js";
+import { DishCategoryModel, DishModel, EmployeeModel } from "./models.js";
 import {
+  dishAdapter,
   dishCategoryAdapter,
   employeeAdapter,
 } from "./schema-to-model-adapters.js";
@@ -45,6 +51,10 @@ export async function findEmployeeById(
   return employeeAdapter(data);
 }
 
+// TODO: split
+
+// Dish categories
+
 export async function getAllDishCategories(): Promise<DishCategoryModel[]> {
   const data = await db
     .select()
@@ -70,4 +80,16 @@ export async function updateDishCategory(data: Partial<DishCategoryModel>) {
     .set(data)
     .where(eq(dishCategory.id, data?.id || ""));
   return data;
+}
+
+// Dishes
+
+export async function getAllDishes(): Promise<DishModel[]> {
+  const data = await db
+    .select()
+    .from(dish)
+    .leftJoin(dishCategory, eq(dish.id, dishCategory.id))
+    .orderBy(asc(dish.name));
+
+  return dishAdapter(data);
 }

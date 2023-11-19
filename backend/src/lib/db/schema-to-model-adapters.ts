@@ -1,5 +1,9 @@
-import { DishCategoryModel, EmployeeModel } from "./models.js";
-import { DishCategorySchema, SelectEmployeeSchema } from "./schemas.js";
+import { DishCategoryModel, DishModel, EmployeeModel } from "./models.js";
+import {
+  DishCategorySchema,
+  DishSchema,
+  SelectEmployeeSchema,
+} from "./schemas.js";
 
 export const employeeAdapter = (
   data?: SelectEmployeeSchema | null
@@ -25,5 +29,23 @@ export const dishCategoryAdapter = (
     id: x.id,
     name: x.name || "",
     imageUrl: x.imageUrl || "",
+  }));
+};
+
+export const dishAdapter = (data: DishSchema[]): DishModel[] => {
+  return data.map((x) => ({
+    id: x.dish.id,
+    category: x.dish_category
+      ? {
+          id: x.dish_category.id || "",
+          name: x.dish_category.name || "",
+        }
+      : null,
+    name: x.dish.name || "",
+    description: x.dish.description || "",
+    imageUrl: x.dish.imageUrl || "",
+    isActive: x.dish.isActive || false,
+    weight: Number(x.dish.weight),
+    price: Number(x.dish.price),
   }));
 };
