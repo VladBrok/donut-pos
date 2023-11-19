@@ -20,6 +20,26 @@
               t.maxLength({ max: MAX_DISH_NAME_LENGTH }),
           ]"
         />
+        <q-select
+          v-model="category"
+          use-input
+          fill-input
+          clearable
+          hide-selected
+          input-debounce="0"
+          :options="filteredCategoryNames"
+          @filter="filterCategories"
+          :label="`${t.category} *`"
+          :rules="[(val) => !!val || t.fieldRequired]"
+        >
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section>
+                {{ t.noResults }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
         <q-input
           v-model.number="price"
           :label="`${t.price} *`"
@@ -73,13 +93,14 @@ import {
 } from "donut-shared/src/constants";
 import { Notify } from "quasar";
 import { useStore } from "src/store";
-import { computed, ref, watchEffect } from "vue";
+import { computed, ref, watch, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 import BigSpinner from "../../../components/BigSpinner.vue";
 import PhotoUpload from "../../../components/PhotoUpload.vue";
 import { blobToBase64 } from "../../../lib/blob-to-base64";
 import { ERROR_TIMEOUT_MS } from "../../../lib/constants";
 import { useI18nStore } from "../../../lib/i18n";
+import { IDishCategoriesState } from "../../../store/dish-categories/state";
 
 const t = useI18nStore();
 const store = useStore();
@@ -91,6 +112,8 @@ const imageUrl = ref("");
 const imageFile = ref<File>();
 const price = ref<number>();
 const weight = ref<number>();
+const category = ref<IDishCategoriesState["categories"][number]>();
+const filteredCategoryNames = ref<string[]>();
 const description = ref<string>();
 
 const id = computed(() => router.currentRoute.value.params.id);
@@ -114,6 +137,27 @@ watchEffect(() => {
   //   router.push("/404");
   // }
 });
+
+watch(
+  isSubscribing,
+  () => {
+    if (!isSubscribing) {
+      filteredCategoryNames.value = store.state.dishCategories.categories.map(
+        (x) => x.name
+      );
+    }
+  },
+  { immediate: true }
+);
+
+const filterCategories = (val: string, update: any) => {
+  update(() => {
+    const needle = val.toLowerCase();
+    filteredCategoryNames.value = store.state.dishCategories.categories
+      .filter((v) => v.name.toLowerCase().indexOf(needle) > -1)
+      .map((x) => x.name);
+  });
+};
 
 const onSubmit = async () => {
   let imageBase64 = "";
