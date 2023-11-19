@@ -45,6 +45,7 @@ export const messages = i18n("admin", {
   cancel: "Cancel",
   uploadImage: "Upload image",
   categoryNameLabel: "Category name",
+  dishNameLabel: "Dish name",
   deleteButton: "Delete",
   confirm: "Confirm",
 
