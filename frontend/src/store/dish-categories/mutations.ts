@@ -35,7 +35,6 @@ const mutation: MutationTree<IDishCategoriesState> = {
     state: IDishCategoriesState,
     action: ReturnType<typeof dishCategoryUpdatedAction>
   ) {
-    // TODO: check if it works
     const category = state.categories.find((x) => x.id === action.payload.id);
     if (category) {
       Object.assign(category, action.payload);

@@ -18,15 +18,15 @@
         filled
         v-model="password"
         :label="`${t.passwordLabel} *`"
-        :type="isPwd ? 'password' : 'text'"
+        :type="isHidePassword ? 'password' : 'text'"
         lazy-rules
         :rules="[(val) => (val && val.length > 0) || t.passwordRequired]"
       >
         <template v-slot:append>
           <q-icon
-            :name="isPwd ? 'visibility_off' : 'visibility'"
+            :name="isHidePassword ? 'visibility_off' : 'visibility'"
             class="cursor-pointer"
-            @click="isPwd = !isPwd"
+            @click="isHidePassword = !isHidePassword"
           />
         </template>
       </q-input>
@@ -58,7 +58,7 @@ const router = useRouter();
 const phone = ref("+48000000000"); // TODO: remove
 const password = ref("1234"); // TODO: remove
 const isLoggingIn = ref(false);
-const isPwd = ref(true);
+const isHidePassword = ref(true);
 
 const onSubmit = async () => {
   isLoggingIn.value = true;
