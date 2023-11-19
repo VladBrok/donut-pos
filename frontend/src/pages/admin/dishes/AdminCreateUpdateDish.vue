@@ -33,6 +33,19 @@
               val >= MIN_DISH_PRICE || t.minValue({ min: MIN_DISH_PRICE }),
           ]"
         />
+        <q-input
+          v-model.number="weight"
+          :label="`${t.weight} *`"
+          lazy-rules
+          type="number"
+          :rules="[
+            (val) => val != null || t.fieldRequired,
+            (val) =>
+              val <= MAX_DISH_WEIGHT || t.maxValue({ max: MAX_DISH_WEIGHT }),
+            (val) =>
+              val >= MIN_DISH_WEIGHT || t.minValue({ min: MIN_DISH_WEIGHT }),
+          ]"
+        />
       </q-card-section>
     </q-card>
 
@@ -54,7 +67,9 @@ import {
   CHANNELS,
   MAX_DISH_NAME_LENGTH,
   MAX_DISH_PRICE,
+  MAX_DISH_WEIGHT,
   MIN_DISH_PRICE,
+  MIN_DISH_WEIGHT,
 } from "donut-shared/src/constants";
 import { Notify } from "quasar";
 import { useStore } from "src/store";
