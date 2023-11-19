@@ -46,7 +46,7 @@
           type="number"
           step="0.01"
           :rules="[
-            (val) => val != null || t.fieldRequired,
+            (val) => val !== '' || t.fieldRequired,
             (val) =>
               val <= MAX_DISH_PRICE || t.maxValue({ max: MAX_DISH_PRICE }),
             (val) =>
@@ -60,7 +60,7 @@
           type="number"
           step="0.01"
           :rules="[
-            (val) => val != null || t.fieldRequired,
+            (val) => val !== '' || t.fieldRequired,
             (val) =>
               val <= MAX_DISH_WEIGHT || t.maxValue({ max: MAX_DISH_WEIGHT }),
             (val) =>
