@@ -21,7 +21,7 @@
           ]"
         />
         <q-select
-          v-model="category"
+          v-model="categoryName"
           use-input
           fill-input
           clearable
@@ -171,7 +171,6 @@ import PhotoUpload from "../../../components/PhotoUpload.vue";
 import { blobToBase64 } from "../../../lib/blob-to-base64";
 import { ERROR_TIMEOUT_MS } from "../../../lib/constants";
 import { useI18nStore } from "../../../lib/i18n";
-import { IDishCategoriesState } from "../../../store/dish-categories/state";
 
 const t = useI18nStore();
 const store = useStore();
@@ -183,7 +182,7 @@ const imageUrl = ref("");
 const imageFile = ref<File>();
 const price = ref<number>();
 const weight = ref<number>();
-const category = ref<IDishCategoriesState["categories"][number]>();
+const categoryName = ref("");
 const filteredCategoryNames = ref<string[]>();
 const isActive = ref(true);
 const description = ref("");
@@ -202,12 +201,17 @@ const channels = computed(() =>
 let isSubscribing = useSubscription(channels, { store: store as any });
 
 watchEffect(() => {
-  // if (originalCategory.value) {
-  //   name.value = originalCategory.value.name;
-  //   imageUrl.value = originalCategory.value.imageUrl;
-  // } else if (id.value && store.state.dishCategories.categories.length) {
-  //   router.push("/404");
-  // }
+  if (originalDish.value) {
+    name.value = originalDish.value.name;
+    imageUrl.value = originalDish.value.imageUrl;
+    price.value = originalDish.value.price;
+    weight.value = originalDish.value.weight;
+    categoryName.value = originalDish.value.category?.name || "";
+    isActive.value = originalDish.value.isActive;
+    description.value = originalDish.value.description;
+  } else if (id.value && store.state.dishes.dishes.length) {
+    router.push("/404");
+  }
 });
 
 watch(
