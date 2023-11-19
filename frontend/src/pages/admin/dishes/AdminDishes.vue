@@ -108,12 +108,18 @@
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
 import { assert } from "donut-shared";
+import { deleteDishAction } from "donut-shared/src/actions";
 import { CHANNELS } from "donut-shared/src/constants";
+import { Notify } from "quasar";
 import { useStore } from "src/store";
 import { computed, ref } from "vue";
 import BigSpinner from "../../../components/BigSpinner.vue";
 import ConfirmDialog from "../../../components/ConfirmDialog.vue";
-import { NO_DATA, ROWS_PER_TABLE_PAGE } from "../../../lib/constants";
+import {
+  NO_DATA,
+  ROWS_PER_TABLE_PAGE,
+  SUCCESS_TIMEOUT_MS,
+} from "../../../lib/constants";
 import { cutText } from "../../../lib/cut-text";
 import { useI18nStore } from "../../../lib/i18n";
 import { capitalize } from "../../../lib/utils/capitalize";
@@ -192,27 +198,27 @@ const onDeleteAttempt = (row: IDishesState["dishes"][number]) => {
 
 const onDeleteConfirmed = () => {
   assert(confirmDelete.value, "");
-  // const toDelete = confirmDelete.value.id;
-  // confirmDelete.value = null;
-  // isDeleting.value = true;
-  // store.commit
-  //   .sync(
-  //     deleteDishCategoryAction({
-  //       id: toDelete,
-  //     })
-  //   )
-  //   .then(() => {
-  //     Notify.create({
-  //       type: "positive",
-  //       position: "top",
-  //       timeout: SUCCESS_TIMEOUT_MS,
-  //       message: t.value.deleteSuccess,
-  //       multiLine: true,
-  //       group: false,
-  //     });
-  //   })
-  //   .finally(() => {
-  //     isDeleting.value = false;
-  //   });
+  const toDelete = confirmDelete.value.id;
+  confirmDelete.value = null;
+  isDeleting.value = true;
+  store.commit
+    .sync(
+      deleteDishAction({
+        id: toDelete,
+      })
+    )
+    .then(() => {
+      Notify.create({
+        type: "positive",
+        position: "top",
+        timeout: SUCCESS_TIMEOUT_MS,
+        message: t.value.deleteSuccess,
+        multiLine: true,
+        group: false,
+      });
+    })
+    .finally(() => {
+      isDeleting.value = false;
+    });
 };
 </script>
