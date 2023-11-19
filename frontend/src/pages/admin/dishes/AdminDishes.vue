@@ -3,7 +3,7 @@
     <big-spinner v-if="isSubscribing" />
     <q-table
       v-else
-      class="q-mx-auto sticky-last-column-table"
+      class="q-mx-auto max-w-xl sticky-last-column-table"
       :rows="store.state.dishes.dishes"
       :columns="columns"
       row-key="id"
@@ -33,14 +33,6 @@
             fit="cover"
             class="rounded-borders image-sm"
           />
-        </q-td>
-      </template>
-      <template v-slot:body-cell-description="props">
-        <q-td :props="props">
-          {{ cutText(props.row.description, 30) }}
-          <q-tooltip>
-            {{ props.row.description }}
-          </q-tooltip>
         </q-td>
       </template>
       <template v-slot:body-cell-active="props">
@@ -120,7 +112,6 @@ import {
   ROWS_PER_TABLE_PAGE,
   SUCCESS_TIMEOUT_MS,
 } from "../../../lib/constants";
-import { cutText } from "../../../lib/cut-text";
 import { useI18nStore } from "../../../lib/i18n";
 import { capitalize } from "../../../lib/utils/capitalize";
 import { IDishesState } from "../../../store/dishes/state";
@@ -162,12 +153,6 @@ const columns: any[] = [
       return row.category?.name || NO_DATA;
     },
     format: capitalize,
-  },
-  {
-    name: "description",
-    label: t.value.description,
-    align: "center",
-    field: "description",
   },
   {
     name: "price",
