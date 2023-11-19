@@ -1,5 +1,6 @@
 export const CHANNELS = {
   DISH_CATEGORIES: "dishCategories",
+  DISHES: "dishes",
 };
 
 export const ANONYMOUS = {
