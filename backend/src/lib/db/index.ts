@@ -97,3 +97,15 @@ export async function getAllDishes(): Promise<DishModel[]> {
 export async function deleteDish(id: string) {
   return await db.delete(dish).where(eq(dish.id, id));
 }
+
+export async function createDish(data: Omit<DishModel, "id">) {
+  const toCreate = { id: generateUuid(), ...data };
+  // TODO: maybe need to delete `category` from `toCreate` (but not permanently, just for sending to DB)
+  await db.insert(dish).values({
+    ...toCreate,
+    weight: toCreate.weight.toString(),
+    price: toCreate.price.toString(),
+    categoryId: data.category?.id,
+  });
+  return toCreate;
+}

@@ -1,11 +1,16 @@
 import { Server } from "@logux/server";
+import { IMAGE_UPLOAD_FAIL } from "donut-shared";
 import {
+  createDishAction,
   deleteDishAction,
+  dishCreatedAction,
   dishDeletedAction,
   loadDishesAction,
 } from "donut-shared/src/actions.js";
 import { CHANNELS } from "donut-shared/src/constants.js";
+import { logError } from "donut-shared/src/log.js";
 import * as db from "../lib/db/index.js";
+import { uploadImage } from "../lib/images.js";
 import { hasAdminPermission } from "../lib/permissions.js";
 
 export default function dishesModule(server: Server) {
@@ -16,6 +21,37 @@ export default function dishesModule(server: Server) {
     async load() {
       const dishes = await db.getAllDishes();
       return loadDishesAction({ dishes });
+    },
+  });
+
+  server.type(createDishAction, {
+    async access(ctx) {
+      return await hasAdminPermission(ctx.userId);
+    },
+    async process(ctx, action, meta) {
+      let uploadedImage = null;
+      try {
+        uploadedImage = await uploadImage(action.payload.imageBase64);
+      } catch (e) {
+        logError(e);
+        await server.undo(action, meta, IMAGE_UPLOAD_FAIL);
+        return;
+      }
+
+      const created = await db.createDish({
+        ...action.payload,
+        imageUrl: uploadedImage.url,
+      });
+      await server.process(dishCreatedAction(created));
+    },
+  });
+
+  server.type(dishCreatedAction, {
+    async access() {
+      return false;
+    },
+    resend() {
+      return CHANNELS.DISHES;
     },
   });
 

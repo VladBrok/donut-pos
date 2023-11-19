@@ -88,6 +88,24 @@ export const deleteDishAction = createAction<{
   id: string;
 }>("dishes/delete");
 
+export const createDishAction = createAction<{
+  name: string;
+  description: string;
+  price: number;
+  weight: number;
+  isActive: boolean;
+  category: {
+    id: string;
+    name: string;
+  };
+  imageBase64: string;
+}>("dishes/create");
+
+export const dishCreatedAction =
+  createAction<
+    ReturnType<typeof loadDishesAction>["payload"]["dishes"][number]
+  >("dishes/created");
+
 export const dishDeletedAction = createAction<{
   id: string;
 }>("dishes/deleted");
