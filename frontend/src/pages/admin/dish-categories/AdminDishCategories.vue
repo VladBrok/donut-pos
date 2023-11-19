@@ -65,7 +65,7 @@
       @update:model-value="confirmDelete = null"
     >
       <template #body>
-        Are you sure you want to delete category
+        {{ t.confirmDishCategoryDelete }}
         <span class="text-weight-bold"
           >"{{ capitalize(confirmDelete?.name || "") }}"</span
         >?

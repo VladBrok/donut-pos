@@ -48,6 +48,10 @@ export const messages = i18n("admin", {
   phoneExample: "Example",
   passwordLabel: "Password",
 
+  // Confirmations
+  confirmDishCategoryDelete: "Are you sure you want to delete category",
+  confirmDishDelete: "Are you sure you want to delete dish",
+
   // Logux statuses
   disconnectedMessage: "Cannot connect to the server",
   disconnectedCaption: "Your changes have not been saved",
