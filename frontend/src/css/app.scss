@@ -24,6 +24,10 @@
   height: 45px;
 }
 
+.max-w-xl {
+  max-width: 1200px;
+}
+
 .max-w-md {
   max-width: 600px;
 }
@@ -56,6 +60,14 @@
 
 .show-validation-errors-only .q-field__control {
   display: none;
+}
+
+.disabled-cursor-default.disabled * {
+  cursor: default !important;
+}
+
+.icons-md .q-icon {
+  font-size: 24px;
 }
 
 .q-table th {

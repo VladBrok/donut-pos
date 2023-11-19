@@ -1,6 +1,10 @@
 import { actionCreatorFactory } from "typescript-fsa";
 
+// TODO: split into files
+
 const createAction = actionCreatorFactory();
+
+// Auth
 
 export const loginAction = createAction<{
   phone: string;
@@ -18,6 +22,8 @@ export const loggedInAction = createAction<{
 export const logoutAction = createAction<{
   accessToken: string;
 }>("auth/logOut");
+
+// Dish categories
 
 export const loadDishCategoriesAction = createAction<{
   categories: {
@@ -59,3 +65,77 @@ export const deleteDishCategoryAction = createAction<{
 export const dishCategoryDeletedAction = createAction<{
   id: string;
 }>("dishCategories/deleted");
+
+// Dishes
+
+export const loadDishesAction = createAction<{
+  dishes: {
+    id: string;
+    name: string;
+    imageUrl: string;
+    description: string;
+    price: number;
+    weight: number;
+    isActive: boolean;
+    category: {
+      id: string;
+      name: string;
+    } | null;
+  }[];
+}>("dishes/load");
+
+export const deleteDishAction = createAction<{
+  id: string;
+}>("dishes/delete");
+
+export const createDishAction = createAction<{
+  name: string;
+  description: string;
+  price: number;
+  weight: number;
+  isActive: boolean;
+  category: {
+    id: string;
+    name: string;
+  };
+  imageBase64: string;
+}>("dishes/create");
+
+export const dishCreatedAction =
+  createAction<
+    ReturnType<typeof loadDishesAction>["payload"]["dishes"][number]
+  >("dishes/created");
+
+export const updateDishAction = createAction<{
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  weight: number;
+  isActive: boolean;
+  category: {
+    id: string;
+    name: string;
+  };
+  imageBase64: string;
+}>("dishes/update");
+
+export const dishUpdatedAction = createAction<
+  Partial<{
+    id: string;
+    name: string;
+    imageUrl: string;
+    description: string;
+    price: number;
+    weight: number;
+    isActive: boolean;
+    category: {
+      id: string;
+      name: string;
+    } | null;
+  }>
+>("dishes/updated");
+
+export const dishDeletedAction = createAction<{
+  id: string;
+}>("dishes/deleted");

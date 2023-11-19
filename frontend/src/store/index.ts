@@ -18,11 +18,14 @@ import auth from "./auth";
 import { IAuthState } from "./auth/state";
 import dishCategories from "./dish-categories";
 import { IDishCategoriesState } from "./dish-categories/state";
+import dishes from "./dishes";
+import { IDishesState } from "./dishes/state";
 
 export interface StateInterface {
   // Define your own store structure, using submodules if needed
   auth: IAuthState;
   dishCategories: IDishCategoriesState;
+  dishes: IDishesState;
 }
 
 // provide typings for `this.$store`
@@ -53,6 +56,7 @@ export default store(function (/* { ssrContext } */) {
   const modules = {
     auth,
     dishCategories,
+    dishes,
   };
 
   for (const module of Object.values(modules)) {

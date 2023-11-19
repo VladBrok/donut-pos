@@ -3,8 +3,8 @@
     <big-spinner v-if="isSubscribing" />
     <q-table
       v-else
-      class="q-mx-auto max-w-md sticky-last-column-table"
-      :rows="store.state.dishCategories.categories"
+      class="q-mx-auto max-w-xl sticky-last-column-table"
+      :rows="store.state.dishes.dishes"
       :columns="columns"
       row-key="id"
       :rows-per-page-label="t.perPage"
@@ -17,8 +17,8 @@
         <q-btn
           color="primary"
           icon="add"
-          :label="t.addDishCategory"
-          to="/admin/dish-categories/create"
+          :label="t.addDish"
+          to="/admin/dishes/create"
         />
       </template>
       <template v-slot:body-cell-index="props">
@@ -35,6 +35,21 @@
           />
         </q-td>
       </template>
+      <template v-slot:body-cell-active="props">
+        <q-td :props="props">
+          <q-radio
+            class="disabled-cursor-default"
+            :model-value="'true'"
+            checked-icon="task_alt"
+            unchecked-icon="close"
+            :val="props.row.isActive.toString()"
+            label=""
+            disable
+            :color="props.row.isActive ? 'positive' : 'negative'"
+            keep-color
+          />
+        </q-td>
+      </template>
       <template v-slot:body-cell-actions="props">
         <q-td :props="props" auto-width>
           <q-btn
@@ -44,7 +59,7 @@
             color="primary"
             dense
             class="q-mr-sm"
-            :to="`/admin/dish-categories/update/${props.row.id}`"
+            :to="`/admin/dishes/update/${props.row.id}`"
           >
           </q-btn>
           <q-btn
@@ -65,7 +80,7 @@
       @update:model-value="confirmDelete = null"
     >
       <template #body>
-        {{ t.confirmDishCategoryDelete }}
+        {{ t.confirmDishDelete }}
         <span class="text-weight-bold"
           >"{{ capitalize(confirmDelete?.name || "") }}"</span
         >?
@@ -84,7 +99,8 @@
 
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
-import { assert, deleteDishCategoryAction } from "donut-shared";
+import { assert } from "donut-shared";
+import { deleteDishAction } from "donut-shared/src/actions";
 import { CHANNELS } from "donut-shared/src/constants";
 import { Notify } from "quasar";
 import { useStore } from "src/store";
@@ -92,22 +108,21 @@ import { computed, ref } from "vue";
 import BigSpinner from "../../../components/BigSpinner.vue";
 import ConfirmDialog from "../../../components/ConfirmDialog.vue";
 import {
+  NO_DATA,
   ROWS_PER_TABLE_PAGE,
   SUCCESS_TIMEOUT_MS,
 } from "../../../lib/constants";
 import { useI18nStore } from "../../../lib/i18n";
 import { capitalize } from "../../../lib/utils/capitalize";
-import { IDishCategoriesState } from "../../../store/dish-categories/state";
+import { IDishesState } from "../../../store/dishes/state";
 
 const store = useStore();
 const channels = computed(() => {
-  return [CHANNELS.DISH_CATEGORIES];
+  return [CHANNELS.DISHES];
 });
 let isSubscribing = useSubscription(channels, { store: store as any });
 const t = useI18nStore();
-const confirmDelete = ref<null | IDishCategoriesState["categories"][number]>(
-  null
-);
+const confirmDelete = ref<null | IDishesState["dishes"][number]>(null);
 const isDeleting = ref(false);
 
 const columns: any[] = [
@@ -130,10 +145,39 @@ const columns: any[] = [
     field: "name",
     format: capitalize,
   },
+  {
+    name: "category",
+    label: t.value.category,
+    align: "center",
+    field: (row: IDishesState["dishes"][number]) => {
+      return row.category?.name || NO_DATA;
+    },
+    format: capitalize,
+  },
+  {
+    name: "price",
+    label: t.value.price,
+    align: "center",
+    field: "price",
+    format: (x: number) => x.toFixed(2),
+  },
+  {
+    name: "weight",
+    label: t.value.weight,
+    align: "center",
+    field: "weight",
+    format: (x: number) => x.toFixed(2),
+  },
+  {
+    name: "active",
+    label: t.value.active,
+    align: "center",
+    field: "isActive",
+  },
   { name: "actions", label: "", align: "right" },
 ];
 
-const onDeleteAttempt = (row: IDishCategoriesState["categories"][number]) => {
+const onDeleteAttempt = (row: IDishesState["dishes"][number]) => {
   confirmDelete.value = row;
 };
 
@@ -144,7 +188,7 @@ const onDeleteConfirmed = () => {
   isDeleting.value = true;
   store.commit
     .sync(
-      deleteDishCategoryAction({
+      deleteDishAction({
         id: toDelete,
       })
     )
