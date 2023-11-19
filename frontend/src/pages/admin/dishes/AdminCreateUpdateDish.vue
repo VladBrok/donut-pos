@@ -66,6 +66,7 @@
               val >= MIN_DISH_WEIGHT || t.minValue({ min: MIN_DISH_WEIGHT }),
           ]"
         />
+        <q-toggle v-model="isActive" :label="t.active" size="lg" left-label />
       </q-card-section>
     </q-card>
 
@@ -114,6 +115,7 @@ const price = ref<number>();
 const weight = ref<number>();
 const category = ref<IDishCategoriesState["categories"][number]>();
 const filteredCategoryNames = ref<string[]>();
+const isActive = ref(true);
 const description = ref<string>();
 
 const id = computed(() => router.currentRoute.value.params.id);
