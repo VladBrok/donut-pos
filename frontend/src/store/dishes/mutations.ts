@@ -1,6 +1,7 @@
 import {
   dishCreatedAction,
   dishDeletedAction,
+  dishUpdatedAction,
   loadDishesAction,
 } from "donut-shared/src/actions";
 import { MutationTree } from "vuex";
@@ -17,6 +18,13 @@ const mutation: MutationTree<IDishesState> = {
 
   created(state: IDishesState, action: ReturnType<typeof dishCreatedAction>) {
     state.dishes.push(action.payload);
+  },
+
+  updated(state: IDishesState, action: ReturnType<typeof dishUpdatedAction>) {
+    const dish = state.dishes.find((x) => x.id === action.payload.id);
+    if (dish) {
+      Object.assign(dish, action.payload);
+    }
   },
 };
 
