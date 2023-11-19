@@ -1,7 +1,6 @@
 <template>
   <big-spinner v-if="isSubscribing" />
   <q-form v-else @submit="onSubmit" class="q-gutter-md max-w-md q-mx-auto">
-    <!-- TODO: add validations -->
     <q-card class="q-pa-md">
       <q-card-section>
         <photo-upload
