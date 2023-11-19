@@ -45,6 +45,7 @@
           :label="`${t.price} *`"
           lazy-rules
           type="number"
+          step="0.01"
           :rules="[
             (val) => val != null || t.fieldRequired,
             (val) =>
@@ -58,6 +59,7 @@
           :label="`${t.weight} *`"
           lazy-rules
           type="number"
+          step="0.01"
           :rules="[
             (val) => val != null || t.fieldRequired,
             (val) =>
@@ -81,12 +83,6 @@
                   icon: $q.iconSet.editor.align,
                   fixedLabel: true,
                   options: ['left', 'center', 'right', 'justify'],
-                },
-                {
-                  label: $q.lang.editor.formatting,
-                  icon: $q.iconSet.editor.formatting,
-                  list: 'no-icons',
-                  options: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'code'],
                 },
                 {
                   label: $q.lang.editor.fontSize,
@@ -154,6 +150,7 @@
 
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
+import { createDishAction } from "donut-shared/src/actions";
 import {
   CHANNELS,
   MAX_DISH_NAME_LENGTH,
@@ -169,7 +166,7 @@ import { useRouter } from "vue-router";
 import BigSpinner from "../../../components/BigSpinner.vue";
 import PhotoUpload from "../../../components/PhotoUpload.vue";
 import { blobToBase64 } from "../../../lib/blob-to-base64";
-import { ERROR_TIMEOUT_MS } from "../../../lib/constants";
+import { ERROR_TIMEOUT_MS, SUCCESS_TIMEOUT_MS } from "../../../lib/constants";
 import { useI18nStore } from "../../../lib/i18n";
 
 const t = useI18nStore();
@@ -253,35 +250,46 @@ const onSubmit = async () => {
     return;
   }
 
-  // isSubmitting.value = true;
-  // store.commit
-  //   .sync(
-  //     originalCategory.value
-  //       ? updateDishCategoryAction({
-  //           id: originalCategory.value.id,
-  //           name: name.value,
-  //           imageBase64: imageBase64,
-  //         })
-  //       : createDishCategoryAction({
-  //           name: name.value,
-  //           imageBase64: imageBase64,
-  //         })
-  //   )
-  //   .then(() => {
-  //     Notify.create({
-  //       type: "positive",
-  //       position: "top",
-  //       timeout: SUCCESS_TIMEOUT_MS,
-  //       message: originalCategory.value
-  //         ? t.value.updateSuccess
-  //         : t.value.createSuccess,
-  //       multiLine: true,
-  //       group: false,
-  //     });
-  //     router.push("/admin/dish-categories");
-  //   })
-  //   .finally(() => {
-  //     isSubmitting.value = false;
-  //   });
+  isSubmitting.value = true;
+  store.commit
+    .sync(
+      createDishAction({
+        name: name.value,
+        price: price.value || 0,
+        category: store.state.dishCategories.categories.find(
+          (x) => x.name === categoryName.value
+        )!,
+        description: description.value,
+        imageBase64,
+        isActive: isActive.value,
+        weight: weight.value || 0,
+      })
+      // originalDish.value
+      //   ? updateDishCategoryAction({
+      //       id: originalDish.value.id,
+      //       name: name.value,
+      //       imageBase64: imageBase64,
+      //     })
+      //   : createDishCategoryAction({
+      //       name: name.value,
+      //       imageBase64: imageBase64,
+      //     })
+    )
+    .then(() => {
+      Notify.create({
+        type: "positive",
+        position: "top",
+        timeout: SUCCESS_TIMEOUT_MS,
+        message: originalDish.value
+          ? t.value.updateSuccess
+          : t.value.createSuccess,
+        multiLine: true,
+        group: false,
+      });
+      router.push("/admin/dishes");
+    })
+    .finally(() => {
+      isSubmitting.value = false;
+    });
 };
 </script>
