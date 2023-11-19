@@ -1,6 +1,6 @@
 <template>
   <big-spinner v-if="isSubscribing" />
-  <q-form v-else @submit="onSubmit" class="q-gutter-md max-w-sm q-mx-auto">
+  <q-form v-else @submit="onSubmit" class="q-gutter-md max-w-md q-mx-auto">
     <!-- TODO: add validations -->
     <q-card class="q-pa-md">
       <q-card-section>
@@ -67,6 +67,76 @@
           ]"
         />
         <q-toggle v-model="isActive" :label="t.active" size="lg" left-label />
+        <div class="icons-md">
+          <label class="q-mb-sm q-mt-sm d-block">{{ t.description }}</label>
+          <q-editor
+            v-model="description"
+            :placeholder="t.dishDescriptionPlaceholder"
+            :toolbar="[
+              ['bold', 'italic', 'strike', 'underline'],
+              ['token', 'hr', 'link', 'custom_btn'],
+              [
+                {
+                  label: $q.lang.editor.align,
+                  icon: $q.iconSet.editor.align,
+                  fixedLabel: true,
+                  options: ['left', 'center', 'right', 'justify'],
+                },
+                {
+                  label: $q.lang.editor.formatting,
+                  icon: $q.iconSet.editor.formatting,
+                  list: 'no-icons',
+                  options: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'code'],
+                },
+                {
+                  label: $q.lang.editor.fontSize,
+                  icon: $q.iconSet.editor.fontSize,
+                  fixedLabel: true,
+                  fixedIcon: true,
+                  list: 'no-icons',
+                  options: [
+                    'size-1',
+                    'size-2',
+                    'size-3',
+                    'size-4',
+                    'size-5',
+                    'size-6',
+                    'size-7',
+                  ],
+                },
+                {
+                  label: $q.lang.editor.defaultFont,
+                  icon: $q.iconSet.editor.font,
+                  fixedIcon: true,
+                  list: 'no-icons',
+                  options: [
+                    'default_font',
+                    'arial',
+                    'arial_black',
+                    'comic_sans',
+                    'courier_new',
+                    'impact',
+                    'lucida_grande',
+                    'times_new_roman',
+                    'verdana',
+                  ],
+                },
+              ],
+              ['print', 'fullscreen'],
+              ['undo', 'redo'],
+            ]"
+            :fonts="{
+              arial: 'Arial',
+              arial_black: 'Arial Black',
+              comic_sans: 'Comic Sans MS',
+              courier_new: 'Courier New',
+              impact: 'Impact',
+              lucida_grande: 'Lucida Grande',
+              times_new_roman: 'Times New Roman',
+              verdana: 'Verdana',
+            }"
+          />
+        </div>
       </q-card-section>
     </q-card>
 
@@ -116,7 +186,7 @@ const weight = ref<number>();
 const category = ref<IDishCategoriesState["categories"][number]>();
 const filteredCategoryNames = ref<string[]>();
 const isActive = ref(true);
-const description = ref<string>();
+const description = ref("");
 
 const id = computed(() => router.currentRoute.value.params.id);
 const originalDish = computed(() => {
