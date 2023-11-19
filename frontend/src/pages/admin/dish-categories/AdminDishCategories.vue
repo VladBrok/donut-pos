@@ -6,7 +6,7 @@
       class="q-mx-auto max-w-md sticky-last-column-table"
       :rows="store.state.dishCategories.categories"
       :columns="columns"
-      row-key="name"
+      row-key="id"
       :rows-per-page-label="t.perPage"
       :loading="isDeleting"
       :pagination="{
