@@ -88,7 +88,7 @@ export async function getAllDishes(): Promise<DishModel[]> {
   const data = await db
     .select()
     .from(dish)
-    .leftJoin(dishCategory, eq(dish.id, dishCategory.id))
+    .leftJoin(dishCategory, eq(dish.categoryId, dishCategory.id))
     .orderBy(asc(dish.name));
 
   return dishAdapter(data);
