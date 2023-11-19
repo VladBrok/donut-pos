@@ -20,6 +20,19 @@
               t.maxLength({ max: MAX_DISH_NAME_LENGTH }),
           ]"
         />
+        <q-input
+          v-model.number="price"
+          :label="`${t.price} *`"
+          lazy-rules
+          type="number"
+          :rules="[
+            (val) => val != null || t.fieldRequired,
+            (val) =>
+              val <= MAX_DISH_PRICE || t.maxValue({ max: MAX_DISH_PRICE }),
+            (val) =>
+              val >= MIN_DISH_PRICE || t.minValue({ min: MIN_DISH_PRICE }),
+          ]"
+        />
       </q-card-section>
     </q-card>
 
@@ -37,7 +50,12 @@
 
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
-import { CHANNELS, MAX_DISH_NAME_LENGTH } from "donut-shared/src/constants";
+import {
+  CHANNELS,
+  MAX_DISH_NAME_LENGTH,
+  MAX_DISH_PRICE,
+  MIN_DISH_PRICE,
+} from "donut-shared/src/constants";
 import { Notify } from "quasar";
 import { useStore } from "src/store";
 import { computed, ref, watchEffect } from "vue";
@@ -56,6 +74,9 @@ const isSubmitting = ref(false);
 const name = ref("");
 const imageUrl = ref("");
 const imageFile = ref<File>();
+const price = ref<number>();
+const weight = ref<number>();
+const description = ref<string>();
 
 const id = computed(() => router.currentRoute.value.params.id);
 const originalDish = computed(() => {

@@ -58,9 +58,11 @@ const t = useI18nStore();
 const store = useStore();
 const router = useRouter();
 const isSubmitting = ref(false);
+
 const name = ref("");
 const imageUrl = ref("");
 const imageFile = ref<File>();
+
 const id = computed(() => router.currentRoute.value.params.id);
 const originalCategory = computed(() => {
   return id.value
