@@ -109,14 +109,15 @@ export async function createDish(data: Omit<DishModel, "id">) {
   return toCreate;
 }
 
-export async function updateDish(data: Partial<DishModel>) {
+export async function updateDish(
+  data: Partial<DishModel> & { categoryId: string }
+) {
   await db
     .update(dish)
     .set({
       ...data,
       weight: data.weight?.toString(),
       price: data.price?.toString(),
-      categoryId: data.category?.id,
     })
     .where(eq(dish.id, data.id || ""));
   return data;

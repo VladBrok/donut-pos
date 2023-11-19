@@ -74,12 +74,18 @@ export default function dishesModule(server: Server) {
         return;
       }
 
-      const toUpdate: Partial<DishModel> & { imageBase64?: string } = {
+      const toUpdate: Partial<DishModel> & {
+        imageBase64?: string;
+        categoryId?: string;
+      } = {
         ...action.payload,
         ...(uploadedImage && { imageUrl: uploadedImage.url }),
+        categoryId: action.payload.category.id,
       };
       delete toUpdate.imageBase64;
-      const updated = await db.updateDish(toUpdate);
+      const updated = structuredClone(toUpdate);
+      delete toUpdate.category;
+      await db.updateDish(toUpdate);
       await server.process(dishUpdatedAction(updated));
     },
   });

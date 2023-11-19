@@ -117,6 +117,7 @@
                     'verdana',
                   ],
                 },
+                'removeFormat',
               ],
               ['print', 'fullscreen'],
               ['undo', 'redo'],
@@ -150,7 +151,7 @@
 
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
-import { createDishAction } from "donut-shared/src/actions";
+import { createDishAction, updateDishAction } from "donut-shared/src/actions";
 import {
   CHANNELS,
   MAX_DISH_NAME_LENGTH,
@@ -253,27 +254,30 @@ const onSubmit = async () => {
   isSubmitting.value = true;
   store.commit
     .sync(
-      createDishAction({
-        name: name.value,
-        price: price.value || 0,
-        category: store.state.dishCategories.categories.find(
-          (x) => x.name === categoryName.value
-        )!,
-        description: description.value,
-        imageBase64,
-        isActive: isActive.value,
-        weight: weight.value || 0,
-      })
-      // originalDish.value
-      //   ? updateDishCategoryAction({
-      //       id: originalDish.value.id,
-      //       name: name.value,
-      //       imageBase64: imageBase64,
-      //     })
-      //   : createDishCategoryAction({
-      //       name: name.value,
-      //       imageBase64: imageBase64,
-      //     })
+      originalDish.value
+        ? updateDishAction({
+            id: originalDish.value.id,
+            name: name.value,
+            price: price.value || 0,
+            category: store.state.dishCategories.categories.find(
+              (x) => x.name === categoryName.value
+            )!,
+            description: description.value,
+            imageBase64,
+            isActive: isActive.value,
+            weight: weight.value || 0,
+          })
+        : createDishAction({
+            name: name.value,
+            price: price.value || 0,
+            category: store.state.dishCategories.categories.find(
+              (x) => x.name === categoryName.value
+            )!,
+            description: description.value,
+            imageBase64,
+            isActive: isActive.value,
+            weight: weight.value || 0,
+          })
     )
     .then(() => {
       Notify.create({
