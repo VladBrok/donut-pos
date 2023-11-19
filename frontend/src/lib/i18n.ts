@@ -40,7 +40,7 @@ export const messages = i18n("admin", {
   fieldRequired: "The field is required",
   maxLength: params("Max length is {max}"),
   minValue: params("Min value is {min}"),
-  maxValue: params("Min value is {max}"),
+  maxValue: params("Max value is {max}"),
   maxFileSize: params("Max file size is {max} mb"),
   allowedFilesAre: params("Allowed file types are {allowed}"),
   save: "Save",
