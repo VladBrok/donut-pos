@@ -100,7 +100,7 @@
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
 import { assert } from "donut-shared";
-import { deleteDishAction } from "donut-shared/src/actions";
+import { deleteDishAction } from "donut-shared/src/actions/dishes";
 import { CHANNELS } from "donut-shared/src/constants";
 import { Notify } from "quasar";
 import { useStore } from "src/store";

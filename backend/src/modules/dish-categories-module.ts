@@ -1,20 +1,21 @@
-import { Server } from "@logux/server";
-import {
-  deleteDishCategoryAction,
-  loadDishCategoriesAction,
-} from "donut-shared";
+import { Action, Server, ServerMeta } from "@logux/server";
 import {
   createDishCategoryAction,
+  deleteDishCategoryAction,
   dishCategoryCreatedAction,
   dishCategoryDeletedAction,
   dishCategoryUpdatedAction,
+  loadDishCategoriesAction,
   updateDishCategoryAction,
-} from "donut-shared/src/actions.js";
-import { CHANNELS } from "donut-shared/src/constants.js";
-import { IMAGE_UPLOAD_FAIL } from "donut-shared/src/errors.js";
-import { logError } from "donut-shared/src/log.js";
-import * as db from "../lib/db/index.js";
+} from "donut-shared/src/actions/dish-categories.js";
+import {
+  CATEGORY_NAME_EXISTS,
+  CHANNELS,
+  IMAGE_UPLOAD_FAIL,
+} from "donut-shared/src/constants.js";
+import { logError } from "donut-shared/src/lib/log.js";
 import { DishCategoryModel } from "../lib/db/models.js";
+import * as db from "../lib/db/modules/dish-categories.js";
 import { uploadImage } from "../lib/images.js";
 import { hasAdminPermission } from "../lib/permissions.js";
 
@@ -34,6 +35,17 @@ export default function dishCategoriesModule(server: Server) {
       return await hasAdminPermission(ctx.userId);
     },
     async process(ctx, action, meta) {
+      if (
+        !(await validateDishCategoryName(
+          server,
+          action,
+          meta,
+          action.payload.name
+        ))
+      ) {
+        return;
+      }
+
       let uploadedImage = null;
       try {
         uploadedImage = await uploadImage(action.payload.imageBase64);
@@ -65,6 +77,17 @@ export default function dishCategoriesModule(server: Server) {
       return await hasAdminPermission(ctx.userId);
     },
     async process(ctx, action, meta) {
+      if (
+        !(await validateDishCategoryName(
+          server,
+          action,
+          meta,
+          action.payload.name
+        ))
+      ) {
+        return;
+      }
+
       let uploadedImage = null;
       try {
         if (action.payload.imageBase64) {
@@ -118,4 +141,24 @@ export default function dishCategoriesModule(server: Server) {
       return CHANNELS.DISH_CATEGORIES;
     },
   });
+}
+
+async function validateDishCategoryName(
+  server: Server,
+  action: Action,
+  meta: ServerMeta,
+  name?: string
+) {
+  if (!name) {
+    return true;
+  }
+
+  const existing = await db.getDishCategoryByName(name);
+
+  if (existing) {
+    server.undo(action, meta, CATEGORY_NAME_EXISTS);
+    return false;
+  }
+
+  return true;
 }

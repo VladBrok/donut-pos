@@ -10,6 +10,10 @@
   display: none;
 }
 
+.min-height-window {
+  min-height: 100vh;
+}
+
 .w-fit {
   width: fit-content;
 }
@@ -34,6 +38,10 @@
 
 .max-w-sm {
   max-width: 500px;
+}
+
+.text-label {
+  color: $input-label-color;
 }
 
 .absolute-bottom-right-offset {
@@ -71,9 +79,19 @@
 }
 
 .q-table th {
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .q-table tbody td {
-  font-size: 14px;
+  font-size: 16px;
+}
+
+.q-field.q-field--float .q-field__label {
+  font-size: 20px;
+  top: 10px;
+  line-height: unset;
+}
+
+.q-toggle__label {
+  color: $input-label-color;
 }

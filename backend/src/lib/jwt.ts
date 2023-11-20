@@ -1,4 +1,4 @@
-import { logError } from "donut-shared/src/log.js";
+import { logError } from "donut-shared/src/lib/log.js";
 import jwt from "jsonwebtoken";
 
 export interface JwtPayload {

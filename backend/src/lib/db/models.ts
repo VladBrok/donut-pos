@@ -1,5 +1,5 @@
-import { loadDishCategoriesAction } from "donut-shared";
-import { loadDishesAction } from "donut-shared/src/actions.js";
+import { loadDishCategoriesAction } from "donut-shared/src/actions/dish-categories.js";
+import { loadDishesAction } from "donut-shared/src/actions/dishes.js";
 
 export interface EmployeeModel {
   id: string;

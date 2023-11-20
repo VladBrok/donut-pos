@@ -3,7 +3,7 @@ import {
   dishDeletedAction,
   dishUpdatedAction,
   loadDishesAction,
-} from "donut-shared/src/actions";
+} from "donut-shared/src/actions/dishes";
 import { MutationTree } from "vuex";
 import { IDishesState } from "./state";
 

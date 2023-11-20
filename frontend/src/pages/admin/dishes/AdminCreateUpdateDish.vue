@@ -1,14 +1,15 @@
 <template>
   <big-spinner v-if="isSubscribing" />
-  <q-form v-else @submit="onSubmit" class="q-gutter-md max-w-md q-mx-auto">
+  <q-form v-else @submit="onSubmit" class="max-w-md q-mx-auto">
     <q-card class="q-pa-md">
-      <q-card-section>
+      <q-card-section class="q-gutter-lg">
         <photo-upload
           v-model:url="imageUrl"
           v-model:file="imageFile"
         ></photo-upload>
         <q-input
           v-model="name"
+          stack-label
           :label="`${t.dishNameLabel} *`"
           lazy-rules
           type="text"
@@ -23,6 +24,7 @@
           v-model="categoryName"
           use-input
           fill-input
+          stack-label
           clearable
           hide-selected
           input-debounce="0"
@@ -41,6 +43,7 @@
         </q-select>
         <q-input
           v-model.number="price"
+          stack-label
           :label="`${t.price} *`"
           lazy-rules
           type="number"
@@ -55,6 +58,7 @@
         />
         <q-input
           v-model.number="weight"
+          stack-label
           :label="`${t.weight} *`"
           lazy-rules
           type="number"
@@ -69,7 +73,9 @@
         />
         <q-toggle v-model="isActive" :label="t.active" size="lg" left-label />
         <div class="icons-md">
-          <label class="q-mb-sm q-mt-sm d-block">{{ t.description }}</label>
+          <label class="q-mb-sm q-mt-md d-block text-label">{{
+            t.description
+          }}</label>
           <q-editor
             v-model="description"
             :placeholder="t.dishDescriptionPlaceholder"
@@ -135,7 +141,7 @@
       </q-card-section>
     </q-card>
 
-    <div class="row justify-end q-gutter-sm">
+    <div class="row justify-end q-gutter-sm q-mt-md">
       <q-btn :label="t.cancel" @click="() => router.back()" color="dark" flat />
       <q-btn
         :label="t.save"
@@ -149,7 +155,10 @@
 
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
-import { createDishAction, updateDishAction } from "donut-shared/src/actions";
+import {
+  createDishAction,
+  updateDishAction,
+} from "donut-shared/src/actions/dishes";
 import {
   CHANNELS,
   MAX_DISH_NAME_LENGTH,
@@ -197,19 +206,25 @@ const channels = computed(() =>
 );
 let isSubscribing = useSubscription(channels, { store: store as any });
 
-watchEffect(() => {
-  if (originalDish.value) {
-    name.value = originalDish.value.name;
-    imageUrl.value = originalDish.value.imageUrl;
-    price.value = originalDish.value.price;
-    weight.value = originalDish.value.weight;
-    categoryName.value = originalDish.value.category?.name || "";
-    isActive.value = originalDish.value.isActive;
-    description.value = sanitizeHtml(originalDish.value.description);
-  } else if (id.value && store.state.dishes.dishes.length) {
-    router.push("/404");
+const unsubscribe = watchEffect(
+  () => {
+    if (originalDish.value) {
+      name.value = originalDish.value.name;
+      imageUrl.value = originalDish.value.imageUrl;
+      price.value = originalDish.value.price;
+      weight.value = originalDish.value.weight;
+      categoryName.value = originalDish.value.category?.name || "";
+      isActive.value = originalDish.value.isActive;
+      description.value = sanitizeHtml(originalDish.value.description);
+      unsubscribe();
+    } else if (id.value && store.state.dishes.dishes.length) {
+      router.push("/404");
+    }
+  },
+  {
+    flush: "post",
   }
-});
+);
 
 watch(
   isSubscribing,

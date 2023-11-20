@@ -1,14 +1,15 @@
 <template>
   <big-spinner v-if="isSubscribing" />
-  <q-form v-else @submit="onSubmit" class="q-gutter-md max-w-sm q-mx-auto">
+  <q-form v-else @submit="onSubmit" class="max-w-sm q-mx-auto">
     <q-card class="q-pa-md">
-      <q-card-section>
+      <q-card-section class="q-gutter-lg">
         <photo-upload
           v-model:url="imageUrl"
           v-model:file="imageFile"
         ></photo-upload>
         <q-input
           v-model="name"
+          stack-label
           :label="`${t.categoryNameLabel} *`"
           lazy-rules
           type="text"
@@ -22,7 +23,7 @@
       </q-card-section>
     </q-card>
 
-    <div class="row justify-end q-gutter-sm">
+    <div class="row justify-end q-gutter-sm q-mt-md">
       <q-btn :label="t.cancel" @click="() => router.back()" color="dark" flat />
       <q-btn
         :label="t.save"
@@ -39,7 +40,7 @@ import { useSubscription } from "@logux/vuex";
 import {
   createDishCategoryAction,
   updateDishCategoryAction,
-} from "donut-shared";
+} from "donut-shared/src/actions/dish-categories";
 import {
   CHANNELS,
   MAX_DISH_CATEGORY_NAME_LENGTH,
@@ -74,14 +75,18 @@ const channels = computed(() =>
 );
 let isSubscribing = useSubscription(channels, { store: store as any });
 
-watchEffect(() => {
-  if (originalCategory.value) {
-    name.value = originalCategory.value.name;
-    imageUrl.value = originalCategory.value.imageUrl;
-  } else if (id.value && store.state.dishCategories.categories.length) {
-    router.push("/404");
-  }
-});
+const unsubscribe = watchEffect(
+  () => {
+    if (originalCategory.value) {
+      name.value = originalCategory.value.name;
+      imageUrl.value = originalCategory.value.imageUrl;
+      unsubscribe();
+    } else if (id.value && store.state.dishCategories.categories.length) {
+      router.push("/404");
+    }
+  },
+  { flush: "post" }
+);
 
 const onSubmit = async () => {
   let imageBase64 = "";

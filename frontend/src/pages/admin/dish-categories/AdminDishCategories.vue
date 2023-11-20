@@ -84,7 +84,8 @@
 
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
-import { assert, deleteDishCategoryAction } from "donut-shared";
+import { assert } from "donut-shared";
+import { deleteDishCategoryAction } from "donut-shared/src/actions/dish-categories";
 import { CHANNELS } from "donut-shared/src/constants";
 import { Notify } from "quasar";
 import { useStore } from "src/store";

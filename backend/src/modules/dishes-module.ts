@@ -8,11 +8,11 @@ import {
   dishUpdatedAction,
   loadDishesAction,
   updateDishAction,
-} from "donut-shared/src/actions.js";
+} from "donut-shared/src/actions/dishes.js";
 import { CHANNELS } from "donut-shared/src/constants.js";
-import { logError } from "donut-shared/src/log.js";
-import * as db from "../lib/db/index.js";
+import { logError } from "donut-shared/src/lib/log.js";
 import { DishModel } from "../lib/db/models.js";
+import * as db from "../lib/db/modules/dishes.js";
 import { uploadImage } from "../lib/images.js";
 import { hasAdminPermission } from "../lib/permissions.js";
 
@@ -76,7 +76,7 @@ export default function dishesModule(server: Server) {
 
       const toUpdate: Partial<DishModel> & {
         imageBase64?: string;
-        categoryId?: string;
+        categoryId: string;
       } = {
         ...action.payload,
         ...(uploadedImage && { imageUrl: uploadedImage.url }),

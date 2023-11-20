@@ -51,7 +51,7 @@
 </template>
 
 <script setup lang="ts">
-import { logoutAction } from "donut-shared";
+import { logoutAction } from "donut-shared/src/actions/auth";
 import { ref } from "vue";
 import { useI18nStore } from "../lib/i18n";
 import { useStore } from "../store";
