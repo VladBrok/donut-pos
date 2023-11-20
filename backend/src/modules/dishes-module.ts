@@ -11,8 +11,8 @@ import {
 } from "donut-shared/src/actions/dishes.js";
 import { CHANNELS } from "donut-shared/src/constants.js";
 import { logError } from "donut-shared/src/lib/log.js";
-import * as db from "../lib/db/index.js";
 import { DishModel } from "../lib/db/models.js";
+import * as db from "../lib/db/modules/dishes.js";
 import { uploadImage } from "../lib/images.js";
 import { hasAdminPermission } from "../lib/permissions.js";
 

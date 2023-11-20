@@ -2,7 +2,7 @@
   <big-spinner v-if="isSubscribing" />
   <q-form v-else @submit="onSubmit" class="max-w-md q-mx-auto">
     <q-card class="q-pa-md">
-      <q-card-section>
+      <q-card-section class="q-gutter-lg">
         <photo-upload
           v-model:url="imageUrl"
           v-model:file="imageFile"

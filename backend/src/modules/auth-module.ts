@@ -2,7 +2,7 @@ import { Server } from "@logux/server";
 import { ANONYMOUS, USER_NOT_FOUND, WRONG_PASSWORD } from "donut-shared";
 import { loggedInAction, loginAction } from "donut-shared/src/actions/auth.js";
 import { compareWithHash } from "../lib/crypt.js";
-import * as db from "../lib/db/index.js";
+import * as db from "../lib/db/modules/employees.js";
 import { decodeJwt, encodeJwt } from "../lib/jwt.js";
 
 export default function authModule(server: Server) {

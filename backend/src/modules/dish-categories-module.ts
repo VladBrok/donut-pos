@@ -10,8 +10,8 @@ import {
 } from "donut-shared/src/actions/dish-categories.js";
 import { CHANNELS, IMAGE_UPLOAD_FAIL } from "donut-shared/src/constants.js";
 import { logError } from "donut-shared/src/lib/log.js";
-import * as db from "../lib/db/index.js";
 import { DishCategoryModel } from "../lib/db/models.js";
+import * as db from "../lib/db/modules/dish-categories.js";
 import { uploadImage } from "../lib/images.js";
 import { hasAdminPermission } from "../lib/permissions.js";
 
