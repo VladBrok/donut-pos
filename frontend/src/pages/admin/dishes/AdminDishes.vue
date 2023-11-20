@@ -50,7 +50,6 @@
           />
         </q-td>
       </template>
-      <!-- TODO: extract actions and index as common -->
       <template v-slot:body-cell-actions="props">
         <q-td :props="props" auto-width>
           <q-btn
