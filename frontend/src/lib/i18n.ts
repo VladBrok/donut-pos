@@ -1,7 +1,10 @@
 import { browser, createI18n, localeFrom, params } from "@nanostores/i18n";
 import { useStore as useNanoStore } from "@nanostores/vue";
 import { USER_NOT_FOUND, WRONG_PASSWORD } from "donut-shared";
-import { IMAGE_UPLOAD_FAIL } from "donut-shared/src/constants";
+import {
+  CATEGORY_NAME_EXISTS,
+  IMAGE_UPLOAD_FAIL,
+} from "donut-shared/src/constants";
 
 export const locale = localeFrom(
   // atom("pl"),
@@ -83,6 +86,9 @@ export const messages = i18n("admin", {
   [USER_NOT_FOUND]: params("User with phone {phone} was not found"),
   [WRONG_PASSWORD]: "Wrong password",
   [IMAGE_UPLOAD_FAIL]: "Failed to upload the image",
+  [CATEGORY_NAME_EXISTS]: params(
+    'Category with name "{name}" already exists, please choose another name'
+  ),
   imageCorrupted: "The image is corrupted. Try to choose a different one",
 });
 

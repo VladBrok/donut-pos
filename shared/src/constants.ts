@@ -38,3 +38,4 @@ export const ALLOWED_IMAGE_EXTENSIONS = ALLOWED_IMAGE_TYPES.map(
 export const USER_NOT_FOUND = "userNotFound";
 export const WRONG_PASSWORD = "wrongPassword";
 export const IMAGE_UPLOAD_FAIL = "imageUploadFail";
+export const CATEGORY_NAME_EXISTS = "categoryNameExists";

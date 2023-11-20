@@ -1,5 +1,6 @@
 import { LoguxVuexStore } from "@logux/vuex";
 import { USER_NOT_FOUND } from "donut-shared";
+import { CATEGORY_NAME_EXISTS } from "donut-shared/src/constants";
 import { logError, logInfo, logWarn } from "donut-shared/src/lib/log";
 import { Notify } from "quasar";
 import { ERROR_TIMEOUT_MS, NO_TIMEOUT } from "../constants";
@@ -25,6 +26,10 @@ export function setUndoHandler(Store: LoguxVuexStore) {
         reason === USER_NOT_FOUND
           ? t.value.userNotFound({
               phone: undone.action.payload.phone,
+            })
+          : reason === CATEGORY_NAME_EXISTS
+          ? t.value.categoryNameExists({
+              name: undone.action.payload.name,
             })
           : (t.value as any)[reason];
     }
