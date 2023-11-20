@@ -54,12 +54,13 @@ export const messages = i18n("admin", {
   dishDescriptionPlaceholder: "The best dish",
 
   // Admin login page
-  loginPageTitle: "Login to Admin panel",
+  loginPageTitle: "Admin panel",
   passwordRequired: "Please enter a password",
   phoneRequired: "Please enter a phone number",
   phoneLabel: "Phone",
   phoneExample: "Example",
   passwordLabel: "Password",
+  logIn: "Login",
 
   // Confirmations
   confirmDishCategoryDelete: "Are you sure you want to delete category",

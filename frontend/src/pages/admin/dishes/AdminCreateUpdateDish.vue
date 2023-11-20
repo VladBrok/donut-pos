@@ -9,6 +9,7 @@
         ></photo-upload>
         <q-input
           v-model="name"
+          stack-label
           :label="`${t.dishNameLabel} *`"
           lazy-rules
           type="text"
@@ -23,6 +24,7 @@
           v-model="categoryName"
           use-input
           fill-input
+          stack-label
           clearable
           hide-selected
           input-debounce="0"
@@ -41,6 +43,7 @@
         </q-select>
         <q-input
           v-model.number="price"
+          stack-label
           :label="`${t.price} *`"
           lazy-rules
           type="number"
@@ -55,6 +58,7 @@
         />
         <q-input
           v-model.number="weight"
+          stack-label
           :label="`${t.weight} *`"
           lazy-rules
           type="number"
@@ -69,7 +73,9 @@
         />
         <q-toggle v-model="isActive" :label="t.active" size="lg" left-label />
         <div class="icons-md">
-          <label class="q-mb-sm q-mt-md d-block">{{ t.description }}</label>
+          <label class="q-mb-sm q-mt-md d-block text-label">{{
+            t.description
+          }}</label>
           <q-editor
             v-model="description"
             :placeholder="t.dishDescriptionPlaceholder"

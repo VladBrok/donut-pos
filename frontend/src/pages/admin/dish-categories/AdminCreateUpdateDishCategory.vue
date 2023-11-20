@@ -2,13 +2,14 @@
   <big-spinner v-if="isSubscribing" />
   <q-form v-else @submit="onSubmit" class="max-w-sm q-mx-auto">
     <q-card class="q-pa-md">
-      <q-card-section>
+      <q-card-section class="q-gutter-lg">
         <photo-upload
           v-model:url="imageUrl"
           v-model:file="imageFile"
         ></photo-upload>
         <q-input
           v-model="name"
+          stack-label
           :label="`${t.categoryNameLabel} *`"
           lazy-rules
           type="text"
