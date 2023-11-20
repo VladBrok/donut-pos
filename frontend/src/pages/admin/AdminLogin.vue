@@ -53,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-import { loginAction } from "donut-shared";
+import { loginAction } from "donut-shared/src/actions/auth";
 import { useStore } from "src/store";
 import { ref } from "vue";
 import { useRouter } from "vue-router";

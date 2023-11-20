@@ -1,4 +1,4 @@
-import { loadDishCategoriesAction } from "donut-shared";
+import { loadDishCategoriesAction } from "donut-shared/src/actions/dish-categories";
 
 export interface IDishCategoriesState {
   categories: ReturnType<

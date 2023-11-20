@@ -1,18 +1,15 @@
 import { Server } from "@logux/server";
 import {
-  deleteDishCategoryAction,
-  loadDishCategoriesAction,
-} from "donut-shared";
-import {
   createDishCategoryAction,
+  deleteDishCategoryAction,
   dishCategoryCreatedAction,
   dishCategoryDeletedAction,
   dishCategoryUpdatedAction,
+  loadDishCategoriesAction,
   updateDishCategoryAction,
-} from "donut-shared/src/actions.js";
-import { CHANNELS } from "donut-shared/src/constants.js";
-import { IMAGE_UPLOAD_FAIL } from "donut-shared/src/errors.js";
-import { logError } from "donut-shared/src/log.js";
+} from "donut-shared/src/actions/dish-categories.js";
+import { CHANNELS, IMAGE_UPLOAD_FAIL } from "donut-shared/src/constants.js";
+import { logError } from "donut-shared/src/lib/log.js";
 import * as db from "../lib/db/index.js";
 import { DishCategoryModel } from "../lib/db/models.js";
 import { uploadImage } from "../lib/images.js";

@@ -155,7 +155,10 @@
 
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
-import { createDishAction, updateDishAction } from "donut-shared/src/actions";
+import {
+  createDishAction,
+  updateDishAction,
+} from "donut-shared/src/actions/dishes";
 import {
   CHANNELS,
   MAX_DISH_NAME_LENGTH,

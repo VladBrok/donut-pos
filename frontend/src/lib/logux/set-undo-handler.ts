@@ -1,6 +1,6 @@
 import { LoguxVuexStore } from "@logux/vuex";
 import { USER_NOT_FOUND } from "donut-shared";
-import { logError, logInfo, logWarn } from "donut-shared/src/log";
+import { logError, logInfo, logWarn } from "donut-shared/src/lib/log";
 import { Notify } from "quasar";
 import { ERROR_TIMEOUT_MS, NO_TIMEOUT } from "../constants";
 import { useI18nStore } from "../i18n";

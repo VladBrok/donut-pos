@@ -1,3 +1,5 @@
+// Misc
+
 export const CHANNELS = {
   DISH_CATEGORIES: "dishCategories",
   DISHES: "dishes",
@@ -30,3 +32,9 @@ export const ALLOWED_IMAGE_TYPES = [
 export const ALLOWED_IMAGE_EXTENSIONS = ALLOWED_IMAGE_TYPES.map(
   (x) => `.${x.slice(x.indexOf("/") + 1)}`
 );
+
+// Errors
+
+export const USER_NOT_FOUND = "userNotFound";
+export const WRONG_PASSWORD = "wrongPassword";
+export const IMAGE_UPLOAD_FAIL = "imageUploadFail";

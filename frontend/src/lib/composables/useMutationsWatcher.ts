@@ -1,4 +1,5 @@
-import { assert, loggedInAction, logoutAction } from "donut-shared";
+import { assert } from "donut-shared";
+import { loggedInAction, logoutAction } from "donut-shared/src/actions/auth";
 import { ANONYMOUS } from "donut-shared/src/constants";
 import { useStore } from "src/store";
 import { onMounted, onUnmounted, ref } from "vue";

@@ -1,7 +1,7 @@
 import { browser, createI18n, localeFrom, params } from "@nanostores/i18n";
 import { useStore as useNanoStore } from "@nanostores/vue";
 import { USER_NOT_FOUND, WRONG_PASSWORD } from "donut-shared";
-import { IMAGE_UPLOAD_FAIL } from "donut-shared/src/errors";
+import { IMAGE_UPLOAD_FAIL } from "donut-shared/src/constants";
 
 export const locale = localeFrom(
   // atom("pl"),

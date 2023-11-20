@@ -1,9 +1,9 @@
-import { loadDishCategoriesAction } from "donut-shared";
 import {
   dishCategoryCreatedAction,
   dishCategoryDeletedAction,
   dishCategoryUpdatedAction,
-} from "donut-shared/src/actions";
+  loadDishCategoriesAction,
+} from "donut-shared/src/actions/dish-categories";
 import { MutationTree } from "vuex";
 import { IDishCategoriesState } from "./state";
 

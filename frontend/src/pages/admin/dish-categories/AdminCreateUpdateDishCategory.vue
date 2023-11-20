@@ -40,7 +40,7 @@ import { useSubscription } from "@logux/vuex";
 import {
   createDishCategoryAction,
   updateDishCategoryAction,
-} from "donut-shared";
+} from "donut-shared/src/actions/dish-categories";
 import {
   CHANNELS,
   MAX_DISH_CATEGORY_NAME_LENGTH,

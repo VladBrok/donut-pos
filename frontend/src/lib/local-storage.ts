@@ -1,4 +1,4 @@
-import { loggedInAction } from "donut-shared";
+import { loggedInAction } from "donut-shared/src/actions/auth";
 
 export enum Keys {
   User = "user_data",
