@@ -75,14 +75,18 @@ const channels = computed(() =>
 );
 let isSubscribing = useSubscription(channels, { store: store as any });
 
-watchEffect(() => {
-  if (originalCategory.value) {
-    name.value = originalCategory.value.name;
-    imageUrl.value = originalCategory.value.imageUrl;
-  } else if (id.value && store.state.dishCategories.categories.length) {
-    router.push("/404");
-  }
-});
+const unsubscribe = watchEffect(
+  () => {
+    if (originalCategory.value) {
+      name.value = originalCategory.value.name;
+      imageUrl.value = originalCategory.value.imageUrl;
+      unsubscribe();
+    } else if (id.value && store.state.dishCategories.categories.length) {
+      router.push("/404");
+    }
+  },
+  { flush: "post" }
+);
 
 const onSubmit = async () => {
   let imageBase64 = "";

@@ -206,19 +206,25 @@ const channels = computed(() =>
 );
 let isSubscribing = useSubscription(channels, { store: store as any });
 
-watchEffect(() => {
-  if (originalDish.value) {
-    name.value = originalDish.value.name;
-    imageUrl.value = originalDish.value.imageUrl;
-    price.value = originalDish.value.price;
-    weight.value = originalDish.value.weight;
-    categoryName.value = originalDish.value.category?.name || "";
-    isActive.value = originalDish.value.isActive;
-    description.value = sanitizeHtml(originalDish.value.description);
-  } else if (id.value && store.state.dishes.dishes.length) {
-    router.push("/404");
+const unsubscribe = watchEffect(
+  () => {
+    if (originalDish.value) {
+      name.value = originalDish.value.name;
+      imageUrl.value = originalDish.value.imageUrl;
+      price.value = originalDish.value.price;
+      weight.value = originalDish.value.weight;
+      categoryName.value = originalDish.value.category?.name || "";
+      isActive.value = originalDish.value.isActive;
+      description.value = sanitizeHtml(originalDish.value.description);
+      unsubscribe();
+    } else if (id.value && store.state.dishes.dishes.length) {
+      router.push("/404");
+    }
+  },
+  {
+    flush: "post",
   }
-});
+);
 
 watch(
   isSubscribing,
