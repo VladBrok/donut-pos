@@ -60,7 +60,7 @@ export const messages = i18n("admin", {
   phoneLabel: "Phone",
   phoneExample: "Example",
   passwordLabel: "Password",
-  logIn: "Login",
+  logIn: "Log in",
 
   // Confirmations
   confirmDishCategoryDelete: "Are you sure you want to delete category",
