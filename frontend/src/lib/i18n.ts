@@ -87,7 +87,7 @@ export const messages = i18n("admin", {
   [WRONG_PASSWORD]: "Wrong password",
   [IMAGE_UPLOAD_FAIL]: "Failed to upload the image",
   [CATEGORY_NAME_EXISTS]: params(
-    'Category with name "{name}" already exists, please choose another name'
+    'Category with name "{name}" already exists. Please choose another name'
   ),
   imageCorrupted: "The image is corrupted. Try to choose a different one",
 });

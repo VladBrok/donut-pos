@@ -1,4 +1,4 @@
-import { asc, eq } from "drizzle-orm";
+import { asc, eq, ilike } from "drizzle-orm";
 import { dishCategory } from "../../../../migrations/schema.js";
 import { generateUuid } from "../../uuid.js";
 import { db } from "../index.js";
@@ -12,6 +12,21 @@ export async function getAllDishCategories(): Promise<DishCategoryModel[]> {
     .orderBy(asc(dishCategory.name));
 
   return dishCategoryAdapter(data);
+}
+
+export async function getDishCategoryByName(name: string) {
+  const category = (
+    await db
+      .select()
+      .from(dishCategory)
+      .where(ilike(dishCategory.name, name.trim()))
+  )[0];
+
+  if (!category) {
+    return null;
+  }
+
+  return category;
 }
 
 export async function deleteDishCategory(id: string) {
