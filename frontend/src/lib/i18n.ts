@@ -55,6 +55,7 @@ export const messages = i18n("admin", {
   confirm: "Confirm",
   noResults: "No results",
   dishDescriptionPlaceholder: "The best dish",
+  search: "Search",
 
   // Admin login page
   loginPageTitle: "Admin panel",

@@ -12,11 +12,12 @@ export function createFuzzySearcher<T extends object>(
 ) {
   const fuse = new Fuse(list, {
     keys: keys.map((x) => x.toString()),
+    threshold: 0.5,
   });
 
   return {
     search: (pattern: string) => {
-      return fuse.search(pattern).map((x) => x.item);
+      return pattern ? fuse.search(pattern).map((x) => x.item) : list;
     },
   };
 }

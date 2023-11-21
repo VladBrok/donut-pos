@@ -4,7 +4,7 @@
     <q-table
       v-else
       class="q-mx-auto max-w-md sticky-last-column-table"
-      :rows="store.state.dishCategories.categories"
+      :rows="categoriesFiltered"
       :columns="columns"
       row-key="id"
       :rows-per-page-label="t.perPage"
@@ -14,6 +14,16 @@
       }"
     >
       <template v-slot:top-right>
+        <q-input
+          dense
+          v-model="searchInput"
+          :placeholder="t.search"
+          class="q-mr-lg q-my-sm"
+        >
+          <template v-slot:append>
+            <q-icon name="search" />
+          </template>
+        </q-input>
         <q-btn
           color="primary"
           icon="add"
@@ -103,10 +113,14 @@ import { capitalize } from "../../../lib/utils/capitalize";
 import { IDishCategoriesState } from "../../../store/dish-categories/state";
 
 const store = useStore();
+const categories = computed(() => store.state.dishCategories.categories);
 const fuzzySearch = computed(() => {
   logInfo("creating a fuzzy search instance");
-  return createFuzzySearcher(store.state.dishCategories.categories, ["name"]);
+  return createFuzzySearcher(categories.value, ["name"]);
 });
+const categoriesFiltered = computed(() =>
+  fuzzySearch.value.search(searchInput.value)
+);
 const channels = computed(() => {
   return [CHANNELS.DISH_CATEGORIES];
 });
@@ -116,6 +130,7 @@ const confirmDelete = ref<null | IDishCategoriesState["categories"][number]>(
   null
 );
 const isDeleting = ref(false);
+const searchInput = ref("");
 
 const columns: any[] = [
   {
