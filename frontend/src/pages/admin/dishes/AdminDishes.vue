@@ -7,6 +7,7 @@
       :rows="dishesFiltered"
       :columns="columns"
       row-key="id"
+      binary-state-sort
       :rows-per-page-label="t.perPage"
       :loading="isDeleting"
       :pagination="{
@@ -167,12 +168,14 @@ const columns: any[] = [
     label: t.value.name,
     align: "center",
     field: "name",
+    sortable: true,
     format: capitalize,
   },
   {
     name: "category",
     label: t.value.category,
     align: "center",
+    sortable: true,
     field: (row: IDishesState["dishes"][number]) => {
       return row.category?.name || NO_DATA;
     },
@@ -183,6 +186,7 @@ const columns: any[] = [
     label: t.value.price,
     align: "center",
     field: "price",
+    sortable: true,
     format: (x: number) => x.toFixed(2),
   },
   {
@@ -190,6 +194,7 @@ const columns: any[] = [
     label: t.value.weight,
     align: "center",
     field: "weight",
+    sortable: true,
     format: (x: number) => x.toFixed(2),
   },
   {
@@ -197,6 +202,7 @@ const columns: any[] = [
     label: t.value.active,
     align: "center",
     field: "isActive",
+    sortable: true,
   },
   { name: "actions", label: "", align: "right" },
 ];
