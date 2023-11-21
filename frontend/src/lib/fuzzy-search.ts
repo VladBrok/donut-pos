@@ -11,7 +11,7 @@ export function createFuzzySearcher<T extends object>(
   keys: NestedKeyOf<T>[]
 ) {
   const fuse = new Fuse(list, {
-    keys: keys.map((x) => x.toString()),
+    keys: keys,
     threshold: 0.5,
   });
 
