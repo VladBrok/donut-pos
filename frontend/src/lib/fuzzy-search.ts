@@ -1,8 +1,10 @@
 import Fuse from "fuse.js";
 
 type NestedKeyOf<ObjectType extends object> = {
-  [Key in keyof ObjectType & (string | number)]: ObjectType[Key] extends object
-    ? `${Key}` | `${Key}.${NestedKeyOf<ObjectType[Key]>}`
+  [Key in keyof ObjectType & (string | number)]: NonNullable<
+    ObjectType[Key]
+  > extends object
+    ? `${Key}` | `${Key}.${NestedKeyOf<NonNullable<ObjectType[Key]>>}`
     : `${Key}`;
 }[keyof ObjectType & (string | number)];
 
