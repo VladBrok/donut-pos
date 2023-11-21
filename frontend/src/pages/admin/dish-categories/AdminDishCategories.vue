@@ -9,7 +9,6 @@
       row-key="id"
       :rows-per-page-label="t.perPage"
       :loading="isDeleting"
-      column-sort-order="da"
       binary-state-sort
       :pagination="{
         rowsPerPage: ROWS_PER_TABLE_PAGE,

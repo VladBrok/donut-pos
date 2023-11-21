@@ -1,4 +1,4 @@
-import { asc, eq, ilike } from "drizzle-orm";
+import { eq, ilike } from "drizzle-orm";
 import { dishCategory } from "../../../../migrations/schema.js";
 import { generateUuid } from "../../uuid.js";
 import { db } from "../index.js";
@@ -6,10 +6,7 @@ import { DishCategoryModel } from "../models.js";
 import { dishCategoryAdapter } from "../schema-to-model-adapters.js";
 
 export async function getAllDishCategories(): Promise<DishCategoryModel[]> {
-  const data = await db
-    .select()
-    .from(dishCategory)
-    .orderBy(asc(dishCategory.name));
+  const data = await db.select().from(dishCategory);
 
   return dishCategoryAdapter(data);
 }

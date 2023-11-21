@@ -1,6 +1,6 @@
 import { db } from "../index.js";
 
-import { asc, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { dish, dishCategory } from "../../../../migrations/schema.js";
 import { generateUuid } from "../../uuid.js";
 import { DishModel } from "../models.js";
@@ -10,8 +10,7 @@ export async function getAllDishes(): Promise<DishModel[]> {
   const data = await db
     .select()
     .from(dish)
-    .leftJoin(dishCategory, eq(dish.categoryId, dishCategory.id))
-    .orderBy(asc(dish.name));
+    .leftJoin(dishCategory, eq(dish.categoryId, dishCategory.id));
 
   return dishAdapter(data);
 }
