@@ -87,6 +87,7 @@ import { useSubscription } from "@logux/vuex";
 import { assert } from "donut-shared";
 import { deleteDishCategoryAction } from "donut-shared/src/actions/dish-categories";
 import { CHANNELS } from "donut-shared/src/constants";
+import { logInfo } from "donut-shared/src/lib/log";
 import { Notify } from "quasar";
 import { useStore } from "src/store";
 import { computed, ref } from "vue";
@@ -96,11 +97,16 @@ import {
   ROWS_PER_TABLE_PAGE,
   SUCCESS_TIMEOUT_MS,
 } from "../../../lib/constants";
+import { createFuzzySearcher } from "../../../lib/fuzzy-search";
 import { useI18nStore } from "../../../lib/i18n";
 import { capitalize } from "../../../lib/utils/capitalize";
 import { IDishCategoriesState } from "../../../store/dish-categories/state";
 
 const store = useStore();
+const fuzzySearch = computed(() => {
+  logInfo("creating a fuzzy search instance");
+  return createFuzzySearcher(store.state.dishCategories.categories, ["name"]);
+});
 const channels = computed(() => {
   return [CHANNELS.DISH_CATEGORIES];
 });
