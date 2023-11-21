@@ -4,9 +4,10 @@
     <q-table
       v-else
       class="q-mx-auto max-w-xl sticky-last-column-table"
-      :rows="store.state.dishes.dishes"
+      :rows="dishesFiltered"
       :columns="columns"
       row-key="id"
+      binary-state-sort
       :rows-per-page-label="t.perPage"
       :loading="isDeleting"
       :pagination="{
@@ -14,6 +15,16 @@
       }"
     >
       <template v-slot:top-right>
+        <q-input
+          dense
+          v-model="searchInput"
+          :placeholder="t.search"
+          class="q-mr-lg q-my-sm"
+        >
+          <template v-slot:append>
+            <q-icon name="search" />
+          </template>
+        </q-input>
         <q-btn
           color="primary"
           icon="add"
@@ -112,11 +123,24 @@ import {
   ROWS_PER_TABLE_PAGE,
   SUCCESS_TIMEOUT_MS,
 } from "../../../lib/constants";
+import { createFuzzySearcher } from "../../../lib/fuzzy-search";
 import { useI18nStore } from "../../../lib/i18n";
 import { capitalize } from "../../../lib/utils/capitalize";
 import { IDishesState } from "../../../store/dishes/state";
 
 const store = useStore();
+const dishes = computed(() => store.state.dishes.dishes);
+const fuzzySearch = computed(() =>
+  createFuzzySearcher(dishes.value, [
+    "name",
+    "category.name",
+    "price",
+    "weight",
+  ])
+);
+const dishesFiltered = computed(() =>
+  fuzzySearch.value.search(searchInput.value)
+);
 const channels = computed(() => {
   return [CHANNELS.DISHES];
 });
@@ -124,6 +148,7 @@ let isSubscribing = useSubscription(channels, { store: store as any });
 const t = useI18nStore();
 const confirmDelete = ref<null | IDishesState["dishes"][number]>(null);
 const isDeleting = ref(false);
+const searchInput = ref("");
 
 const columns: any[] = [
   {
@@ -143,12 +168,14 @@ const columns: any[] = [
     label: t.value.name,
     align: "center",
     field: "name",
+    sortable: true,
     format: capitalize,
   },
   {
     name: "category",
     label: t.value.category,
     align: "center",
+    sortable: true,
     field: (row: IDishesState["dishes"][number]) => {
       return row.category?.name || NO_DATA;
     },
@@ -159,6 +186,7 @@ const columns: any[] = [
     label: t.value.price,
     align: "center",
     field: "price",
+    sortable: true,
     format: (x: number) => x.toFixed(2),
   },
   {
@@ -166,6 +194,7 @@ const columns: any[] = [
     label: t.value.weight,
     align: "center",
     field: "weight",
+    sortable: true,
     format: (x: number) => x.toFixed(2),
   },
   {
@@ -173,6 +202,7 @@ const columns: any[] = [
     label: t.value.active,
     align: "center",
     field: "isActive",
+    sortable: true,
   },
   { name: "actions", label: "", align: "right" },
 ];
