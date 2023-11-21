@@ -97,7 +97,6 @@ import { useSubscription } from "@logux/vuex";
 import { assert } from "donut-shared";
 import { deleteDishCategoryAction } from "donut-shared/src/actions/dish-categories";
 import { CHANNELS } from "donut-shared/src/constants";
-import { logInfo } from "donut-shared/src/lib/log";
 import { Notify } from "quasar";
 import { useStore } from "src/store";
 import { computed, ref } from "vue";
@@ -114,10 +113,9 @@ import { IDishCategoriesState } from "../../../store/dish-categories/state";
 
 const store = useStore();
 const categories = computed(() => store.state.dishCategories.categories);
-const fuzzySearch = computed(() => {
-  logInfo("creating a fuzzy search instance");
-  return createFuzzySearcher(categories.value, ["name"]);
-});
+const fuzzySearch = computed(() =>
+  createFuzzySearcher(categories.value, ["name"])
+);
 const categoriesFiltered = computed(() =>
   fuzzySearch.value.search(searchInput.value)
 );
