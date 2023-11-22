@@ -75,6 +75,9 @@ const onSubmit = async () => {
       loginAction({
         phone: phone.value,
         password: password.value,
+        permissions: {
+          admin: true,
+        },
       })
     )
     .then(() => {
