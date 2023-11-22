@@ -6,18 +6,18 @@ import {
 } from "./schemas.js";
 
 export const employeeAdapter = (
-  data?: SelectEmployeeSchema | null
+  data: SelectEmployeeSchema[]
 ): EmployeeModel | null => {
-  if (!data) {
+  if (!data.length) {
     return null;
   }
 
   return {
-    id: data.employee.id,
-    passwordHash: data.employee.passwordHash || "",
-    phone: data.employee.phone || "",
+    id: data[0].employee.id,
+    passwordHash: data[0].employee.passwordHash || "",
+    phone: data[0].employee.phone || "",
     permissions: {
-      admin: data.role?.codeName === "admin",
+      admin: data.some((x) => x.permission?.codeName === "admin"),
     },
   };
 };

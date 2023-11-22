@@ -3,14 +3,15 @@ import { createAction } from "./index.js";
 export const loginAction = createAction<{
   phone: string;
   password: string;
+  permissions: {
+    admin?: boolean;
+  };
 }>("auth/login");
 
 export const loggedInAction = createAction<{
   userId: string;
   accessToken: string;
-  permissions: {
-    admin?: boolean;
-  };
+  permissions: ReturnType<typeof loginAction>["payload"]["permissions"];
 }>("auth/loggedIn");
 
 export const logoutAction = createAction<{

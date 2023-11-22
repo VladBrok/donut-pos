@@ -2,6 +2,7 @@ import { browser, createI18n, localeFrom, params } from "@nanostores/i18n";
 import { useStore as useNanoStore } from "@nanostores/vue";
 import { USER_NOT_FOUND, WRONG_PASSWORD } from "donut-shared";
 import {
+  ACCESS_DENIED,
   CATEGORY_NAME_EXISTS,
   IMAGE_UPLOAD_FAIL,
 } from "donut-shared/src/constants";
@@ -91,6 +92,7 @@ export const messages = i18n("admin", {
     'Category with name "{name}" already exists. Please choose another name'
   ),
   imageCorrupted: "The image is corrupted. Try to choose a different one",
+  [ACCESS_DENIED]: "Access denied",
 });
 
 export function useI18nStore() {

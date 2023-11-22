@@ -2,12 +2,16 @@ import {
   dish,
   dishCategory,
   employee,
+  permission,
   role,
+  roleToPermission,
 } from "../../../migrations/schema.js";
 
 export type SelectEmployeeSchema = {
   [employee._.name]: typeof employee.$inferSelect;
   [role._.name]: typeof role.$inferSelect | null;
+  [permission._.name]: typeof permission.$inferSelect | null;
+  [roleToPermission._.name]: typeof roleToPermission.$inferSelect | null;
 };
 
 export type DishCategorySchema = typeof dishCategory.$inferSelect;

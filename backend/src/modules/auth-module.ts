@@ -1,6 +1,7 @@
 import { Server } from "@logux/server";
 import { ANONYMOUS, USER_NOT_FOUND, WRONG_PASSWORD } from "donut-shared";
 import { loggedInAction, loginAction } from "donut-shared/src/actions/auth.js";
+import { ACCESS_DENIED } from "donut-shared/src/constants.js";
 import { compareWithHash } from "../lib/crypt.js";
 import * as db from "../lib/db/modules/employees.js";
 import { decodeJwt, encodeJwt } from "../lib/jwt.js";
@@ -32,6 +33,14 @@ export default function authModule(server: Server) {
       );
       if (!isPasswordValid) {
         await server.undo(action, meta, WRONG_PASSWORD);
+        return;
+      }
+
+      const hasExpectedPermission =
+        JSON.stringify(action.payload.permissions) ===
+        JSON.stringify(user.permissions);
+      if (!hasExpectedPermission) {
+        await server.undo(action, meta, ACCESS_DENIED);
         return;
       }
 
