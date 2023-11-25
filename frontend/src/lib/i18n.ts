@@ -66,6 +66,8 @@ export const messages = i18n("admin", {
   phoneExample: "Example",
   passwordLabel: "Password",
   logIn: "Log in",
+  showPassword: "Show password",
+  hidePassword: "Hide password",
 
   // Confirmations
   confirmDishCategoryDelete: "Are you sure you want to delete category",
