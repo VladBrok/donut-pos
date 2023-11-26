@@ -1,4 +1,4 @@
-import { Server } from "@logux/server";
+import { Action, Server, ServerMeta } from "@logux/server";
 import {
   IMAGE_UPLOAD_FAIL,
   createModificationAction,
@@ -9,7 +9,10 @@ import {
   modificationUpdatedAction,
   updateModificationAction,
 } from "donut-shared";
-import { CHANNELS } from "donut-shared/src/constants.js";
+import {
+  CHANNELS,
+  MODIFICATION_NAME_EXISTS,
+} from "donut-shared/src/constants.js";
 import { logError } from "donut-shared/src/lib/log.js";
 import { ModificationModel } from "../lib/db/models.js";
 import * as db from "../lib/db/modules/modifications.js";
@@ -32,6 +35,17 @@ export default function modificationsModule(server: Server) {
       return await hasAdminPermission(ctx.userId);
     },
     async process(ctx, action, meta) {
+      if (
+        !(await validateModificationCategoryName(
+          server,
+          action,
+          meta,
+          action.payload.name
+        ))
+      ) {
+        return;
+      }
+
       let uploadedImage = null;
       try {
         uploadedImage = await uploadImage(action.payload.imageBase64);
@@ -63,6 +77,17 @@ export default function modificationsModule(server: Server) {
       return await hasAdminPermission(ctx.userId);
     },
     async process(ctx, action, meta) {
+      if (
+        !(await validateModificationCategoryName(
+          server,
+          action,
+          meta,
+          action.payload.name
+        ))
+      ) {
+        return;
+      }
+
       let uploadedImage = null;
       try {
         if (action.payload.imageBase64) {
@@ -118,4 +143,24 @@ export default function modificationsModule(server: Server) {
       return CHANNELS.MODIFICATIONS;
     },
   });
+}
+
+async function validateModificationCategoryName(
+  server: Server,
+  action: Action,
+  meta: ServerMeta,
+  name?: string
+) {
+  if (!name) {
+    return true;
+  }
+
+  const existing = await db.getModificationByName(name);
+
+  if (existing) {
+    server.undo(action, meta, MODIFICATION_NAME_EXISTS);
+    return false;
+  }
+
+  return true;
 }

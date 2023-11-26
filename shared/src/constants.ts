@@ -48,4 +48,5 @@ export const USER_NOT_FOUND = "userNotFound";
 export const WRONG_PASSWORD = "wrongPassword";
 export const IMAGE_UPLOAD_FAIL = "imageUploadFail";
 export const CATEGORY_NAME_EXISTS = "categoryNameExists";
+export const MODIFICATION_NAME_EXISTS = "modificationNameExists";
 export const ACCESS_DENIED = "accessDenied";

@@ -5,6 +5,7 @@ import {
   ACCESS_DENIED,
   CATEGORY_NAME_EXISTS,
   IMAGE_UPLOAD_FAIL,
+  MODIFICATION_NAME_EXISTS,
 } from "donut-shared/src/constants";
 
 export const locale = localeFrom(
@@ -98,6 +99,9 @@ export const messages = i18n("admin", {
   [IMAGE_UPLOAD_FAIL]: "Failed to upload the image",
   [CATEGORY_NAME_EXISTS]: params(
     'Category with name "{name}" already exists. Please choose another name'
+  ),
+  [MODIFICATION_NAME_EXISTS]: params(
+    'Modification with name "{name}" already exists. Please choose another name'
   ),
   imageCorrupted: "The image is corrupted. Try to choose a different one",
   [ACCESS_DENIED]: "Access denied",
