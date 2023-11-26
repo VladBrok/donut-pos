@@ -1,3 +1,4 @@
+import { loadModificationsAction } from "donut-shared";
 import { loginAction } from "donut-shared/src/actions/auth.js";
 import { loadDishCategoriesAction } from "donut-shared/src/actions/dish-categories.js";
 import { loadDishesAction } from "donut-shared/src/actions/dishes.js";
@@ -16,3 +17,7 @@ export type DishCategoryModel = ReturnType<
 export type DishModel = ReturnType<
   typeof loadDishesAction
 >["payload"]["dishes"][number];
+
+export type ModificationModel = ReturnType<
+  typeof loadModificationsAction
+>["payload"]["modifications"][number];

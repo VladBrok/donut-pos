@@ -1,7 +1,13 @@
-import { DishCategoryModel, DishModel, EmployeeModel } from "./models.js";
+import {
+  DishCategoryModel,
+  DishModel,
+  EmployeeModel,
+  ModificationModel,
+} from "./models.js";
 import {
   DishCategorySchema,
   DishSchema,
+  ModificationSchema,
   SelectEmployeeSchema,
 } from "./schemas.js";
 
@@ -47,5 +53,17 @@ export const dishAdapter = (data: DishSchema[]): DishModel[] => {
     isActive: x.dish.isActive || false,
     weight: Number(x.dish.weight),
     price: Number(x.dish.price),
+  }));
+};
+
+export const modificationAdapter = (
+  data: ModificationSchema[]
+): ModificationModel[] => {
+  return data.map((x) => ({
+    id: x.id,
+    imageUrl: x.imageUrl || "",
+    name: x.name || "",
+    weight: Number(x.weight),
+    price: Number(x.price),
   }));
 };

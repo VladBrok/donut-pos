@@ -2,6 +2,7 @@ import {
   dish,
   dishCategory,
   employee,
+  modification,
   permission,
   role,
   roleToPermission,
@@ -20,3 +21,5 @@ export type DishSchema = {
   [dish._.name]: typeof dish.$inferSelect;
   [dishCategory._.name]: typeof dishCategory.$inferSelect | null;
 };
+
+export type ModificationSchema = typeof modification.$inferSelect;
