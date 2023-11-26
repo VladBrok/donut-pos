@@ -20,6 +20,8 @@ import dishCategories from "./dish-categories";
 import { IDishCategoriesState } from "./dish-categories/state";
 import dishes from "./dishes";
 import { IDishesState } from "./dishes/state";
+import employees from "./employees";
+import { IEmployeesState } from "./employees/state";
 import modifications from "./modifications";
 import { IModificationsState } from "./modifications/state";
 
@@ -29,6 +31,7 @@ export interface StateInterface {
   dishCategories: IDishCategoriesState;
   dishes: IDishesState;
   modifications: IModificationsState;
+  employees: IEmployeesState;
 }
 
 // provide typings for `this.$store`
@@ -61,6 +64,7 @@ export default store(function (/* { ssrContext } */) {
     dishCategories,
     dishes,
     modifications,
+    employees,
   };
 
   for (const module of Object.values(modules)) {
