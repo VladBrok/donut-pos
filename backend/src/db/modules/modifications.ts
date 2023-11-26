@@ -1,6 +1,6 @@
 import { eq, ilike } from "drizzle-orm";
-import { modification } from "../../../../migrations/schema.js";
-import { generateUuid } from "../../uuid.js";
+import { modification } from "../../../migrations/schema.js";
+import { generateUuid } from "../../lib/uuid.js";
 import { db } from "../index.js";
 import { ModificationModel } from "../models.js";
 import { modificationAdapter } from "../schema-to-model-adapters.js";

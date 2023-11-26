@@ -1,6 +1,6 @@
 import { eq, ilike } from "drizzle-orm";
-import { dishCategory } from "../../../../migrations/schema.js";
-import { generateUuid } from "../../uuid.js";
+import { dishCategory } from "../../../migrations/schema.js";
+import { generateUuid } from "../../lib/uuid.js";
 import { db } from "../index.js";
 import { DishCategoryModel } from "../models.js";
 import { dishCategoryAdapter } from "../schema-to-model-adapters.js";

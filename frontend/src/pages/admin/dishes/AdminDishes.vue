@@ -13,6 +13,7 @@
       :pagination="{
         rowsPerPage: ROWS_PER_TABLE_PAGE,
       }"
+      @row-click="(_, row) => $router.push(`/admin/dishes/update/${row.id}`)"
     >
       <template v-slot:top-right>
         <q-input
@@ -70,6 +71,7 @@
             color="primary"
             dense
             class="q-mr-sm"
+            @click.stop
             :to="`/admin/dishes/update/${props.row.id}`"
           >
           </q-btn>
@@ -79,7 +81,7 @@
             icon="o_delete"
             color="negative"
             dense
-            @click="onDeleteAttempt(props.row)"
+            @click.stop="onDeleteAttempt(props.row)"
           >
           </q-btn>
         </q-td>

@@ -7,7 +7,7 @@ import {
   permission,
   role,
   roleToPermission,
-} from "../../../migrations/schema.js";
+} from "../../migrations/schema.js";
 
 export type SelectEmployeeSchema = {
   [employee._.name]: typeof employee.$inferSelect;

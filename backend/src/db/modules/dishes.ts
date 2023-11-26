@@ -6,8 +6,8 @@ import {
   dishCategory,
   dishToModification,
   modification,
-} from "../../../../migrations/schema.js";
-import { generateUuid } from "../../uuid.js";
+} from "../../../migrations/schema.js";
+import { generateUuid } from "../../lib/uuid.js";
 import { DishModel } from "../models.js";
 import { dishAdapter } from "../schema-to-model-adapters.js";
 
