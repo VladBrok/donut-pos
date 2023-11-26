@@ -28,11 +28,14 @@
               :rules="[(val) => (val && val.length > 0) || t.passwordRequired]"
             >
               <template v-slot:append>
-                <q-icon
-                  :name="isHidePassword ? 'visibility_off' : 'visibility'"
-                  class="cursor-pointer"
+                <q-btn
+                  :aria-label="isHidePassword ? t.showPassword : t.hidePassword"
+                  :icon="isHidePassword ? 'visibility_off' : 'visibility'"
                   @click="isHidePassword = !isHidePassword"
-                />
+                  flat
+                  dense
+                >
+                </q-btn>
               </template>
             </q-input>
 

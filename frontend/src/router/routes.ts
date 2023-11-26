@@ -9,6 +9,11 @@ const routes: RouteRecordRaw[] = [
     redirect: "/admin/login",
   },
 
+  // Admin
+  {
+    path: "/admin/login",
+    component: () => import("pages/admin/AdminLogin.vue"),
+  },
   {
     path: "/admin",
     component: () => import("layouts/AdminLayout.vue"),
@@ -20,6 +25,8 @@ const routes: RouteRecordRaw[] = [
           title: t.value.dashboard,
         },
       },
+
+      // Dish categories
       {
         path: "dish-categories",
         component: () =>
@@ -48,6 +55,8 @@ const routes: RouteRecordRaw[] = [
           title: t.value.updateDishCategory,
         },
       },
+
+      // Dishes
       {
         path: "dishes",
         component: () => import("src/pages/admin/dishes/AdminDishes.vue"),
@@ -71,12 +80,37 @@ const routes: RouteRecordRaw[] = [
           title: t.value.updateDish,
         },
       },
-    ],
-  },
 
-  {
-    path: "/admin/login",
-    component: () => import("pages/admin/AdminLogin.vue"),
+      // Modifications
+      {
+        path: "modifications",
+        component: () =>
+          import("src/pages/admin/modifications/AdminModifications.vue"),
+        meta: {
+          title: t.value.modifications,
+        },
+      },
+      {
+        path: "modifications/create",
+        component: () =>
+          import(
+            "src/pages/admin/modifications/AdminCreateUpdateModification.vue"
+          ),
+        meta: {
+          title: t.value.createModification,
+        },
+      },
+      {
+        path: "modifications/update/:id",
+        component: () =>
+          import(
+            "src/pages/admin/modifications/AdminCreateUpdateModification.vue"
+          ),
+        meta: {
+          title: t.value.updateModification,
+        },
+      },
+    ],
   },
 
   // Always leave this as last one,

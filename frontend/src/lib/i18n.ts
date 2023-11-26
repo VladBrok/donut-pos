@@ -5,6 +5,7 @@ import {
   ACCESS_DENIED,
   CATEGORY_NAME_EXISTS,
   IMAGE_UPLOAD_FAIL,
+  MODIFICATION_NAME_EXISTS,
 } from "donut-shared/src/constants";
 
 export const locale = localeFrom(
@@ -41,6 +42,7 @@ export const messages = i18n("admin", {
   perPage: "Records per page",
   addDishCategory: "Add category",
   addDish: "Add dish",
+  addModification: "Add modification",
   fieldRequired: "The field is required",
   maxLength: params("Max length is {max}"),
   minValue: params("Min value is {min}"),
@@ -52,11 +54,15 @@ export const messages = i18n("admin", {
   uploadImage: "Upload image",
   categoryNameLabel: "Category name",
   dishNameLabel: "Dish name",
+  modificationNameLabel: "Modification name",
   deleteButton: "Delete",
   confirm: "Confirm",
   noResults: "No results",
   dishDescriptionPlaceholder: "The best dish",
   search: "Search",
+  modifications: "Modifications",
+  createModification: "Create modification",
+  updateModification: "Update modification",
 
   // Admin login page
   loginPageTitle: "Admin panel",
@@ -66,10 +72,13 @@ export const messages = i18n("admin", {
   phoneExample: "Example",
   passwordLabel: "Password",
   logIn: "Log in",
+  showPassword: "Show password",
+  hidePassword: "Hide password",
 
   // Confirmations
   confirmDishCategoryDelete: "Are you sure you want to delete category",
   confirmDishDelete: "Are you sure you want to delete dish",
+  confirmModificationDelete: "Are you sure you want to delete modification",
 
   // Logux statuses
   disconnectedMessage: "Cannot connect to the server",
@@ -90,6 +99,9 @@ export const messages = i18n("admin", {
   [IMAGE_UPLOAD_FAIL]: "Failed to upload the image",
   [CATEGORY_NAME_EXISTS]: params(
     'Category with name "{name}" already exists. Please choose another name'
+  ),
+  [MODIFICATION_NAME_EXISTS]: params(
+    'Modification with name "{name}" already exists. Please choose another name'
   ),
   imageCorrupted: "The image is corrupted. Try to choose a different one",
   [ACCESS_DENIED]: "Access denied",
