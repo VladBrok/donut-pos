@@ -73,6 +73,12 @@ const menuList = [
     to: "/admin/dishes",
     meta: t.value.dishes,
   },
+  {
+    icon: "o_tapas",
+    label: t.value.modifications,
+    to: "/admin/modifications",
+    meta: t.value.modifications,
+  },
 ];
 
 function toggleDrawer() {

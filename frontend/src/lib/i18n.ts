@@ -41,6 +41,7 @@ export const messages = i18n("admin", {
   perPage: "Records per page",
   addDishCategory: "Add category",
   addDish: "Add dish",
+  addModification: "Add modification",
   fieldRequired: "The field is required",
   maxLength: params("Max length is {max}"),
   minValue: params("Min value is {min}"),
@@ -52,11 +53,15 @@ export const messages = i18n("admin", {
   uploadImage: "Upload image",
   categoryNameLabel: "Category name",
   dishNameLabel: "Dish name",
+  modificationNameLabel: "Modification name",
   deleteButton: "Delete",
   confirm: "Confirm",
   noResults: "No results",
   dishDescriptionPlaceholder: "The best dish",
   search: "Search",
+  modifications: "Modifications",
+  createModification: "Create modification",
+  updateModification: "Update modification",
 
   // Admin login page
   loginPageTitle: "Admin panel",
@@ -72,6 +77,7 @@ export const messages = i18n("admin", {
   // Confirmations
   confirmDishCategoryDelete: "Are you sure you want to delete category",
   confirmDishDelete: "Are you sure you want to delete dish",
+  confirmModificationDelete: "Are you sure you want to delete modification",
 
   // Logux statuses
   disconnectedMessage: "Cannot connect to the server",
