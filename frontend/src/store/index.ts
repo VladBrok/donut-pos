@@ -20,12 +20,15 @@ import dishCategories from "./dish-categories";
 import { IDishCategoriesState } from "./dish-categories/state";
 import dishes from "./dishes";
 import { IDishesState } from "./dishes/state";
+import modifications from "./modifications";
+import { IModificationsState } from "./modifications/state";
 
 export interface StateInterface {
   // Define your own store structure, using submodules if needed
   auth: IAuthState;
   dishCategories: IDishCategoriesState;
   dishes: IDishesState;
+  modifications: IModificationsState;
 }
 
 // provide typings for `this.$store`
@@ -57,6 +60,7 @@ export default store(function (/* { ssrContext } */) {
     auth,
     dishCategories,
     dishes,
+    modifications,
   };
 
   for (const module of Object.values(modules)) {
