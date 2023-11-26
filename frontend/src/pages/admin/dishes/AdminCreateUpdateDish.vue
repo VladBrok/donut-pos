@@ -78,7 +78,7 @@
             color="primary"
             icon="add"
             :label="t.addModification"
-            @click="addModification"
+            @click="addModification()"
           />
         </div>
         <div
@@ -266,6 +266,9 @@ const unsubscribe = watchEffect(
       categoryName.value = originalDish.value.category?.name || "";
       isActive.value = originalDish.value.isActive;
       description.value = sanitizeHtml(originalDish.value.description);
+      for (const modification of originalDish.value.modifications) {
+        addModification(modification.name);
+      }
       unsubscribe();
     } else if (id.value && store.state.dishes.dishes.length) {
       router.push("/404");
@@ -289,9 +292,9 @@ watch(
   { immediate: true }
 );
 
-const addModification = () => {
+const addModification = (name?: string) => {
   modifications.push({
-    name: "",
+    name: name || "",
     filteredNames: modificationNames.value,
   });
 };

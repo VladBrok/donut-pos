@@ -39,7 +39,17 @@ export const dishCategoryAdapter = (
 };
 
 export const dishAdapter = (data: DishSchema[]): DishModel[] => {
-  return data.map((x) => ({
+  const ids = new Set<string>();
+  const unique: DishSchema[] = [];
+
+  for (const el of data) {
+    if (!ids.has(el.dish.id)) {
+      ids.add(el.dish.id);
+      unique.push(el);
+    }
+  }
+
+  return unique.map((x) => ({
     id: x.dish.id,
     category: x.dish_category
       ? {
@@ -53,6 +63,12 @@ export const dishAdapter = (data: DishSchema[]): DishModel[] => {
     isActive: x.dish.isActive || false,
     weight: Number(x.dish.weight),
     price: Number(x.dish.price),
+    modifications: data
+      .filter((d) => d.dish.id === x.dish.id && d.modification)
+      .map((d) => ({
+        name: d.modification?.name || "",
+        id: d.modification?.id || "",
+      })),
   }));
 };
 

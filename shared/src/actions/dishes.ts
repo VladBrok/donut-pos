@@ -13,6 +13,10 @@ export const loadDishesAction = createAction<{
       id: string;
       name: string;
     } | null;
+    modifications: {
+      id: string;
+      name: string;
+    }[];
   }[];
 }>("dishes/load");
 
@@ -73,6 +77,10 @@ export const dishUpdatedAction = createAction<
       id: string;
       name: string;
     } | null;
+    modifications: {
+      id: string;
+      name: string;
+    }[];
   }>
 >("dishes/updated");
 
