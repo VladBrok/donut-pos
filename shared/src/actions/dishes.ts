@@ -64,25 +64,10 @@ export const updateDishAction = createAction<{
   imageBase64: string;
 }>("dishes/update");
 
-export const dishUpdatedAction = createAction<
-  Partial<{
-    id: string;
-    name: string;
-    imageUrl: string;
-    description: string;
-    price: number;
-    weight: number;
-    isActive: boolean;
-    category: {
-      id: string;
-      name: string;
-    } | null;
-    modifications: {
-      id: string;
-      name: string;
-    }[];
-  }>
->("dishes/updated");
+export const dishUpdatedAction =
+  createAction<
+    Partial<ReturnType<typeof loadDishesAction>["payload"]["dishes"][number]>
+  >("dishes/updated");
 
 export const dishDeletedAction = createAction<{
   id: string;
