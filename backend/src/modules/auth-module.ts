@@ -36,9 +36,11 @@ export default function authModule(server: Server) {
         return;
       }
 
-      const hasExpectedPermission =
-        JSON.stringify(action.payload.permissions) ===
-        JSON.stringify(user.permissions);
+      const hasExpectedPermission = Object.keys(
+        action.payload.permissions
+      ).every(
+        (key) => user.permissions[key as keyof typeof user.permissions] === true
+      );
       if (!hasExpectedPermission) {
         await server.undo(action, meta, ACCESS_DENIED);
         return;
