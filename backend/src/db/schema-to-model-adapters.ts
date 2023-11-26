@@ -24,6 +24,9 @@ export const employeeAdapter = (
     phone: data[0].employee.phone || "",
     permissions: {
       admin: data.some((x) => x.permission?.codeName === "admin"),
+      cook: data.some((x) => x.permission?.codeName === "cook"),
+      waiter: data.some((x) => x.permission?.codeName === "waiter"),
+      courier: data.some((x) => x.permission?.codeName === "courier"),
     },
   };
 };

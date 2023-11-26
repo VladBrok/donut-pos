@@ -5,6 +5,9 @@ export const loginAction = createAction<{
   password: string;
   permissions: {
     admin?: boolean;
+    waiter?: boolean;
+    courier?: boolean;
+    cook?: boolean;
   };
 }>("auth/login");
 
