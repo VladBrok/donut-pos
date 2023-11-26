@@ -14,6 +14,11 @@
   min-height: 100vh;
 }
 
+.flex-grow {
+  flex-grow: 1;
+  min-width: 0;
+}
+
 .w-fit {
   width: fit-content;
 }

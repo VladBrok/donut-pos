@@ -72,6 +72,52 @@
           ]"
         />
         <q-toggle v-model="isActive" :label="t.active" size="lg" left-label />
+        <div class="row justify-between items-center">
+          <label class="d-block text-label">{{ t.modifications }}</label>
+          <q-btn
+            color="primary"
+            icon="add"
+            :label="t.addModification"
+            @click="addModification"
+          />
+        </div>
+        <div
+          v-for="(modification, i) in modifications"
+          :key="i"
+          class="row justify-between items-center no-wrap"
+        >
+          <q-select
+            v-model="modification.name"
+            use-input
+            fill-input
+            stack-label
+            clearable
+            hide-selected
+            input-debounce="0"
+            :options="modification.filteredNames"
+            @filter="(val, update) => filterModifications(i)(val, update)"
+            label=""
+            :rules="[(val) => !!val || t.fieldRequired]"
+            class="flex-grow q-mr-lg"
+          >
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section>
+                  {{ t.noResults }}
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+          <q-btn
+            flat
+            size="md"
+            icon="o_delete"
+            color="negative"
+            dense
+            @click="deleteModification(i)"
+          >
+          </q-btn>
+        </div>
         <div class="icons-md">
           <label class="q-mb-sm q-mt-md d-block text-label">{{
             t.description
@@ -169,7 +215,7 @@ import {
 } from "donut-shared/src/constants";
 import { Notify } from "quasar";
 import { useStore } from "src/store";
-import { computed, ref, watch, watchEffect } from "vue";
+import { computed, reactive, ref, watch, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 import BigSpinner from "../../../components/BigSpinner.vue";
 import PhotoUpload from "../../../components/PhotoUpload.vue";
@@ -190,6 +236,7 @@ const price = ref<number | string>("");
 const weight = ref<number | string>("");
 const categoryName = ref("");
 const filteredCategoryNames = ref<string[]>();
+const modifications = reactive<{ name: string; filteredNames: string[] }[]>([]);
 const isActive = ref(true);
 const description = ref("");
 
@@ -199,10 +246,13 @@ const originalDish = computed(() => {
     ? store.state.dishes.dishes.find((x) => x.id === id.value)
     : undefined;
 });
+const modificationNames = computed(() =>
+  store.state.modifications.modifications.map((x) => x.name)
+);
 const channels = computed(() =>
   id.value && !originalDish.value
-    ? [CHANNELS.DISHES, CHANNELS.DISH_CATEGORIES]
-    : [CHANNELS.DISH_CATEGORIES]
+    ? [CHANNELS.DISHES, CHANNELS.DISH_CATEGORIES, CHANNELS.MODIFICATIONS]
+    : [CHANNELS.DISH_CATEGORIES, CHANNELS.MODIFICATIONS]
 );
 let isSubscribing = useSubscription(channels, { store: store as any });
 
@@ -233,10 +283,35 @@ watch(
       filteredCategoryNames.value = store.state.dishCategories.categories.map(
         (x) => x.name
       );
+      modifications.forEach((x) => (x.filteredNames = modificationNames.value));
     }
   },
   { immediate: true }
 );
+
+const addModification = () => {
+  modifications.push({
+    name: "",
+    filteredNames: modificationNames.value,
+  });
+};
+
+const deleteModification = (index: number) => {
+  modifications.splice(index, 1);
+};
+
+const filterModifications = (index: number) => {
+  return (val: string, update: any) => {
+    // TODO: use fuzzy search ?
+    update(() => {
+      const needle = val.toLowerCase();
+      modifications[index].filteredNames =
+        store.state.modifications.modifications
+          .filter((v) => v.name.toLowerCase().indexOf(needle) > -1)
+          .map((x) => x.name);
+    });
+  };
+};
 
 const filterCategories = (val: string, update: any) => {
   update(() => {
