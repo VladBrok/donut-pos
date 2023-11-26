@@ -36,7 +36,7 @@ export default function modificationsModule(server: Server) {
     },
     async process(ctx, action, meta) {
       if (
-        !(await validateModificationCategoryName(
+        !(await validateModificationName(
           server,
           action,
           meta,
@@ -78,7 +78,7 @@ export default function modificationsModule(server: Server) {
     },
     async process(ctx, action, meta) {
       if (
-        !(await validateModificationCategoryName(
+        !(await validateModificationName(
           server,
           action,
           meta,
@@ -145,7 +145,7 @@ export default function modificationsModule(server: Server) {
   });
 }
 
-async function validateModificationCategoryName(
+async function validateModificationName(
   server: Server,
   action: Action,
   meta: ServerMeta,
