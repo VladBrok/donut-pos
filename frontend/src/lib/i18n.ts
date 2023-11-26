@@ -49,6 +49,8 @@ export const messages = i18n("admin", {
   maxValue: params("Max value is {max}"),
   maxFileSize: params("Max file size is {max} mb"),
   allowedFilesAre: params("Allowed file types are {allowed}"),
+  sameModificationAlreadyAdded:
+    "Same modification was already added to this dish",
   save: "Save",
   cancel: "Cancel",
   uploadImage: "Upload image",

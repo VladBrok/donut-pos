@@ -97,7 +97,12 @@
             :options="modification.filteredNames"
             @filter="(val, update) => filterModifications(i)(val, update)"
             label=""
-            :rules="[(val) => !!val || t.fieldRequired]"
+            :rules="[
+              (val) =>
+                !val ||
+                modifications.every((m, idx) => idx >= i || m.name !== val) ||
+                t.sameModificationAlreadyAdded,
+            ]"
             class="flex-grow q-mr-lg"
           >
             <template v-slot:no-option>
@@ -354,12 +359,14 @@ const onSubmit = async () => {
             category: store.state.dishCategories.categories.find(
               (x) => x.name === categoryName.value
             )!,
-            modifications: modifications.map(
-              (x) =>
-                store.state.modifications.modifications.find(
-                  (y) => y.name === x.name
-                )!
-            ),
+            modifications: modifications
+              .filter((x) => x.name)
+              .map(
+                (x) =>
+                  store.state.modifications.modifications.find(
+                    (y) => y.name === x.name
+                  )!
+              ),
             description: description.value,
             imageBase64,
             isActive: isActive.value,
@@ -371,12 +378,14 @@ const onSubmit = async () => {
             category: store.state.dishCategories.categories.find(
               (x) => x.name === categoryName.value
             )!,
-            modifications: modifications.map(
-              (x) =>
-                store.state.modifications.modifications.find(
-                  (y) => y.name === x.name
-                )!
-            ),
+            modifications: modifications
+              .filter((x) => x.name)
+              .map(
+                (x) =>
+                  store.state.modifications.modifications.find(
+                    (y) => y.name === x.name
+                  )!
+              ),
             description: description.value,
             imageBase64,
             isActive: isActive.value,
