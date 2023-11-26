@@ -351,6 +351,12 @@ const onSubmit = async () => {
             category: store.state.dishCategories.categories.find(
               (x) => x.name === categoryName.value
             )!,
+            modifications: modifications.map(
+              (x) =>
+                store.state.modifications.modifications.find(
+                  (y) => y.name === x.name
+                )!
+            ),
             description: description.value,
             imageBase64,
             isActive: isActive.value,
@@ -362,6 +368,12 @@ const onSubmit = async () => {
             category: store.state.dishCategories.categories.find(
               (x) => x.name === categoryName.value
             )!,
+            modifications: modifications.map(
+              (x) =>
+                store.state.modifications.modifications.find(
+                  (y) => y.name === x.name
+                )!
+            ),
             description: description.value,
             imageBase64,
             isActive: isActive.value,

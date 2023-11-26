@@ -30,6 +30,10 @@ export const createDishAction = createAction<{
     id: string;
     name: string;
   };
+  modifications: {
+    id: string;
+    name: string;
+  }[];
   imageBase64: string;
 }>("dishes/create");
 
@@ -49,6 +53,10 @@ export const updateDishAction = createAction<{
     id: string;
     name: string;
   };
+  modifications: {
+    id: string;
+    name: string;
+  }[];
   imageBase64: string;
 }>("dishes/update");
 
