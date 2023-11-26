@@ -11,27 +11,8 @@
           <q-card-section class="q-gutter-lg">
             <phone-input v-model="phone" :shouldValidateFormat="false">
             </phone-input>
-
-            <q-input
-              v-model="password"
-              stack-label
-              :label="`${t.passwordLabel} *`"
-              :type="isHidePassword ? 'password' : 'text'"
-              lazy-rules
-              :rules="[(val) => (val && val.length > 0) || t.passwordRequired]"
-            >
-              <template v-slot:append>
-                <q-btn
-                  :aria-label="isHidePassword ? t.showPassword : t.hidePassword"
-                  :icon="isHidePassword ? 'visibility_off' : 'visibility'"
-                  @click="isHidePassword = !isHidePassword"
-                  flat
-                  dense
-                >
-                </q-btn>
-              </template>
-            </q-input>
-
+            <password-input v-model="password" :should-validate-format="false">
+            </password-input>
             <div>
               <q-btn
                 :label="t.logIn"
@@ -53,6 +34,7 @@ import { loginAction } from "donut-shared/src/actions/auth";
 import { useStore } from "src/store";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import PasswordInput from "../../components/PasswordInput.vue";
 import PhoneInput from "../../components/PhoneInput.vue";
 import { useI18nStore } from "../../lib/i18n";
 

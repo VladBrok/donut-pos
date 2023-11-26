@@ -6,6 +6,8 @@ import {
   CATEGORY_NAME_EXISTS,
   IMAGE_UPLOAD_FAIL,
   MODIFICATION_NAME_EXISTS,
+  PASSWORD_MIN_LENGTH,
+  PASSWORD_SPECIAL_CHARS,
 } from "donut-shared/src/constants";
 
 export const locale = localeFrom(
@@ -45,6 +47,7 @@ export const messages = i18n("admin", {
   addModification: "Add modification",
   fieldRequired: "The field is required",
   maxLength: params("Max length is {max}"),
+  minLength: params("Min length is {min}"),
   minValue: params("Min value is {min}"),
   maxValue: params("Max value is {max}"),
   maxFileSize: params("Max file size is {max} mb"),
@@ -67,13 +70,20 @@ export const messages = i18n("admin", {
   updateModification: "Update modification",
   phoneShouldStartWith: "Phone should start with +48",
   invalidPhoneLengths: "Phone should have exactly 9 digits after +48",
+  passwordShouldContainDigit: "Password should contain at least 1 digit",
+  passwordShouldContainUppercase:
+    "Password should contain at least 1 uppercase latin letter",
+  passwordShouldContainLowercase:
+    "Password should contain at least 1 lowercase latin letter",
+  passwordShouldContainSpecial: `Password should contain at least 1 of the following characters: ${PASSWORD_SPECIAL_CHARS}`,
+  phoneExample: "Example",
+  passwordHint: `Hint: at least ${PASSWORD_MIN_LENGTH} characters. At least 1 digit, 1 uppercase, 1 lowercase and 1 special`,
 
   // Admin login page
   loginPageTitle: "Admin panel",
   passwordRequired: "Please enter a password",
   phoneRequired: "Please enter a phone number",
   phoneLabel: "Phone",
-  phoneExample: "Example",
   passwordLabel: "Password",
   logIn: "Log in",
   showPassword: "Show password",

@@ -2,7 +2,7 @@
   <q-input
     stack-label
     :label="`${t.phoneLabel} *`"
-    :hint="`${t.phoneExample}: +48000110022`"
+    :hint="shouldValidateFormat ? `${t.phoneExample}: +48000110022` : undefined"
     lazy-rules
     type="tel"
     :rules="[

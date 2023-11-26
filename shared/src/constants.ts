@@ -30,6 +30,9 @@ export const MAX_MODIFICATION_PRICE = 1000000;
 export const MIN_MODIFICATION_WEIGHT = 0.01;
 export const MAX_MODIFICATION_WEIGHT = 100000000;
 
+export const PASSWORD_MIN_LENGTH = 10;
+export const PASSWORD_SPECIAL_CHARS = "! @ # $ % ^ & * ( ) _ - + = | < > / ? ~";
+
 export const MAX_IMAGE_FILE_SIZE_BYTES = 1000000 * 5;
 export const ALLOWED_IMAGE_TYPES = [
   "image/jpeg",
