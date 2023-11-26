@@ -22,6 +22,12 @@ export const employeeAdapter = (
     id: data[0].employee.id,
     passwordHash: data[0].employee.passwordHash || "",
     phone: data[0].employee.phone || "",
+    isPhoneVerified: data[0].employee.isPhoneVerified || false,
+    registeredAt: data[0].employee.registeredAt || "",
+    role: {
+      id: data[0].role?.id || "",
+      codeName: data[0].role?.codeName || "",
+    },
     permissions: {
       admin: data.some((x) => x.permission?.codeName === "admin"),
       cook: data.some((x) => x.permission?.codeName === "cook"),
@@ -29,6 +35,16 @@ export const employeeAdapter = (
       courier: data.some((x) => x.permission?.codeName === "courier"),
     },
   };
+};
+
+export const employeesManyAdapter = (
+  data: SelectEmployeeSchema[]
+): EmployeeModel[] => {
+  const ids = new Set(data.map((x) => x.employee.id));
+
+  return [...ids].map(
+    (id) => employeeAdapter(data.filter((x) => x.employee.id === id))!
+  );
 };
 
 export const dishCategoryAdapter = (

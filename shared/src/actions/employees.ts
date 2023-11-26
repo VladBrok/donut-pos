@@ -11,7 +11,7 @@ export const loadEmployeesAction = createAction<{
     role: {
       id: string;
       codeName: string;
-    } | null;
+    };
   }[];
 }>("employees/load");
 
@@ -23,10 +23,11 @@ export const createEmployeeAction = createAction<{
   firstName: string;
   lastName: string;
   phone: string;
+  password: string;
   role: {
     id: string;
     codeName: string;
-  } | null;
+  };
 }>("employees/create");
 
 export const employeeCreatedAction =
@@ -39,10 +40,11 @@ export const updateEmployeeAction = createAction<{
   firstName: string;
   lastName: string;
   phone: string;
+  password: string;
   role: {
     id: string;
     codeName: string;
-  } | null;
+  };
 }>("employees/update");
 
 export const employeeUpdatedAction =

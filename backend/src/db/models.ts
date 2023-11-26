@@ -6,7 +6,13 @@ import { loadDishesAction } from "donut-shared/src/actions/dishes.js";
 export interface EmployeeModel {
   id: string;
   phone: string;
+  isPhoneVerified: boolean;
+  registeredAt: string;
   passwordHash: string;
+  role: {
+    id: string;
+    codeName: string;
+  };
   permissions: ReturnType<typeof loginAction>["payload"]["permissions"];
 }
 
