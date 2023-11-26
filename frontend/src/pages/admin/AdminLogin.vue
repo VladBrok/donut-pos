@@ -9,15 +9,8 @@
       <q-form @submit="onSubmit" class="max-w-sm q-mx-auto">
         <q-card class="q-pa-md">
           <q-card-section class="q-gutter-lg">
-            <q-input
-              v-model="phone"
-              stack-label
-              :label="`${t.phoneLabel} *`"
-              :hint="`${t.phoneExample}: +48000110022`"
-              lazy-rules
-              type="tel"
-              :rules="[(val) => (val && val.length > 0) || t.phoneRequired]"
-            />
+            <phone-input v-model="phone" :shouldValidateFormat="false">
+            </phone-input>
 
             <q-input
               v-model="password"
@@ -60,6 +53,7 @@ import { loginAction } from "donut-shared/src/actions/auth";
 import { useStore } from "src/store";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import PhoneInput from "../../components/PhoneInput.vue";
 import { useI18nStore } from "../../lib/i18n";
 
 const t = useI18nStore();

@@ -65,6 +65,8 @@ export const messages = i18n("admin", {
   modifications: "Modifications",
   createModification: "Create modification",
   updateModification: "Update modification",
+  phoneShouldStartWith: "Phone should start with +48",
+  invalidPhoneLengths: "Phone should have exactly 9 digits after +48",
 
   // Admin login page
   loginPageTitle: "Admin panel",
