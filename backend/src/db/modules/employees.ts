@@ -6,7 +6,7 @@ import {
   permission,
   role,
   roleToPermission,
-} from "../../../../migrations/schema.js";
+} from "../../../migrations/schema.js";
 import { EmployeeModel } from "../models.js";
 import { employeeAdapter } from "../schema-to-model-adapters.js";
 

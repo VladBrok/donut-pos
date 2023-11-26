@@ -14,8 +14,8 @@ import {
   MODIFICATION_NAME_EXISTS,
 } from "donut-shared/src/constants.js";
 import { logError } from "donut-shared/src/lib/log.js";
-import { ModificationModel } from "../lib/db/models.js";
-import * as db from "../lib/db/modules/modifications.js";
+import { ModificationModel } from "../db/models.js";
+import * as db from "../db/modules/modifications.js";
 import { uploadImage } from "../lib/images.js";
 import { hasAdminPermission } from "../lib/permissions.js";
 
