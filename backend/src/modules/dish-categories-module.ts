@@ -16,8 +16,8 @@ import {
 import { logError } from "donut-shared/src/lib/log.js";
 import { DishCategoryModel } from "../db/models.js";
 import * as db from "../db/modules/dish-categories.js";
+import { hasAdminPermission } from "../lib/access.js";
 import { uploadImage } from "../lib/images.js";
-import { hasAdminPermission } from "../lib/permissions.js";
 
 export default function dishCategoriesModule(server: Server) {
   server.channel(CHANNELS.DISH_CATEGORIES, {

@@ -3,6 +3,7 @@ import * as db from "./db/index.js";
 import authModule from "./modules/auth-module.js";
 import dishCategoriesModule from "./modules/dish-categories-module.js";
 import dishesModule from "./modules/dishes-module.js";
+import employeesModule from "./modules/employees.js";
 import modificationsModule from "./modules/modifications.js";
 
 const server = new Server(
@@ -18,5 +19,6 @@ authModule(server);
 dishCategoriesModule(server);
 dishesModule(server);
 modificationsModule(server);
+employeesModule(server);
 
 server.listen();

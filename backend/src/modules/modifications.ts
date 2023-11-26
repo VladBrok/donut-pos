@@ -16,8 +16,8 @@ import {
 import { logError } from "donut-shared/src/lib/log.js";
 import { ModificationModel } from "../db/models.js";
 import * as db from "../db/modules/modifications.js";
+import { hasAdminPermission } from "../lib/access.js";
 import { uploadImage } from "../lib/images.js";
-import { hasAdminPermission } from "../lib/permissions.js";
 
 export default function modificationsModule(server: Server) {
   server.channel(CHANNELS.MODIFICATIONS, {

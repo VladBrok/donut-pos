@@ -13,8 +13,8 @@ import { CHANNELS } from "donut-shared/src/constants.js";
 import { logError } from "donut-shared/src/lib/log.js";
 import { DishModel } from "../db/models.js";
 import * as db from "../db/modules/dishes.js";
+import { hasAdminPermission } from "../lib/access.js";
 import { uploadImage } from "../lib/images.js";
-import { hasAdminPermission } from "../lib/permissions.js";
 
 export default function dishesModule(server: Server) {
   server.channel(CHANNELS.DISHES, {

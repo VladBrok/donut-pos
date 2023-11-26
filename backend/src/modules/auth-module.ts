@@ -29,7 +29,7 @@ export default function authModule(server: Server) {
 
       const isPasswordValid = await compareWithHash(
         action.payload.password,
-        user.passwordHash
+        user.passwordHash || ""
       );
       if (!isPasswordValid) {
         await server.undo(action, meta, WRONG_PASSWORD);

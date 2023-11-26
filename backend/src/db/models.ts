@@ -8,7 +8,9 @@ export interface EmployeeModel {
   phone: string;
   isPhoneVerified: boolean;
   registeredAt: string;
-  passwordHash: string;
+  firstName: string;
+  lastName: string;
+  passwordHash?: string;
   role: {
     id: string;
     codeName: string;

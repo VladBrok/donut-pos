@@ -4,6 +4,7 @@ export const CHANNELS = {
   DISH_CATEGORIES: "dishCategories",
   DISHES: "dishes",
   MODIFICATIONS: "modifications",
+  EMPLOYEES: "employees",
 };
 
 export const ANONYMOUS = {

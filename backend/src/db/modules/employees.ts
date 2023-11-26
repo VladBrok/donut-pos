@@ -7,7 +7,6 @@ import {
   role,
   roleToPermission,
 } from "../../../migrations/schema.js";
-import { hasAdminPermission } from "../../lib/permissions.js";
 import { generateUuid } from "../../lib/uuid.js";
 import { EmployeeModel } from "../models.js";
 import {
@@ -27,20 +26,12 @@ export async function getAllEmployees(): Promise<EmployeeModel[]> {
 }
 
 export async function deleteEmployee(id: string) {
-  // TODO: move this logic to logux
-  const isAdmin = await hasAdminPermission(id);
-
-  if (isAdmin) {
-    throw new Error(
-      `Employee with id ${id} has admin permissions and thus can't be deleted.`
-    );
-  }
-
   return await db.delete(employee).where(eq(employee.id, id));
 }
 
-export async function createEmployee(data: Omit<EmployeeModel, "id">) {
-  // TODO: add to logux logic that Admin can't be created
+export async function createEmployee(
+  data: Omit<EmployeeModel, "id" | "permissions">
+) {
   const toCreate = { id: generateUuid(), ...data };
   await db.insert(employee).values({
     ...toCreate,
@@ -52,7 +43,6 @@ export async function createEmployee(data: Omit<EmployeeModel, "id">) {
 export async function updateEmployee(
   data: Partial<EmployeeModel> & { roleId: string }
 ) {
-  // TODO: add to logux logic that Admin can't be updated
   await db
     .update(employee)
     .set({
@@ -86,4 +76,13 @@ export async function findEmployeeById(
     .leftJoin(permission, eq(roleToPermission.permissionId, permission.id));
 
   return employeeAdapter(data);
+}
+
+export async function findRoleById(id: string) {
+  const data = await db.select().from(role).where(eq(role.id, id));
+
+  if (!data[0]) {
+    return null;
+  }
+  return data[0];
 }

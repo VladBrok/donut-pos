@@ -28,6 +28,8 @@ export const employeeAdapter = (
       id: data[0].role?.id || "",
       codeName: data[0].role?.codeName || "",
     },
+    firstName: data[0].employee.firstName || "",
+    lastName: data[0].employee.lastName || "",
     permissions: {
       admin: data.some((x) => x.permission?.codeName === "admin"),
       cook: data.some((x) => x.permission?.codeName === "cook"),
