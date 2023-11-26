@@ -32,6 +32,8 @@ export const MAX_MODIFICATION_WEIGHT = 100000000;
 
 export const PASSWORD_MIN_LENGTH = 10;
 export const PASSWORD_SPECIAL_CHARS = "! @ # $ % ^ & * ( ) _ - + = | < > / ? ~";
+export const FIRST_NAME_MAX_LENGTH = 50;
+export const LAST_NAME_MAX_LENGTH = 50;
 
 export const MAX_IMAGE_FILE_SIZE_BYTES = 1000000 * 5;
 export const ALLOWED_IMAGE_TYPES = [
