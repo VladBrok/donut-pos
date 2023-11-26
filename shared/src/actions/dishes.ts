@@ -13,6 +13,10 @@ export const loadDishesAction = createAction<{
       id: string;
       name: string;
     } | null;
+    modifications: {
+      id: string;
+      name: string;
+    }[];
   }[];
 }>("dishes/load");
 
@@ -30,6 +34,10 @@ export const createDishAction = createAction<{
     id: string;
     name: string;
   };
+  modifications: {
+    id: string;
+    name: string;
+  }[];
   imageBase64: string;
 }>("dishes/create");
 
@@ -49,6 +57,10 @@ export const updateDishAction = createAction<{
     id: string;
     name: string;
   };
+  modifications: {
+    id: string;
+    name: string;
+  }[];
   imageBase64: string;
 }>("dishes/update");
 
@@ -65,6 +77,10 @@ export const dishUpdatedAction = createAction<
       id: string;
       name: string;
     } | null;
+    modifications: {
+      id: string;
+      name: string;
+    }[];
   }>
 >("dishes/updated");
 
