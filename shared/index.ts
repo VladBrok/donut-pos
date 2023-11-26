@@ -1,4 +1,13 @@
 export {
+  createModificationAction,
+  deleteModificationAction,
+  loadModificationsAction,
+  modificationCreatedAction,
+  modificationDeletedAction,
+  modificationUpdatedAction,
+  updateModificationAction,
+} from "./src/actions/modifications.js";
+export {
   ANONYMOUS,
   IMAGE_UPLOAD_FAIL,
   MAX_IMAGE_FILE_SIZE_BYTES,
