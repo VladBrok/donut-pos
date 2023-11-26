@@ -101,8 +101,8 @@ const isSubmitting = ref(false);
 const name = ref("");
 const imageUrl = ref("");
 const imageFile = ref<File>();
-const price = ref<number>();
-const weight = ref<number>();
+const price = ref<number | string>("");
+const weight = ref<number | string>("");
 
 const id = computed(() => router.currentRoute.value.params.id);
 const originalModification = computed(() => {
@@ -157,15 +157,15 @@ const onSubmit = async () => {
         ? updateModificationAction({
             id: originalModification.value.id,
             name: name.value,
-            price: price.value || 0,
+            price: +price.value || 0,
             imageBase64,
-            weight: weight.value || 0,
+            weight: +weight.value || 0,
           })
         : createModificationAction({
             name: name.value,
-            price: price.value || 0,
+            price: +price.value || 0,
             imageBase64,
-            weight: weight.value || 0,
+            weight: +weight.value || 0,
           })
     )
     .then(() => {

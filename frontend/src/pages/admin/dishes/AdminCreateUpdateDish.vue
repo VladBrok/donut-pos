@@ -186,8 +186,8 @@ const isSubmitting = ref(false);
 const name = ref("");
 const imageUrl = ref("");
 const imageFile = ref<File>();
-const price = ref<number>();
-const weight = ref<number>();
+const price = ref<number | string>("");
+const weight = ref<number | string>("");
 const categoryName = ref("");
 const filteredCategoryNames = ref<string[]>();
 const isActive = ref(true);
@@ -272,25 +272,25 @@ const onSubmit = async () => {
         ? updateDishAction({
             id: originalDish.value.id,
             name: name.value,
-            price: price.value || 0,
+            price: +price.value || 0,
             category: store.state.dishCategories.categories.find(
               (x) => x.name === categoryName.value
             )!,
             description: description.value,
             imageBase64,
             isActive: isActive.value,
-            weight: weight.value || 0,
+            weight: +weight.value || 0,
           })
         : createDishAction({
             name: name.value,
-            price: price.value || 0,
+            price: +price.value || 0,
             category: store.state.dishCategories.categories.find(
               (x) => x.name === categoryName.value
             )!,
             description: description.value,
             imageBase64,
             isActive: isActive.value,
-            weight: weight.value || 0,
+            weight: +weight.value || 0,
           })
     )
     .then(() => {
