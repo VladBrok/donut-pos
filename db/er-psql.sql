@@ -15,7 +15,7 @@ CREATE TABLE "client" (
   "first_name" TEXT,
   "last_name" TEXT,
   "phone" TEXT,
-  "is_phone_verified" TEXT,
+  "is_phone_verified" BOOLEAN,
   "password_hash" TEXT,
   "registered_at" TIMESTAMP
 );
@@ -52,7 +52,7 @@ CREATE TABLE "employee" (
   "first_name" TEXT,
   "last_name" TEXT,
   "phone" TEXT,
-  "is_phone_verified" TEXT,
+  "is_phone_verified" BOOLEAN,
   "password_hash" TEXT,
   "registered_at" TIMESTAMP
 );

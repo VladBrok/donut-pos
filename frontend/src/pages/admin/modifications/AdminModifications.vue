@@ -13,9 +13,6 @@
       :pagination="{
         rowsPerPage: ROWS_PER_TABLE_PAGE,
       }"
-      @row-click="
-        (_, row) => $router.push(`/admin/modifications/update/${row.id}`)
-      "
     >
       <template v-slot:top-right>
         <q-input
@@ -73,6 +70,9 @@
           </q-btn>
         </q-td>
       </template>
+      <template v-slot:no-data>
+        <no-data></no-data>
+      </template>
     </q-table>
 
     <confirm-dialog
@@ -81,9 +81,7 @@
     >
       <template #body>
         {{ t.confirmModificationDelete }}
-        <span class="text-weight-bold"
-          >"{{ capitalize(confirmDelete?.name || "") }}"</span
-        >?
+        <span class="text-weight-bold">"{{ confirmDelete?.name || "" }}"</span>?
       </template>
       <template #confirmButton>
         <q-btn
@@ -106,13 +104,13 @@ import { useStore } from "src/store";
 import { computed, ref } from "vue";
 import BigSpinner from "../../../components/BigSpinner.vue";
 import ConfirmDialog from "../../../components/ConfirmDialog.vue";
+import NoData from "../../../components/NoData.vue";
 import {
   ROWS_PER_TABLE_PAGE,
   SUCCESS_TIMEOUT_MS,
 } from "../../../lib/constants";
 import { createFuzzySearcher } from "../../../lib/fuzzy-search";
 import { useI18nStore } from "../../../lib/i18n";
-import { capitalize } from "../../../lib/utils/capitalize";
 import { IModificationsState } from "../../../store/modifications/state";
 
 const store = useStore();
@@ -153,7 +151,6 @@ const columns: any[] = [
     align: "center",
     field: "name",
     sortable: true,
-    format: capitalize,
   },
   {
     name: "price",

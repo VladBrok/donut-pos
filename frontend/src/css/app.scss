@@ -58,6 +58,10 @@
 
 /* ===== Quasar styles overrides ===== */
 
+p {
+  margin: 0;
+}
+
 .sticky-last-column-table thead tr:last-child th:last-child,
 .sticky-last-column-table td:last-child {
   background-color: $grey-1;

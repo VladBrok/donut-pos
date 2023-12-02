@@ -1,4 +1,13 @@
 export {
+  createEmployeeAction,
+  deleteEmployeeAction,
+  employeeCreatedAction,
+  employeeDeletedAction,
+  employeeUpdatedAction,
+  loadEmployeesAction,
+  updateEmployeeAction,
+} from "./src/actions/employees.js";
+export {
   createModificationAction,
   deleteModificationAction,
   loadModificationsAction,
@@ -7,6 +16,7 @@ export {
   modificationUpdatedAction,
   updateModificationAction,
 } from "./src/actions/modifications.js";
+export { loadRolesAction } from "./src/actions/roles.js";
 export {
   ANONYMOUS,
   IMAGE_UPLOAD_FAIL,

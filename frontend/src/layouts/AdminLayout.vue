@@ -79,6 +79,12 @@ const menuList = [
     to: "/admin/modifications",
     meta: t.value.modifications,
   },
+  {
+    icon: "o_person",
+    label: t.value.employees,
+    to: "/admin/employees",
+    meta: t.value.employees,
+  },
 ];
 
 function toggleDrawer() {

@@ -8,7 +8,7 @@
           v-model:file="imageFile"
         ></photo-upload>
         <q-input
-          v-model="name"
+          v-model.trim="name"
           stack-label
           :label="`${t.modificationNameLabel} *`"
           lazy-rules

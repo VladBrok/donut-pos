@@ -4,8 +4,11 @@ import { USER_NOT_FOUND, WRONG_PASSWORD } from "donut-shared";
 import {
   ACCESS_DENIED,
   CATEGORY_NAME_EXISTS,
+  EMPLOYEE_WITH_PHONE_EXISTS,
   IMAGE_UPLOAD_FAIL,
   MODIFICATION_NAME_EXISTS,
+  PASSWORD_MIN_LENGTH,
+  PASSWORD_SPECIAL_CHARS,
 } from "donut-shared/src/constants";
 
 export const locale = localeFrom(
@@ -35,6 +38,12 @@ export const messages = i18n("admin", {
   image: "Image",
   name: "Name",
   category: "Category",
+  phone: "Phone",
+  isPhoneVerified: "Phone verified",
+  role: "Role",
+  firstName: "First name",
+  lastName: "Last name",
+  registeredAt: "Registration date",
   description: "Description",
   price: "Price, zł",
   weight: "Weight, g",
@@ -42,9 +51,11 @@ export const messages = i18n("admin", {
   perPage: "Records per page",
   addDishCategory: "Add category",
   addDish: "Add dish",
+  addEmployee: "Add employee",
   addModification: "Add modification",
   fieldRequired: "The field is required",
   maxLength: params("Max length is {max}"),
+  minLength: params("Min length is {min}"),
   minValue: params("Min value is {min}"),
   maxValue: params("Max value is {max}"),
   maxFileSize: params("Max file size is {max} mb"),
@@ -63,15 +74,28 @@ export const messages = i18n("admin", {
   dishDescriptionPlaceholder: "The best dish",
   search: "Search",
   modifications: "Modifications",
+  employees: "Employees",
   createModification: "Create modification",
   updateModification: "Update modification",
+  createEmployee: "Create employee",
+  updateEmployee: "Update employee",
+  phoneShouldStartWith: "Phone should start with +48",
+  invalidPhoneLengths: "Phone should have exactly 9 digits after +48",
+  passwordShouldContainDigit: "Password should contain at least 1 digit",
+  passwordShouldContainUppercase:
+    "Password should contain at least 1 uppercase latin letter",
+  passwordShouldContainLowercase:
+    "Password should contain at least 1 lowercase latin letter",
+  passwordShouldContainSpecial: `Password should contain at least 1 of the following characters: ${PASSWORD_SPECIAL_CHARS}`,
+  phoneExample: "Example",
+  passwordHint: `Hint: at least ${PASSWORD_MIN_LENGTH} characters. At least 1 digit, 1 uppercase, 1 lowercase and 1 special`,
+  noDataFound: "No data found",
 
   // Admin login page
   loginPageTitle: "Admin panel",
   passwordRequired: "Please enter a password",
   phoneRequired: "Please enter a phone number",
   phoneLabel: "Phone",
-  phoneExample: "Example",
   passwordLabel: "Password",
   logIn: "Log in",
   showPassword: "Show password",
@@ -81,6 +105,7 @@ export const messages = i18n("admin", {
   confirmDishCategoryDelete: "Are you sure you want to delete category",
   confirmDishDelete: "Are you sure you want to delete dish",
   confirmModificationDelete: "Are you sure you want to delete modification",
+  confirmEmployeeDelete: "Are you sure you want to delete employee",
 
   // Logux statuses
   disconnectedMessage: "Cannot connect to the server",
@@ -104,6 +129,9 @@ export const messages = i18n("admin", {
   ),
   [MODIFICATION_NAME_EXISTS]: params(
     'Modification with name "{name}" already exists. Please choose another name'
+  ),
+  [EMPLOYEE_WITH_PHONE_EXISTS]: params(
+    'Employee with phone "{phone}" already exists'
   ),
   imageCorrupted: "The image is corrupted. Try to choose a different one",
   [ACCESS_DENIED]: "Access denied",

@@ -1,4 +1,4 @@
-import { pgTable, pgEnum, uuid, text, integer, index, foreignKey, timestamp, numeric, boolean, time } from "drizzle-orm/pg-core"
+import { pgTable, pgEnum, uuid, text, integer, index, foreignKey, numeric, boolean, time, timestamp } from "drizzle-orm/pg-core"
 
 import { sql } from "drizzle-orm"
 export const keyStatus = pgEnum("key_status", ['default', 'valid', 'invalid', 'expired'])
@@ -20,23 +20,6 @@ export const address = pgTable("address", {
 	room: text("room"),
 });
 
-export const client = pgTable("client", {
-	id: uuid("id").primaryKey().notNull(),
-	addressId: uuid("address_id").references(() => address.id).references(() => address.id, { onDelete: "set null" } ).references(() => address.id, { onDelete: "set null" } ),
-	firstName: text("first_name"),
-	lastName: text("last_name"),
-	phone: text("phone"),
-	isPhoneVerified: text("is_phone_verified"),
-	passwordHash: text("password_hash"),
-	registeredAt: timestamp("registered_at", { mode: 'string' }),
-},
-(table) => {
-	return {
-		addressIdIdx: index("client_address_id_idx").on(table.addressId),
-		phoneIdx: index("client_phone_idx").on(table.phone),
-	}
-});
-
 export const dishCategory = pgTable("dish_category", {
 	id: uuid("id").primaryKey().notNull(),
 	name: text("name"),
@@ -45,7 +28,7 @@ export const dishCategory = pgTable("dish_category", {
 
 export const dish = pgTable("dish", {
 	id: uuid("id").primaryKey().notNull(),
-	categoryId: uuid("category_id").references(() => dishCategory.id).references(() => dishCategory.id, { onDelete: "set null" } ).references(() => dishCategory.id, { onDelete: "set null" } ),
+	categoryId: uuid("category_id").references(() => dishCategory.id, { onDelete: "set null" } ).references(() => dishCategory.id, { onDelete: "set null" } ).references(() => dishCategory.id, { onDelete: "set null" } ),
 	name: text("name"),
 	imageUrl: text("image_url"),
 	description: text("description"),
@@ -61,7 +44,7 @@ export const dish = pgTable("dish", {
 
 export const salePoint = pgTable("sale_point", {
 	id: uuid("id").primaryKey().notNull(),
-	addressId: uuid("address_id").references(() => address.id).references(() => address.id, { onDelete: "set null" } ).references(() => address.id, { onDelete: "set null" } ),
+	addressId: uuid("address_id").references(() => address.id, { onDelete: "set null" } ).references(() => address.id, { onDelete: "set null" } ).references(() => address.id, { onDelete: "set null" } ),
 	name: text("name"),
 	phone: text("phone"),
 	isDefault: boolean("is_default"),
@@ -74,7 +57,7 @@ export const salePoint = pgTable("sale_point", {
 
 export const workSchedule = pgTable("work_schedule", {
 	id: uuid("id").primaryKey().notNull(),
-	salePointId: uuid("sale_point_id").references(() => salePoint.id).references(() => salePoint.id, { onDelete: "set null" } ).references(() => salePoint.id, { onDelete: "set null" } ),
+	salePointId: uuid("sale_point_id").references(() => salePoint.id, { onDelete: "set null" } ).references(() => salePoint.id, { onDelete: "set null" } ).references(() => salePoint.id, { onDelete: "set null" } ),
 	dayOfWeek: integer("day_of_week"),
 	start: time("start"),
 	end: time("end"),
@@ -94,8 +77,8 @@ export const role = pgTable("role", {
 
 export const roleToPermission = pgTable("role_to_permission", {
 	id: uuid("id").primaryKey().notNull(),
-	roleId: uuid("role_id").references(() => role.id).references(() => role.id, { onDelete: "set null" } ).references(() => role.id, { onDelete: "set null" } ),
-	permissionId: uuid("permission_id").references(() => permission.id).references(() => permission.id, { onDelete: "set null" } ).references(() => permission.id, { onDelete: "set null" } ),
+	roleId: uuid("role_id").references(() => role.id, { onDelete: "set null" } ).references(() => role.id, { onDelete: "set null" } ).references(() => role.id, { onDelete: "set null" } ),
+	permissionId: uuid("permission_id").references(() => permission.id, { onDelete: "set null" } ).references(() => permission.id, { onDelete: "set null" } ).references(() => permission.id, { onDelete: "set null" } ),
 },
 (table) => {
 	return {
@@ -109,27 +92,10 @@ export const permission = pgTable("permission", {
 	codeName: text("code_name"),
 });
 
-export const employee = pgTable("employee", {
-	id: uuid("id").primaryKey().notNull(),
-	roleId: uuid("role_id").references(() => role.id).references(() => role.id, { onDelete: "set null" } ).references(() => role.id, { onDelete: "set null" } ),
-	firstName: text("first_name"),
-	lastName: text("last_name"),
-	phone: text("phone"),
-	isPhoneVerified: text("is_phone_verified"),
-	passwordHash: text("password_hash"),
-	registeredAt: timestamp("registered_at", { mode: 'string' }),
-},
-(table) => {
-	return {
-		roleIdIdx: index("employee_role_id_idx").on(table.roleId),
-		phoneIdx: index("employee_phone_idx").on(table.phone),
-	}
-});
-
 export const dishToSalePoint = pgTable("dish_to_sale_point", {
 	id: uuid("id").primaryKey().notNull(),
-	dishId: uuid("dish_id").references(() => dish.id).references(() => dish.id, { onDelete: "set null" } ).references(() => dish.id, { onDelete: "set null" } ),
-	salePointId: uuid("sale_point_id").references(() => salePoint.id).references(() => salePoint.id, { onDelete: "set null" } ).references(() => salePoint.id, { onDelete: "set null" } ),
+	dishId: uuid("dish_id").references(() => dish.id, { onDelete: "set null" } ).references(() => dish.id, { onDelete: "set null" } ).references(() => dish.id, { onDelete: "set null" } ),
+	salePointId: uuid("sale_point_id").references(() => salePoint.id, { onDelete: "set null" } ).references(() => salePoint.id, { onDelete: "set null" } ).references(() => salePoint.id, { onDelete: "set null" } ),
 },
 (table) => {
 	return {
@@ -140,9 +106,9 @@ export const dishToSalePoint = pgTable("dish_to_sale_point", {
 
 export const order = pgTable("order", {
 	id: uuid("id").primaryKey().notNull(),
-	clientId: uuid("client_id").references(() => client.id).references(() => client.id, { onDelete: "set null" } ).references(() => client.id, { onDelete: "set null" } ),
-	employeeId: uuid("employee_id").references(() => employee.id).references(() => employee.id, { onDelete: "set null" } ).references(() => employee.id, { onDelete: "set null" } ),
-	salePointId: uuid("sale_point_id").references(() => salePoint.id).references(() => salePoint.id, { onDelete: "set null" } ).references(() => salePoint.id, { onDelete: "set null" } ),
+	clientId: uuid("client_id").references(() => client.id, { onDelete: "set null" } ).references(() => client.id, { onDelete: "set null" } ).references(() => client.id, { onDelete: "set null" } ),
+	employeeId: uuid("employee_id").references(() => employee.id, { onDelete: "set null" } ).references(() => employee.id, { onDelete: "set null" } ).references(() => employee.id, { onDelete: "set null" } ),
+	salePointId: uuid("sale_point_id").references(() => salePoint.id, { onDelete: "set null" } ).references(() => salePoint.id, { onDelete: "set null" } ).references(() => salePoint.id, { onDelete: "set null" } ),
 	number: text("number"),
 	tableNumber: text("table_number"),
 	comment: text("comment"),
@@ -158,8 +124,8 @@ export const order = pgTable("order", {
 
 export const orderToDish = pgTable("order_to_dish", {
 	id: uuid("id").primaryKey().notNull(),
-	orderId: uuid("order_id").references(() => order.id).references(() => order.id, { onDelete: "set null" } ).references(() => order.id, { onDelete: "set null" } ),
-	dishId: uuid("dish_id").references(() => dish.id).references(() => dish.id, { onDelete: "set null" } ).references(() => dish.id, { onDelete: "set null" } ),
+	orderId: uuid("order_id").references(() => order.id, { onDelete: "set null" } ).references(() => order.id, { onDelete: "set null" } ).references(() => order.id, { onDelete: "set null" } ),
+	dishId: uuid("dish_id").references(() => dish.id, { onDelete: "set null" } ).references(() => dish.id, { onDelete: "set null" } ).references(() => dish.id, { onDelete: "set null" } ),
 	dishCount: integer("dish_count"),
 },
 (table) => {
@@ -171,8 +137,8 @@ export const orderToDish = pgTable("order_to_dish", {
 
 export const dishToModification = pgTable("dish_to_modification", {
 	id: uuid("id").primaryKey().notNull(),
-	dishId: uuid("dish_id").references(() => dish.id).references(() => dish.id, { onDelete: "set null" } ).references(() => dish.id, { onDelete: "set null" } ),
-	modificationId: uuid("modification_id").references(() => modification.id).references(() => modification.id, { onDelete: "set null" } ).references(() => modification.id, { onDelete: "set null" } ),
+	dishId: uuid("dish_id").references(() => dish.id, { onDelete: "set null" } ).references(() => dish.id, { onDelete: "set null" } ).references(() => dish.id, { onDelete: "set null" } ),
+	modificationId: uuid("modification_id").references(() => modification.id, { onDelete: "set null" } ).references(() => modification.id, { onDelete: "set null" } ).references(() => modification.id, { onDelete: "set null" } ),
 },
 (table) => {
 	return {
@@ -191,8 +157,8 @@ export const modification = pgTable("modification", {
 
 export const orderToDishToModification = pgTable("order_to_dish_to_modification", {
 	id: uuid("id").primaryKey().notNull(),
-	orderToDishId: uuid("order_to_dish_id").references(() => orderToDish.id).references(() => orderToDish.id, { onDelete: "set null" } ).references(() => orderToDish.id, { onDelete: "set null" } ),
-	modificationId: uuid("modification_id").references(() => modification.id).references(() => modification.id, { onDelete: "set null" } ).references(() => modification.id, { onDelete: "set null" } ),
+	orderToDishId: uuid("order_to_dish_id").references(() => orderToDish.id, { onDelete: "set null" } ).references(() => orderToDish.id, { onDelete: "set null" } ).references(() => orderToDish.id, { onDelete: "set null" } ),
+	modificationId: uuid("modification_id").references(() => modification.id, { onDelete: "set null" } ).references(() => modification.id, { onDelete: "set null" } ).references(() => modification.id, { onDelete: "set null" } ),
 	modificationCount: integer("modification_count"),
 },
 (table) => {
@@ -204,9 +170,9 @@ export const orderToDishToModification = pgTable("order_to_dish_to_modification"
 
 export const orderToOrderStatus = pgTable("order_to_order_status", {
 	id: uuid("id").primaryKey().notNull(),
-	orderId: uuid("order_id").references(() => order.id).references(() => order.id, { onDelete: "set null" } ).references(() => order.id, { onDelete: "set null" } ),
-	orderStatusId: uuid("order_status_id").references(() => orderStatus.id).references(() => orderStatus.id, { onDelete: "set null" } ).references(() => orderStatus.id, { onDelete: "set null" } ),
-	date: timestamp("date", { mode: 'string' }),
+	orderId: uuid("order_id").references(() => order.id, { onDelete: "set null" } ).references(() => order.id, { onDelete: "set null" } ).references(() => order.id, { onDelete: "set null" } ),
+	orderStatusId: uuid("order_status_id").references(() => orderStatus.id, { onDelete: "set null" } ).references(() => orderStatus.id, { onDelete: "set null" } ).references(() => orderStatus.id, { onDelete: "set null" } ),
+	date: timestamp("date", { mode: 'date' }),
 },
 (table) => {
 	return {
@@ -218,4 +184,38 @@ export const orderToOrderStatus = pgTable("order_to_order_status", {
 export const orderStatus = pgTable("order_status", {
 	id: uuid("id").primaryKey().notNull(),
 	codeName: text("code_name"),
+});
+
+export const client = pgTable("client", {
+	id: uuid("id").primaryKey().notNull(),
+	addressId: uuid("address_id").references(() => address.id, { onDelete: "set null" } ).references(() => address.id, { onDelete: "set null" } ).references(() => address.id, { onDelete: "set null" } ),
+	firstName: text("first_name"),
+	lastName: text("last_name"),
+	phone: text("phone"),
+	isPhoneVerified: boolean("is_phone_verified"),
+	passwordHash: text("password_hash"),
+	registeredAt: timestamp("registered_at", { mode: 'date' }),
+},
+(table) => {
+	return {
+		addressIdIdx: index("client_address_id_idx").on(table.addressId),
+		phoneIdx: index("client_phone_idx").on(table.phone),
+	}
+});
+
+export const employee = pgTable("employee", {
+	id: uuid("id").primaryKey().notNull(),
+	roleId: uuid("role_id").references(() => role.id, { onDelete: "set null" } ).references(() => role.id, { onDelete: "set null" } ).references(() => role.id, { onDelete: "set null" } ),
+	firstName: text("first_name"),
+	lastName: text("last_name"),
+	phone: text("phone"),
+	isPhoneVerified: boolean("is_phone_verified"),
+	passwordHash: text("password_hash"),
+	registeredAt: timestamp("registered_at", { mode: 'date' }),
+},
+(table) => {
+	return {
+		roleIdIdx: index("employee_role_id_idx").on(table.roleId),
+		phoneIdx: index("employee_phone_idx").on(table.phone),
+	}
 });

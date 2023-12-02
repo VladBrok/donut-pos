@@ -29,16 +29,18 @@ export default function authModule(server: Server) {
 
       const isPasswordValid = await compareWithHash(
         action.payload.password,
-        user.passwordHash
+        user.passwordHash || ""
       );
       if (!isPasswordValid) {
         await server.undo(action, meta, WRONG_PASSWORD);
         return;
       }
 
-      const hasExpectedPermission =
-        JSON.stringify(action.payload.permissions) ===
-        JSON.stringify(user.permissions);
+      const hasExpectedPermission = Object.keys(
+        action.payload.permissions
+      ).every(
+        (key) => user.permissions[key as keyof typeof user.permissions] === true
+      );
       if (!hasExpectedPermission) {
         await server.undo(action, meta, ACCESS_DENIED);
         return;

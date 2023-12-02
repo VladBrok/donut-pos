@@ -110,6 +110,31 @@ const routes: RouteRecordRaw[] = [
           title: t.value.updateModification,
         },
       },
+
+      // Employees
+      {
+        path: "employees",
+        component: () => import("src/pages/admin/employees/AdminEmployees.vue"),
+        meta: {
+          title: t.value.employees,
+        },
+      },
+      {
+        path: "employees/create",
+        component: () =>
+          import("src/pages/admin/employees/AdminCreateUpdateEmployee.vue"),
+        meta: {
+          title: t.value.createEmployee,
+        },
+      },
+      {
+        path: "employees/update/:id",
+        component: () =>
+          import("src/pages/admin/employees/AdminCreateUpdateEmployee.vue"),
+        meta: {
+          title: t.value.updateEmployee,
+        },
+      },
     ],
   },
 
