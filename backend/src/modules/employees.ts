@@ -17,8 +17,6 @@ import * as db from "../db/modules/employees.js";
 import { hasAdminPermission, isAdminRole } from "../lib/access.js";
 import { hash } from "../lib/crypt.js";
 
-// TODO: test special behaviour related to Admin
-
 export default function employeesModule(server: Server) {
   server.channel(CHANNELS.EMPLOYEES, {
     async access(ctx) {
