@@ -82,11 +82,13 @@ export default function employeesModule(server: Server) {
       return await hasAdminPermission(ctx.userId);
     },
     async process(ctx, action, meta) {
-      if (
-        (await hasAdminPermission(action.payload.id)) ||
-        (await isAdminRole(action.payload.role.id))
-      ) {
+      if (await hasAdminPermission(action.payload.id)) {
         await server.undo(action, meta, "Admin cannot be updated");
+        return;
+      }
+
+      if (await isAdminRole(action.payload.role.id)) {
+        await server.undo(action, meta, "Role cannot be changed to admin");
         return;
       }
 
