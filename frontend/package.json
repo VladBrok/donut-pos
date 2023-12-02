@@ -18,6 +18,7 @@
     "@nanostores/i18n": "0.12.0",
     "@nanostores/vue": "0.10.0",
     "@quasar/extras": "1.16.7",
+    "dayjs": "1.11.10",
     "donut-shared": "0.0.1",
     "fuse.js": "7.0.0",
     "nanostores": "0.9.4",
