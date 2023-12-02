@@ -13,6 +13,9 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/admin/login",
     component: () => import("pages/admin/AdminLogin.vue"),
+    meta: {
+      title: t.value.logIn,
+    },
   },
   {
     path: "/admin",

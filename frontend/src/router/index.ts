@@ -6,8 +6,9 @@ import {
 } from "vue-router";
 import { StateInterface } from "../store";
 
-import routes from "./routes";
+import { afterEachGuard } from "./after-each-guard";
 import { beforeEachGuard } from "./before-each-guard";
+import routes from "./routes";
 
 /*
  * If not building with SSR mode, you can
@@ -34,6 +35,7 @@ export default route<StateInterface>(function (/* { store, ssrContext } */) {
   });
 
   Router.beforeEach(beforeEachGuard);
+  Router.afterEach(afterEachGuard);
 
   return Router;
 });
