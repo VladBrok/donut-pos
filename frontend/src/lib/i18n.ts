@@ -90,6 +90,7 @@ export const messages = i18n("admin", {
   phoneExample: "Example",
   passwordHint: `Hint: at least ${PASSWORD_MIN_LENGTH} characters. At least 1 digit, 1 uppercase, 1 lowercase and 1 special`,
   noDataFound: "No data found",
+  goBack: "Go back",
 
   // Admin login page
   loginPageTitle: "Admin panel",

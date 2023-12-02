@@ -1,38 +1,45 @@
 <template>
-  <big-spinner v-if="isSubscribing" />
-  <q-form v-else @submit="onSubmit" class="max-w-sm q-mx-auto">
-    <q-card class="q-pa-md">
-      <q-card-section class="q-gutter-lg">
-        <photo-upload
-          v-model:url="imageUrl"
-          v-model:file="imageFile"
-        ></photo-upload>
-        <q-input
-          v-model.trim="name"
-          stack-label
-          :label="`${t.categoryNameLabel} *`"
-          lazy-rules
-          type="text"
-          :rules="[
-            (val) => (!!val && val.length > 0) || t.fieldRequired,
-            (val) =>
-              val.length <= MAX_DISH_CATEGORY_NAME_LENGTH ||
-              t.maxLength({ max: MAX_DISH_CATEGORY_NAME_LENGTH }),
-          ]"
+  <div class="max-w-sm q-mx-auto">
+    <back-button />
+    <big-spinner v-if="isSubscribing" />
+    <q-form v-else @submit="onSubmit">
+      <q-card class="q-pa-md">
+        <q-card-section class="q-gutter-lg">
+          <photo-upload
+            v-model:url="imageUrl"
+            v-model:file="imageFile"
+          ></photo-upload>
+          <q-input
+            v-model.trim="name"
+            stack-label
+            :label="`${t.categoryNameLabel} *`"
+            lazy-rules
+            type="text"
+            :rules="[
+              (val) => (!!val && val.length > 0) || t.fieldRequired,
+              (val) =>
+                val.length <= MAX_DISH_CATEGORY_NAME_LENGTH ||
+                t.maxLength({ max: MAX_DISH_CATEGORY_NAME_LENGTH }),
+            ]"
+          />
+        </q-card-section>
+      </q-card>
+      <div class="row justify-end q-gutter-sm q-mt-md">
+        <q-btn
+          :label="t.cancel"
+          @click="() => router.back()"
+          color="dark"
+          flat
         />
-      </q-card-section>
-    </q-card>
-
-    <div class="row justify-end q-gutter-sm q-mt-md">
-      <q-btn :label="t.cancel" @click="() => router.back()" color="dark" flat />
-      <q-btn
-        :label="t.save"
-        :loading="isSubmitting"
-        type="submit"
-        color="primary"
-      />
-    </div>
-  </q-form>
+        <q-btn
+          :label="t.save"
+          :loading="isSubmitting"
+          type="submit"
+          color="primary"
+        />
+      </div>
+    </q-form>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -49,6 +56,7 @@ import { Notify } from "quasar";
 import { useStore } from "src/store";
 import { computed, ref, watchEffect } from "vue";
 import { useRouter } from "vue-router";
+import BackButton from "../../../components/BackButton.vue";
 import BigSpinner from "../../../components/BigSpinner.vue";
 import PhotoUpload from "../../../components/PhotoUpload.vue";
 import { blobToBase64 } from "../../../lib/blob-to-base64";

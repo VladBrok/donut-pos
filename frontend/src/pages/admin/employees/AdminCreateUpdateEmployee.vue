@@ -1,75 +1,82 @@
 <template>
-  <big-spinner v-if="isSubscribing" />
-  <q-form v-else @submit="onSubmit" class="max-w-md q-mx-auto">
-    <q-card class="q-pa-md">
-      <q-card-section class="q-gutter-lg">
-        <q-input
-          v-model.trim="firstName"
-          stack-label
-          :label="`${t.firstName} *`"
-          lazy-rules
-          type="text"
-          :rules="[
-            (val) => (!!val && val.length > 0) || t.fieldRequired,
-            (val) =>
-              val.length <= FIRST_NAME_MAX_LENGTH ||
-              t.maxLength({ max: FIRST_NAME_MAX_LENGTH }),
-          ]"
+  <div class="max-w-md q-mx-auto">
+    <back-button />
+    <big-spinner v-if="isSubscribing" />
+    <q-form v-else @submit="onSubmit">
+      <q-card class="q-pa-md">
+        <q-card-section class="q-gutter-lg">
+          <q-input
+            v-model.trim="firstName"
+            stack-label
+            :label="`${t.firstName} *`"
+            lazy-rules
+            type="text"
+            :rules="[
+              (val) => (!!val && val.length > 0) || t.fieldRequired,
+              (val) =>
+                val.length <= FIRST_NAME_MAX_LENGTH ||
+                t.maxLength({ max: FIRST_NAME_MAX_LENGTH }),
+            ]"
+          />
+          <q-input
+            v-model.trim="lastName"
+            stack-label
+            :label="`${t.lastName} *`"
+            lazy-rules
+            type="text"
+            :rules="[
+              (val) => (!!val && val.length > 0) || t.fieldRequired,
+              (val) =>
+                val.length <= LAST_NAME_MAX_LENGTH ||
+                t.maxLength({ max: LAST_NAME_MAX_LENGTH }),
+            ]"
+          />
+          <q-select
+            v-model="roleName"
+            use-input
+            fill-input
+            stack-label
+            clearable
+            hide-selected
+            input-debounce="0"
+            :options="filteredRoleNames"
+            @filter="filterRoles"
+            :label="`${t.role} *`"
+            :rules="[(val) => !!val || t.fieldRequired]"
+          >
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section>
+                  {{ t.noResults }}
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+          <phone-input v-model.trim="phone" shouldValidateFormat> </phone-input>
+          <password-input
+            v-model="password"
+            should-validate-format
+            :required="!originalEmployee"
+          >
+          </password-input>
+        </q-card-section>
+      </q-card>
+      <div class="row justify-end q-gutter-sm q-mt-md">
+        <q-btn
+          :label="t.cancel"
+          @click="() => router.back()"
+          color="dark"
+          flat
         />
-        <q-input
-          v-model.trim="lastName"
-          stack-label
-          :label="`${t.lastName} *`"
-          lazy-rules
-          type="text"
-          :rules="[
-            (val) => (!!val && val.length > 0) || t.fieldRequired,
-            (val) =>
-              val.length <= LAST_NAME_MAX_LENGTH ||
-              t.maxLength({ max: LAST_NAME_MAX_LENGTH }),
-          ]"
+        <q-btn
+          :label="t.save"
+          :loading="isSubmitting"
+          type="submit"
+          color="primary"
         />
-        <q-select
-          v-model="roleName"
-          use-input
-          fill-input
-          stack-label
-          clearable
-          hide-selected
-          input-debounce="0"
-          :options="filteredRoleNames"
-          @filter="filterRoles"
-          :label="`${t.role} *`"
-          :rules="[(val) => !!val || t.fieldRequired]"
-        >
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section>
-                {{ t.noResults }}
-              </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
-        <phone-input v-model.trim="phone" shouldValidateFormat> </phone-input>
-        <password-input
-          v-model="password"
-          should-validate-format
-          :required="!originalEmployee"
-        >
-        </password-input>
-      </q-card-section>
-    </q-card>
-
-    <div class="row justify-end q-gutter-sm q-mt-md">
-      <q-btn :label="t.cancel" @click="() => router.back()" color="dark" flat />
-      <q-btn
-        :label="t.save"
-        :loading="isSubmitting"
-        type="submit"
-        color="primary"
-      />
-    </div>
-  </q-form>
+      </div>
+    </q-form>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -84,6 +91,7 @@ import { Notify } from "quasar";
 import { useStore } from "src/store";
 import { computed, ref, watch, watchEffect } from "vue";
 import { useRouter } from "vue-router";
+import BackButton from "../../../components/BackButton.vue";
 import BigSpinner from "../../../components/BigSpinner.vue";
 import PasswordInput from "../../../components/PasswordInput.vue";
 import PhoneInput from "../../../components/PhoneInput.vue";

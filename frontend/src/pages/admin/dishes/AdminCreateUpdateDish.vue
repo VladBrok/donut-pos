@@ -1,109 +1,39 @@
 <template>
-  <big-spinner v-if="isSubscribing" />
-  <q-form v-else @submit="onSubmit" class="max-w-md q-mx-auto">
-    <q-card class="q-pa-md">
-      <q-card-section class="q-gutter-lg">
-        <photo-upload
-          v-model:url="imageUrl"
-          v-model:file="imageFile"
-        ></photo-upload>
-        <q-input
-          v-model.trim="name"
-          stack-label
-          :label="`${t.dishNameLabel} *`"
-          lazy-rules
-          type="text"
-          :rules="[
-            (val) => (!!val && val.length > 0) || t.fieldRequired,
-            (val) =>
-              val.length <= MAX_DISH_NAME_LENGTH ||
-              t.maxLength({ max: MAX_DISH_NAME_LENGTH }),
-          ]"
-        />
-        <q-select
-          v-model="categoryName"
-          use-input
-          fill-input
-          stack-label
-          clearable
-          hide-selected
-          input-debounce="0"
-          :options="filteredCategoryNames"
-          @filter="filterCategories"
-          :label="`${t.category} *`"
-          :rules="[(val) => !!val || t.fieldRequired]"
-        >
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section>
-                {{ t.noResults }}
-              </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
-        <q-input
-          v-model.number="price"
-          stack-label
-          :label="`${t.price} *`"
-          lazy-rules
-          type="number"
-          step="0.01"
-          :rules="[
-            (val) => val !== '' || t.fieldRequired,
-            (val) =>
-              val <= MAX_DISH_PRICE || t.maxValue({ max: MAX_DISH_PRICE }),
-            (val) =>
-              val >= MIN_DISH_PRICE || t.minValue({ min: MIN_DISH_PRICE }),
-          ]"
-        />
-        <q-input
-          v-model.number="weight"
-          stack-label
-          :label="`${t.weight} *`"
-          lazy-rules
-          type="number"
-          step="0.01"
-          :rules="[
-            (val) => val !== '' || t.fieldRequired,
-            (val) =>
-              val <= MAX_DISH_WEIGHT || t.maxValue({ max: MAX_DISH_WEIGHT }),
-            (val) =>
-              val >= MIN_DISH_WEIGHT || t.minValue({ min: MIN_DISH_WEIGHT }),
-          ]"
-        />
-        <q-toggle v-model="isActive" :label="t.active" size="lg" left-label />
-        <div class="row justify-between items-center">
-          <label class="d-block text-label">{{ t.modifications }}</label>
-          <q-btn
-            color="primary"
-            icon="add"
-            :label="t.addModification"
-            @click="addModification()"
+  <div class="max-w-md q-mx-auto">
+    <back-button />
+    <big-spinner v-if="isSubscribing" />
+    <q-form v-else @submit="onSubmit">
+      <q-card class="q-pa-md">
+        <q-card-section class="q-gutter-lg">
+          <photo-upload
+            v-model:url="imageUrl"
+            v-model:file="imageFile"
+          ></photo-upload>
+          <q-input
+            v-model.trim="name"
+            stack-label
+            :label="`${t.dishNameLabel} *`"
+            lazy-rules
+            type="text"
+            :rules="[
+              (val) => (!!val && val.length > 0) || t.fieldRequired,
+              (val) =>
+                val.length <= MAX_DISH_NAME_LENGTH ||
+                t.maxLength({ max: MAX_DISH_NAME_LENGTH }),
+            ]"
           />
-        </div>
-        <div
-          v-for="(modification, i) in modifications"
-          :key="i"
-          class="row justify-between items-center no-wrap"
-        >
           <q-select
-            v-model="modification.name"
+            v-model="categoryName"
             use-input
             fill-input
             stack-label
             clearable
             hide-selected
             input-debounce="0"
-            :options="modification.filteredNames"
-            @filter="(val, update) => filterModifications(i)(val, update)"
-            label=""
-            :rules="[
-              (val) =>
-                !val ||
-                modifications.every((m, idx) => idx >= i || m.name !== val) ||
-                t.sameModificationAlreadyAdded,
-            ]"
-            class="flex-grow q-mr-lg"
+            :options="filteredCategoryNames"
+            @filter="filterCategories"
+            :label="`${t.category} *`"
+            :rules="[(val) => !!val || t.fieldRequired]"
           >
             <template v-slot:no-option>
               <q-item>
@@ -113,95 +43,172 @@
               </q-item>
             </template>
           </q-select>
-          <q-btn
-            flat
-            size="md"
-            icon="o_delete"
-            color="negative"
-            dense
-            @click="deleteModification(i)"
-          >
-          </q-btn>
-        </div>
-        <div class="icons-md">
-          <label class="q-mb-sm q-mt-md d-block text-label">{{
-            t.description
-          }}</label>
-          <q-editor
-            v-model="description"
-            :placeholder="t.dishDescriptionPlaceholder"
-            :toolbar="[
-              ['bold', 'italic', 'strike', 'underline'],
-              [
-                {
-                  label: $q.lang.editor.align,
-                  icon: $q.iconSet.editor.align,
-                  fixedLabel: true,
-                  options: ['left', 'center', 'right', 'justify'],
-                },
-                {
-                  label: $q.lang.editor.fontSize,
-                  icon: $q.iconSet.editor.fontSize,
-                  fixedLabel: true,
-                  fixedIcon: true,
-                  list: 'no-icons',
-                  options: [
-                    'size-1',
-                    'size-2',
-                    'size-3',
-                    'size-4',
-                    'size-5',
-                    'size-6',
-                    'size-7',
-                  ],
-                },
-                {
-                  label: $q.lang.editor.defaultFont,
-                  icon: $q.iconSet.editor.font,
-                  fixedIcon: true,
-                  list: 'no-icons',
-                  options: [
-                    'default_font',
-                    'arial',
-                    'arial_black',
-                    'comic_sans',
-                    'courier_new',
-                    'impact',
-                    'lucida_grande',
-                    'times_new_roman',
-                    'verdana',
-                  ],
-                },
-                'removeFormat',
-              ],
-              ['print', 'fullscreen'],
-              ['undo', 'redo'],
+          <q-input
+            v-model.number="price"
+            stack-label
+            :label="`${t.price} *`"
+            lazy-rules
+            type="number"
+            step="0.01"
+            :rules="[
+              (val) => val !== '' || t.fieldRequired,
+              (val) =>
+                val <= MAX_DISH_PRICE || t.maxValue({ max: MAX_DISH_PRICE }),
+              (val) =>
+                val >= MIN_DISH_PRICE || t.minValue({ min: MIN_DISH_PRICE }),
             ]"
-            :fonts="{
-              arial: 'Arial',
-              arial_black: 'Arial Black',
-              comic_sans: 'Comic Sans MS',
-              courier_new: 'Courier New',
-              impact: 'Impact',
-              lucida_grande: 'Lucida Grande',
-              times_new_roman: 'Times New Roman',
-              verdana: 'Verdana',
-            }"
           />
-        </div>
-      </q-card-section>
-    </q-card>
-
-    <div class="row justify-end q-gutter-sm q-mt-md">
-      <q-btn :label="t.cancel" @click="() => router.back()" color="dark" flat />
-      <q-btn
-        :label="t.save"
-        :loading="isSubmitting"
-        type="submit"
-        color="primary"
-      />
-    </div>
-  </q-form>
+          <q-input
+            v-model.number="weight"
+            stack-label
+            :label="`${t.weight} *`"
+            lazy-rules
+            type="number"
+            step="0.01"
+            :rules="[
+              (val) => val !== '' || t.fieldRequired,
+              (val) =>
+                val <= MAX_DISH_WEIGHT || t.maxValue({ max: MAX_DISH_WEIGHT }),
+              (val) =>
+                val >= MIN_DISH_WEIGHT || t.minValue({ min: MIN_DISH_WEIGHT }),
+            ]"
+          />
+          <q-toggle v-model="isActive" :label="t.active" size="lg" left-label />
+          <div class="row justify-between items-center">
+            <label class="d-block text-label">{{ t.modifications }}</label>
+            <q-btn
+              color="primary"
+              icon="add"
+              :label="t.addModification"
+              @click="addModification()"
+            />
+          </div>
+          <div
+            v-for="(modification, i) in modifications"
+            :key="i"
+            class="row justify-between items-center no-wrap"
+          >
+            <q-select
+              v-model="modification.name"
+              use-input
+              fill-input
+              stack-label
+              clearable
+              hide-selected
+              input-debounce="0"
+              :options="modification.filteredNames"
+              @filter="(val, update) => filterModifications(i)(val, update)"
+              label=""
+              :rules="[
+                (val) =>
+                  !val ||
+                  modifications.every((m, idx) => idx >= i || m.name !== val) ||
+                  t.sameModificationAlreadyAdded,
+              ]"
+              class="flex-grow q-mr-lg"
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section>
+                    {{ t.noResults }}
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+            <q-btn
+              flat
+              size="md"
+              icon="o_delete"
+              color="negative"
+              dense
+              @click="deleteModification(i)"
+            >
+            </q-btn>
+          </div>
+          <div class="icons-md">
+            <label class="q-mb-sm q-mt-md d-block text-label">{{
+              t.description
+            }}</label>
+            <q-editor
+              v-model="description"
+              :placeholder="t.dishDescriptionPlaceholder"
+              :toolbar="[
+                ['bold', 'italic', 'strike', 'underline'],
+                [
+                  {
+                    label: $q.lang.editor.align,
+                    icon: $q.iconSet.editor.align,
+                    fixedLabel: true,
+                    options: ['left', 'center', 'right', 'justify'],
+                  },
+                  {
+                    label: $q.lang.editor.fontSize,
+                    icon: $q.iconSet.editor.fontSize,
+                    fixedLabel: true,
+                    fixedIcon: true,
+                    list: 'no-icons',
+                    options: [
+                      'size-1',
+                      'size-2',
+                      'size-3',
+                      'size-4',
+                      'size-5',
+                      'size-6',
+                      'size-7',
+                    ],
+                  },
+                  {
+                    label: $q.lang.editor.defaultFont,
+                    icon: $q.iconSet.editor.font,
+                    fixedIcon: true,
+                    list: 'no-icons',
+                    options: [
+                      'default_font',
+                      'arial',
+                      'arial_black',
+                      'comic_sans',
+                      'courier_new',
+                      'impact',
+                      'lucida_grande',
+                      'times_new_roman',
+                      'verdana',
+                    ],
+                  },
+                  'removeFormat',
+                ],
+                ['print', 'fullscreen'],
+                ['undo', 'redo'],
+              ]"
+              :fonts="{
+                arial: 'Arial',
+                arial_black: 'Arial Black',
+                comic_sans: 'Comic Sans MS',
+                courier_new: 'Courier New',
+                impact: 'Impact',
+                lucida_grande: 'Lucida Grande',
+                times_new_roman: 'Times New Roman',
+                verdana: 'Verdana',
+              }"
+            />
+          </div>
+        </q-card-section>
+      </q-card>
+      <div class="row justify-end q-gutter-sm q-mt-md">
+        <q-btn
+          :label="t.cancel"
+          @click="() => router.back()"
+          color="dark"
+          flat
+        />
+        <q-btn
+          :label="t.save"
+          :loading="isSubmitting"
+          type="submit"
+          color="primary"
+        />
+      </div>
+    </q-form>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -222,6 +229,7 @@ import { Notify } from "quasar";
 import { useStore } from "src/store";
 import { computed, reactive, ref, watch, watchEffect } from "vue";
 import { useRouter } from "vue-router";
+import BackButton from "../../../components/BackButton.vue";
 import BigSpinner from "../../../components/BigSpinner.vue";
 import PhotoUpload from "../../../components/PhotoUpload.vue";
 import { blobToBase64 } from "../../../lib/blob-to-base64";
