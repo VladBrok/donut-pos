@@ -3,16 +3,18 @@ import {
   DishModel,
   EmployeeModel,
   ModificationModel,
+  RoleModel,
 } from "./models.js";
 import {
   DishCategorySchema,
   DishSchema,
+  EmployeeSchema,
   ModificationSchema,
-  SelectEmployeeSchema,
+  RoleSchema,
 } from "./schemas.js";
 
 export const employeeAdapter = (
-  data: SelectEmployeeSchema[]
+  data: EmployeeSchema[]
 ): EmployeeModel | null => {
   if (!data.length) {
     return null;
@@ -23,7 +25,7 @@ export const employeeAdapter = (
     passwordHash: data[0].employee.passwordHash || "",
     phone: data[0].employee.phone || "",
     isPhoneVerified: data[0].employee.isPhoneVerified || false,
-    registeredAt: data[0].employee.registeredAt || "",
+    registeredAt: data[0].employee.registeredAt?.toISOString() || "",
     role: {
       id: data[0].role?.id || "",
       codeName: data[0].role?.codeName || "",
@@ -40,7 +42,7 @@ export const employeeAdapter = (
 };
 
 export const employeesManyAdapter = (
-  data: SelectEmployeeSchema[]
+  data: EmployeeSchema[]
 ): EmployeeModel[] => {
   const ids = new Set(data.map((x) => x.employee.id));
 
@@ -102,5 +104,12 @@ export const modificationAdapter = (
     name: x.name || "",
     weight: Number(x.weight),
     price: Number(x.price),
+  }));
+};
+
+export const roleAdapter = (data: RoleSchema[]): RoleModel[] => {
+  return data.map((x) => ({
+    id: x.id,
+    codeName: x.codeName || "",
   }));
 };

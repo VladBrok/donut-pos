@@ -1,15 +1,17 @@
-import { EmployeeModel } from "../db/models.js";
-import * as db from "../db/modules/employees.js";
+import { EmployeeModel, RoleModel } from "../db/models.js";
+import * as employeeDb from "../db/modules/employees.js";
+import * as roleDb from "../db/modules/roles.js";
 
 export async function hasAdminPermission(
   data: string | EmployeeModel
 ): Promise<boolean> {
   const employee =
-    typeof data === "string" ? await db.findEmployeeById(data) : data;
+    typeof data === "string" ? await employeeDb.findEmployeeById(data) : data;
   return !!employee?.permissions.admin;
 }
 
-export async function isAdminRole(roleId: string): Promise<boolean> {
-  const role = await db.findRoleById(roleId);
+export async function isAdminRole(data: string | RoleModel): Promise<boolean> {
+  const role =
+    typeof data === "string" ? await roleDb.findRoleById(data) : data;
   return role?.codeName === "admin";
 }

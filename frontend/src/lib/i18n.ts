@@ -4,6 +4,7 @@ import { USER_NOT_FOUND, WRONG_PASSWORD } from "donut-shared";
 import {
   ACCESS_DENIED,
   CATEGORY_NAME_EXISTS,
+  EMPLOYEE_WITH_PHONE_EXISTS,
   IMAGE_UPLOAD_FAIL,
   MODIFICATION_NAME_EXISTS,
   PASSWORD_MIN_LENGTH,
@@ -37,6 +38,12 @@ export const messages = i18n("admin", {
   image: "Image",
   name: "Name",
   category: "Category",
+  phone: "Phone",
+  isPhoneVerified: "Phone verified",
+  role: "Role",
+  firstName: "First name",
+  lastName: "Last name",
+  registeredAt: "Registration date",
   description: "Description",
   price: "Price, zł",
   weight: "Weight, g",
@@ -44,6 +51,7 @@ export const messages = i18n("admin", {
   perPage: "Records per page",
   addDishCategory: "Add category",
   addDish: "Add dish",
+  addEmployee: "Add employee",
   addModification: "Add modification",
   fieldRequired: "The field is required",
   maxLength: params("Max length is {max}"),
@@ -81,6 +89,7 @@ export const messages = i18n("admin", {
   passwordShouldContainSpecial: `Password should contain at least 1 of the following characters: ${PASSWORD_SPECIAL_CHARS}`,
   phoneExample: "Example",
   passwordHint: `Hint: at least ${PASSWORD_MIN_LENGTH} characters. At least 1 digit, 1 uppercase, 1 lowercase and 1 special`,
+  noDataFound: "No data found",
 
   // Admin login page
   loginPageTitle: "Admin panel",
@@ -96,6 +105,7 @@ export const messages = i18n("admin", {
   confirmDishCategoryDelete: "Are you sure you want to delete category",
   confirmDishDelete: "Are you sure you want to delete dish",
   confirmModificationDelete: "Are you sure you want to delete modification",
+  confirmEmployeeDelete: "Are you sure you want to delete employee",
 
   // Logux statuses
   disconnectedMessage: "Cannot connect to the server",
@@ -119,6 +129,9 @@ export const messages = i18n("admin", {
   ),
   [MODIFICATION_NAME_EXISTS]: params(
     'Modification with name "{name}" already exists. Please choose another name'
+  ),
+  [EMPLOYEE_WITH_PHONE_EXISTS]: params(
+    'Employee with phone "{phone}" already exists'
   ),
   imageCorrupted: "The image is corrupted. Try to choose a different one",
   [ACCESS_DENIED]: "Access denied",

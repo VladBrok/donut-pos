@@ -9,7 +9,7 @@ import {
   roleToPermission,
 } from "../../migrations/schema.js";
 
-export type SelectEmployeeSchema = {
+export type EmployeeSchema = {
   [employee._.name]: typeof employee.$inferSelect;
   [role._.name]: typeof role.$inferSelect | null;
   [permission._.name]: typeof permission.$inferSelect | null;
@@ -26,3 +26,5 @@ export type DishSchema = {
 };
 
 export type ModificationSchema = typeof modification.$inferSelect;
+
+export type RoleSchema = typeof role.$inferSelect;

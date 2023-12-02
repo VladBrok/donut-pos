@@ -5,6 +5,7 @@ export const CHANNELS = {
   DISHES: "dishes",
   MODIFICATIONS: "modifications",
   EMPLOYEES: "employees",
+  ROLES: "roles",
 };
 
 export const ANONYMOUS = {
@@ -35,6 +36,8 @@ export const PASSWORD_SPECIAL_CHARS = "! @ # $ % ^ & * ( ) _ - + = | < > / ? ~";
 export const FIRST_NAME_MAX_LENGTH = 50;
 export const LAST_NAME_MAX_LENGTH = 50;
 
+export const PHONE_REGEX = /^\+48\d{9}$/;
+
 export const MAX_IMAGE_FILE_SIZE_BYTES = 1000000 * 5;
 export const ALLOWED_IMAGE_TYPES = [
   "image/jpeg",
@@ -55,4 +58,5 @@ export const WRONG_PASSWORD = "wrongPassword";
 export const IMAGE_UPLOAD_FAIL = "imageUploadFail";
 export const CATEGORY_NAME_EXISTS = "categoryNameExists";
 export const MODIFICATION_NAME_EXISTS = "modificationNameExists";
+export const EMPLOYEE_WITH_PHONE_EXISTS = "employeeWithPhoneExists";
 export const ACCESS_DENIED = "accessDenied";

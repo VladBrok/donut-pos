@@ -172,7 +172,7 @@ export const orderToOrderStatus = pgTable("order_to_order_status", {
 	id: uuid("id").primaryKey().notNull(),
 	orderId: uuid("order_id").references(() => order.id, { onDelete: "set null" } ).references(() => order.id, { onDelete: "set null" } ).references(() => order.id, { onDelete: "set null" } ),
 	orderStatusId: uuid("order_status_id").references(() => orderStatus.id, { onDelete: "set null" } ).references(() => orderStatus.id, { onDelete: "set null" } ).references(() => orderStatus.id, { onDelete: "set null" } ),
-	date: timestamp("date", { mode: 'string' }),
+	date: timestamp("date", { mode: 'date' }),
 },
 (table) => {
 	return {
@@ -194,7 +194,7 @@ export const client = pgTable("client", {
 	phone: text("phone"),
 	isPhoneVerified: boolean("is_phone_verified"),
 	passwordHash: text("password_hash"),
-	registeredAt: timestamp("registered_at", { mode: 'string' }),
+	registeredAt: timestamp("registered_at", { mode: 'date' }),
 },
 (table) => {
 	return {
@@ -211,7 +211,7 @@ export const employee = pgTable("employee", {
 	phone: text("phone"),
 	isPhoneVerified: boolean("is_phone_verified"),
 	passwordHash: text("password_hash"),
-	registeredAt: timestamp("registered_at", { mode: 'string' }),
+	registeredAt: timestamp("registered_at", { mode: 'date' }),
 },
 (table) => {
 	return {

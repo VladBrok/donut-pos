@@ -1,4 +1,4 @@
-import { Server } from "@logux/server";
+import { Action, Server, ServerMeta } from "@logux/server";
 import {
   createEmployeeAction,
   deleteEmployeeAction,
@@ -8,7 +8,10 @@ import {
   loadEmployeesAction,
   updateEmployeeAction,
 } from "donut-shared/src/actions/employees.js";
-import { CHANNELS } from "donut-shared/src/constants.js";
+import {
+  CHANNELS,
+  EMPLOYEE_WITH_PHONE_EXISTS,
+} from "donut-shared/src/constants.js";
 import { EmployeeModel } from "../db/models.js";
 import * as db from "../db/modules/employees.js";
 import { hasAdminPermission, isAdminRole } from "../lib/access.js";
@@ -44,6 +47,17 @@ export default function employeesModule(server: Server) {
         return;
       }
 
+      if (
+        !(await validateEmployeePhone(
+          server,
+          action,
+          meta,
+          action.payload.phone
+        ))
+      ) {
+        return;
+      }
+
       const created = await db.createEmployee({
         ...action.payload,
         passwordHash: await hash(action.payload.password),
@@ -76,15 +90,31 @@ export default function employeesModule(server: Server) {
         return;
       }
 
+      if (
+        !(await validateEmployeePhone(
+          server,
+          action,
+          meta,
+          action.payload.phone
+        ))
+      ) {
+        return;
+      }
+
       const toUpdate: Partial<EmployeeModel> & {
         roleId: string;
+        password?: string;
       } = {
         ...action.payload,
         roleId: action.payload.role.id,
-        passwordHash: await hash(action.payload.password),
+        ...(action.payload.password && {
+          passwordHash: await hash(action.payload.password),
+        }),
       };
       const updated = structuredClone(toUpdate);
       delete toUpdate.role;
+      delete toUpdate.registeredAt;
+      delete toUpdate.password;
       await db.updateEmployee(toUpdate);
       await server.process(employeeUpdatedAction(updated));
     },
@@ -127,4 +157,24 @@ export default function employeesModule(server: Server) {
       return CHANNELS.EMPLOYEES;
     },
   });
+}
+
+async function validateEmployeePhone(
+  server: Server,
+  action: Action,
+  meta: ServerMeta,
+  phone?: string
+) {
+  if (!phone) {
+    return true;
+  }
+
+  const existing = await db.findEmployeeByPhone(phone);
+
+  if (existing) {
+    server.undo(action, meta, EMPLOYEE_WITH_PHONE_EXISTS);
+    return false;
+  }
+
+  return true;
 }

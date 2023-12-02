@@ -36,18 +36,17 @@ export async function createEmployee(
   await db.insert(employee).values({
     ...toCreate,
     roleId: data.role.id,
+    registeredAt: new Date(data.registeredAt),
   });
   return toCreate;
 }
 
 export async function updateEmployee(
-  data: Partial<EmployeeModel> & { roleId: string }
+  data: Partial<Omit<EmployeeModel, "registeredAt">> & { roleId: string }
 ) {
   await db
     .update(employee)
-    .set({
-      ...data,
-    })
+    .set(data)
     .where(eq(employee.id, data.id || ""));
   return data;
 }
@@ -76,13 +75,4 @@ export async function findEmployeeById(
     .leftJoin(permission, eq(roleToPermission.permissionId, permission.id));
 
   return employeeAdapter(data);
-}
-
-export async function findRoleById(id: string) {
-  const data = await db.select().from(role).where(eq(role.id, id));
-
-  if (!data[0]) {
-    return null;
-  }
-  return data[0];
 }

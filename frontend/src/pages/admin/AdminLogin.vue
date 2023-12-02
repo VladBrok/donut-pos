@@ -9,9 +9,13 @@
       <q-form @submit="onSubmit" class="max-w-sm q-mx-auto">
         <q-card class="q-pa-md">
           <q-card-section class="q-gutter-lg">
-            <phone-input v-model="phone" :shouldValidateFormat="false">
+            <phone-input v-model.trim="phone" :shouldValidateFormat="false">
             </phone-input>
-            <password-input v-model="password" :should-validate-format="false">
+            <password-input
+              v-model="password"
+              :should-validate-format="false"
+              required
+            >
             </password-input>
             <div>
               <q-btn
@@ -45,7 +49,6 @@ const router = useRouter();
 const phone = ref("+48000000000"); // TODO: remove
 const password = ref("1234"); // TODO: remove
 const isLoggingIn = ref(false);
-const isHidePassword = ref(true);
 
 const onSubmit = async () => {
   isLoggingIn.value = true;

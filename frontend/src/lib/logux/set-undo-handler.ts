@@ -2,6 +2,7 @@ import { LoguxVuexStore } from "@logux/vuex";
 import { USER_NOT_FOUND } from "donut-shared";
 import {
   CATEGORY_NAME_EXISTS,
+  EMPLOYEE_WITH_PHONE_EXISTS,
   MODIFICATION_NAME_EXISTS,
 } from "donut-shared/src/constants";
 import { logError, logInfo, logWarn } from "donut-shared/src/lib/log";
@@ -37,6 +38,10 @@ export function setUndoHandler(Store: LoguxVuexStore) {
           : reason === MODIFICATION_NAME_EXISTS
           ? t.value.modificationNameExists({
               name: undone.action.payload.name,
+            })
+          : reason === EMPLOYEE_WITH_PHONE_EXISTS
+          ? t.value.employeeWithPhoneExists({
+              phone: undone.action.payload.phone,
             })
           : (t.value as any)[reason];
     }

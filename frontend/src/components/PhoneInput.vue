@@ -12,12 +12,13 @@
         val.startsWith('+48') ||
         t.phoneShouldStartWith,
       (val) =>
-        !shouldValidateFormat || val.length === 12 || t.invalidPhoneLengths,
+        !shouldValidateFormat || PHONE_REGEX.test(val) || t.invalidPhoneLengths,
     ]"
   />
 </template>
 
 <script setup lang="ts">
+import { PHONE_REGEX } from "donut-shared/src/constants";
 import { useI18nStore } from "../lib/i18n";
 
 defineProps<{ shouldValidateFormat: boolean }>();

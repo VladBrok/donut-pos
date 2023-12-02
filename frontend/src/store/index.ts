@@ -24,6 +24,8 @@ import employees from "./employees";
 import { IEmployeesState } from "./employees/state";
 import modifications from "./modifications";
 import { IModificationsState } from "./modifications/state";
+import roles from "./roles";
+import { IRolesState } from "./roles/state";
 
 export interface StateInterface {
   // Define your own store structure, using submodules if needed
@@ -32,6 +34,7 @@ export interface StateInterface {
   dishes: IDishesState;
   modifications: IModificationsState;
   employees: IEmployeesState;
+  roles: IRolesState;
 }
 
 // provide typings for `this.$store`
@@ -65,6 +68,7 @@ export default store(function (/* { ssrContext } */) {
     dishes,
     modifications,
     employees,
+    roles,
   };
 
   for (const module of Object.values(modules)) {
