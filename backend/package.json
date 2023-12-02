@@ -11,7 +11,8 @@
     "dev": "export NODE_ENV=development && tsx watch src/index.ts",
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "pull-db": "tsx scripts/pull-db.ts"
+    "pull-db": "tsx scripts/pull-db.ts",
+    "seed": "tsx scripts/seed.ts"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.1",
