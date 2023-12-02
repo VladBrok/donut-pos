@@ -82,7 +82,8 @@ export default function dishCategoriesModule(server: Server) {
           server,
           action,
           meta,
-          action.payload.name
+          action.payload.name,
+          action.payload.id
         ))
       ) {
         return;
@@ -147,7 +148,8 @@ async function validateDishCategoryName(
   server: Server,
   action: Action,
   meta: ServerMeta,
-  name?: string
+  name?: string,
+  id?: string
 ) {
   if (!name) {
     return true;
@@ -155,7 +157,7 @@ async function validateDishCategoryName(
 
   const existing = await db.getDishCategoryByName(name);
 
-  if (existing) {
+  if (existing && existing.id !== id) {
     server.undo(action, meta, CATEGORY_NAME_EXISTS);
     return false;
   }

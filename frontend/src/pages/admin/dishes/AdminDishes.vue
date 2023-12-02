@@ -13,7 +13,6 @@
       :pagination="{
         rowsPerPage: ROWS_PER_TABLE_PAGE,
       }"
-      @row-click="(_, row) => $router.push(`/admin/dishes/update/${row.id}`)"
     >
       <template v-slot:top-right>
         <q-input

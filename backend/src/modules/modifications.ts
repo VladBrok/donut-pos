@@ -82,7 +82,8 @@ export default function modificationsModule(server: Server) {
           server,
           action,
           meta,
-          action.payload.name
+          action.payload.name,
+          action.payload.id
         ))
       ) {
         return;
@@ -149,7 +150,8 @@ async function validateModificationName(
   server: Server,
   action: Action,
   meta: ServerMeta,
-  name?: string
+  name?: string,
+  id?: string
 ) {
   if (!name) {
     return true;
@@ -157,7 +159,7 @@ async function validateModificationName(
 
   const existing = await db.getModificationByName(name);
 
-  if (existing) {
+  if (existing && existing.id !== id) {
     server.undo(action, meta, MODIFICATION_NAME_EXISTS);
     return false;
   }

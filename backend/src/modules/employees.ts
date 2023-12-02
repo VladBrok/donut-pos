@@ -95,7 +95,8 @@ export default function employeesModule(server: Server) {
           server,
           action,
           meta,
-          action.payload.phone
+          action.payload.phone,
+          action.payload.id
         ))
       ) {
         return;
@@ -163,7 +164,8 @@ async function validateEmployeePhone(
   server: Server,
   action: Action,
   meta: ServerMeta,
-  phone?: string
+  phone?: string,
+  id?: string
 ) {
   if (!phone) {
     return true;
@@ -171,7 +173,7 @@ async function validateEmployeePhone(
 
   const existing = await db.findEmployeeByPhone(phone);
 
-  if (existing) {
+  if (existing && existing.id !== id) {
     server.undo(action, meta, EMPLOYEE_WITH_PHONE_EXISTS);
     return false;
   }

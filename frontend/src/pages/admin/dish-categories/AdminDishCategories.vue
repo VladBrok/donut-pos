@@ -13,10 +13,10 @@
       :pagination="{
         rowsPerPage: ROWS_PER_TABLE_PAGE,
       }"
-      @row-click="
-        (_, row) => $router.push(`/admin/dish-categories/update/${row.id}`)
-      "
     >
+      <!-- @row-click="
+        (_, row) => $router.push(`/admin/dish-categories/update/${row.id}`)
+      " -->
       <template v-slot:top-right>
         <q-input
           dense
