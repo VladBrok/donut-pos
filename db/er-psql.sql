@@ -63,8 +63,8 @@ CREATE TABLE "dish" (
   "name" TEXT,
   "image_url" TEXT,
   "description" TEXT,
-  "price" "NUMERIC(8, 2)",
-  "weight" "NUMERIC(8, 2)",
+  "price" NUMERIC(8, 2),
+  "weight" NUMERIC(8, 2),
   "is_active" BOOLEAN
 );
 
@@ -92,8 +92,8 @@ CREATE TABLE "modification" (
   "id" UUID PRIMARY KEY,
   "name" TEXT,
   "image_url" TEXT,
-  "weight" "NUMERIC(8, 2)",
-  "price" "NUMERIC(8, 2)"
+  "weight" NUMERIC(8, 2),
+  "price" NUMERIC(8, 2)
 );
 
 CREATE TABLE "dish_to_modification" (

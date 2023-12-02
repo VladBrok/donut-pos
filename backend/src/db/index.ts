@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { DefaultLogger, sql } from "drizzle-orm";
 import { PostgresJsDatabase, drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
