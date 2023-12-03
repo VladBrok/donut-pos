@@ -14,9 +14,15 @@
           </template>
         </q-input>
       </div>
-      <div class="q-mx-auto w-fit card-grid gap-md">
+      <div
+        v-if="dishesFiltered.length"
+        class="q-mx-auto w-fit card-grid gap-md"
+      >
         <dish-card v-for="dish in dishesFiltered" :dish="dish" :key="dish.id">
         </dish-card>
+      </div>
+      <div v-else>
+        <no-data></no-data>
       </div>
     </div>
   </div>
@@ -28,6 +34,7 @@ import { CHANNELS } from "donut-shared/src/constants";
 import { computed, ref } from "vue";
 import BigSpinner from "../../components/BigSpinner.vue";
 import DishCard from "../../components/DishCard.vue";
+import NoData from "../../components/NoData.vue";
 import { createFuzzySearcher } from "../../lib/fuzzy-search";
 import { useI18nStore } from "../../lib/i18n";
 import { useStore } from "../../store";

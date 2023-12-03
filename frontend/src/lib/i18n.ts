@@ -94,7 +94,7 @@ export const messages = i18n("messages", {
 
   // Client & waiter pages
   main: "Main",
-  searchDishes: "Search dishes",
+  searchDishes: "Search by name, price, category or weight",
 
   // Login page
   adminLoginPageTitle: "Admin login",
