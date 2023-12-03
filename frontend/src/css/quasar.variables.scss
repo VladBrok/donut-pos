@@ -12,12 +12,31 @@
 // to match your app's branding.
 // Tip: Use the "Theme Builder" on Quasar's documentation website.
 
-$primary: #1976d2;
+$primary: #356fed;
 $secondary: #26a69a;
 $accent: #9c27b0;
 
-$dark: #1d1d1d;
+$dark: #1b1b1b;
 $dark-page: #121212;
+
+.text-dark-ligher {
+  color: #3f3f3f !important;
+}
+.bg-dark-ligher {
+  background: #3f3f3f !important;
+}
+.text-dark-gray {
+  color: #5f5f5f !important;
+}
+.bg-dark-gray {
+  background: #5f5f5f !important;
+}
+.text-gray-lightest {
+  color: #f4f5fc;
+}
+.bg-gray-lightest {
+  background: #f4f5fc;
+}
 
 $positive: #21ba45;
 $negative: #c10015;
@@ -27,3 +46,5 @@ $warning: #f2c037;
 $body-font-size: 16px;
 $button-font-size: 14px;
 $input-font-size: 16px;
+$generic-border-radius: 12px;
+$button-border-radius: 4px;

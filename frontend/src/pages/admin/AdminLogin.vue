@@ -1,7 +1,7 @@
 <template>
-  <div class="q-pa-md bg-grey-3 min-height-window">
+  <div class="q-pa-md bg-gray-lightest min-height-window">
     <div>
-      <div class="q-my-xl text-center text-grey-7">
+      <div class="q-my-xl text-center text-dark-ligher">
         <h1 class="text-h3">
           {{ t.loginPageTitle }}
         </h1>

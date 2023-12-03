@@ -1,5 +1,11 @@
 // app global css in SCSS form
 
+// Global
+
+.body--light {
+  color: $dark !important;
+}
+
 /* ===== Utility classes ===== */
 
 .d-block {
