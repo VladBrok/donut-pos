@@ -1,5 +1,5 @@
 <template>
-  <q-card class="max-w-xsm">
+  <q-card class="">
     <q-card-section>
       <q-img
         :src="dish.imageUrl"
@@ -10,7 +10,7 @@
     </q-card-section>
 
     <q-card-section class="row justify-between">
-      <div class="text-h6">{{ dish.name }}</div>
+      <div class="text-h6 q-mr-sm">{{ dish.name }}</div>
       <div class="text-h6 text-primary">{{ formatCurrency(dish.price) }}</div>
     </q-card-section>
 
