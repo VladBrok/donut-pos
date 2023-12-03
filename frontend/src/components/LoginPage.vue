@@ -2,6 +2,9 @@
   <div class="q-pa-md bg-gray-lightest min-height-window">
     <div>
       <div class="q-my-xl text-center text-dark-ligher">
+        <div>
+          <q-icon :name="iconName" style="font-size: 55px" />
+        </div>
         <h1 class="text-h3">
           <slot name="title"></slot>
         </h1>
@@ -40,7 +43,7 @@ import PasswordInput from "../components/PasswordInput.vue";
 import PhoneInput from "../components/PhoneInput.vue";
 import { useI18nStore } from "../lib/i18n";
 
-const props = defineProps<{ isLoggingIn: boolean }>();
+const props = defineProps<{ isLoggingIn: boolean; iconName: string }>();
 const isLoggingIn = computed(() => props.isLoggingIn);
 
 const emit = defineEmits<{
@@ -56,7 +59,9 @@ const phone = ref(
     ? "+48000000000"
     : "+48100000001"
 ); // TODO: remove
-const password = ref("1234"); // TODO: remove
+const password = ref(
+  router.currentRoute.value.path.includes("admin") ? "1234" : "1234Db_3333>"
+); // TODO: remove
 
 const onSubmit = async () => {
   emit("submit", {

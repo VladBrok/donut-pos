@@ -93,9 +93,11 @@ export const messages = i18n("messages", {
   goBack: "Go back",
 
   // Client & waiter pages
+  main: "Main",
 
   // Login page
-  adminLoginPageTitle: "Admin panel",
+  adminLoginPageTitle: "Admin login",
+  waiterLoginPageTitle: "Waiter login",
   passwordRequired: "Please enter a password",
   phoneRequired: "Please enter a phone number",
   phoneLabel: "Phone",

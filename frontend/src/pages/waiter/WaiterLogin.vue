@@ -2,21 +2,21 @@
   <login-page
     :is-logging-in="isLoggingIn"
     @submit="onSubmit"
-    icon-name="o_lock"
+    icon-name="o_badge"
   >
     <template v-slot:title>
-      {{ t.adminLoginPageTitle }}
+      {{ t.waiterLoginPageTitle }}
     </template>
   </login-page>
 </template>
 
 <script setup lang="ts">
 import { loginAction } from "donut-shared/src/actions/auth";
-import { useStore } from "src/store";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import LoginPage from "../../components/LoginPage.vue";
 import { useI18nStore } from "../../lib/i18n";
+import { useStore } from "../../store";
 
 const t = useI18nStore();
 const store = useStore();
@@ -31,7 +31,7 @@ const onSubmit = async (data: { password: string; phone: string }) => {
         phone: data.phone,
         password: data.password,
         permissions: {
-          admin: true,
+          waiter: true,
         },
       })
     )
@@ -40,7 +40,7 @@ const onSubmit = async (data: { password: string; phone: string }) => {
         store.state.auth.user.userId || "",
         store.state.auth.user.accessToken || ""
       );
-      router.push("/admin");
+      router.push("/waiter");
     })
     .finally(() => {
       isLoggingIn.value = false;

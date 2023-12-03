@@ -19,4 +19,16 @@ export const beforeEachGuard: NavigationGuardWithThis<undefined> = (
   if (to.path.startsWith("/admin/login") && user.permissions?.admin) {
     return "/admin";
   }
+
+  if (
+    to.path.startsWith("/waiter") &&
+    !to.path.startsWith("/waiter/login") &&
+    !user.permissions?.waiter
+  ) {
+    return "/waiter/login";
+  }
+
+  if (to.path.startsWith("/waiter/login") && user.permissions?.waiter) {
+    return "/waiter";
+  }
 };
