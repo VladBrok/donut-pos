@@ -4,7 +4,12 @@ import { ANONYMOUS } from "donut-shared/src/constants";
 import { useStore } from "src/store";
 import { onMounted, onUnmounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import { Keys, removeItem, saveUserToStorage } from "../local-storage";
+import {
+  Keys,
+  getUserFromStorage,
+  removeItem,
+  saveUserToStorage,
+} from "../local-storage";
 
 /**
  * Setup listener that executes side effects when specific mutation happens
@@ -25,9 +30,10 @@ export const useMutationsWatcher = () => {
         }
 
         case logoutAction.type: {
+          const redirectTo = `/${getUserFromStorage()?.role.codeName}/login`;
           removeItem(Keys.User);
           store.client.changeUser(ANONYMOUS.userId);
-          router.push("/admin/login");
+          router.push(redirectTo);
           break;
         }
       }

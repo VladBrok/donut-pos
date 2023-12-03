@@ -1,5 +1,6 @@
 import { EMPLOYEE_PERMISSIONS } from "../constants.js";
 import { createAction } from "./index.js";
+import { loadRolesAction } from "./roles.js";
 
 export const loginAction = createAction<{
   phone: string;
@@ -16,6 +17,7 @@ export const loggedInAction = createAction<{
   userId: string;
   accessToken: string;
   permissions: ReturnType<typeof loginAction>["payload"]["permissions"];
+  role: ReturnType<typeof loadRolesAction>["payload"]["roles"][number];
 }>("auth/loggedIn");
 
 export const logoutAction = createAction<{

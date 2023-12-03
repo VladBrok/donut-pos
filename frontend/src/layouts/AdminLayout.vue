@@ -1,7 +1,8 @@
 <template>
-  <q-layout view="lHh LpR fFf" class="bg-gray-lightest">
-    <q-header elevated class="bg-white text-black">
-      <q-toolbar>
+  <!-- TODO: extract -->
+  <q-layout view="hHh LpR fFf" class="bg-gray-lightest">
+    <q-header class="bg-white text-black shadow-up-1" bordered>
+      <q-toolbar class="q-py-sm">
         <q-btn dense flat round icon="menu" @click="toggleDrawer" />
         <q-toolbar-title>
           {{ $route.meta.title || "" }}
@@ -16,34 +17,43 @@
       show-if-above
       v-model="isDrawerOpen"
       side="left"
-      :width="200"
+      :width="240"
       bordered
     >
       <q-scroll-area class="fit">
         <!-- TODO: add logo here -->
-        <q-list>
-          <template v-for="(menuItem, index) in menuList" :key="index">
-            <q-item
-              clickable
-              :active="$route.meta.title === menuItem.meta"
-              v-ripple
-              :to="menuItem.to"
-            >
-              <q-item-section avatar>
-                <q-icon :name="menuItem.icon" size="sm"> </q-icon>
-              </q-item-section>
-              <q-item-section>
-                {{ menuItem.label }}
-              </q-item-section>
-            </q-item>
-            <q-separator v-if="index !== menuList.length - 1" />
-          </template>
-        </q-list>
+        <div class="q-pa-sm">
+          <!-- <q-btn
+            dense
+            flat
+            round
+            icon="menu"
+            @click="toggleDrawer"
+            class="q-mb-md"
+          /> -->
+          <q-list>
+            <template v-for="(menuItem, index) in menuList" :key="index">
+              <q-item
+                clickable
+                :active="$route.meta.title === menuItem.meta"
+                v-ripple
+                :to="menuItem.to"
+              >
+                <q-item-section avatar>
+                  <q-icon :name="menuItem.icon" size="sm"> </q-icon>
+                </q-item-section>
+                <q-item-section>
+                  {{ menuItem.label }}
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-list>
+        </div>
       </q-scroll-area>
     </q-drawer>
 
     <q-page-container>
-      <q-page padding class="q-pt-xl">
+      <q-page padding class="q-pt-xl q-pb-xl">
         <router-view />
       </q-page>
     </q-page-container>
