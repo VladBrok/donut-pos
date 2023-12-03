@@ -1,7 +1,15 @@
-import { EMPLOYEE_ROLES_ARR } from "donut-shared/src/constants.js";
+import {
+  EMPLOYEE_ROLES_ARR,
+  ORDER_STATUSES_ARR,
+} from "donut-shared/src/constants.js";
 import { logInfo } from "donut-shared/src/lib/log.js";
 import { eq } from "drizzle-orm";
-import { permission, role, roleToPermission } from "../migrations/schema.js";
+import {
+  orderStatus,
+  permission,
+  role,
+  roleToPermission,
+} from "../migrations/schema.js";
 import * as database from "../src/db/index.js";
 import { generateUuid } from "../src/lib/uuid.js";
 
@@ -29,6 +37,17 @@ for (const roleName of EMPLOYEE_ROLES_ARR) {
     id: generateUuid(),
     permissionId: permId,
     roleId: roleId,
+  });
+}
+
+// Order statuses
+
+db.delete(orderStatus);
+
+for (const status of ORDER_STATUSES_ARR) {
+  await db.insert(orderStatus).values({
+    id: generateUuid(),
+    codeName: status,
   });
 }
 

@@ -2,6 +2,10 @@
 
 // Global
 
+body {
+  overflow-x: hidden;
+}
+
 .body--light {
   color: $dark !important;
 }
