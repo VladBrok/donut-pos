@@ -48,6 +48,27 @@ body {
   height: 45px;
 }
 
+.image-xs {
+  width: 40px;
+  height: 40px;
+}
+
+.fit-cover {
+  object-fit: cover;
+}
+
+.gap-md {
+  gap: 20px;
+}
+
+.gap-sm {
+  gap: 15px;
+}
+
+.gap-xs {
+  gap: 10px;
+}
+
 .card-grid {
   display: grid;
   grid-template-columns: repeat(1, 280px);

@@ -14,6 +14,8 @@
       <div class="text-h6 text-primary">{{ formatCurrency(dish.price) }}</div>
     </q-card-section>
 
+    <!-- TODO: for client, include description -->
+
     <!-- TODO: display - 0 + (buttons and count, add to DRAFT order) -->
   </q-card>
 </template>
