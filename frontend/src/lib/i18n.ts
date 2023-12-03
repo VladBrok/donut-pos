@@ -95,7 +95,7 @@ export const messages = i18n("messages", {
   // Client & waiter pages
 
   // Login page
-  loginPageTitle: "Admin panel",
+  adminLoginPageTitle: "Admin panel",
   passwordRequired: "Please enter a password",
   phoneRequired: "Please enter a phone number",
   phoneLabel: "Phone",
