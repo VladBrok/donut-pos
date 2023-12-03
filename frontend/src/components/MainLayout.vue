@@ -1,5 +1,4 @@
 <template>
-  <!-- TODO: extract -->
   <q-layout view="hHh LpR fFf" class="bg-gray-lightest">
     <q-header class="bg-white text-black shadow-up-1" bordered>
       <q-toolbar class="q-py-sm">
