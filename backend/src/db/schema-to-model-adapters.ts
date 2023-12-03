@@ -1,3 +1,4 @@
+import { EMPLOYEE_PERMISSIONS } from "donut-shared/src/constants.js";
 import {
   DishCategoryModel,
   DishModel,
@@ -28,15 +29,23 @@ export const employeeAdapter = (
     registeredAt: data[0].employee.registeredAt?.toISOString() || "",
     role: {
       id: data[0].role?.id || "",
-      codeName: data[0].role?.codeName || "",
+      codeName: (data[0].role?.codeName as RoleModel["codeName"]) || "",
     },
     firstName: data[0].employee.firstName || "",
     lastName: data[0].employee.lastName || "",
     permissions: {
-      admin: data.some((x) => x.permission?.codeName === "admin"),
-      cook: data.some((x) => x.permission?.codeName === "cook"),
-      waiter: data.some((x) => x.permission?.codeName === "waiter"),
-      courier: data.some((x) => x.permission?.codeName === "courier"),
+      admin: data.some(
+        (x) => x.permission?.codeName === EMPLOYEE_PERMISSIONS.ADMIN
+      ),
+      cook: data.some(
+        (x) => x.permission?.codeName === EMPLOYEE_PERMISSIONS.COOK
+      ),
+      waiter: data.some(
+        (x) => x.permission?.codeName === EMPLOYEE_PERMISSIONS.WAITER
+      ),
+      courier: data.some(
+        (x) => x.permission?.codeName === EMPLOYEE_PERMISSIONS.COURIER
+      ),
     },
   };
 };
@@ -110,6 +119,6 @@ export const modificationAdapter = (
 export const roleAdapter = (data: RoleSchema[]): RoleModel[] => {
   return data.map((x) => ({
     id: x.id,
-    codeName: x.codeName || "",
+    codeName: (x.codeName as RoleModel["codeName"]) || "",
   }));
 };

@@ -1,3 +1,4 @@
+import { EMPLOYEE_ROLES_ARR } from "donut-shared/src/constants.js";
 import { logInfo } from "donut-shared/src/lib/log.js";
 import { eq } from "drizzle-orm";
 import { permission, role, roleToPermission } from "../migrations/schema.js";
@@ -13,7 +14,7 @@ db.delete(roleToPermission).where(eq(roleToPermission.id, roleToPermission.id));
 db.delete(role).where(eq(role.id, role.id));
 db.delete(permission).where(eq(permission.id, permission.id));
 
-for (const roleName of ["admin", "cook", "waiter", "courier"]) {
+for (const roleName of EMPLOYEE_ROLES_ARR) {
   const roleId = generateUuid();
   const permId = generateUuid();
   await db.insert(role).values({

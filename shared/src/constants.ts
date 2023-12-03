@@ -12,6 +12,15 @@ export const ANONYMOUS = {
   userId: "anonymous",
 };
 
+export const EMPLOYEE_ROLES = {
+  ADMIN: "admin",
+  COOK: "cook",
+  WAITER: "waiter",
+  COURIER: "courier",
+} as const;
+export const EMPLOYEE_PERMISSIONS = structuredClone(EMPLOYEE_ROLES);
+export const EMPLOYEE_ROLES_ARR = Object.values(EMPLOYEE_ROLES);
+
 export const MISSING_PHOTO_PLACEHOLDER_URL =
   "https://i.ibb.co/DzSX5s3/placeholder.png";
 
