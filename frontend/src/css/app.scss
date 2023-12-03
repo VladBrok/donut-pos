@@ -33,6 +33,11 @@ body {
   width: fit-content;
 }
 
+.image-card {
+  width: 100%;
+  aspect-ratio: 1.2;
+}
+
 .image-md {
   width: 150px;
   height: 150px;
@@ -41,6 +46,30 @@ body {
 .image-sm {
   width: 45px;
   height: 45px;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 25px;
+}
+
+@media screen and (min-width: 400px) {
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (min-width: $breakpoint-sm-min) {
+  .card-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media screen and (min-width: $breakpoint-md-min) {
+  .card-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
 .max-w-xl {
@@ -53,6 +82,11 @@ body {
 
 .max-w-sm {
   max-width: 500px;
+}
+
+.max-w-xsm {
+  max-width: 280px;
+  min-width: 0;
 }
 
 .text-label {
