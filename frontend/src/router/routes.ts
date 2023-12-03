@@ -141,6 +141,28 @@ const routes: RouteRecordRaw[] = [
     ],
   },
 
+  // Waiter
+  {
+    path: "/waiter/login",
+    component: () => import("pages/waiter/WaiterLogin.vue"),
+    meta: {
+      title: t.value.logIn,
+    },
+  },
+  {
+    path: "/waiter",
+    component: () => import("layouts/WaiterLayout.vue"),
+    children: [
+      {
+        path: "",
+        component: () => import("pages/waiter/WaiterMainPage.vue"),
+        meta: {
+          title: t.value.main,
+        },
+      },
+    ],
+  },
+
   // Always leave this as last one,
   // but you can also remove it
   {

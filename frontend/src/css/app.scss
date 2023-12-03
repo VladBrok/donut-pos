@@ -1,5 +1,15 @@
 // app global css in SCSS form
 
+// Global
+
+body {
+  overflow-x: hidden;
+}
+
+.body--light {
+  color: $dark !important;
+}
+
 /* ===== Utility classes ===== */
 
 .d-block {
@@ -23,6 +33,11 @@
   width: fit-content;
 }
 
+.image-card {
+  width: 100%;
+  aspect-ratio: 1.2;
+}
+
 .image-md {
   width: 150px;
   height: 150px;
@@ -31,6 +46,63 @@
 .image-sm {
   width: 45px;
   height: 45px;
+}
+
+.image-xs {
+  width: 40px;
+  height: 40px;
+}
+
+.fit-cover {
+  object-fit: cover;
+}
+
+.gap-md {
+  gap: 20px;
+}
+
+.gap-sm {
+  gap: 15px;
+}
+
+.gap-xs {
+  gap: 10px;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 280px);
+  gap: 25px;
+}
+
+@media screen and (min-width: 400px) {
+  .card-grid {
+    grid-template-columns: repeat(2, 180px);
+  }
+}
+
+@media screen and (min-width: 700px) {
+  .card-grid {
+    grid-template-columns: repeat(2, 220px);
+  }
+}
+
+@media screen and (min-width: 800px) {
+  .card-grid {
+    grid-template-columns: repeat(3, 220px);
+  }
+}
+
+@media screen and (min-width: 1300px) {
+  .card-grid {
+    grid-template-columns: repeat(4, 220px);
+  }
+}
+
+@media screen and (min-width: 1500px) {
+  .card-grid {
+    grid-template-columns: repeat(4, 250px);
+  }
 }
 
 .max-w-xl {
@@ -43,6 +115,11 @@
 
 .max-w-sm {
   max-width: 500px;
+}
+
+.max-w-xsm {
+  max-width: 280px;
+  min-width: 0;
 }
 
 .text-label {

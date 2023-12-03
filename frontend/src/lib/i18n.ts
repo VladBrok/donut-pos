@@ -25,7 +25,7 @@ export const i18n = createI18n(locale, {
   },
 });
 
-export const messages = i18n("admin", {
+export const messages = i18n("messages", {
   // Admin dashboard
   dashboard: "Dashboard",
   logout: "Logout",
@@ -92,8 +92,14 @@ export const messages = i18n("admin", {
   noDataFound: "No data found",
   goBack: "Go back",
 
-  // Admin login page
-  loginPageTitle: "Admin panel",
+  // Client & waiter pages
+  main: "Main",
+  searchDishes: "Search by name, price, category or weight",
+  allMenu: "All menu",
+
+  // Login page
+  adminLoginPageTitle: "Admin login",
+  waiterLoginPageTitle: "Waiter login",
   passwordRequired: "Please enter a password",
   phoneRequired: "Please enter a phone number",
   phoneLabel: "Phone",

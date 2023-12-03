@@ -11,10 +11,7 @@ export interface EmployeeModel {
   firstName: string;
   lastName: string;
   passwordHash?: string;
-  role: {
-    id: string;
-    codeName: string;
-  };
+  role: ReturnType<typeof loadRolesAction>["payload"]["roles"][number];
   permissions: ReturnType<typeof loginAction>["payload"]["permissions"];
 }
 

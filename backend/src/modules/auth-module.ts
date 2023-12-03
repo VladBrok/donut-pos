@@ -53,6 +53,7 @@ export default function authModule(server: Server) {
           userId: user.id,
           permissions: user.permissions,
           accessToken,
+          role: user.role,
         })
       );
     },

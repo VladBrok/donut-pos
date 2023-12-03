@@ -1,4 +1,5 @@
 import { createAction } from "./index.js";
+import { loadRolesAction } from "./roles.js";
 
 export const loadEmployeesAction = createAction<{
   employees: {
@@ -8,10 +9,7 @@ export const loadEmployeesAction = createAction<{
     phone: string;
     isPhoneVerified: boolean;
     registeredAt: string;
-    role: {
-      id: string;
-      codeName: string;
-    };
+    role: ReturnType<typeof loadRolesAction>["payload"]["roles"][number];
   }[];
 }>("employees/load");
 
@@ -24,10 +22,7 @@ export const createEmployeeAction = createAction<{
   lastName: string;
   phone: string;
   password: string;
-  role: {
-    id: string;
-    codeName: string;
-  };
+  role: ReturnType<typeof loadRolesAction>["payload"]["roles"][number];
 }>("employees/create");
 
 export const employeeCreatedAction =
@@ -41,10 +36,7 @@ export const updateEmployeeAction = createAction<{
   lastName: string;
   phone: string;
   password: string;
-  role: {
-    id: string;
-    codeName: string;
-  };
+  role: ReturnType<typeof loadRolesAction>["payload"]["roles"][number];
 }>("employees/update");
 
 export const employeeUpdatedAction =
