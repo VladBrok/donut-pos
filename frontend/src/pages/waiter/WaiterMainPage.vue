@@ -93,7 +93,7 @@ const dishesFiltered = computed(() =>
     )
 );
 const channels = computed(() => {
-  return [CHANNELS.DISHES, CHANNELS.DISH_CATEGORIES, CHANNELS.MODIFICATIONS];
+  return [CHANNELS.DISHES, CHANNELS.DISH_CATEGORIES];
 });
 let isSubscribing = useSubscription(channels, { store: store as any });
 const t = useI18nStore();

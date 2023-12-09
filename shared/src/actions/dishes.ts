@@ -1,4 +1,5 @@
 import { createAction } from "./index.js";
+import { loadModificationsAction } from "./modifications.js";
 
 export const loadDishesAction = createAction<{
   dishes: {
@@ -13,10 +14,9 @@ export const loadDishesAction = createAction<{
       id: string;
       name: string;
     } | null;
-    modifications: {
-      id: string;
-      name: string;
-    }[];
+    modifications: ReturnType<
+      typeof loadModificationsAction
+    >["payload"]["modifications"];
   }[];
 }>("dishes/load");
 
@@ -36,7 +36,6 @@ export const createDishAction = createAction<{
   };
   modifications: {
     id: string;
-    name: string;
   }[];
   imageBase64: string;
 }>("dishes/create");
@@ -59,7 +58,6 @@ export const updateDishAction = createAction<{
   };
   modifications: {
     id: string;
-    name: string;
   }[];
   imageBase64: string;
 }>("dishes/update");

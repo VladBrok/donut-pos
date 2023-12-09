@@ -101,6 +101,7 @@ export const messages = i18n("messages", {
   allMenu: "All menu",
   addToCurrentOrder: "Add to current order",
   addToOrderButton: "Add to order",
+  modificationsTitle: "In addition",
 
   // Login page
   adminLoginPageTitle: "Admin login",

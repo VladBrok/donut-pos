@@ -60,6 +60,18 @@ export const employeesManyAdapter = (
   );
 };
 
+export const modificationAdapter = (
+  data: ModificationSchema[]
+): ModificationModel[] => {
+  return data.map((x) => ({
+    id: x.id,
+    imageUrl: x.imageUrl || "",
+    name: x.name || "",
+    weight: Number(x.weight),
+    price: Number(x.price),
+  }));
+};
+
 export const dishCategoryAdapter = (
   data: DishCategorySchema[]
 ): DishCategoryModel[] => {
@@ -100,19 +112,10 @@ export const dishAdapter = (data: DishSchema[]): DishModel[] => {
       .map((d) => ({
         name: d.modification?.name || "",
         id: d.modification?.id || "",
+        imageUrl: d.modification?.imageUrl || "",
+        price: Number(d.modification?.price),
+        weight: Number(d.modification?.weight),
       })),
-  }));
-};
-
-export const modificationAdapter = (
-  data: ModificationSchema[]
-): ModificationModel[] => {
-  return data.map((x) => ({
-    id: x.id,
-    imageUrl: x.imageUrl || "",
-    name: x.name || "",
-    weight: Number(x.weight),
-    price: Number(x.price),
   }));
 };
 
