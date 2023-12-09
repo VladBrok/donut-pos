@@ -6,11 +6,11 @@
         <q-btn icon="close" flat round dense v-close-popup />
       </q-card-section>
 
-      <div v-if="dish" class="row no-wrap scroll modal-restricted-height">
-        <div class="flex-basis-50">
+      <div v-if="dish" class="row scroll modal-restricted-height">
+        <div class="col-12 col-sm-6">
           <DishCard :dish="dish" expanded> </DishCard>
         </div>
-        <q-card-section class="flex-basis-50">
+        <q-card-section class="col-12 col-sm-6">
           <div class="text-weight-bold text-h5">
             {{ formatWeightGram(dish.weight) }}
           </div>
