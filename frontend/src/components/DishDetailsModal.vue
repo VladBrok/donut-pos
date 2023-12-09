@@ -20,14 +20,15 @@
           <div class="text-weight-bold text-h5">
             {{ t.modificationsTitle }}:
           </div>
-          <div class="q-mt-sm row gap-md">
-            <modification-card
+          <div class="q-mt-sm row">
+            <div
               v-for="modification of dish.modifications"
               :key="modification.id"
-              :modification="modification"
-              class="col-4"
+              class="col-12 col-md-6 q-pa-sm"
             >
-            </modification-card>
+              <modification-card :modification="modification">
+              </modification-card>
+            </div>
           </div>
         </q-card-section>
       </div>
