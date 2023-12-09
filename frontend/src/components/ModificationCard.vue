@@ -6,7 +6,7 @@
     text-size="sm"
   >
     <q-card-section class="q-mt-auto row justify-end">
-      <product-counter :count="0"></product-counter>
+      <slot />
     </q-card-section>
   </product-card>
 </template>
@@ -14,7 +14,6 @@
 <script setup lang="ts">
 import { loadModificationsAction } from "../../../shared";
 import ProductCard from "./ProductCard.vue";
-import ProductCounter from "./ProductCounter.vue";
 
 defineProps<{
   modification: ReturnType<

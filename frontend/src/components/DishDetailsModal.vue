@@ -27,6 +27,11 @@
               class="col-12 col-md-6 q-pa-sm"
             >
               <modification-card :modification="modification">
+                <product-counter
+                  :count="modificationCounts.get(modification.id) || 0"
+                  @increment="incrementModification(modification.id)"
+                  @decrement="decrementModification(modification.id)"
+                ></product-counter>
               </modification-card>
             </div>
           </div>
@@ -45,14 +50,38 @@
 </template>
 
 <script setup lang="ts">
+import { computed, ref, watch } from "vue";
 import { loadDishesAction } from "../../../shared/src/actions/dishes";
 import { useI18nStore } from "../lib/i18n";
 import DishCard from "./DishCard.vue";
 import ModificationCard from "./ModificationCard.vue";
+import ProductCounter from "./ProductCounter.vue";
 
-defineProps<{
+const props = defineProps<{
   dish: ReturnType<typeof loadDishesAction>["payload"]["dishes"][number] | null;
 }>();
+const dish = computed(() => props.dish);
 
 const t = useI18nStore();
+const modificationCounts = ref(new Map<string, number>());
+
+watch(
+  dish,
+  () => {
+    modificationCounts.value.clear();
+
+    dish.value?.modifications.forEach((modification) => {
+      modificationCounts.value.set(modification.id, 0);
+    });
+  },
+  { immediate: true }
+);
+
+function decrementModification(id: string) {
+  modificationCounts.value.set(id, (modificationCounts.value.get(id) || 0) - 1);
+}
+
+function incrementModification(id: string) {
+  modificationCounts.value.set(id, (modificationCounts.value.get(id) || 0) + 1);
+}
 </script>
