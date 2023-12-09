@@ -21,7 +21,14 @@
             ]"
           />
           <q-input
-            v-model="comment"
+            :model-value="store.state.currentOrder.order?.comment"
+            @update:model-value="
+              store.commit.crossTab(
+                updateCurrentOrderCommentAction({
+                  comment: $event?.toString() || '',
+                })
+              )
+            "
             stack-label
             :label="`${t.commentLabel}`"
             lazy-rules
@@ -65,6 +72,7 @@ import {
   clearCurrentOrderAction,
   COMMENT_MAX_LENGTH,
   TABLE_NUMBER_MAX_LENGTH,
+  updateCurrentOrderCommentAction,
 } from "donut-shared";
 import { computed, ref } from "vue";
 import { logInfo } from "../../../shared/src/lib/log";
@@ -79,7 +87,6 @@ const t = useI18nStore();
 
 const isConfirmClearOpen = ref(false);
 const tableNumber = ref("");
-const comment = ref("");
 
 function clear() {
   store.commit.crossTab(clearCurrentOrderAction());
@@ -87,6 +94,7 @@ function clear() {
 }
 
 function onSubmit() {
+  // TODO: dispatch an action to create an order
   logInfo("create order");
 }
 </script>

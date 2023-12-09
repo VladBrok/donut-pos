@@ -1,4 +1,8 @@
-import { addDishToCurrentOrderAction } from "donut-shared";
+import {
+  addDishToCurrentOrderAction,
+  assert,
+  updateCurrentOrderCommentAction,
+} from "donut-shared";
 import { MutationTree } from "vuex";
 import { ICurrentOrderState, makeEmptyOrder } from "./state";
 
@@ -36,6 +40,18 @@ const mutation: MutationTree<ICurrentOrderState> = {
 
   clear(state: ICurrentOrderState) {
     state.order = null;
+  },
+
+  updateComment(
+    state: ICurrentOrderState,
+    action: ReturnType<typeof updateCurrentOrderCommentAction>
+  ) {
+    assert(
+      state.order,
+      "Cannot update current order comment when order is empty"
+    );
+
+    state.order.comment = action.payload.comment;
   },
 };
 

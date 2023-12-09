@@ -28,3 +28,7 @@ export const addDishToCurrentOrderAction = createAction<{
 }>("currentOrder/addDish");
 
 export const clearCurrentOrderAction = createAction("currentOrder/clear");
+
+export const updateCurrentOrderCommentAction = createAction<{
+  comment: string;
+}>("currentOrder/updateComment");

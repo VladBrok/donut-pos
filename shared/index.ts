@@ -1,6 +1,7 @@
 export {
   addDishToCurrentOrderAction,
   clearCurrentOrderAction,
+  updateCurrentOrderCommentAction,
 } from "./src/actions/current-order.js";
 export type {
   ICurrentOrder,

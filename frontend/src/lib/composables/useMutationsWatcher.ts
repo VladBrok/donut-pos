@@ -2,6 +2,7 @@ import {
   addDishToCurrentOrderAction,
   assert,
   clearCurrentOrderAction,
+  updateCurrentOrderCommentAction,
 } from "donut-shared";
 import { loggedInAction, logoutAction } from "donut-shared/src/actions/auth";
 import { ANONYMOUS } from "donut-shared/src/constants";
@@ -42,7 +43,8 @@ export const useMutationsWatcher = () => {
           break;
         }
 
-        case addDishToCurrentOrderAction.type: {
+        case addDishToCurrentOrderAction.type:
+        case updateCurrentOrderCommentAction.type: {
           saveCurrentOrderToStorage(state.currentOrder.order);
           break;
         }

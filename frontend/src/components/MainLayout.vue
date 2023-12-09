@@ -89,7 +89,6 @@
               <p class="text-h5">
                 {{ t.currentOrder }}
               </p>
-              <q-separator />
             </div>
             <current-order-view> </current-order-view>
           </div>
