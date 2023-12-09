@@ -2,10 +2,10 @@ import { ICurrentOrder } from "donut-shared";
 import { getCurrentOrderFromStorage } from "../../lib/local-storage";
 
 export interface ICurrentOrderState {
-  order: ICurrentOrder;
+  order: ICurrentOrder | null;
 }
 
-const makeEmptyOrder = () => ({
+export const makeEmptyOrder = () => ({
   comment: "",
   tableNumber: "",
   clientId: "",
@@ -14,7 +14,7 @@ const makeEmptyOrder = () => ({
 const fromStorage = getCurrentOrderFromStorage();
 
 const state: ICurrentOrderState = {
-  order: fromStorage || makeEmptyOrder(),
+  order: fromStorage,
 };
 
 export default state;

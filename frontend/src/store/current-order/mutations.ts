@@ -1,6 +1,6 @@
 import { addDishToCurrentOrderAction } from "donut-shared";
 import { MutationTree } from "vuex";
-import { ICurrentOrderState } from "./state";
+import { ICurrentOrderState, makeEmptyOrder } from "./state";
 
 const mutation: MutationTree<ICurrentOrderState> = {
   // TODO: if count will turn to 0 during decrement - remove the dish
@@ -9,6 +9,10 @@ const mutation: MutationTree<ICurrentOrderState> = {
     state: ICurrentOrderState,
     action: ReturnType<typeof addDishToCurrentOrderAction>
   ) {
+    if (!state.order) {
+      state.order = makeEmptyOrder();
+    }
+
     const uniqueId =
       action.payload.dish.id +
       action.payload.dish.modifications
@@ -28,6 +32,10 @@ const mutation: MutationTree<ICurrentOrderState> = {
         uniqueId: uniqueId,
       });
     }
+  },
+
+  clear(state: ICurrentOrderState) {
+    state.order = null;
   },
 };
 

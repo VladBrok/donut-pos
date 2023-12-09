@@ -16,10 +16,11 @@
         >
           <q-tooltip> {{ t.openCurrentOrder }} </q-tooltip>
           <q-badge
+            v-if="currentOrder"
             rounded
             floating
             color="red"
-            :label="currentOrder?.dishes.length || ''"
+            :label="currentOrder.dishes.length || ''"
           />
         </q-btn>
         <q-btn flat round icon="logout" @click="logout">
@@ -83,7 +84,13 @@
             @click="toggleOrderDrawer"
             class="q-mb-md"
           />
-          <div>order..</div>
+          <div class="q-mb-lg">
+            <p class="text-h5">
+              {{ t.currentOrder }}
+            </p>
+            <q-separator />
+          </div>
+          <current-order-view> </current-order-view>
         </div>
       </q-scroll-area>
     </q-drawer>
@@ -101,6 +108,7 @@ import { logoutAction } from "donut-shared/src/actions/auth";
 import { computed, ref } from "vue";
 import { useI18nStore } from "../lib/i18n";
 import { useStore } from "../store";
+import CurrentOrderView from "./CurrentOrderView.vue";
 
 defineProps<{
   menuList: {

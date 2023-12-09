@@ -1,4 +1,7 @@
-export { addDishToCurrentOrderAction } from "./src/actions/current-order.js";
+export {
+  addDishToCurrentOrderAction,
+  clearCurrentOrderAction,
+} from "./src/actions/current-order.js";
 export type {
   ICurrentOrder,
   ICurrentOrderDish,

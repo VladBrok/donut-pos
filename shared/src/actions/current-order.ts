@@ -26,3 +26,5 @@ export const addDishToCurrentOrderAction = createAction<{
     modifications: ICurrentOrderDishModification[];
   };
 }>("currentOrder/addDish");
+
+export const clearCurrentOrderAction = createAction("currentOrder/clear");

@@ -1,4 +1,8 @@
-import { addDishToCurrentOrderAction, assert } from "donut-shared";
+import {
+  addDishToCurrentOrderAction,
+  assert,
+  clearCurrentOrderAction,
+} from "donut-shared";
 import { loggedInAction, logoutAction } from "donut-shared/src/actions/auth";
 import { ANONYMOUS } from "donut-shared/src/constants";
 import { useStore } from "src/store";
@@ -40,6 +44,11 @@ export const useMutationsWatcher = () => {
 
         case addDishToCurrentOrderAction.type: {
           saveCurrentOrderToStorage(state.currentOrder.order);
+          break;
+        }
+
+        case clearCurrentOrderAction.type: {
+          saveCurrentOrderToStorage(null);
           break;
         }
       }

@@ -103,6 +103,10 @@ export const messages = i18n("messages", {
   addToOrderButton: "Add to order",
   modificationsTitle: "In addition",
   openCurrentOrder: "Open current order",
+  currentOrder: "Current Order",
+  emptyOrder: "Order is empty",
+  createOrder: "Create order",
+  clearOrder: "Clear",
 
   // Login page
   adminLoginPageTitle: "Admin login",
@@ -120,6 +124,7 @@ export const messages = i18n("messages", {
   confirmDishDelete: "Are you sure you want to delete dish",
   confirmModificationDelete: "Are you sure you want to delete modification",
   confirmEmployeeDelete: "Are you sure you want to delete employee",
+  confirmCurrentOrderClear: "Are you sure you want to clear the current order",
 
   // Logux statuses
   disconnectedMessage: "Cannot connect to the server",

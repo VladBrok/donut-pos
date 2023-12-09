@@ -35,8 +35,12 @@ export function getUserFromStorage():
   return getItem(Keys.User);
 }
 
-export function saveCurrentOrderToStorage(order: ICurrentOrder) {
-  setItem(Keys.CurrentOrder, order);
+export function saveCurrentOrderToStorage(order: ICurrentOrder | null) {
+  if (order) {
+    setItem(Keys.CurrentOrder, order);
+  } else {
+    removeItem(Keys.CurrentOrder);
+  }
 }
 
 export function getCurrentOrderFromStorage(): ICurrentOrder | null {
