@@ -24,9 +24,22 @@ body {
   min-height: 100vh;
 }
 
+.modal-restricted-height {
+  max-height: 50vh;
+}
+
+.dialog-md {
+  width: 800px !important;
+  max-width: 80vw !important;
+}
+
 .flex-grow {
   flex-grow: 1;
   min-width: 0;
+}
+
+.flex-basis-50 {
+  flex-basis: 50%;
 }
 
 .w-fit {

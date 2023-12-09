@@ -29,7 +29,7 @@
           v-for="dish in dishesFiltered"
           :dish="dish"
           :key="dish.id"
-          @add-click="openDishDetailsId = dish.id"
+          @add-click="selectedDish = dish"
         >
         </dish-card>
       </div>
@@ -40,8 +40,9 @@
   </div>
 
   <dish-details-modal
-    :model-value="Boolean(openDishDetailsId)"
-    @update:model-value="openDishDetailsId = ''"
+    :model-value="Boolean(selectedDish)"
+    @update:model-value="selectedDish = null"
+    :dish="selectedDish"
   >
   </dish-details-modal>
 </template>
@@ -55,6 +56,7 @@ import DishCard from "../../components/DishCard.vue";
 import DishCategoryFilter from "../../components/DishCategoryFilter.vue";
 import NoData from "../../components/NoData.vue";
 
+import { loadDishesAction } from "../../../../shared/src/actions/dishes";
 import DishDetailsModal from "../../components/DishDetailsModal.vue";
 import { createFuzzySearcher } from "../../lib/fuzzy-search";
 import { useI18nStore } from "../../lib/i18n";
@@ -96,7 +98,9 @@ const channels = computed(() => {
 let isSubscribing = useSubscription(channels, { store: store as any });
 const t = useI18nStore();
 const searchInput = ref("");
-const openDishDetailsId = ref("");
+const selectedDish = ref<
+  ReturnType<typeof loadDishesAction>["payload"]["dishes"][number] | null
+>(null);
 
 const handleCategoryFilterClick = (id: string) => {
   selectedCategoryId.value = id;
