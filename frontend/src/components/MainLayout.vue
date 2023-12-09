@@ -2,7 +2,7 @@
   <q-layout view="hHh LpR fFf" class="bg-gray-lightest">
     <q-header class="bg-white text-black shadow-up-1" bordered>
       <q-toolbar class="q-py-sm">
-        <q-btn dense flat round icon="menu" @click="toggleDrawer" />
+        <q-btn dense flat round icon="menu" @click="toggleMenuDrawer" />
         <q-toolbar-title>
           {{ $route.meta.title || "" }}
         </q-toolbar-title>
@@ -12,7 +12,7 @@
           flat
           round
           icon="o_shopping_basket"
-          @click="openCurrentOrder"
+          @click="toggleOrderDrawer"
         >
           <q-tooltip> {{ t.openCurrentOrder }} </q-tooltip>
           <q-badge
@@ -30,7 +30,7 @@
 
     <q-drawer
       show-if-above
-      v-model="isDrawerOpen"
+      v-model="isMenuDrawerOpen"
       side="left"
       :width="240"
       bordered
@@ -67,6 +67,27 @@
       </q-scroll-area>
     </q-drawer>
 
+    <q-drawer
+      v-model="isOrderDrawerOpen"
+      side="right"
+      bordered
+      :width="$q.screen.xs ? 300 : 400"
+    >
+      <q-scroll-area class="fit">
+        <div class="q-pa-sm">
+          <q-btn
+            dense
+            flat
+            round
+            icon="close"
+            @click="toggleOrderDrawer"
+            class="q-mb-md"
+          />
+          <div>order..</div>
+        </div>
+      </q-scroll-area>
+    </q-drawer>
+
     <q-page-container>
       <q-page padding class="q-pt-xl q-pb-xl">
         <router-view />
@@ -78,7 +99,6 @@
 <script setup lang="ts">
 import { logoutAction } from "donut-shared/src/actions/auth";
 import { computed, ref } from "vue";
-import { logInfo } from "../../../shared/src/lib/log";
 import { useI18nStore } from "../lib/i18n";
 import { useStore } from "../store";
 
@@ -91,7 +111,8 @@ defineProps<{
   }[];
 }>();
 
-const isDrawerOpen = ref(false);
+const isMenuDrawerOpen = ref(false);
+const isOrderDrawerOpen = ref(false);
 const t = useI18nStore();
 const store = useStore();
 const isWaiter = computed(
@@ -99,17 +120,17 @@ const isWaiter = computed(
 );
 const currentOrder = computed(() => store.state.currentOrder.order);
 
-function toggleDrawer() {
-  isDrawerOpen.value = !isDrawerOpen.value;
+function toggleMenuDrawer() {
+  isMenuDrawerOpen.value = !isMenuDrawerOpen.value;
+}
+
+function toggleOrderDrawer() {
+  isOrderDrawerOpen.value = !isOrderDrawerOpen.value;
 }
 
 function logout() {
   store.commit.crossTab(
     logoutAction({ accessToken: store.state.auth.user.accessToken || "" })
   );
-}
-
-function openCurrentOrder() {
-  logInfo("current order:", currentOrder.value);
 }
 </script>
