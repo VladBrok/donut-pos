@@ -50,6 +50,9 @@ export const MAX_MODIFICATION_PRICE = 1000000;
 export const MIN_MODIFICATION_WEIGHT = 0.01;
 export const MAX_MODIFICATION_WEIGHT = 100000000;
 
+export const TABLE_NUMBER_MAX_LENGTH = 50;
+export const COMMENT_MAX_LENGTH = 300;
+
 export const PASSWORD_MIN_LENGTH = 10;
 export const PASSWORD_SPECIAL_CHARS = "! @ # $ % ^ & * ( ) + = < > / ? ~";
 export const FIRST_NAME_MAX_LENGTH = 50;

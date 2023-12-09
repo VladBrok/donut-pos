@@ -107,6 +107,8 @@ export const messages = i18n("messages", {
   emptyOrder: "Order is empty",
   createOrder: "Create order",
   clearOrder: "Clear",
+  tableNumberLabel: "Table number",
+  commentLabel: "Comment",
 
   // Login page
   adminLoginPageTitle: "Admin login",
