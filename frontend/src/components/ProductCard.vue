@@ -10,8 +10,15 @@
         />
       </q-card-section>
       <div class="row justify-between q-px-md">
-        <div class="text-h6 q-mr-sm">{{ name }}</div>
-        <div class="text-h6 text-primary">{{ formatCurrency(price) }}</div>
+        <div class="q-mr-sm" :class="textClass">
+          {{ textSize === "sm" ? cutText(name, 20) : name }}
+          <q-tooltip v-if="textSize === 'sm'">
+            {{ name }}
+          </q-tooltip>
+        </div>
+        <div class="text-primary" :class="textClass">
+          {{ formatCurrency(price) }}
+        </div>
       </div>
       <slot />
     </div>
@@ -19,12 +26,20 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
+import { cutText } from "../lib/cut-text";
 import { formatCurrency } from "../lib/format-currency";
 
-defineProps<{
+const props = defineProps<{
   price: number;
   name: string;
   imageUrl: string;
   noShadow?: boolean;
+  textSize?: "sm" | "lg";
 }>();
+
+const textClass = computed(() => ({
+  "text-h6": !props.textSize || props.textSize === "lg",
+  "text-body1": props.textSize === "sm",
+}));
 </script>

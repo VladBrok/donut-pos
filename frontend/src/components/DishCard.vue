@@ -19,7 +19,7 @@
       </q-btn>
     </q-card-section>
     <q-card-section v-if="expanded">
-      <div v-html="sanitizeHtml(dish.description)"></div>
+      <div class="text-body1" v-html="sanitizeHtml(dish.description)"></div>
     </q-card-section>
   </product-card>
 </template>

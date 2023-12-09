@@ -33,6 +33,10 @@ body {
   max-width: 80vw !important;
 }
 
+.inset-transparent-shadow {
+  position: relative;
+}
+
 .flex-grow {
   flex-grow: 1;
   min-width: 0;

@@ -3,6 +3,7 @@
     :image-url="modification.imageUrl"
     :price="modification.price"
     :name="modification.name"
+    text-size="sm"
   >
     <q-card-section class="q-mt-auto row justify-end">
       <product-counter :count="0"></product-counter>
