@@ -14,7 +14,12 @@
         <div class="text-h6 text-primary">{{ formatCurrency(dish.price) }}</div>
       </q-card-section>
       <q-card-section class="q-mt-auto row justify-end">
-        <q-btn color="primary" icon-right="shopping_basket" padding="0 sm">
+        <q-btn
+          color="primary"
+          icon-right="shopping_basket"
+          padding="0 sm"
+          @click="emit('addClick')"
+        >
           <span class="text-h5 q-pr-sm">+</span>
           <q-tooltip>
             {{ t.addToCurrentOrder }}
@@ -33,6 +38,8 @@ import { useI18nStore } from "../lib/i18n";
 defineProps<{
   dish: ReturnType<typeof loadDishesAction>["payload"]["dishes"][number];
 }>();
+
+const emit = defineEmits(["addClick"]);
 
 const t = useI18nStore();
 </script>
