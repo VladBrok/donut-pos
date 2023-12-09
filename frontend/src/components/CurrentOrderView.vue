@@ -4,6 +4,9 @@
       <div class="restricted-height scroll">
         {{ JSON.stringify(order, undefined, 2) }}
       </div>
+      <div>
+        <!-- TODO: add client -->
+      </div>
       <div class="row justify-end q-gutter-sm q-mt-md">
         <q-btn color="dark" flat @click="isConfirmClearOpen = true">
           {{ t.clearOrder }}
