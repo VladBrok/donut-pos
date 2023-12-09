@@ -84,13 +84,15 @@
             @click="toggleOrderDrawer"
             class="q-mb-md"
           />
-          <div class="q-mb-lg">
-            <p class="text-h5">
-              {{ t.currentOrder }}
-            </p>
-            <q-separator />
+          <div class="q-px-sm">
+            <div class="q-mb-lg">
+              <p class="text-h5">
+                {{ t.currentOrder }}
+              </p>
+              <q-separator />
+            </div>
+            <current-order-view> </current-order-view>
           </div>
-          <current-order-view> </current-order-view>
         </div>
       </q-scroll-area>
     </q-drawer>
