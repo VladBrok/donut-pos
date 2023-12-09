@@ -53,7 +53,6 @@
 import { addDishToCurrentOrderAction, assert } from "donut-shared";
 import { computed, ref, watch } from "vue";
 import { loadDishesAction } from "../../../shared/src/actions/dishes";
-import { logInfo } from "../../../shared/src/lib/log";
 import { useI18nStore } from "../lib/i18n";
 import { useStore } from "../store";
 import DishCard from "./DishCard.vue";
@@ -105,9 +104,5 @@ function addToOrder() {
       },
     })
   );
-
-  setTimeout(() => {
-    logInfo("current order:", store.state.currentOrder.order);
-  });
 }
 </script>
