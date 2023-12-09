@@ -32,3 +32,7 @@ export const clearCurrentOrderAction = createAction("currentOrder/clear");
 export const updateCurrentOrderCommentAction = createAction<{
   comment: string;
 }>("currentOrder/updateComment");
+
+export const updateCurrentOrderTableNumberAction = createAction<{
+  tableNumber: string;
+}>("currentOrder/updateTableNumber");

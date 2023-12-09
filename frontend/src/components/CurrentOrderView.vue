@@ -8,7 +8,14 @@
         <div class="q-mt-lg">
           <!-- TODO: add client autotomplete field -->
           <q-input
-            v-model.trim="tableNumber"
+            :model-value="store.state.currentOrder.order?.tableNumber"
+            @update:model-value="
+              store.commit.crossTab(
+                updateCurrentOrderTableNumberAction({
+                  tableNumber: $event?.toString()?.trim() || '',
+                })
+              )
+            "
             stack-label
             :label="`${t.tableNumberLabel}`"
             lazy-rules
@@ -73,6 +80,7 @@ import {
   COMMENT_MAX_LENGTH,
   TABLE_NUMBER_MAX_LENGTH,
   updateCurrentOrderCommentAction,
+  updateCurrentOrderTableNumberAction,
 } from "donut-shared";
 import { computed, ref } from "vue";
 import { logInfo } from "../../../shared/src/lib/log";
@@ -86,7 +94,6 @@ const order = computed(() => store.state.currentOrder.order);
 const t = useI18nStore();
 
 const isConfirmClearOpen = ref(false);
-const tableNumber = ref("");
 
 function clear() {
   store.commit.crossTab(clearCurrentOrderAction());

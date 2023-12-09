@@ -2,6 +2,7 @@ import {
   addDishToCurrentOrderAction,
   assert,
   updateCurrentOrderCommentAction,
+  updateCurrentOrderTableNumberAction,
 } from "donut-shared";
 import { MutationTree } from "vuex";
 import { ICurrentOrderState, makeEmptyOrder } from "./state";
@@ -52,6 +53,18 @@ const mutation: MutationTree<ICurrentOrderState> = {
     );
 
     state.order.comment = action.payload.comment;
+  },
+
+  updateTableNumber(
+    state: ICurrentOrderState,
+    action: ReturnType<typeof updateCurrentOrderTableNumberAction>
+  ) {
+    assert(
+      state.order,
+      "Cannot update current order tableNumber when order is empty"
+    );
+
+    state.order.tableNumber = action.payload.tableNumber;
   },
 };
 
