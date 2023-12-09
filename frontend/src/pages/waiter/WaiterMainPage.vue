@@ -8,9 +8,10 @@
           outlined
           v-model="searchInput"
           :placeholder="t.searchDishes"
+          clearable
         >
           <template v-slot:append>
-            <q-icon name="search" />
+            <q-icon v-if="!searchInput?.length" name="search" />
           </template>
         </q-input>
       </div>
@@ -85,7 +86,7 @@ const fuzzySearch = computed(() =>
 );
 const dishesFiltered = computed(() =>
   fuzzySearch.value
-    .search(searchInput.value)
+    .search(searchInput.value || "")
     .filter(
       (x) =>
         selectedCategoryId.value === "all" ||
@@ -97,7 +98,7 @@ const channels = computed(() => {
 });
 let isSubscribing = useSubscription(channels, { store: store as any });
 const t = useI18nStore();
-const searchInput = ref("");
+const searchInput = ref<string | null>(null);
 const selectedDish = ref<
   ReturnType<typeof loadDishesAction>["payload"]["dishes"][number] | null
 >(null);

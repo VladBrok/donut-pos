@@ -18,7 +18,7 @@
         </q-tooltip>
       </q-btn>
     </q-card-section>
-    <q-card-section v-if="expanded">
+    <q-card-section v-if="expanded && dish.description">
       <div class="text-body1" v-html="sanitizeHtml(dish.description)"></div>
     </q-card-section>
   </product-card>
