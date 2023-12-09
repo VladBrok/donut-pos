@@ -6,7 +6,7 @@
         <q-btn icon="close" flat round dense v-close-popup />
       </q-card-section>
 
-      <div v-if="dish" class="row scroll restricted-height">
+      <div v-if="dish" class="row scroll restricted-height-half-screen">
         <div
           class="col-12 col-sm-6"
           :class="{ 'q-mx-auto': !dish.modifications.length }"
