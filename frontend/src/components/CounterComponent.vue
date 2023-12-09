@@ -8,7 +8,7 @@
       :disable="count === 0"
       @click="emit('decrement')"
     />
-    <div>
+    <div class="text-weight-bold">
       {{ count }}
     </div>
     <q-btn padding="xs" color="primary" icon="add" @click="emit('increment')" />

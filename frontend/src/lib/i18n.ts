@@ -96,6 +96,7 @@ export const messages = i18n("messages", {
   main: "Main",
   searchDishes: "Search by name, price, category or weight",
   allMenu: "All menu",
+  addToCurrentOrder: "Add to current order",
 
   // Login page
   adminLoginPageTitle: "Admin login",

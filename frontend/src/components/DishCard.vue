@@ -13,12 +13,13 @@
         <div class="text-h6 q-mr-sm">{{ dish.name }}</div>
         <div class="text-h6 text-primary">{{ formatCurrency(dish.price) }}</div>
       </q-card-section>
-      <q-card-section class="q-mt-auto">
-        <counter-component
-          :count="count"
-          @increment="count++"
-          @decrement="count--"
-        ></counter-component>
+      <q-card-section class="q-mt-auto row justify-end">
+        <q-btn color="primary" icon-right="shopping_basket" padding="0 sm">
+          <span class="text-h5 q-pr-sm">+</span>
+          <q-tooltip>
+            {{ t.addToCurrentOrder }}
+          </q-tooltip>
+        </q-btn>
       </q-card-section>
     </div>
   </q-card>
@@ -26,13 +27,12 @@
 
 <script setup lang="ts">
 import { loadDishesAction } from "donut-shared/src/actions/dishes";
-import { ref } from "vue";
 import { formatCurrency } from "../lib/format-currency";
-import CounterComponent from "./CounterComponent.vue";
+import { useI18nStore } from "../lib/i18n";
 
 defineProps<{
   dish: ReturnType<typeof loadDishesAction>["payload"]["dishes"][number];
 }>();
 
-const count = ref(0);
+const t = useI18nStore();
 </script>
