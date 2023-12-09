@@ -102,6 +102,7 @@ export const messages = i18n("messages", {
   addToCurrentOrder: "Add to current order",
   addToOrderButton: "Add to order",
   modificationsTitle: "In addition",
+  openCurrentOrder: "Open current order",
 
   // Login page
   adminLoginPageTitle: "Admin login",

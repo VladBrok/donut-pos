@@ -6,7 +6,23 @@
         <q-toolbar-title>
           {{ $route.meta.title || "" }}
         </q-toolbar-title>
-        <q-btn flat round dense icon="logout" @click="logout">
+        <q-btn
+          v-if="isWaiter"
+          class="q-mr-md"
+          flat
+          round
+          icon="o_shopping_basket"
+          @click="openCurrentOrder"
+        >
+          <q-tooltip> {{ t.openCurrentOrder }} </q-tooltip>
+          <q-badge
+            rounded
+            floating
+            color="red"
+            :label="currentOrder?.dishes.length || ''"
+          />
+        </q-btn>
+        <q-btn flat round icon="logout" @click="logout">
           <q-tooltip> {{ t.logout }} </q-tooltip>
         </q-btn>
       </q-toolbar>
@@ -61,7 +77,8 @@
 
 <script setup lang="ts">
 import { logoutAction } from "donut-shared/src/actions/auth";
-import { ref } from "vue";
+import { computed, ref } from "vue";
+import { logInfo } from "../../../shared/src/lib/log";
 import { useI18nStore } from "../lib/i18n";
 import { useStore } from "../store";
 
@@ -77,6 +94,10 @@ defineProps<{
 const isDrawerOpen = ref(false);
 const t = useI18nStore();
 const store = useStore();
+const isWaiter = computed(
+  () => store.state.auth.user.role?.codeName === "waiter"
+);
+const currentOrder = computed(() => store.state.currentOrder.order);
 
 function toggleDrawer() {
   isDrawerOpen.value = !isDrawerOpen.value;
@@ -86,5 +107,9 @@ function logout() {
   store.commit.crossTab(
     logoutAction({ accessToken: store.state.auth.user.accessToken || "" })
   );
+}
+
+function openCurrentOrder() {
+  logInfo("current order:", currentOrder.value);
 }
 </script>
