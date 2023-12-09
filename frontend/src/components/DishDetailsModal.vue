@@ -41,7 +41,7 @@
       <q-separator />
       <q-card-section class="row">
         <q-space />
-        <q-btn color="primary" v-close-popup>
+        <q-btn color="primary" v-close-popup @click="addToOrder">
           {{ t.addToOrderButton }}
         </q-btn>
       </q-card-section>
@@ -50,9 +50,12 @@
 </template>
 
 <script setup lang="ts">
+import { addDishToCurrentOrderAction, assert } from "donut-shared";
 import { computed, ref, watch } from "vue";
 import { loadDishesAction } from "../../../shared/src/actions/dishes";
+import { logInfo } from "../../../shared/src/lib/log";
 import { useI18nStore } from "../lib/i18n";
+import { useStore } from "../store";
 import DishCard from "./DishCard.vue";
 import ModificationCard from "./ModificationCard.vue";
 import ProductCounter from "./ProductCounter.vue";
@@ -63,6 +66,7 @@ const props = defineProps<{
 const dish = computed(() => props.dish);
 
 const t = useI18nStore();
+const store = useStore();
 const modificationCounts = ref(new Map<string, number>());
 
 watch(
@@ -83,5 +87,27 @@ function decrementModification(id: string) {
 
 function incrementModification(id: string) {
   modificationCounts.value.set(id, (modificationCounts.value.get(id) || 0) + 1);
+}
+
+function addToOrder() {
+  assert(dish.value, "Expected to have a dish at this point");
+
+  store.commit.crossTab(
+    addDishToCurrentOrderAction({
+      dish: {
+        id: dish.value.id,
+        modifications: [...modificationCounts.value.entries()]
+          .filter((x) => x[1] > 0)
+          .map(([id, count]) => ({
+            id: id,
+            count: count,
+          })),
+      },
+    })
+  );
+
+  setTimeout(() => {
+    logInfo("current order:", store.state.currentOrder.order);
+  });
 }
 </script>
