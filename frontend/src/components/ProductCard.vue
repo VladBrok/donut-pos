@@ -1,5 +1,5 @@
 <template>
-  <q-card :class="{ 'shadow-0': noShadow }">
+  <q-card :class="{ 'shadow-0': noShadow }" class="full-height">
     <div class="column no-wrap full-height">
       <q-card-section>
         <q-img
