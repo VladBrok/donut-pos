@@ -21,8 +21,8 @@
                 lazy-rules
                 type="text"
                 :rules="[
+                  (val) => (!!val && val.length > 0) || t.fieldRequired,
                   (val) =>
-                    !val ||
                     val.length <= TABLE_NUMBER_MAX_LENGTH ||
                     t.maxLength({ max: TABLE_NUMBER_MAX_LENGTH }),
                 ]"
