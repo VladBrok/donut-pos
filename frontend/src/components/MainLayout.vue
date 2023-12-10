@@ -76,14 +76,7 @@
     >
       <q-scroll-area class="fit">
         <div class="q-pa-sm row justify-end">
-          <q-btn
-            dense
-            flat
-            round
-            icon="close"
-            @click="toggleOrderDrawer"
-            class="q-mb-md"
-          />
+          <q-btn dense flat round icon="close" @click="toggleOrderDrawer" />
           <div class="q-px-sm">
             <div class="q-mb-lg">
               <p class="text-h5">
