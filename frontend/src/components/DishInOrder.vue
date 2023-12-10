@@ -7,11 +7,23 @@
       class="image-sm-md shadow-3 rounded-borders"
     />
     <div class="flex-grow">
-      <div class="q-mb-sm">
-        <span class="text-h6">
-          {{ dish.name }}
-        </span>
-        <span class=""> ({{ count }} x {{ formatCurrency(dish.price) }}) </span>
+      <div class="row no-wrap items-baseline justify-between">
+        <div>
+          <span class="text-h6 q-pr-sm">
+            {{ dish.name }}
+          </span>
+          <span> ({{ count }} x {{ formatCurrency(dish.price) }}) </span>
+        </div>
+        <div>
+          <q-btn
+            color="negative"
+            dense
+            flat
+            round
+            icon="close"
+            @click="emit('delete')"
+          />
+        </div>
       </div>
       <div>
         <div
@@ -31,7 +43,13 @@
         </div>
         <div class="q-mt-md row no-wrap justify-between">
           <div>
-            <product-counter :count="count"> </product-counter>
+            <product-counter
+              @increment="incrementDish"
+              @decrement="decrementDish"
+              :min="1"
+              :count="count"
+            >
+            </product-counter>
           </div>
           <div class="text-primary text-h5">
             {{ formatCurrency(total) }}
@@ -59,6 +77,8 @@ const props = defineProps<{
     count: number;
   }[];
 }>();
+
+const emit = defineEmits(["delete"]);
 
 const total = computed(
   () =>

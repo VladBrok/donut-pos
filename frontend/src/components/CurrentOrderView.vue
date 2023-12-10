@@ -12,6 +12,13 @@
                 :dish="dishes.find((x) => x.id === dish.dishId)!"
                 :count="dish.count"
                 :modifications="dish.modifications.map(x => ({ modification: modifications.find(y => y.id === x.id)!, count: x.count}))"
+                @delete="
+                  store.commit.crossTab(
+                    removeDishFromCurrentOrderAction({
+                      uniqueId: dish.uniqueId,
+                    })
+                  )
+                "
               >
               </dish-in-order>
             </div>
@@ -93,6 +100,7 @@ import { useSubscription } from "@logux/vuex";
 import {
   clearCurrentOrderAction,
   COMMENT_MAX_LENGTH,
+  removeDishFromCurrentOrderAction,
   TABLE_NUMBER_MAX_LENGTH,
   updateCurrentOrderCommentAction,
   updateCurrentOrderTableNumberAction,

@@ -1,6 +1,7 @@
 export {
   addDishToCurrentOrderAction,
   clearCurrentOrderAction,
+  removeDishFromCurrentOrderAction,
   updateCurrentOrderCommentAction,
   updateCurrentOrderTableNumberAction,
 } from "./src/actions/current-order.js";

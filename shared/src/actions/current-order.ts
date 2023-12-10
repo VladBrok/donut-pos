@@ -36,3 +36,7 @@ export const updateCurrentOrderCommentAction = createAction<{
 export const updateCurrentOrderTableNumberAction = createAction<{
   tableNumber: string;
 }>("currentOrder/updateTableNumber");
+
+export const removeDishFromCurrentOrderAction = createAction<{
+  uniqueId: string;
+}>("currentOrder/removeDish");

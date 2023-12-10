@@ -1,6 +1,7 @@
 import {
   addDishToCurrentOrderAction,
   assert,
+  removeDishFromCurrentOrderAction,
   updateCurrentOrderCommentAction,
   updateCurrentOrderTableNumberAction,
 } from "donut-shared";
@@ -37,6 +38,17 @@ const mutation: MutationTree<ICurrentOrderState> = {
         uniqueId: uniqueId,
       });
     }
+  },
+
+  removeDish(
+    state: ICurrentOrderState,
+    action: ReturnType<typeof removeDishFromCurrentOrderAction>
+  ) {
+    assert(state.order, "Cannot remove dish from empty order");
+
+    state.order.dishes = state.order.dishes.filter(
+      (x) => x.uniqueId !== action.payload.uniqueId
+    );
   },
 
   clear(state: ICurrentOrderState) {

@@ -5,7 +5,7 @@
       color="primary"
       outline
       icon="remove"
-      :disable="count === 0"
+      :disable="count === (min || 0)"
       @click="emit('decrement')"
     />
     <div class="text-weight-bold">
@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{ count: number }>();
+defineProps<{ count: number; min?: number }>();
 
 const emit = defineEmits<{
   increment: [];
