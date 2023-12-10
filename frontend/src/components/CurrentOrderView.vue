@@ -217,8 +217,7 @@ async function onSubmit() {
         group: false,
       });
 
-      // TODO: uncomment
-      // store.commit.crossTab(clearCurrentOrderAction());
+      store.commit.crossTab(clearCurrentOrderAction());
     })
     .finally(() => {
       isSubmitting.value = false;
