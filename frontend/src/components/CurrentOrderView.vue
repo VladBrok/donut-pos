@@ -163,7 +163,7 @@ const modifications = computed(() => store.state.modifications.modifications);
 const dishesInOrder = computed(() =>
   isSubscribing.value
     ? []
-    : // TODO: what if the dish or modification will be deleted during processing?
+    : // TODO: what if the dish or modification will be deleted during processing? We might have nulls in this case below...
       order.value?.dishes.map((dish) => {
         const foundDish = dishes.value.find((x) => x.id === dish.dishId)!;
         const foundModifications = dish.modifications.map((x) => ({

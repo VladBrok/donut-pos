@@ -96,7 +96,7 @@ function addToOrder() {
       dish: {
         id: dish.value.id,
         modifications: [...modificationCounts.value.entries()]
-          .filter((x) => x[1] > 0)
+          .filter(([, count]) => count > 0)
           .map(([id, count]) => ({
             id: id,
             count: count,
