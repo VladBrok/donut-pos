@@ -67,8 +67,8 @@ export const modificationAdapter = (
     id: x.id,
     imageUrl: x.imageUrl || "",
     name: x.name || "",
-    weight: Number(x.weight),
-    price: Number(x.price),
+    weight: x.weight || 0,
+    price: x.price || 0,
   }));
 };
 
@@ -105,16 +105,16 @@ export const dishAdapter = (data: DishSchema[]): DishModel[] => {
     description: x.dish.description || "",
     imageUrl: x.dish.imageUrl || "",
     isActive: x.dish.isActive || false,
-    weight: Number(x.dish.weight),
-    price: Number(x.dish.price),
+    weight: x.dish.weight || 0,
+    price: x.dish.price || 0,
     modifications: data
       .filter((d) => d.dish.id === x.dish.id && d.modification)
       .map((d) => ({
         name: d.modification?.name || "",
         id: d.modification?.id || "",
         imageUrl: d.modification?.imageUrl || "",
-        price: Number(d.modification?.price),
-        weight: Number(d.modification?.weight),
+        price: d.modification?.price || 0,
+        weight: d.modification?.weight || 0,
       })),
   }));
 };
