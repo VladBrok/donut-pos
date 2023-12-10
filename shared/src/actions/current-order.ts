@@ -5,6 +5,11 @@ export interface ICurrentOrderDishModification {
   count: number;
 }
 
+export interface ICurrentOrderDishPayload {
+  id: string;
+  modifications: ICurrentOrderDishModification[];
+}
+
 export interface ICurrentOrderDish {
   dishId: string;
   /** Used to uniquely identify this dish. We can't rely only on `dishId` because of modifications. */
@@ -18,11 +23,6 @@ export interface ICurrentOrder {
   tableNumber: string;
   clientId: string;
   dishes: ICurrentOrderDish[];
-}
-
-export interface ICurrentOrderDishPayload {
-  id: string;
-  modifications: ICurrentOrderDishModification[];
 }
 
 export const addDishToCurrentOrderAction = createAction<{
