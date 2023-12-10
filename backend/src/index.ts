@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat.js";
 import timezone from "dayjs/plugin/timezone.js";
 import utc from "dayjs/plugin/utc.js";
+import ordersModule from "src/modules/orders.js";
 import * as db from "./db/index.js";
 import authModule from "./modules/auth-module.js";
 import dishCategoriesModule from "./modules/dish-categories-module.js";
@@ -30,5 +31,6 @@ dishesModule(server);
 modificationsModule(server);
 employeesModule(server);
 rolesModule(server);
+ordersModule(server);
 
 server.listen();

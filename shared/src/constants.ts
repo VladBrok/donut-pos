@@ -6,6 +6,7 @@ export const CHANNELS = {
   MODIFICATIONS: "modifications",
   EMPLOYEES: "employees",
   ROLES: "roles",
+  ORDERS: "orders",
 };
 
 export const ANONYMOUS = {

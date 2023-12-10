@@ -10,6 +10,12 @@ export async function hasAdminPermission(
   return !!employee?.permissions.admin;
 }
 
+export async function hasWaiterPermission(data: string | EmployeeModel) {
+  const employee =
+    typeof data === "string" ? await employeeDb.findEmployeeById(data) : data;
+  return !!employee?.permissions.waiter;
+}
+
 export async function isAdminRole(data: string | RoleModel): Promise<boolean> {
   const role =
     typeof data === "string" ? await roleDb.findRoleById(data) : data;

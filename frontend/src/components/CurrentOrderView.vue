@@ -112,7 +112,7 @@
             >
               {{ t.clearOrder }}
             </q-btn>
-            <q-btn color="primary" type="submit">
+            <q-btn color="primary" type="submit" :loading="isSubmitting">
               {{ t.createOrder }}
             </q-btn>
           </div>
@@ -137,18 +137,20 @@ import {
   TABLE_NUMBER_MAX_LENGTH,
   addDishToCurrentOrderAction,
   clearCurrentOrderAction,
+  createOrderAction,
   decrementDishInCurrentOrderAction,
   removeDishFromCurrentOrderAction,
   updateCurrentOrderCommentAction,
   updateCurrentOrderTableNumberAction,
 } from "donut-shared";
+import { Notify } from "quasar";
 import BigSpinner from "src/components/BigSpinner.vue";
 import DishInOrder from "src/components/DishInOrder.vue";
+import { SUCCESS_TIMEOUT_MS } from "src/lib/constants";
 import { formatCurrency } from "src/lib/currency";
 import { onFormValidationError } from "src/lib/on-form-validation-error";
 import { computed, ref } from "vue";
 import { CHANNELS } from "../../../shared/src/constants";
-import { logInfo } from "../../../shared/src/lib/log";
 import { useI18nStore } from "../lib/i18n";
 import { useStore } from "../store";
 import ConfirmDialog from "./ConfirmDialog.vue";
@@ -158,6 +160,7 @@ const store = useStore();
 const order = computed(() => store.state.currentOrder.order);
 const t = useI18nStore();
 const isConfirmClearOpen = ref(false);
+const isSubmitting = ref(false);
 const channels = computed(() => [CHANNELS.DISHES, CHANNELS.MODIFICATIONS]);
 const isSubscribing = useSubscription(channels, { store: store as any });
 const dishes = computed(() => store.state.dishes.dishes);
@@ -196,8 +199,29 @@ function clear() {
   isConfirmClearOpen.value = false;
 }
 
-function onSubmit() {
-  // TODO: dispatch an action to create an order
-  logInfo("create order");
+async function onSubmit() {
+  isSubmitting.value = true;
+  store.commit
+    .sync(
+      createOrderAction({
+        order: order.value,
+      })
+    )
+    .then(() => {
+      Notify.create({
+        type: "positive",
+        position: "top",
+        timeout: SUCCESS_TIMEOUT_MS,
+        message: t.value.createSuccess,
+        multiLine: true,
+        group: false,
+      });
+
+      // TODO: uncomment
+      // store.commit.crossTab(clearCurrentOrderAction());
+    })
+    .finally(() => {
+      isSubmitting.value = false;
+    });
 }
 </script>
