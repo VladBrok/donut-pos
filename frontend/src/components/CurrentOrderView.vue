@@ -2,7 +2,7 @@
   <div class="full-height">
     <q-card v-if="order" class="full-height shadow-0">
       <q-form @submit="onSubmit">
-        <div class="restricted-height-half-screen scroll">
+        <div class="restricted-height-50vh scroll">
           {{ JSON.stringify(order, undefined, 2) }}
         </div>
         <div class="q-mt-lg">

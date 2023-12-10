@@ -24,8 +24,12 @@ body {
   min-height: 100vh;
 }
 
-.restricted-height-half-screen {
+.restricted-height-50vh {
   max-height: 50vh;
+}
+
+.restricted-height-80vh {
+  max-height: 80vh;
 }
 
 .dialog-md {
