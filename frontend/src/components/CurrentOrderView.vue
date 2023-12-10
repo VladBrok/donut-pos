@@ -91,30 +91,32 @@
           </div>
         </div>
 
-        <div>
-          <q-separator />
-          <div class="row justify-between gap-sm q-pt-md q-mb-sm">
-            <div class="text-h5">
-              {{ t.totalDishes(order.dishes.length) }}
-            </div>
-            <div class="text-weight-medium text-h5">
-              {{ formatCurrency(totalCost) }}
+        <template v-if="order.dishes.length">
+          <div>
+            <q-separator />
+            <div class="row justify-between gap-sm q-pt-md q-mb-sm">
+              <div class="text-h5">
+                {{ t.totalDishes(order.dishes.length) }}
+              </div>
+              <div class="text-weight-medium text-h5">
+                {{ formatCurrency(totalCost) }}
+              </div>
             </div>
           </div>
-        </div>
-        <div class="row justify-end q-gutter-sm">
-          <q-btn
-            color="negative"
-            flat
-            @click="isConfirmClearOpen = true"
-            type="button"
-          >
-            {{ t.clearOrder }}
-          </q-btn>
-          <q-btn color="primary" type="submit">
-            {{ t.createOrder }}
-          </q-btn>
-        </div>
+          <div class="row justify-end q-gutter-sm">
+            <q-btn
+              color="negative"
+              flat
+              @click="isConfirmClearOpen = true"
+              type="button"
+            >
+              {{ t.clearOrder }}
+            </q-btn>
+            <q-btn color="primary" type="submit">
+              {{ t.createOrder }}
+            </q-btn>
+          </div>
+        </template>
       </q-form>
     </q-card>
     <no-data v-else class="q-mt-xl" :text="t.emptyOrder"> </no-data>
