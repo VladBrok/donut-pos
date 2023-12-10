@@ -72,7 +72,7 @@
       v-model="isOrderDrawerOpen"
       side="right"
       bordered
-      :width="$q.screen.xs ? 300 : 400"
+      :width="$q.screen.xs ? 320 : 400"
     >
       <q-scroll-area class="fit">
         <div class="q-pa-sm">
@@ -97,9 +97,11 @@
     </q-drawer>
 
     <q-page-container>
-      <q-page padding class="q-pt-xl q-pb-xl">
-        <router-view />
-      </q-page>
+      <div class="scroll full-width page-wrapper-height">
+        <q-page padding class="q-mt-xl q-mb-xl">
+          <router-view />
+        </q-page>
+      </div>
     </q-page-container>
   </q-layout>
 </template>

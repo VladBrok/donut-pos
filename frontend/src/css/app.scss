@@ -3,7 +3,7 @@
 // Global
 
 body {
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 .body--light {
@@ -32,6 +32,10 @@ body {
   max-height: 80vh;
 }
 
+.page-wrapper-height {
+  height: calc(100vh - 59px);
+}
+
 .dialog-md {
   width: 900px !important;
   max-width: 80vw !important;
@@ -44,6 +48,10 @@ body {
 .flex-grow {
   flex-grow: 1;
   min-width: 0;
+}
+
+.no-shrink {
+  flex-shrink: 0;
 }
 
 .w-fit {

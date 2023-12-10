@@ -1,10 +1,10 @@
 <template>
-  <div class="row no-wrap gap-md q-px-xs q-py-md">
+  <div class="row no-wrap gap-md q-py-md">
     <q-img
       :src="dish.imageUrl"
       alt=""
       fit="cover"
-      class="image-sm-md shadow-3 rounded-borders"
+      class="image-sm-md shadow-3 rounded-borders no-shrink"
     />
     <div class="flex-grow">
       <div class="row no-wrap items-baseline justify-between">
@@ -41,7 +41,7 @@
             </span>
           </div>
         </div>
-        <div class="q-mt-md row no-wrap justify-between">
+        <div class="q-mt-md row gap-sm justify-between">
           <div>
             <product-counter
               @increment="emit('increment')"
