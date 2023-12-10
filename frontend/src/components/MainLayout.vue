@@ -2,11 +2,28 @@
   <q-layout view="hHh LpR fFf" class="bg-gray-lightest">
     <q-header class="bg-white text-black shadow-up-1" bordered>
       <q-toolbar class="q-py-sm">
-        <q-btn dense flat round icon="menu" @click="toggleDrawer" />
+        <q-btn dense flat round icon="menu" @click="toggleMenuDrawer" />
         <q-toolbar-title>
           {{ $route.meta.title || "" }}
         </q-toolbar-title>
-        <q-btn flat round dense icon="logout" @click="logout">
+        <q-btn
+          v-if="isWaiter"
+          class="q-mr-md"
+          flat
+          round
+          icon="o_shopping_basket"
+          @click="toggleOrderDrawer"
+        >
+          <q-tooltip> {{ t.openCurrentOrder }} </q-tooltip>
+          <q-badge
+            v-if="currentOrder"
+            rounded
+            floating
+            color="red"
+            :label="currentOrder.dishes.length || ''"
+          />
+        </q-btn>
+        <q-btn flat round icon="logout" @click="logout">
           <q-tooltip> {{ t.logout }} </q-tooltip>
         </q-btn>
       </q-toolbar>
@@ -14,7 +31,7 @@
 
     <q-drawer
       show-if-above
-      v-model="isDrawerOpen"
+      v-model="isMenuDrawerOpen"
       side="left"
       :width="240"
       bordered
@@ -51,19 +68,43 @@
       </q-scroll-area>
     </q-drawer>
 
+    <q-drawer
+      v-model="isOrderDrawerOpen"
+      side="right"
+      bordered
+      :width="$q.screen.xs ? 320 : 400"
+    >
+      <div class="q-pa-sm">
+        <div class="row justify-between q-mb-md q-mt-sm">
+          <p class="text-h5">
+            {{ t.currentOrder }}
+          </p>
+          <q-btn dense flat round icon="close" @click="toggleOrderDrawer" />
+        </div>
+        <div class="q-px-sm">
+          <current-order-view> </current-order-view>
+        </div>
+      </div>
+    </q-drawer>
+
     <q-page-container>
-      <q-page padding class="q-pt-xl q-pb-xl">
-        <router-view />
-      </q-page>
+      <div class="scroll full-width page-wrapper-height">
+        <q-page padding>
+          <div class="q-pb-xl q-pt-xl">
+            <router-view />
+          </div>
+        </q-page>
+      </div>
     </q-page-container>
   </q-layout>
 </template>
 
 <script setup lang="ts">
 import { logoutAction } from "donut-shared/src/actions/auth";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useI18nStore } from "../lib/i18n";
 import { useStore } from "../store";
+import CurrentOrderView from "./CurrentOrderView.vue";
 
 defineProps<{
   menuList: {
@@ -74,12 +115,21 @@ defineProps<{
   }[];
 }>();
 
-const isDrawerOpen = ref(false);
+const isMenuDrawerOpen = ref(false);
+const isOrderDrawerOpen = ref(false);
 const t = useI18nStore();
 const store = useStore();
+const isWaiter = computed(
+  () => store.state.auth.user.role?.codeName === "waiter"
+);
+const currentOrder = computed(() => store.state.currentOrder.order);
 
-function toggleDrawer() {
-  isDrawerOpen.value = !isDrawerOpen.value;
+function toggleMenuDrawer() {
+  isMenuDrawerOpen.value = !isMenuDrawerOpen.value;
+}
+
+function toggleOrderDrawer() {
+  isOrderDrawerOpen.value = !isOrderDrawerOpen.value;
 }
 
 function logout() {

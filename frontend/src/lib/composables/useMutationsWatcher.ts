@@ -1,4 +1,12 @@
-import { assert } from "donut-shared";
+import {
+  addDishToCurrentOrderAction,
+  assert,
+  clearCurrentOrderAction,
+  decrementDishInCurrentOrderAction,
+  removeDishFromCurrentOrderAction,
+  updateCurrentOrderCommentAction,
+  updateCurrentOrderTableNumberAction,
+} from "donut-shared";
 import { loggedInAction, logoutAction } from "donut-shared/src/actions/auth";
 import { ANONYMOUS } from "donut-shared/src/constants";
 import { useStore } from "src/store";
@@ -8,6 +16,7 @@ import {
   Keys,
   getUserFromStorage,
   removeItem,
+  saveCurrentOrderToStorage,
   saveUserToStorage,
 } from "../local-storage";
 
@@ -34,6 +43,20 @@ export const useMutationsWatcher = () => {
           removeItem(Keys.User);
           store.client.changeUser(ANONYMOUS.userId);
           router.push(redirectTo);
+          break;
+        }
+
+        case addDishToCurrentOrderAction.type:
+        case updateCurrentOrderCommentAction.type:
+        case updateCurrentOrderTableNumberAction.type:
+        case removeDishFromCurrentOrderAction.type:
+        case decrementDishInCurrentOrderAction.type: {
+          saveCurrentOrderToStorage(state.currentOrder.order);
+          break;
+        }
+
+        case clearCurrentOrderAction.type: {
+          saveCurrentOrderToStorage(null);
           break;
         }
       }

@@ -16,6 +16,8 @@ import { setUndoHandler } from "../lib/logux/set-undo-handler";
 import { watchSyncStatus } from "../lib/logux/watch-sync-status";
 import auth from "./auth";
 import { IAuthState } from "./auth/state";
+import currentOrder from "./current-order";
+import { ICurrentOrderState } from "./current-order/state";
 import dishCategories from "./dish-categories";
 import { IDishCategoriesState } from "./dish-categories/state";
 import dishes from "./dishes";
@@ -35,6 +37,7 @@ export interface StateInterface {
   modifications: IModificationsState;
   employees: IEmployeesState;
   roles: IRolesState;
+  currentOrder: ICurrentOrderState;
 }
 
 // provide typings for `this.$store`
@@ -69,6 +72,7 @@ export default store(function (/* { ssrContext } */) {
     modifications,
     employees,
     roles,
+    currentOrder,
   };
 
   for (const module of Object.values(modules)) {

@@ -100,6 +100,7 @@ import { useSubscription } from "@logux/vuex";
 import { assert, deleteModificationAction } from "donut-shared";
 import { CHANNELS } from "donut-shared/src/constants";
 import { Notify } from "quasar";
+import { fractionalToWhole } from "src/lib/currency";
 import { useStore } from "src/store";
 import { computed, ref } from "vue";
 import BigSpinner from "../../../components/BigSpinner.vue";
@@ -158,7 +159,7 @@ const columns: any[] = [
     align: "center",
     field: "price",
     sortable: true,
-    format: (x: number) => x.toFixed(2),
+    format: (x: number) => fractionalToWhole(x).toFixed(2),
   },
   {
     name: "weight",
@@ -166,7 +167,6 @@ const columns: any[] = [
     align: "center",
     field: "weight",
     sortable: true,
-    format: (x: number) => x.toFixed(2),
   },
   { name: "actions", label: "", align: "right" },
 ];

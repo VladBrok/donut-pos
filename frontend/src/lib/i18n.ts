@@ -1,4 +1,10 @@
-import { browser, createI18n, localeFrom, params } from "@nanostores/i18n";
+import {
+  browser,
+  count,
+  createI18n,
+  localeFrom,
+  params,
+} from "@nanostores/i18n";
 import { useStore as useNanoStore } from "@nanostores/vue";
 import { USER_NOT_FOUND, WRONG_PASSWORD } from "donut-shared";
 import {
@@ -26,6 +32,9 @@ export const i18n = createI18n(locale, {
 });
 
 export const messages = i18n("messages", {
+  // Config
+  weightGram: "g",
+
   // Admin dashboard
   dashboard: "Dashboard",
   logout: "Logout",
@@ -96,6 +105,20 @@ export const messages = i18n("messages", {
   main: "Main",
   searchDishes: "Search by name, price, category or weight",
   allMenu: "All menu",
+  addToCurrentOrder: "Add to current order",
+  addToOrderButton: "Add to order",
+  modificationsTitle: "In addition",
+  openCurrentOrder: "Open current order",
+  currentOrder: "Current Order",
+  emptyOrder: "Order is empty",
+  createOrder: "Create order",
+  clearOrder: "Clear",
+  tableNumberLabel: "Table number",
+  commentLabel: "Comment",
+  totalDishes: count({
+    one: "{count} dish",
+    many: "{count} dishes",
+  }),
 
   // Login page
   adminLoginPageTitle: "Admin login",
@@ -113,6 +136,7 @@ export const messages = i18n("messages", {
   confirmDishDelete: "Are you sure you want to delete dish",
   confirmModificationDelete: "Are you sure you want to delete modification",
   confirmEmployeeDelete: "Are you sure you want to delete employee",
+  confirmCurrentOrderClear: "Are you sure you want to clear the current order",
 
   // Logux statuses
   disconnectedMessage: "Cannot connect to the server",

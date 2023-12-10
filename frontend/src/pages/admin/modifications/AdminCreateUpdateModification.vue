@@ -2,7 +2,7 @@
   <div class="max-w-md q-mx-auto">
     <back-button />
     <big-spinner v-if="isSubscribing" />
-    <q-form v-else @submit="onSubmit">
+    <q-form v-else @submit="onSubmit" @validation-error="onFormValidationError">
       <q-card class="q-pa-md">
         <q-card-section class="q-gutter-lg">
           <photo-upload
@@ -45,7 +45,7 @@
             :label="`${t.weight} *`"
             lazy-rules
             type="number"
-            step="0.01"
+            step="1"
             :rules="[
               (val) => val !== '' || t.fieldRequired,
               (val) =>
@@ -91,6 +91,8 @@ import {
   MIN_MODIFICATION_WEIGHT,
 } from "donut-shared/src/constants";
 import { Notify } from "quasar";
+import { fractionalToWhole, wholeToFractional } from "src/lib/currency";
+import { onFormValidationError } from "src/lib/on-form-validation-error";
 import { useStore } from "src/store";
 import { computed, ref, watchEffect } from "vue";
 import { useRouter } from "vue-router";
@@ -128,7 +130,7 @@ const unsubscribe = watchEffect(
     if (originalModification.value) {
       name.value = originalModification.value.name;
       imageUrl.value = originalModification.value.imageUrl;
-      price.value = originalModification.value.price;
+      price.value = fractionalToWhole(originalModification.value.price);
       weight.value = originalModification.value.weight;
       unsubscribe();
     } else if (id.value && store.state.modifications.modifications.length) {
@@ -165,13 +167,13 @@ const onSubmit = async () => {
         ? updateModificationAction({
             id: originalModification.value.id,
             name: name.value,
-            price: +price.value || 0,
+            price: wholeToFractional(+price.value || 0),
             imageBase64,
             weight: +weight.value || 0,
           })
         : createModificationAction({
             name: name.value,
-            price: +price.value || 0,
+            price: wholeToFractional(+price.value || 0),
             imageBase64,
             weight: +weight.value || 0,
           })

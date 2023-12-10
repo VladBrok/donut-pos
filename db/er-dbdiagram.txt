@@ -78,8 +78,8 @@ Table dish {
   name TEXT
   image_url TEXT
   description TEXT
-  price NUMERIC(8, 2)
-  weight NUMERIC(8, 2)
+  price INT
+  weight INT
   is_active BOOLEAN
   Indexes {
     category_id [name: 'dish_category_id_idx']
@@ -117,8 +117,8 @@ Table modification {
   id UUID [pk]
   name TEXT
   image_url TEXT
-  weight NUMERIC(8, 2)
-  price NUMERIC(8, 2)
+  weight INT
+  price INT
 }
 
 Table dish_to_modification {

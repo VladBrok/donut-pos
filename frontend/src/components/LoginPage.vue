@@ -9,7 +9,11 @@
           <slot name="title"></slot>
         </h1>
       </div>
-      <q-form @submit="onSubmit" class="max-w-sm q-mx-auto">
+      <q-form
+        @submit="onSubmit"
+        class="max-w-sm q-mx-auto"
+        @validation-error="onFormValidationError"
+      >
         <q-card class="q-pa-md">
           <q-card-section class="q-gutter-lg">
             <phone-input v-model.trim="phone" :shouldValidateFormat="false">
@@ -37,6 +41,7 @@
 </template>
 
 <script setup lang="ts">
+import { onFormValidationError } from "src/lib/on-form-validation-error";
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import PasswordInput from "../components/PasswordInput.vue";

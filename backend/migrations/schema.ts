@@ -1,4 +1,4 @@
-import { pgTable, pgEnum, uuid, text, integer, index, foreignKey, numeric, boolean, time, timestamp } from "drizzle-orm/pg-core"
+import { pgTable, pgEnum, uuid, text, integer, index, foreignKey, boolean, time, timestamp } from "drizzle-orm/pg-core"
 
 import { sql } from "drizzle-orm"
 export const keyStatus = pgEnum("key_status", ['default', 'valid', 'invalid', 'expired'])
@@ -24,22 +24,6 @@ export const dishCategory = pgTable("dish_category", {
 	id: uuid("id").primaryKey().notNull(),
 	name: text("name"),
 	imageUrl: text("image_url"),
-});
-
-export const dish = pgTable("dish", {
-	id: uuid("id").primaryKey().notNull(),
-	categoryId: uuid("category_id").references(() => dishCategory.id, { onDelete: "set null" } ).references(() => dishCategory.id, { onDelete: "set null" } ).references(() => dishCategory.id, { onDelete: "set null" } ),
-	name: text("name"),
-	imageUrl: text("image_url"),
-	description: text("description"),
-	price: numeric("price", { precision: 8, scale:  2 }),
-	weight: numeric("weight", { precision: 8, scale:  2 }),
-	isActive: boolean("is_active"),
-},
-(table) => {
-	return {
-		categoryIdIdx: index("dish_category_id_idx").on(table.categoryId),
-	}
 });
 
 export const salePoint = pgTable("sale_point", {
@@ -147,14 +131,6 @@ export const dishToModification = pgTable("dish_to_modification", {
 	}
 });
 
-export const modification = pgTable("modification", {
-	id: uuid("id").primaryKey().notNull(),
-	name: text("name"),
-	imageUrl: text("image_url"),
-	weight: numeric("weight", { precision: 8, scale:  2 }),
-	price: numeric("price", { precision: 8, scale:  2 }),
-});
-
 export const orderToDishToModification = pgTable("order_to_dish_to_modification", {
 	id: uuid("id").primaryKey().notNull(),
 	orderToDishId: uuid("order_to_dish_id").references(() => orderToDish.id, { onDelete: "set null" } ).references(() => orderToDish.id, { onDelete: "set null" } ).references(() => orderToDish.id, { onDelete: "set null" } ),
@@ -218,4 +194,28 @@ export const employee = pgTable("employee", {
 		roleIdIdx: index("employee_role_id_idx").on(table.roleId),
 		phoneIdx: index("employee_phone_idx").on(table.phone),
 	}
+});
+
+export const dish = pgTable("dish", {
+	id: uuid("id").primaryKey().notNull(),
+	categoryId: uuid("category_id").references(() => dishCategory.id, { onDelete: "set null" } ).references(() => dishCategory.id, { onDelete: "set null" } ).references(() => dishCategory.id, { onDelete: "set null" } ),
+	name: text("name"),
+	imageUrl: text("image_url"),
+	description: text("description"),
+	price: integer("price"),
+	weight: integer("weight"),
+	isActive: boolean("is_active"),
+},
+(table) => {
+	return {
+		categoryIdIdx: index("dish_category_id_idx").on(table.categoryId),
+	}
+});
+
+export const modification = pgTable("modification", {
+	id: uuid("id").primaryKey().notNull(),
+	name: text("name"),
+	imageUrl: text("image_url"),
+	weight: integer("weight"),
+	price: integer("price"),
 });
