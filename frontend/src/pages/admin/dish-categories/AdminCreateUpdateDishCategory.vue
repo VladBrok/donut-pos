@@ -2,7 +2,7 @@
   <div class="max-w-sm q-mx-auto">
     <back-button />
     <big-spinner v-if="isSubscribing" />
-    <q-form v-else @submit="onSubmit">
+    <q-form v-else @submit="onSubmit" @validation-error="onFormValidationError">
       <q-card class="q-pa-md">
         <q-card-section class="q-gutter-lg">
           <photo-upload
@@ -53,6 +53,7 @@ import {
   MAX_DISH_CATEGORY_NAME_LENGTH,
 } from "donut-shared/src/constants";
 import { Notify } from "quasar";
+import { onFormValidationError } from "src/lib/on-form-validation-error";
 import { useStore } from "src/store";
 import { computed, ref, watchEffect } from "vue";
 import { useRouter } from "vue-router";

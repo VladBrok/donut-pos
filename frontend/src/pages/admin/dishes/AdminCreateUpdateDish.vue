@@ -2,7 +2,7 @@
   <div class="max-w-md q-mx-auto">
     <back-button />
     <big-spinner v-if="isSubscribing" />
-    <q-form v-else @submit="onSubmit">
+    <q-form v-else @submit="onSubmit" @validation-error="onFormValidationError">
       <q-card class="q-pa-md">
         <q-card-section class="q-gutter-lg">
           <photo-upload
@@ -227,6 +227,7 @@ import {
 } from "donut-shared/src/constants";
 import { Notify } from "quasar";
 import { fractionalToWhole, wholeToFractional } from "src/lib/currency";
+import { onFormValidationError } from "src/lib/on-form-validation-error";
 import { useStore } from "src/store";
 import { computed, reactive, ref, watch, watchEffect } from "vue";
 import { useRouter } from "vue-router";

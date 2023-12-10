@@ -1,7 +1,7 @@
 <template>
   <div class="full-height">
     <q-card v-if="order" class="full-height shadow-0">
-      <q-form @submit="onSubmit">
+      <q-form @submit="onSubmit" @validation-error="onFormValidationError">
         <div class="scroll current-order-height">
           <big-spinner v-if="isSubscribing" />
           <div v-else>
@@ -144,6 +144,7 @@ import {
 import BigSpinner from "src/components/BigSpinner.vue";
 import DishInOrder from "src/components/DishInOrder.vue";
 import { formatCurrency } from "src/lib/currency";
+import { onFormValidationError } from "src/lib/on-form-validation-error";
 import { computed, ref } from "vue";
 import { CHANNELS } from "../../../shared/src/constants";
 import { logInfo } from "../../../shared/src/lib/log";
