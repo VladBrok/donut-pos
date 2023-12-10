@@ -75,7 +75,7 @@
       :width="$q.screen.xs ? 320 : 400"
     >
       <q-scroll-area class="fit">
-        <div class="q-pa-sm">
+        <div class="q-pa-sm row justify-end">
           <q-btn
             dense
             flat
@@ -98,8 +98,10 @@
 
     <q-page-container>
       <div class="scroll full-width page-wrapper-height">
-        <q-page padding class="q-mt-xl q-mb-xl">
-          <router-view />
+        <q-page padding>
+          <div class="q-pb-xl q-pt-xl">
+            <router-view />
+          </div>
         </q-page>
       </div>
     </q-page-container>
