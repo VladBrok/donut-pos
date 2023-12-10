@@ -28,8 +28,12 @@ body {
   max-height: 50vh;
 }
 
-.restricted-height-80vh {
-  max-height: 80vh;
+.restricted-height-modal {
+  max-height: 70vh;
+}
+
+.current-order-height {
+  height: calc(100vh - 180px);
 }
 
 .page-wrapper-height {

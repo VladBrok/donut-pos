@@ -1,4 +1,10 @@
-import { browser, createI18n, localeFrom, params } from "@nanostores/i18n";
+import {
+  browser,
+  count,
+  createI18n,
+  localeFrom,
+  params,
+} from "@nanostores/i18n";
 import { useStore as useNanoStore } from "@nanostores/vue";
 import { USER_NOT_FOUND, WRONG_PASSWORD } from "donut-shared";
 import {
@@ -109,6 +115,10 @@ export const messages = i18n("messages", {
   clearOrder: "Clear",
   tableNumberLabel: "Table number",
   commentLabel: "Comment",
+  totalDishes: count({
+    one: "{count} dish",
+    many: "{count} dishes",
+  }),
 
   // Login page
   adminLoginPageTitle: "Admin login",

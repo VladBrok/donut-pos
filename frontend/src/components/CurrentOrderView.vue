@@ -2,96 +2,110 @@
   <div class="full-height">
     <q-card v-if="order" class="full-height shadow-0">
       <q-form @submit="onSubmit">
-        <div class="restricted-height-50vh scroll">
+        <div class="scroll current-order-height">
           <big-spinner v-if="isSubscribing" />
           <div v-else>
-            <div v-for="data of dishesInOrder" :key="data.orderDish.uniqueId">
-              <q-separator />
-              <dish-in-order
-                :dish="data.dish"
-                :count="data.count"
-                :total-cost="data.totalCost"
-                :modifications="data.modifications"
-                @delete="
+            <div>
+              <!-- TODO: add client autotomplete field -->
+              <q-input
+                :model-value="store.state.currentOrder.order?.tableNumber"
+                @update:model-value="
                   store.commit.crossTab(
-                    removeDishFromCurrentOrderAction({
-                      uniqueId: data.orderDish.uniqueId,
+                    updateCurrentOrderTableNumberAction({
+                      tableNumber: $event?.toString()?.trim() || '',
                     })
                   )
                 "
-                @increment="
+                stack-label
+                :label="`${t.tableNumberLabel}`"
+                lazy-rules
+                type="text"
+                :rules="[
+                  (val) =>
+                    !val ||
+                    val.length <= TABLE_NUMBER_MAX_LENGTH ||
+                    t.maxLength({ max: TABLE_NUMBER_MAX_LENGTH }),
+                ]"
+              />
+              <q-input
+                :model-value="store.state.currentOrder.order?.comment"
+                @update:model-value="
                   store.commit.crossTab(
-                    addDishToCurrentOrderAction({
-                      dish: {
-                        id: data.dish.id,
-                        modifications: data.orderDish.modifications,
-                      },
+                    updateCurrentOrderCommentAction({
+                      comment: $event?.toString() || '',
                     })
                   )
                 "
-                @decrement="
-                  store.commit.crossTab(
-                    decrementDishInCurrentOrderAction({
-                      dish: {
-                        id: data.dish.id,
-                        modifications: data.orderDish.modifications,
-                      },
-                    })
-                  )
-                "
-              >
-              </dish-in-order>
+                stack-label
+                :label="`${t.commentLabel}`"
+                lazy-rules
+                type="textarea"
+                rows="3"
+                :rules="[
+                  (val) =>
+                    !val ||
+                    val.length <= COMMENT_MAX_LENGTH ||
+                    t.maxLength({ max: COMMENT_MAX_LENGTH }),
+                ]"
+              />
             </div>
-            <q-separator />
+
+            <div>
+              <div v-for="data of dishesInOrder" :key="data.orderDish.uniqueId">
+                <dish-in-order
+                  :dish="data.dish"
+                  :count="data.count"
+                  :total-cost="data.totalCost"
+                  :modifications="data.modifications"
+                  @delete="
+                    store.commit.crossTab(
+                      removeDishFromCurrentOrderAction({
+                        uniqueId: data.orderDish.uniqueId,
+                      })
+                    )
+                  "
+                  @increment="
+                    store.commit.crossTab(
+                      addDishToCurrentOrderAction({
+                        dish: {
+                          id: data.dish.id,
+                          modifications: data.orderDish.modifications,
+                        },
+                      })
+                    )
+                  "
+                  @decrement="
+                    store.commit.crossTab(
+                      decrementDishInCurrentOrderAction({
+                        dish: {
+                          id: data.dish.id,
+                          modifications: data.orderDish.modifications,
+                        },
+                      })
+                    )
+                  "
+                >
+                </dish-in-order>
+                <q-separator />
+              </div>
+            </div>
           </div>
         </div>
-        <div class="q-mt-lg">
-          <!-- TODO: add client autotomplete field -->
-          <q-input
-            :model-value="store.state.currentOrder.order?.tableNumber"
-            @update:model-value="
-              store.commit.crossTab(
-                updateCurrentOrderTableNumberAction({
-                  tableNumber: $event?.toString()?.trim() || '',
-                })
-              )
-            "
-            stack-label
-            :label="`${t.tableNumberLabel}`"
-            lazy-rules
-            type="text"
-            :rules="[
-              (val) =>
-                !val ||
-                val.length <= TABLE_NUMBER_MAX_LENGTH ||
-                t.maxLength({ max: TABLE_NUMBER_MAX_LENGTH }),
-            ]"
-          />
-          <q-input
-            :model-value="store.state.currentOrder.order?.comment"
-            @update:model-value="
-              store.commit.crossTab(
-                updateCurrentOrderCommentAction({
-                  comment: $event?.toString() || '',
-                })
-              )
-            "
-            stack-label
-            :label="`${t.commentLabel}`"
-            lazy-rules
-            type="textarea"
-            rows="4"
-            :rules="[
-              (val) =>
-                !val ||
-                val.length <= COMMENT_MAX_LENGTH ||
-                t.maxLength({ max: COMMENT_MAX_LENGTH }),
-            ]"
-          />
+
+        <div>
+          <q-separator />
+          <div class="row justify-between gap-sm q-pt-md q-mb-sm">
+            <div class="text-h5">
+              {{ t.totalDishes(order.dishes.length) }}
+            </div>
+            <div class="text-weight-medium text-h5">
+              {{ formatCurrency(totalCost) }}
+            </div>
+          </div>
         </div>
-        <div class="row justify-end q-gutter-sm q-mt-md">
+        <div class="row justify-end q-gutter-sm">
           <q-btn
-            color="dark"
+            color="negative"
             flat
             @click="isConfirmClearOpen = true"
             type="button"
@@ -129,6 +143,7 @@ import {
 } from "donut-shared";
 import BigSpinner from "src/components/BigSpinner.vue";
 import DishInOrder from "src/components/DishInOrder.vue";
+import { formatCurrency } from "src/lib/format-currency";
 import { computed, ref } from "vue";
 import { CHANNELS } from "../../../shared/src/constants";
 import { logInfo } from "../../../shared/src/lib/log";
@@ -146,27 +161,32 @@ const isSubscribing = useSubscription(channels, { store: store as any });
 const dishes = computed(() => store.state.dishes.dishes);
 const modifications = computed(() => store.state.modifications.modifications);
 const dishesInOrder = computed(() =>
-  // TODO: what if the dish or modification will be deleted during processing?
-  order.value?.dishes.map((dish) => {
-    const foundDish = dishes.value.find((x) => x.id === dish.dishId)!;
-    const foundModifications = dish.modifications.map((x) => ({
-      modification: modifications.value.find((y) => y.id === x.id)!,
-      count: x.count,
-    }));
-    return {
-      orderDish: dish,
-      dish: foundDish,
-      count: dish.count,
-      modifications: foundModifications,
-      totalCost:
-        (foundDish.price +
-          foundModifications.reduce(
-            (sum, cur) => sum + cur.modification.price * cur.count,
-            0
-          )) *
-        dish.count,
-    };
-  })
+  isSubscribing.value
+    ? []
+    : // TODO: what if the dish or modification will be deleted during processing?
+      order.value?.dishes.map((dish) => {
+        const foundDish = dishes.value.find((x) => x.id === dish.dishId)!;
+        const foundModifications = dish.modifications.map((x) => ({
+          modification: modifications.value.find((y) => y.id === x.id)!,
+          count: x.count,
+        }));
+        return {
+          orderDish: dish,
+          dish: foundDish,
+          count: dish.count,
+          modifications: foundModifications,
+          totalCost:
+            (foundDish.price +
+              foundModifications.reduce(
+                (sum, cur) => sum + cur.modification.price * cur.count,
+                0
+              )) *
+            dish.count,
+        };
+      })
+);
+const totalCost = computed(
+  () => dishesInOrder.value?.reduce((sum, cur) => sum + cur.totalCost, 0) || 0
 );
 
 function clear() {

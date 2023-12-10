@@ -74,19 +74,17 @@
       bordered
       :width="$q.screen.xs ? 320 : 400"
     >
-      <q-scroll-area class="fit">
-        <div class="q-pa-sm row justify-end">
+      <div class="q-pa-sm">
+        <div class="row justify-between q-mb-md q-mt-sm">
+          <p class="text-h5">
+            {{ t.currentOrder }}
+          </p>
           <q-btn dense flat round icon="close" @click="toggleOrderDrawer" />
-          <div class="q-px-sm">
-            <div class="q-mb-lg">
-              <p class="text-h5">
-                {{ t.currentOrder }}
-              </p>
-            </div>
-            <current-order-view> </current-order-view>
-          </div>
         </div>
-      </q-scroll-area>
+        <div class="q-px-sm">
+          <current-order-view> </current-order-view>
+        </div>
+      </div>
     </q-drawer>
 
     <q-page-container>
