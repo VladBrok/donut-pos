@@ -1,6 +1,7 @@
 export {
   addDishToCurrentOrderAction,
   clearCurrentOrderAction,
+  decrementDishInCurrentOrderAction,
   removeDishFromCurrentOrderAction,
   updateCurrentOrderCommentAction,
   updateCurrentOrderTableNumberAction,

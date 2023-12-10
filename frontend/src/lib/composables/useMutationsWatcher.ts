@@ -2,6 +2,7 @@ import {
   addDishToCurrentOrderAction,
   assert,
   clearCurrentOrderAction,
+  decrementDishInCurrentOrderAction,
   removeDishFromCurrentOrderAction,
   updateCurrentOrderCommentAction,
   updateCurrentOrderTableNumberAction,
@@ -48,7 +49,8 @@ export const useMutationsWatcher = () => {
         case addDishToCurrentOrderAction.type:
         case updateCurrentOrderCommentAction.type:
         case updateCurrentOrderTableNumberAction.type:
-        case removeDishFromCurrentOrderAction.type: {
+        case removeDishFromCurrentOrderAction.type:
+        case decrementDishInCurrentOrderAction.type: {
           saveCurrentOrderToStorage(state.currentOrder.order);
           break;
         }

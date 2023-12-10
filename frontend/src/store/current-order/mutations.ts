@@ -1,16 +1,22 @@
 import {
   addDishToCurrentOrderAction,
   assert,
+  decrementDishInCurrentOrderAction,
   removeDishFromCurrentOrderAction,
   updateCurrentOrderCommentAction,
   updateCurrentOrderTableNumberAction,
 } from "donut-shared";
+import { ICurrentOrderDishPayload } from "donut-shared/src/actions/current-order";
 import { MutationTree } from "vuex";
 import { ICurrentOrderState, makeEmptyOrder } from "./state";
 
-const mutation: MutationTree<ICurrentOrderState> = {
-  // TODO: if count will turn to 0 during decrement - remove the dish
+function getUniqueId(dish: ICurrentOrderDishPayload) {
+  return (
+    dish.id + dish.modifications.map((x) => `${x.id}_${x.count}`).join(",")
+  );
+}
 
+const mutation: MutationTree<ICurrentOrderState> = {
   addDish(
     state: ICurrentOrderState,
     action: ReturnType<typeof addDishToCurrentOrderAction>
@@ -19,11 +25,7 @@ const mutation: MutationTree<ICurrentOrderState> = {
       state.order = makeEmptyOrder();
     }
 
-    const uniqueId =
-      action.payload.dish.id +
-      action.payload.dish.modifications
-        .map((x) => `${x.id}_${x.count}`)
-        .join(",");
+    const uniqueId = getUniqueId(action.payload.dish);
     const existingIdx = state.order.dishes.findIndex(
       (x) => x.uniqueId === uniqueId
     );
@@ -37,6 +39,26 @@ const mutation: MutationTree<ICurrentOrderState> = {
         modifications: action.payload.dish.modifications,
         uniqueId: uniqueId,
       });
+    }
+  },
+
+  decrementDish(
+    state: ICurrentOrderState,
+    action: ReturnType<typeof decrementDishInCurrentOrderAction>
+  ) {
+    assert(state.order, "Cannot decrement dish on empty order");
+
+    const uniqueId = getUniqueId(action.payload.dish);
+    const existingIdx = state.order.dishes.findIndex(
+      (x) => x.uniqueId === uniqueId
+    );
+
+    if (existingIdx > -1) {
+      assert(
+        state.order.dishes[existingIdx].count > 1,
+        "Cannot decrement dish to 0"
+      );
+      state.order.dishes[existingIdx].count--;
     }
   },
 

@@ -20,12 +20,18 @@ export interface ICurrentOrder {
   dishes: ICurrentOrderDish[];
 }
 
+export interface ICurrentOrderDishPayload {
+  id: string;
+  modifications: ICurrentOrderDishModification[];
+}
+
 export const addDishToCurrentOrderAction = createAction<{
-  dish: {
-    id: string;
-    modifications: ICurrentOrderDishModification[];
-  };
+  dish: ICurrentOrderDishPayload;
 }>("currentOrder/addDish");
+
+export const decrementDishInCurrentOrderAction = createAction<{
+  dish: ICurrentOrderDishPayload;
+}>("currentOrder/decrementDish");
 
 export const clearCurrentOrderAction = createAction("currentOrder/clear");
 

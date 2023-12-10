@@ -45,13 +45,13 @@
           <div>
             <product-counter
               @increment="emit('increment')"
-              @decrement="decrementDish"
+              @decrement="emit('decrement')"
               :min="1"
               :count="count"
             >
             </product-counter>
           </div>
-          <div class="text-primary text-h5">
+          <div class="text-primary text-h5 q-pr-sm">
             {{ formatCurrency(total) }}
           </div>
         </div>
@@ -78,7 +78,7 @@ const props = defineProps<{
   }[];
 }>();
 
-const emit = defineEmits(["delete", "increment"]);
+const emit = defineEmits(["delete", "increment", "decrement"]);
 
 const total = computed(
   () =>

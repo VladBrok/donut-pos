@@ -29,6 +29,16 @@
                     })
                   )
                 "
+                @decrement="
+                  store.commit.crossTab(
+                    decrementDishInCurrentOrderAction({
+                      dish: {
+                        id: dish.dishId,
+                        modifications: dish.modifications,
+                      },
+                    })
+                  )
+                "
               >
               </dish-in-order>
             </div>
@@ -108,11 +118,12 @@
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
 import {
+  COMMENT_MAX_LENGTH,
+  TABLE_NUMBER_MAX_LENGTH,
   addDishToCurrentOrderAction,
   clearCurrentOrderAction,
-  COMMENT_MAX_LENGTH,
+  decrementDishInCurrentOrderAction,
   removeDishFromCurrentOrderAction,
-  TABLE_NUMBER_MAX_LENGTH,
   updateCurrentOrderCommentAction,
   updateCurrentOrderTableNumberAction,
 } from "donut-shared";
