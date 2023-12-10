@@ -267,7 +267,7 @@ const channels = computed(() =>
     ? [CHANNELS.DISHES, CHANNELS.DISH_CATEGORIES, CHANNELS.MODIFICATIONS]
     : [CHANNELS.DISH_CATEGORIES, CHANNELS.MODIFICATIONS]
 );
-let isSubscribing = useSubscription(channels, { store: store as any });
+const isSubscribing = useSubscription(channels, { store: store as any });
 
 const unsubscribe = watchEffect(
   () => {

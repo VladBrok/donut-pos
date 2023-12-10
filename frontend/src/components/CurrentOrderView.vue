@@ -3,7 +3,20 @@
     <q-card v-if="order" class="full-height shadow-0">
       <q-form @submit="onSubmit">
         <div class="restricted-height-50vh scroll">
-          {{ JSON.stringify(order, undefined, 2) }}
+          <big-spinner v-if="isSubscribing" />
+          <div v-else>
+            <!-- TODO: what if the dish or modification will be deleted during processing? -->
+            <div v-for="dish of order.dishes" :key="dish.uniqueId">
+              <q-separator />
+              <dish-in-order
+                :dish="dishes.find((x) => x.id === dish.dishId)!"
+                :count="dish.count"
+                :modifications="dish.modifications.map(x => ({ modification: modifications.find(y => y.id === x.id)!, count: x.count}))"
+              >
+              </dish-in-order>
+            </div>
+            <q-separator />
+          </div>
         </div>
         <div class="q-mt-lg">
           <!-- TODO: add client autotomplete field -->
@@ -76,6 +89,7 @@
 </template>
 
 <script setup lang="ts">
+import { useSubscription } from "@logux/vuex";
 import {
   clearCurrentOrderAction,
   COMMENT_MAX_LENGTH,
@@ -83,7 +97,10 @@ import {
   updateCurrentOrderCommentAction,
   updateCurrentOrderTableNumberAction,
 } from "donut-shared";
+import BigSpinner from "src/components/BigSpinner.vue";
+import DishInOrder from "src/components/DishInOrder.vue";
 import { computed, ref } from "vue";
+import { CHANNELS } from "../../../shared/src/constants";
 import { logInfo } from "../../../shared/src/lib/log";
 import { useI18nStore } from "../lib/i18n";
 import { useStore } from "../store";
@@ -93,8 +110,11 @@ import NoData from "./NoData.vue";
 const store = useStore();
 const order = computed(() => store.state.currentOrder.order);
 const t = useI18nStore();
-
 const isConfirmClearOpen = ref(false);
+const channels = computed(() => [CHANNELS.DISHES, CHANNELS.MODIFICATIONS]);
+const isSubscribing = useSubscription(channels, { store: store as any });
+const dishes = computed(() => store.state.dishes.dishes);
+const modifications = computed(() => store.state.modifications.modifications);
 
 function clear() {
   store.commit.crossTab(clearCurrentOrderAction());
