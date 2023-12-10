@@ -14,6 +14,9 @@
       "src/*": [
         "./src/*"
       ],
+      "migrations/*": [
+        "./migrations/*"
+      ],
       "*": [
         "node_modules/*",
         "src/types/*"

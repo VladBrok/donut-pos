@@ -21,7 +21,7 @@ export default function ordersModule(server: Server) {
       return await hasWaiterPermission(ctx.userId);
     },
     async process(ctx, action, meta) {
-      const created = await db.createOrder(action.payload.order);
+      const created = await db.createOrder(action.payload.order, ctx.userId);
       await server.process(orderCreatedAction()); // TODO: send created order
     },
   });
