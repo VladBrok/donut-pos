@@ -5,17 +5,17 @@
         <div class="restricted-height-50vh scroll">
           <big-spinner v-if="isSubscribing" />
           <div v-else>
-            <!-- TODO: what if the dish or modification will be deleted during processing? -->
-            <div v-for="dish of order.dishes" :key="dish.uniqueId">
+            <div v-for="data of dishesInOrder" :key="data.orderDish.uniqueId">
               <q-separator />
               <dish-in-order
-                :dish="dishes.find((x) => x.id === dish.dishId)!"
-                :count="dish.count"
-                :modifications="dish.modifications.map(x => ({ modification: modifications.find(y => y.id === x.id)!, count: x.count}))"
+                :dish="data.dish"
+                :count="data.count"
+                :total-cost="data.totalCost"
+                :modifications="data.modifications"
                 @delete="
                   store.commit.crossTab(
                     removeDishFromCurrentOrderAction({
-                      uniqueId: dish.uniqueId,
+                      uniqueId: data.orderDish.uniqueId,
                     })
                   )
                 "
@@ -23,8 +23,8 @@
                   store.commit.crossTab(
                     addDishToCurrentOrderAction({
                       dish: {
-                        id: dish.dishId,
-                        modifications: dish.modifications,
+                        id: data.dish.id,
+                        modifications: data.orderDish.modifications,
                       },
                     })
                   )
@@ -33,8 +33,8 @@
                   store.commit.crossTab(
                     decrementDishInCurrentOrderAction({
                       dish: {
-                        id: dish.dishId,
-                        modifications: dish.modifications,
+                        id: data.dish.id,
+                        modifications: data.orderDish.modifications,
                       },
                     })
                   )
@@ -145,6 +145,29 @@ const channels = computed(() => [CHANNELS.DISHES, CHANNELS.MODIFICATIONS]);
 const isSubscribing = useSubscription(channels, { store: store as any });
 const dishes = computed(() => store.state.dishes.dishes);
 const modifications = computed(() => store.state.modifications.modifications);
+const dishesInOrder = computed(() =>
+  // TODO: what if the dish or modification will be deleted during processing?
+  order.value?.dishes.map((dish) => {
+    const foundDish = dishes.value.find((x) => x.id === dish.dishId)!;
+    const foundModifications = dish.modifications.map((x) => ({
+      modification: modifications.value.find((y) => y.id === x.id)!,
+      count: x.count,
+    }));
+    return {
+      orderDish: dish,
+      dish: foundDish,
+      count: dish.count,
+      modifications: foundModifications,
+      totalCost:
+        (foundDish.price +
+          foundModifications.reduce(
+            (sum, cur) => sum + cur.modification.price * cur.count,
+            0
+          )) *
+        dish.count,
+    };
+  })
+);
 
 function clear() {
   store.commit.crossTab(clearCurrentOrderAction());

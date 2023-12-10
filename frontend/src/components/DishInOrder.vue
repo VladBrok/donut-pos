@@ -52,7 +52,7 @@
             </product-counter>
           </div>
           <div class="text-primary text-h5 q-pr-sm">
-            {{ formatCurrency(total) }}
+            {{ formatCurrency(totalCost) }}
           </div>
         </div>
       </div>
@@ -63,13 +63,13 @@
 <script setup lang="ts">
 import ProductCounter from "src/components/ProductCounter.vue";
 import { formatCurrency } from "src/lib/format-currency";
-import { computed } from "vue";
 import { loadModificationsAction } from "../../../shared";
 import { loadDishesAction } from "../../../shared/src/actions/dishes";
 
-const props = defineProps<{
+defineProps<{
   dish: ReturnType<typeof loadDishesAction>["payload"]["dishes"][number];
   count: number;
+  totalCost: number;
   modifications: {
     modification: ReturnType<
       typeof loadModificationsAction
@@ -79,14 +79,4 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits(["delete", "increment", "decrement"]);
-
-const total = computed(
-  () =>
-    (props.dish.price +
-      props.modifications.reduce(
-        (sum, cur) => sum + cur.modification.price * cur.count,
-        0
-      )) *
-    props.count
-);
 </script>
