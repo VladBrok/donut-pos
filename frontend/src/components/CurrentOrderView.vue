@@ -17,7 +17,7 @@
                   )
                 "
                 stack-label
-                :label="`${t.tableNumberLabel}`"
+                :label="`${t.tableNumberLabel} *`"
                 lazy-rules
                 type="text"
                 :rules="[
@@ -143,7 +143,7 @@ import {
 } from "donut-shared";
 import BigSpinner from "src/components/BigSpinner.vue";
 import DishInOrder from "src/components/DishInOrder.vue";
-import { formatCurrency } from "src/lib/format-currency";
+import { formatCurrency } from "src/lib/currency";
 import { computed, ref } from "vue";
 import { CHANNELS } from "../../../shared/src/constants";
 import { logInfo } from "../../../shared/src/lib/log";

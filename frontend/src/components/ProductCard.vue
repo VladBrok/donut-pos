@@ -27,8 +27,8 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
+import { formatCurrency } from "../lib/currency";
 import { cutText } from "../lib/cut-text";
-import { formatCurrency } from "../lib/format-currency";
 
 const props = defineProps<{
   price: number;

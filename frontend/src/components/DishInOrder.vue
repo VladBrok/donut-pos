@@ -62,7 +62,7 @@
 
 <script setup lang="ts">
 import ProductCounter from "src/components/ProductCounter.vue";
-import { formatCurrency } from "src/lib/format-currency";
+import { formatCurrency } from "src/lib/currency";
 import { loadModificationsAction } from "../../../shared";
 import { loadDishesAction } from "../../../shared/src/actions/dishes";
 

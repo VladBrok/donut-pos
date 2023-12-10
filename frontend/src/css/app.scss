@@ -36,6 +36,12 @@ body {
   height: calc(100vh - 180px);
 }
 
+@media screen and (min-width: 1023px) {
+  .current-order-height {
+    height: calc(100vh - 240px);
+  }
+}
+
 .page-wrapper-height {
   height: calc(100vh - 59px);
 }

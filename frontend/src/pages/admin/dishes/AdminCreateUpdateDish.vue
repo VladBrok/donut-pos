@@ -64,7 +64,7 @@
             :label="`${t.weight} *`"
             lazy-rules
             type="number"
-            step="0.01"
+            step="1"
             :rules="[
               (val) => val !== '' || t.fieldRequired,
               (val) =>
@@ -226,6 +226,7 @@ import {
   MIN_DISH_WEIGHT,
 } from "donut-shared/src/constants";
 import { Notify } from "quasar";
+import { fractionalToWhole, wholeToFractional } from "src/lib/currency";
 import { useStore } from "src/store";
 import { computed, reactive, ref, watch, watchEffect } from "vue";
 import { useRouter } from "vue-router";
@@ -274,7 +275,7 @@ const unsubscribe = watchEffect(
     if (originalDish.value) {
       name.value = originalDish.value.name;
       imageUrl.value = originalDish.value.imageUrl;
-      price.value = originalDish.value.price;
+      price.value = fractionalToWhole(originalDish.value.price);
       weight.value = originalDish.value.weight;
       categoryName.value = originalDish.value.category?.name || "";
       isActive.value = originalDish.value.isActive;
@@ -363,7 +364,7 @@ const onSubmit = async () => {
         ? updateDishAction({
             id: originalDish.value.id,
             name: name.value,
-            price: +price.value || 0,
+            price: wholeToFractional(+price.value || 0),
             category: store.state.dishCategories.categories.find(
               (x) => x.name === categoryName.value
             )!,
@@ -382,7 +383,7 @@ const onSubmit = async () => {
           })
         : createDishAction({
             name: name.value,
-            price: +price.value || 0,
+            price: wholeToFractional(+price.value || 0),
             category: store.state.dishCategories.categories.find(
               (x) => x.name === categoryName.value
             )!,
