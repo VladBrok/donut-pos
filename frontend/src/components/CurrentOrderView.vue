@@ -84,8 +84,7 @@
                       })
                     )
                   "
-                >
-                </dish-in-order>
+                />
                 <q-separator />
               </div>
             </div>
