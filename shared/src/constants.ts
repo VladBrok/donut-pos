@@ -41,13 +41,13 @@ export const MAX_DISH_CATEGORY_NAME_LENGTH = 50;
 export const MAX_DISH_NAME_LENGTH = 50;
 export const MIN_DISH_PRICE = 0.01;
 export const MAX_DISH_PRICE = 1000000;
-export const MIN_DISH_WEIGHT = 0.01;
+export const MIN_DISH_WEIGHT = 1;
 export const MAX_DISH_WEIGHT = 100000000;
 
 export const MAX_MODIFICATION_NAME_LENGTH = 50;
 export const MIN_MODIFICATION_PRICE = 0.01;
 export const MAX_MODIFICATION_PRICE = 1000000;
-export const MIN_MODIFICATION_WEIGHT = 0.01;
+export const MIN_MODIFICATION_WEIGHT = 1;
 export const MAX_MODIFICATION_WEIGHT = 100000000;
 
 export const TABLE_NUMBER_MAX_LENGTH = 50;

@@ -34,8 +34,8 @@ export async function createDish(data: Omit<DishModel, "id">) {
   await db.transaction(async (tx) => {
     await tx.insert(dish).values({
       ...toCreate,
-      weight: toCreate.weight.toString(),
-      price: toCreate.price.toString(),
+      weight: toCreate.weight,
+      price: toCreate.price,
       categoryId: data.category?.id,
     });
 
@@ -65,8 +65,8 @@ export async function updateDish(
       .update(dish)
       .set({
         ...dataWithoutModifications,
-        weight: data.weight?.toString(),
-        price: data.price?.toString(),
+        weight: data.weight,
+        price: data.price,
       })
       .where(eq(dish.id, data.id || ""));
 

@@ -34,8 +34,8 @@ export async function createModification(data: Omit<ModificationModel, "id">) {
   const toCreate = { id: generateUuid(), ...data };
   await db.insert(modification).values({
     ...toCreate,
-    weight: toCreate.weight.toString(),
-    price: toCreate.price.toString(),
+    weight: toCreate.weight,
+    price: toCreate.price,
   });
   return toCreate;
 }
@@ -45,8 +45,8 @@ export async function updateModification(data: Partial<ModificationModel>) {
     .update(modification)
     .set({
       ...data,
-      weight: data.weight?.toString(),
-      price: data.price?.toString(),
+      weight: data.weight,
+      price: data.price,
     })
     .where(eq(modification.id, data.id || ""));
   return data;
