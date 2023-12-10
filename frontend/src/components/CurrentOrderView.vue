@@ -19,6 +19,16 @@
                     })
                   )
                 "
+                @increment="
+                  store.commit.crossTab(
+                    addDishToCurrentOrderAction({
+                      dish: {
+                        id: dish.dishId,
+                        modifications: dish.modifications,
+                      },
+                    })
+                  )
+                "
               >
               </dish-in-order>
             </div>
@@ -98,6 +108,7 @@
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
 import {
+  addDishToCurrentOrderAction,
   clearCurrentOrderAction,
   COMMENT_MAX_LENGTH,
   removeDishFromCurrentOrderAction,

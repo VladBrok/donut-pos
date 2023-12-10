@@ -1,5 +1,5 @@
 <template>
-  <div class="row no-wrap gap-md q-py-md">
+  <div class="row no-wrap gap-md q-px-xs q-py-md">
     <q-img
       :src="dish.imageUrl"
       alt=""
@@ -44,7 +44,7 @@
         <div class="q-mt-md row no-wrap justify-between">
           <div>
             <product-counter
-              @increment="incrementDish"
+              @increment="emit('increment')"
               @decrement="decrementDish"
               :min="1"
               :count="count"
@@ -78,14 +78,15 @@ const props = defineProps<{
   }[];
 }>();
 
-const emit = defineEmits(["delete"]);
+const emit = defineEmits(["delete", "increment"]);
 
 const total = computed(
   () =>
-    props.dish.price * props.count +
-    props.modifications.reduce(
-      (sum, cur) => sum + cur.modification.price * cur.count,
-      0
-    )
+    (props.dish.price +
+      props.modifications.reduce(
+        (sum, cur) => sum + cur.modification.price * cur.count,
+        0
+      )) *
+    props.count
 );
 </script>
