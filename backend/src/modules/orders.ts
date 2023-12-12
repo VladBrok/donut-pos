@@ -4,13 +4,15 @@ import { CHANNELS } from "donut-shared/src/constants.js";
 import * as db from "../db/modules/orders.js";
 import { hasWaiterPermission } from "../lib/access.js";
 
+// TODO: consider creating separate channels for client's orders ?
+
 export default function ordersModule(server: Server) {
   server.channel(CHANNELS.ORDERS, {
     access(ctx) {
       return hasWaiterPermission(ctx.userId); // TODO: cooks and clients should aslo be notified
     },
     async load() {
-      // TODO: return orders created by this employee
+      // TODO: return orders created by this employee ?
       // const dishes = await db.getAllDishes();
       // return loadDishesAction({ dishes });
     },
@@ -22,7 +24,7 @@ export default function ordersModule(server: Server) {
     },
     async process(ctx, action, meta) {
       const created = await db.createOrder(action.payload.order, ctx.userId);
-      await server.process(orderCreatedAction()); // TODO: send created order
+      await server.process(orderCreatedAction()); // TODO: send created order ?
     },
   });
 
