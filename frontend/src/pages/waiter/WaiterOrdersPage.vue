@@ -123,8 +123,8 @@ const columns: any[] = [
 const stopWatchingSubscribing = watch(isSubscribing, () => {
   if (!isSubscribing.value) {
     pagination.value.rowsNumber = store.state.orders.totalOrders;
+    stopWatchingSubscribing();
   }
-  stopWatchingSubscribing();
 });
 
 onMounted(() => {
