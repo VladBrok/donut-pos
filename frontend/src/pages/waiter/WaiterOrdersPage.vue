@@ -71,7 +71,7 @@ import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import { loadOrdersPageAction } from "../../../../shared/src/actions/orders";
 import { ORDER_STATUSES_ARR } from "../../../../shared/src/constants";
 
-// TODO: search by order number - debounce
+// TODO: search by order number - debounce, case-insensitive, trim
 
 const store = useStore();
 const t = useI18nStore();
