@@ -133,7 +133,7 @@ Table dish_to_modification {
 
 Table order_status {
   id UUID [pk]
-  code_name TEXT // "creating" | "created" | "cooking" | "cooked" | "payed"
+  code_name TEXT // "creating" | "created" | "cooking" | "cooked" | "paid"
 }
 
 Table order_to_order_status {
