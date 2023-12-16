@@ -11,6 +11,12 @@
     "strictNullChecks": true,
     "baseUrl": ".",
     "paths": {
+      "src/*": [
+        "./src/*"
+      ],
+      "migrations/*": [
+        "./migrations/*"
+      ],
       "*": [
         "node_modules/*",
         "src/types/*"

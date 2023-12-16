@@ -16,14 +16,16 @@
         </q-input>
       </div>
       <div class="q-mb-lg gap-sm row">
-        <dish-category-filter
+        <filter-pill
           v-for="category in categories"
-          :category="category"
           :key="category.id"
-          :selected-category-id="selectedCategoryId"
+          :image-url="category.imageUrl"
+          :id="category.id"
+          :name="category.name"
+          :selected-id="selectedCategoryId"
           @click="handleCategoryFilterClick(category.id)"
         >
-        </dish-category-filter>
+        </filter-pill>
       </div>
       <div v-if="dishesFiltered.length" class="q-mx-auto w-fit card-grid">
         <dish-card
@@ -54,7 +56,7 @@ import { CHANNELS, MENU_IMAGE_URL } from "donut-shared/src/constants";
 import { computed, ref } from "vue";
 import BigSpinner from "../../components/BigSpinner.vue";
 import DishCard from "../../components/DishCard.vue";
-import DishCategoryFilter from "../../components/DishCategoryFilter.vue";
+import FilterPill from "../../components/FilterPill.vue";
 import NoData from "../../components/NoData.vue";
 
 import { loadDishesAction } from "../../../../shared/src/actions/dishes";

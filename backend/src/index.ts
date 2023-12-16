@@ -3,12 +3,13 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat.js";
 import timezone from "dayjs/plugin/timezone.js";
 import utc from "dayjs/plugin/utc.js";
+import ordersModule from "src/modules/orders.js";
 import * as db from "./db/index.js";
 import authModule from "./modules/auth-module.js";
 import dishCategoriesModule from "./modules/dish-categories-module.js";
 import dishesModule from "./modules/dishes-module.js";
-import employeesModule from "./modules/employees.js";
-import modificationsModule from "./modules/modifications.js";
+import employeesModule from "./modules/employees-module.js";
+import modificationsModule from "./modules/modifications-module.js";
 import rolesModule from "./modules/roles-module.js";
 
 dayjs.extend(customParseFormat);
@@ -30,5 +31,6 @@ dishesModule(server);
 modificationsModule(server);
 employeesModule(server);
 rolesModule(server);
+ordersModule(server);
 
 server.listen();

@@ -9,27 +9,25 @@
   >
     <span class="row justify-between gap-xs items-center">
       <img
-        :src="category.imageUrl"
+        v-if="imageUrl"
+        :src="imageUrl"
         alt=""
         class="image-xs fit-cover rounded-borders"
       />
-      <span>{{ category.name }}</span>
+      <span>{{ name }}</span>
     </span>
   </q-btn>
 </template>
 
 <script setup lang="ts">
-import { loadDishCategoriesAction } from "donut-shared/src/actions/dish-categories";
 import { computed } from "vue";
 
 const props = defineProps<{
-  category: ReturnType<
-    typeof loadDishCategoriesAction
-  >["payload"]["categories"][number];
-  selectedCategoryId: string;
+  id: string;
+  imageUrl?: string;
+  name: string;
+  selectedId: string;
 }>();
 
-const isSelected = computed(
-  () => props.category.id === props.selectedCategoryId
-);
+const isSelected = computed(() => props.id === props.selectedId);
 </script>

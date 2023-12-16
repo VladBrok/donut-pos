@@ -1,3 +1,5 @@
+export { createOrderAction, orderCreatedAction } from "./src/actions/orders.js";
+
 export {
   addDishToCurrentOrderAction,
   clearCurrentOrderAction,

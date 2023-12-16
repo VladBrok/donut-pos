@@ -6,6 +6,8 @@ export const CHANNELS = {
   MODIFICATIONS: "modifications",
   EMPLOYEES: "employees",
   ROLES: "roles",
+  ORDERS: "orders",
+  ORDERS_OF_EMPLOYEE: "orders/:employeeId",
 };
 
 export const ANONYMOUS = {
@@ -22,17 +24,19 @@ export const EMPLOYEE_PERMISSIONS = structuredClone(EMPLOYEE_ROLES);
 export const EMPLOYEE_ROLES_ARR = Object.values(EMPLOYEE_ROLES);
 
 export const ORDER_STATUSES = {
-  DRAFT: "draft",
   CREATED: "created",
   COOKING: "cooking",
   COOKED: "cooked",
-  PAYED: "payed",
+  PAID: "paid",
 } as const;
 export const ORDER_STATUSES_ARR = Object.values(ORDER_STATUSES);
+export type OrderStatus = (typeof ORDER_STATUSES)[keyof typeof ORDER_STATUSES];
 
 export const MISSING_PHOTO_PLACEHOLDER_URL =
   "https://i.ibb.co/DzSX5s3/placeholder.png";
 export const MENU_IMAGE_URL = "https://i.ibb.co/x32LbTp/282465.png";
+
+export const ITEMS_PER_PAGE = 10;
 
 // Validation
 
@@ -41,13 +45,13 @@ export const MAX_DISH_CATEGORY_NAME_LENGTH = 50;
 export const MAX_DISH_NAME_LENGTH = 50;
 export const MIN_DISH_PRICE = 0.01;
 export const MAX_DISH_PRICE = 1000000;
-export const MIN_DISH_WEIGHT = 0.01;
+export const MIN_DISH_WEIGHT = 1;
 export const MAX_DISH_WEIGHT = 100000000;
 
 export const MAX_MODIFICATION_NAME_LENGTH = 50;
 export const MIN_MODIFICATION_PRICE = 0.01;
 export const MAX_MODIFICATION_PRICE = 1000000;
-export const MIN_MODIFICATION_WEIGHT = 0.01;
+export const MIN_MODIFICATION_WEIGHT = 1;
 export const MAX_MODIFICATION_WEIGHT = 100000000;
 
 export const TABLE_NUMBER_MAX_LENGTH = 50;

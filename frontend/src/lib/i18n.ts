@@ -101,9 +101,10 @@ export const messages = i18n("messages", {
   noDataFound: "No data found",
   goBack: "Go back",
 
-  // Client & waiter pages
+  // Waiter pages
   main: "Main",
   searchDishes: "Search by name, price, category or weight",
+  searchOrders: "Search by order number",
   allMenu: "All menu",
   addToCurrentOrder: "Add to current order",
   addToOrderButton: "Add to order",
@@ -119,6 +120,18 @@ export const messages = i18n("messages", {
     one: "{count} dish",
     many: "{count} dishes",
   }),
+  orders: "Orders",
+  menu: "Menu",
+  orderNumber: "Order number",
+  tableNumber: "Table",
+  orderStatus: "Status",
+
+  // Order statuses
+  orderStatus_all: "All",
+  orderStatus_created: "Created",
+  orderStatus_cooking: "Cooking",
+  orderStatus_cooked: "Cooked",
+  orderStatus_paid: "Paid",
 
   // Login page
   adminLoginPageTitle: "Admin login",

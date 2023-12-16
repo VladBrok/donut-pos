@@ -10,6 +10,7 @@ import { Router } from "vue-router";
 import { Store as VuexStore } from "vuex";
 
 import { assert } from "donut-shared";
+import { IOrdersState } from "src/store/orders/state";
 import { createClient } from "../lib/logux/create-client";
 import { setErrorHandler } from "../lib/logux/set-error-handler";
 import { setUndoHandler } from "../lib/logux/set-undo-handler";
@@ -26,6 +27,7 @@ import employees from "./employees";
 import { IEmployeesState } from "./employees/state";
 import modifications from "./modifications";
 import { IModificationsState } from "./modifications/state";
+import orders from "./orders";
 import roles from "./roles";
 import { IRolesState } from "./roles/state";
 
@@ -38,6 +40,7 @@ export interface StateInterface {
   employees: IEmployeesState;
   roles: IRolesState;
   currentOrder: ICurrentOrderState;
+  orders: IOrdersState;
 }
 
 // provide typings for `this.$store`
@@ -73,6 +76,7 @@ export default store(function (/* { ssrContext } */) {
     employees,
     roles,
     currentOrder,
+    orders,
   };
 
   for (const module of Object.values(modules)) {

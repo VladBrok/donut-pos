@@ -1,9 +1,13 @@
-import { EMPLOYEE_PERMISSIONS } from "donut-shared/src/constants.js";
+import {
+  EMPLOYEE_PERMISSIONS,
+  OrderStatus,
+} from "donut-shared/src/constants.js";
 import {
   DishCategoryModel,
   DishModel,
   EmployeeModel,
   ModificationModel,
+  OrderModel,
   RoleModel,
 } from "./models.js";
 import {
@@ -11,8 +15,14 @@ import {
   DishSchema,
   EmployeeSchema,
   ModificationSchema,
+  OrderSchema,
   RoleSchema,
 } from "./schemas.js";
+
+function onlyUnique<T>(getId: (item: T) => string) {
+  return (value: T, index: number, array: T[]) =>
+    array.findIndex((x) => getId(x) === getId(value)) === index;
+}
 
 export const employeeAdapter = (
   data: EmployeeSchema[]
@@ -124,4 +134,58 @@ export const roleAdapter = (data: RoleSchema[]): RoleModel[] => {
     id: x.id,
     codeName: (x.codeName as RoleModel["codeName"]) || "",
   }));
+};
+
+export const ordersAdapter = (data: OrderSchema[]): OrderModel[] => {
+  return data
+    .filter(onlyUnique((item) => item.order.id))
+    .map((uniqueOrder) => ({
+      id: uniqueOrder.order.id,
+      orderNumber: uniqueOrder.order.number || "",
+      tableNumber: uniqueOrder.order.tableNumber || "",
+      comment: uniqueOrder.order.comment || "",
+      client: uniqueOrder.client,
+      employee: uniqueOrder.employee,
+      statuses: data
+        .filter(
+          (order) =>
+            order.order.id === uniqueOrder.order.id && order.order_status
+        )
+        .filter(onlyUnique((item) => item.order_status?.id || ""))
+        .map((order) => ({
+          id: order.order_status?.id || "",
+          codeName: (order.order_status?.codeName || "") as OrderStatus,
+          date: order.order_to_order_status?.date?.toISOString() || "",
+        })),
+      dishes: data
+        .filter(
+          (order) => order.order.id === uniqueOrder.order.id && order.dish
+        )
+        .filter(onlyUnique((item) => item.dish?.id || ""))
+        .map((order) => ({
+          id: order.dish?.id || "",
+          count: order.order_to_dish?.dishCount || 0,
+          name: order.dish?.name || "",
+          imageUrl: order.dish?.imageUrl || "",
+          description: order.dish?.description || "",
+          price: order.dish?.price || 0,
+          weight: order.dish?.weight || 0,
+          isActive: order.dish?.isActive || false,
+          modifications: data
+            .filter(
+              (order) =>
+                order.order.id === uniqueOrder.order.id && order.modification
+            )
+            .filter(onlyUnique((item) => item.modification?.id || ""))
+            .map((order) => ({
+              id: order.order?.id || "",
+              name: order.modification?.name || "",
+              imageUrl: order.modification?.imageUrl || "",
+              price: order.modification?.price || 0,
+              weight: order.modification?.weight || 0,
+              count:
+                order.order_to_dish_to_modification?.modificationCount || 0,
+            })),
+        })),
+    }));
 };
