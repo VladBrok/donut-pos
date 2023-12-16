@@ -11,6 +11,7 @@ import { hasWaiterPermission } from "../lib/access.js";
 // TODO: consider creating separate channels for client's orders ?
 
 export default function ordersModule(server: Server) {
+  // TODO: no one is currently listening this channel. But it sends resends `orderCreatedAction`
   server.channel(CHANNELS.ORDERS, {
     access(ctx) {
       return hasWaiterPermission(ctx.userId); // TODO: cooks and clients should aslo be notified
