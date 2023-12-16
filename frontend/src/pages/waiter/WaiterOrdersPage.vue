@@ -17,12 +17,12 @@
       </div>
       <div class="q-mb-lg gap-sm row">
         <filter-pill
-          v-for="orderStatus in orderFilters"
-          :key="orderStatus"
-          :id="orderStatus"
-          :name="t[`orderStatus_${orderStatus}`]"
+          v-for="filter in statusFilters"
+          :key="filter"
+          :id="filter"
+          :name="t[`orderStatus_${filter}`]"
           :selected-id="selectedOrderStatus"
-          @click="handleFilterChange(orderStatus)"
+          @click="handleStatusFilterChange(filter)"
         >
         </filter-pill>
       </div>
@@ -35,7 +35,6 @@
           row-key="id"
           :rows-per-page-label="t.perPage"
           :rows-per-page-options="[]"
-          binary-state-sort
           :filter="selectedOrderStatus"
           v-model:pagination="pagination"
           @request="updatePage"
@@ -43,11 +42,6 @@
           <!-- @row-click="
         (_, row) => $router.push(`/admin/dish-categories/update/${row.id}`)
       " -->
-          <template v-slot:body-cell-index="props">
-            <q-td :props="props">
-              {{ props.rowIndex + 1 }}
-            </q-td>
-          </template>
           <template v-slot:no-data>
             <no-data></no-data>
           </template>
@@ -86,7 +80,7 @@ const unsubscribe = ref(() => {
 });
 
 type OrderStatusFilter = (typeof ORDER_STATUSES_ARR)[number] | "all";
-const orderFilters = computed<OrderStatusFilter[]>(() => [
+const statusFilters = computed<OrderStatusFilter[]>(() => [
   "all",
   ...ORDER_STATUSES_ARR,
 ]);
@@ -137,7 +131,7 @@ onUnmounted(() => {
   unsubscribe.value();
 });
 
-const handleFilterChange = (orderStatus: OrderStatusFilter) => {
+const handleStatusFilterChange = (orderStatus: OrderStatusFilter) => {
   selectedOrderStatus.value = orderStatus;
 };
 
