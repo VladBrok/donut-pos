@@ -71,7 +71,7 @@ export default function ordersModule(server: Server) {
     },
     async process(ctx, action, meta) {
       const created = await db.createOrder(action.payload.order, ctx.userId);
-      await server.process(orderCreatedAction()); // TODO: send created order ?
+      await server.process(orderCreatedAction()); // TODO: send created order as payload so that it can be added to clients & cooks
     },
   });
 

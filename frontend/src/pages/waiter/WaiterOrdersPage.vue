@@ -70,7 +70,6 @@ import { useStore } from "src/store";
 import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import { loadOrdersPageAction } from "../../../../shared/src/actions/orders";
 import { ORDER_STATUSES_ARR } from "../../../../shared/src/constants";
-import { logInfo } from "../../../../shared/src/lib/log";
 
 // TODO: search by order number - debounce
 
@@ -155,7 +154,6 @@ const updatePage = ({ pagination: { page } }: any) => {
       })
     )
     .then(() => {
-      logInfo("loaded", store.state.orders.totalOrders);
       pagination.value.page = page;
       pagination.value.rowsNumber = store.state.orders.totalOrders;
     })
