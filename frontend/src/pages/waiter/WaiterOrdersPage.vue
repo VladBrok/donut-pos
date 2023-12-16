@@ -28,7 +28,7 @@
       </div>
       <div>
         <q-table
-          class="max-w-lg shadow-0"
+          class="max-w-lg shadow-0 q-pa-sm"
           :rows="ordersPage"
           :columns="columns"
           :loading="isUpdatingPage"
