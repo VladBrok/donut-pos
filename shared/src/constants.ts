@@ -7,6 +7,7 @@ export const CHANNELS = {
   EMPLOYEES: "employees",
   ROLES: "roles",
   ORDERS: "orders",
+  ORDERS_OF_EMPLOYEE: "orders/:employeeId",
 };
 
 export const ANONYMOUS = {
@@ -23,17 +24,19 @@ export const EMPLOYEE_PERMISSIONS = structuredClone(EMPLOYEE_ROLES);
 export const EMPLOYEE_ROLES_ARR = Object.values(EMPLOYEE_ROLES);
 
 export const ORDER_STATUSES = {
-  DRAFT: "draft",
   CREATED: "created",
   COOKING: "cooking",
   COOKED: "cooked",
-  PAYED: "payed",
+  PAID: "paid",
 } as const;
 export const ORDER_STATUSES_ARR = Object.values(ORDER_STATUSES);
+export type OrderStatus = (typeof ORDER_STATUSES)[keyof typeof ORDER_STATUSES];
 
 export const MISSING_PHOTO_PLACEHOLDER_URL =
   "https://i.ibb.co/DzSX5s3/placeholder.png";
 export const MENU_IMAGE_URL = "https://i.ibb.co/x32LbTp/282465.png";
+
+export const ITEMS_PER_PAGE = 10;
 
 // Validation
 
