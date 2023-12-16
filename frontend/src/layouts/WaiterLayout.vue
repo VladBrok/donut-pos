@@ -9,29 +9,17 @@ import { useI18nStore } from "../lib/i18n";
 const t = useI18nStore();
 
 const menuList = [
-  // {
-  //   icon: "o_menu_book",
-  //   label: t.value.dishCategories,
-  //   to: "/admin/dish-categories",
-  //   meta: t.value.dishCategories,
-  // },
-  // {
-  //   icon: "o_ramen_dining",
-  //   label: t.value.dishes,
-  //   to: "/admin/dishes",
-  //   meta: t.value.dishes,
-  // },
-  // {
-  //   icon: "o_tapas",
-  //   label: t.value.modifications,
-  //   to: "/admin/modifications",
-  //   meta: t.value.modifications,
-  // },
-  // {
-  //   icon: "o_person",
-  //   label: t.value.employees,
-  //   to: "/admin/employees",
-  //   meta: t.value.employees,
-  // },
+  {
+    icon: "o_restaurant_menu",
+    label: t.value.menu,
+    to: "/waiter",
+    meta: t.value.menu,
+  },
+  {
+    icon: "o_local_mall",
+    label: t.value.orders,
+    to: "/waiter/orders",
+    meta: t.value.orders,
+  },
 ];
 </script>

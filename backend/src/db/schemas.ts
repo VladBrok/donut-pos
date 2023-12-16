@@ -1,13 +1,19 @@
 import {
+  client,
   dish,
   dishCategory,
   dishToModification,
   employee,
   modification,
+  order,
+  orderStatus,
+  orderToDish,
+  orderToDishToModification,
+  orderToOrderStatus,
   permission,
   role,
   roleToPermission,
-} from "../../migrations/schema.js";
+} from "migrations/schema.js";
 
 export type EmployeeSchema = {
   [employee._.name]: typeof employee.$inferSelect;
@@ -28,3 +34,17 @@ export type DishSchema = {
 export type ModificationSchema = typeof modification.$inferSelect;
 
 export type RoleSchema = typeof role.$inferSelect;
+
+export type OrderSchema = {
+  [order._.name]: typeof order.$inferSelect;
+  [employee._.name]: typeof employee.$inferSelect | null;
+  [client._.name]: typeof client.$inferSelect | null;
+  [dish._.name]: typeof dish.$inferSelect | null;
+  [orderToOrderStatus._.name]: typeof orderToOrderStatus.$inferSelect | null;
+  [orderStatus._.name]: typeof orderStatus.$inferSelect | null;
+  [orderToDish._.name]: typeof orderToDish.$inferSelect | null;
+  [orderToDishToModification._.name]:
+    | typeof orderToDishToModification.$inferSelect
+    | null;
+  [modification._.name]: typeof modification.$inferSelect | null;
+};

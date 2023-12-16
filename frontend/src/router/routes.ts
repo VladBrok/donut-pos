@@ -154,10 +154,18 @@ const routes: RouteRecordRaw[] = [
     component: () => import("layouts/WaiterLayout.vue"),
     children: [
       {
+        // TODO: change to "menu"
         path: "",
         component: () => import("pages/waiter/WaiterMainPage.vue"),
         meta: {
-          title: t.value.main,
+          title: t.value.menu,
+        },
+      },
+      {
+        path: "orders",
+        component: () => import("pages/waiter/WaiterOrdersPage.vue"),
+        meta: {
+          title: t.value.orders,
         },
       },
     ],

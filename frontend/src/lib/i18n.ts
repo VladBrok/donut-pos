@@ -101,7 +101,7 @@ export const messages = i18n("messages", {
   noDataFound: "No data found",
   goBack: "Go back",
 
-  // Client & waiter pages
+  // Waiter pages
   main: "Main",
   searchDishes: "Search by name, price, category or weight",
   searchOrders: "Search by order number",
@@ -122,6 +122,9 @@ export const messages = i18n("messages", {
   }),
   orders: "Orders",
   menu: "Menu",
+  orderNumber: "Order number",
+  tableNumber: "Table",
+  orderStatus: "Status",
 
   // Order statuses
   orderStatus_all: "All",
