@@ -1,11 +1,11 @@
 <template>
-  <!-- TODO: use different colors for each status -->
-  <q-timeline color="secondary">
+  <q-timeline>
     <q-timeline-entry
-      v-for="status of statuses"
+      v-for="status of sortedStatuses"
       :key="status.codeName"
       :title="t[`orderStatus_${status.codeName}`]"
       :subtitle="formatDateTimeReadable(status.date)"
+      :color="status.codeName"
     >
     </q-timeline-entry>
   </q-timeline>
@@ -25,7 +25,7 @@ const props = defineProps<{
   }[];
 }>();
 
-const statuses = computed(() =>
+const sortedStatuses = computed(() =>
   sortByDate(props.statuses, (status) => status.date)
 );
 

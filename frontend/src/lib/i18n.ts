@@ -138,6 +138,8 @@ export const messages = i18n("messages", {
   orderStatus_cooking: "Cooking",
   orderStatus_cooked: "Cooked",
   orderStatus_paid: "Paid",
+  orderStatus_delivering: "Delivering",
+  orderStatus_delivered: "Delivered",
 
   // Login page
   adminLoginPageTitle: "Admin login",
