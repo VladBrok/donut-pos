@@ -39,7 +39,10 @@
           :filter="tableFilter"
           v-model:pagination="pagination"
           @request="updatePage"
-          @row-click="(_, row) => (selectedOrder = row)"
+          @row-click="
+            (_, row) =>
+              store.commit.local(openArbitraryOrderAction({ order: row }))
+          "
         >
           <template v-slot:no-data>
             <no-data></no-data>
@@ -48,39 +51,14 @@
       </div>
     </div>
   </div>
-
-  <order-drawer
-    :model-value="Boolean(selectedOrder)"
-    @update:model-value="selectedOrder = null"
-    @close="selectedOrder = null"
-  >
-    <template #title>
-      <p class="text-h5">
-        {{ `${t.order} ${selectedOrder?.orderNumber}` }}
-      </p>
-      <p v-if="selectedOrder" class="text-h6 text-weight-regular">
-        {{
-          `${t.orderStatus.toLowerCase()}: ${getOrderCurrentStatus(
-            selectedOrder
-          )}`
-        }}
-      </p>
-    </template>
-    <template #content>
-      <order-details-view v-if="selectedOrder" :order="selectedOrder">
-      </order-details-view>
-    </template>
-  </order-drawer>
 </template>
 
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
-import { ANONYMOUS } from "donut-shared";
+import { ANONYMOUS, openArbitraryOrderAction } from "donut-shared";
 import BigSpinner from "src/components/BigSpinner.vue";
 import FilterPill from "src/components/FilterPill.vue";
 import NoData from "src/components/NoData.vue";
-import OrderDetailsView from "src/components/OrderDetailsView.vue";
-import OrderDrawer from "src/components/OrderDrawer.vue";
 import { ROWS_PER_TABLE_PAGE } from "src/lib/constants";
 import { formatCurrency } from "src/lib/currency";
 import { useI18nStore } from "src/lib/i18n";
@@ -119,7 +97,6 @@ const pagination = ref({
   rowsPerPage: ROWS_PER_TABLE_PAGE,
   rowsNumber: ROWS_PER_TABLE_PAGE,
 });
-const selectedOrder = ref<IOrdersState["ordersPage"][number] | null>(null);
 
 const columns: any[] = [
   {
