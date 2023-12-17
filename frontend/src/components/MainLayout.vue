@@ -68,24 +68,16 @@
       </q-scroll-area>
     </q-drawer>
 
-    <q-drawer
-      v-model="isOrderDrawerOpen"
-      side="right"
-      bordered
-      :width="$q.screen.xs ? 320 : 400"
-    >
-      <div class="q-pa-sm">
-        <div class="row justify-between q-mb-md q-mt-sm">
-          <p class="text-h5">
-            {{ t.currentOrder }}
-          </p>
-          <q-btn dense flat round icon="close" @click="toggleOrderDrawer" />
-        </div>
-        <div class="q-px-sm">
-          <current-order-view> </current-order-view>
-        </div>
-      </div>
-    </q-drawer>
+    <order-drawer v-model="isOrderDrawerOpen" @close="toggleOrderDrawer">
+      <template #title>
+        <p class="text-h5">
+          {{ t.currentOrder }}
+        </p>
+      </template>
+      <template #content>
+        <current-order-view> </current-order-view>
+      </template>
+    </order-drawer>
 
     <q-page-container>
       <div class="scroll full-width page-wrapper-height">
@@ -101,6 +93,7 @@
 
 <script setup lang="ts">
 import { logoutAction } from "donut-shared/src/actions/auth";
+import OrderDrawer from "src/components/OrderDrawer.vue";
 import { computed, ref } from "vue";
 import { useI18nStore } from "../lib/i18n";
 import { useStore } from "../store";

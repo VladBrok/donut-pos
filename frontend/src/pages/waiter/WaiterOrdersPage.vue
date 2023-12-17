@@ -49,37 +49,28 @@
     </div>
   </div>
 
-  <q-drawer
+  <order-drawer
     :model-value="Boolean(selectedOrder)"
     @update:model-value="selectedOrder = null"
-    side="right"
-    bordered
-    :width="$q.screen.xs ? 320 : 400"
+    @close="selectedOrder = null"
   >
-    <div class="q-pa-sm">
-      <div class="row justify-between q-mb-md q-mt-sm">
-        <div>
-          <p class="text-h5">
-            {{ `${t.order} ${selectedOrder?.orderNumber}` }}
-          </p>
-          <p v-if="selectedOrder" class="text-h6 text-weight-regular">
-            {{
-              `${t.orderStatus.toLowerCase()}: ${getOrderCurrentStatus(
-                selectedOrder
-              )}`
-            }}
-          </p>
-        </div>
-        <div>
-          <q-btn dense flat round icon="close" @click="selectedOrder = null" />
-        </div>
-      </div>
-      <div class="q-px-sm">
-        <order-details-view v-if="selectedOrder" :order="selectedOrder">
-        </order-details-view>
-      </div>
-    </div>
-  </q-drawer>
+    <template #title>
+      <p class="text-h5">
+        {{ `${t.order} ${selectedOrder?.orderNumber}` }}
+      </p>
+      <p v-if="selectedOrder" class="text-h6 text-weight-regular">
+        {{
+          `${t.orderStatus.toLowerCase()}: ${getOrderCurrentStatus(
+            selectedOrder
+          )}`
+        }}
+      </p>
+    </template>
+    <template #content>
+      <order-details-view v-if="selectedOrder" :order="selectedOrder">
+      </order-details-view>
+    </template>
+  </order-drawer>
 </template>
 
 <script setup lang="ts">
@@ -89,6 +80,7 @@ import BigSpinner from "src/components/BigSpinner.vue";
 import FilterPill from "src/components/FilterPill.vue";
 import NoData from "src/components/NoData.vue";
 import OrderDetailsView from "src/components/OrderDetailsView.vue";
+import OrderDrawer from "src/components/OrderDrawer.vue";
 import { ROWS_PER_TABLE_PAGE } from "src/lib/constants";
 import { formatCurrency } from "src/lib/currency";
 import { useI18nStore } from "src/lib/i18n";
