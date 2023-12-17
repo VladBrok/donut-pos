@@ -45,6 +45,13 @@
               store.commit.local(openArbitraryOrderAction({ order: row }))
           "
         >
+          <template v-slot:body-cell-status="props">
+            <q-td :props="props">
+              <span :class="`text-${getOrderCurrentStatus(props.row)}`">{{
+                getOrderCurrentStatus(props.row)
+              }}</span>
+            </q-td>
+          </template>
           <template v-slot:no-data>
             <no-data></no-data>
           </template>
@@ -129,7 +136,6 @@ const columns: any[] = [
     name: "status",
     label: t.value.orderStatus,
     align: "left",
-    field: getOrderCurrentStatus,
   },
 ];
 
