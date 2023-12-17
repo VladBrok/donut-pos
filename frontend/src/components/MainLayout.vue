@@ -68,7 +68,10 @@
       </q-scroll-area>
     </q-drawer>
 
-    <order-drawer v-model="isOrderDrawerOpen" @close="toggleOrderDrawer">
+    <order-drawer
+      v-model="isOrderDrawerOpen"
+      @close="isOrderDrawerOpen = false"
+    >
       <template #title>
         <p class="text-h5">
           {{ t.currentOrder }}
