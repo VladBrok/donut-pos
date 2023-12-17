@@ -22,6 +22,7 @@
           :key="filter"
           :id="filter"
           :name="t[`orderStatus_${filter}`]"
+          :custom-color="filter === 'all' ? undefined : filter"
           :selected-id="selectedOrderStatus"
           @click="handleStatusFilterChange(filter)"
         >
