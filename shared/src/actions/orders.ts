@@ -5,6 +5,7 @@ import { createAction } from "./index.js";
 export const loadOrdersPageAction = createAction<{
   page: number;
   status?: OrderStatus;
+  orderNumber?: string;
 }>("orders/loadPage");
 
 export const ordersPageLoadedAction = createAction<{

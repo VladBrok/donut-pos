@@ -7,6 +7,7 @@
           class="bg-white"
           outlined
           v-model="searchInput"
+          debounce="500"
           :placeholder="t.searchOrders"
           clearable
         >
@@ -35,7 +36,7 @@
           row-key="id"
           :rows-per-page-label="t.perPage"
           :rows-per-page-options="[]"
-          :filter="selectedOrderStatus"
+          :filter="tableFilter"
           v-model:pagination="pagination"
           @request="updatePage"
         >
@@ -65,8 +66,6 @@ import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import { loadOrdersPageAction } from "../../../../shared/src/actions/orders";
 import { ORDER_STATUSES_ARR } from "../../../../shared/src/constants";
 
-// TODO: search by order number - debounce, case-insensitive, trim
-
 const store = useStore();
 const t = useI18nStore();
 const ordersPage = computed(() => store.state.orders.ordersPage);
@@ -87,6 +86,9 @@ const statusFilters = computed<OrderStatusFilter[]>(() => [
 const searchInput = ref<string | null>(null);
 const isUpdatingPage = ref(false);
 const selectedOrderStatus = ref<OrderStatusFilter>("all");
+const tableFilter = computed(
+  () => selectedOrderStatus.value + searchInput.value
+);
 const pagination = ref({
   page: 1,
   rowsPerPage: ROWS_PER_TABLE_PAGE,
@@ -145,6 +147,7 @@ const updatePage = ({ pagination: { page } }: any) => {
           selectedOrderStatus.value === "all"
             ? undefined
             : selectedOrderStatus.value,
+        orderNumber: searchInput.value || undefined,
       })
     )
     .then(() => {

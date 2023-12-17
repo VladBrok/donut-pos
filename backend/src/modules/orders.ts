@@ -33,11 +33,11 @@ export default function ordersModule(server: Server) {
       );
     },
     async load(ctx, action, meta) {
-      const { ordersPage, total } = await db.getOrdersPage(
-        1,
-        ITEMS_PER_PAGE,
-        ctx.userId
-      );
+      const { ordersPage, total } = await db.getOrdersPage({
+        page: 1,
+        employeeId: ctx.userId,
+        perPage: ITEMS_PER_PAGE,
+      });
       return ordersPageLoadedAction({
         ordersPage: ordersPage,
         totalOrders: total,
@@ -50,12 +50,13 @@ export default function ordersModule(server: Server) {
       return await hasWaiterPermission(ctx.userId);
     },
     async process(ctx, action, meta) {
-      const { ordersPage, total } = await db.getOrdersPage(
-        action.payload.page,
-        ITEMS_PER_PAGE,
-        ctx.userId,
-        action.payload.status
-      );
+      const { ordersPage, total } = await db.getOrdersPage({
+        page: action.payload.page,
+        perPage: ITEMS_PER_PAGE,
+        employeeId: ctx.userId,
+        status: action.payload.status,
+        orderNumber: action.payload.orderNumber,
+      });
       await ctx.sendBack(
         ordersPageLoadedAction({
           ordersPage: ordersPage,

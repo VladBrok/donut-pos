@@ -1,6 +1,6 @@
 import { ICurrentOrder } from "donut-shared";
 import { ORDER_STATUSES, OrderStatus } from "donut-shared/src/constants.js";
-import { desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, ilike, sql } from "drizzle-orm";
 import {
   client,
   dish,
@@ -17,45 +17,26 @@ import { generateOrderNumber } from "src/lib/generate-order-number.js";
 import { generateUuid } from "../../lib/uuid.js";
 import { db } from "../index.js";
 
+export interface IGetOrdersPage {
+  page: number;
+  perPage: number;
+  employeeId: string;
+  status?: OrderStatus;
+  orderNumber?: string;
+}
+
 // TODO: add index to status name
 // TODO: optimize...
-export async function getOrdersPage(
-  page: number,
-  perPage: number,
-  employeeId: string,
-  status?: OrderStatus
-) {
+export async function getOrdersPage(params: IGetOrdersPage) {
   const data = await db
     .select()
     .from(
       db
         .select()
         .from(order)
-        .where(
-          !status
-            ? eq(order.employeeId, employeeId)
-            : sql`${order.employeeId} = ${employeeId} AND EXISTS ${db
-                .select({
-                  codeName: orderStatus.codeName,
-                })
-                .from(
-                  db
-                    .select()
-                    .from(orderToOrderStatus)
-                    .where(eq(orderToOrderStatus.orderId, order.id))
-                    .orderBy(desc(orderToOrderStatus.date))
-                    .leftJoin(
-                      orderStatus,
-                      eq(orderStatus.id, orderToOrderStatus.orderStatusId)
-                    )
-                    .limit(1)
-                    .as("order_status")
-                )
-                .where(eq(orderStatus.codeName, status))}
-            `
-        )
-        .offset((page - 1) * perPage)
-        .limit(perPage)
+        .where(makeWhereFilter(params))
+        .offset((params.page - 1) * params.perPage)
+        .limit(params.perPage)
         .as("order")
     )
     .leftJoin(orderToOrderStatus, eq(order.id, orderToOrderStatus.orderId))
@@ -78,31 +59,42 @@ export async function getOrdersPage(
       value: sql`count('*')`.mapWith(Number),
     })
     .from(order)
-    .where(
-      !status
-        ? eq(order.employeeId, employeeId)
-        : sql`${order.employeeId} = ${employeeId} AND EXISTS ${db
-            .select({
-              codeName: orderStatus.codeName,
-            })
-            .from(
-              db
-                .select()
-                .from(orderToOrderStatus)
-                .where(eq(orderToOrderStatus.orderId, order.id))
-                .orderBy(desc(orderToOrderStatus.date))
-                .leftJoin(
-                  orderStatus,
-                  eq(orderStatus.id, orderToOrderStatus.orderStatusId)
-                )
-                .limit(1)
-                .as("order_status")
-            )
-            .where(eq(orderStatus.codeName, status))}
-        `
-    );
+    .where(makeWhereFilter(params));
 
   return { ordersPage: ordersAdapter(data), total: total?.[0].value || 0 };
+}
+
+function makeWhereFilter(params: IGetOrdersPage) {
+  return and(
+    eq(order.employeeId, params.employeeId),
+    params.orderNumber
+      ? ilike(order.number, `%${params.orderNumber.trim()}%`)
+      : undefined,
+    params.status
+      ? sql`EXISTS ${filterByOrderStatusSubquery(params.status)}`
+      : undefined
+  );
+}
+
+function filterByOrderStatusSubquery(status: OrderStatus): any {
+  return db
+    .select({
+      codeName: orderStatus.codeName,
+    })
+    .from(
+      db
+        .select()
+        .from(orderToOrderStatus)
+        .where(eq(orderToOrderStatus.orderId, order.id))
+        .orderBy(desc(orderToOrderStatus.date))
+        .leftJoin(
+          orderStatus,
+          eq(orderStatus.id, orderToOrderStatus.orderStatusId)
+        )
+        .limit(1)
+        .as("order_status")
+    )
+    .where(eq(orderStatus.codeName, status));
 }
 
 // TODO: find a way to make it faster
