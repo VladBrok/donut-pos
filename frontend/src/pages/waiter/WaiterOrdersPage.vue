@@ -29,7 +29,7 @@
       </div>
       <div>
         <q-table
-          class="max-w-lg shadow-0 q-pa-sm"
+          class="max-w-lg q-pa-sm"
           :rows="ordersPage"
           :columns="columns"
           :loading="isUpdatingPage"
@@ -37,7 +37,6 @@
           :rows-per-page-label="t.perPage"
           :rows-per-page-options="[]"
           :filter="tableFilter"
-          bordered
           v-model:pagination="pagination"
           @request="updatePage"
           @row-click="(_, row) => (selectedOrder = row)"
