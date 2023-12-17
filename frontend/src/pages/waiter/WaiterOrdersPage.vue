@@ -37,6 +37,7 @@
           :rows-per-page-label="t.perPage"
           :rows-per-page-options="[]"
           :filter="tableFilter"
+          bordered
           v-model:pagination="pagination"
           @request="updatePage"
         >
@@ -59,9 +60,11 @@ import BigSpinner from "src/components/BigSpinner.vue";
 import FilterPill from "src/components/FilterPill.vue";
 import NoData from "src/components/NoData.vue";
 import { ROWS_PER_TABLE_PAGE } from "src/lib/constants";
-import { getOrderCurrentStatus } from "src/lib/get-order-current-status";
+import { formatCurrency } from "src/lib/currency";
 import { useI18nStore } from "src/lib/i18n";
+import { getOrderCurrentStatus, getOrderTotalCost } from "src/lib/order";
 import { useStore } from "src/store";
+import { IOrdersState } from "src/store/orders/state";
 import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import { loadOrdersPageAction } from "../../../../shared/src/actions/orders";
 import { ORDER_STATUSES_ARR } from "../../../../shared/src/constants";
@@ -85,7 +88,7 @@ const statusFilters = computed<OrderStatusFilter[]>(() => [
 ]);
 const searchInput = ref<string | null>(null);
 const isUpdatingPage = ref(false);
-const selectedOrderStatus = ref<OrderStatusFilter>("all");
+const selectedOrderStatus = ref<OrderStatusFilter>("created");
 const tableFilter = computed(
   () => selectedOrderStatus.value + searchInput.value
 );
@@ -113,6 +116,19 @@ const columns: any[] = [
     label: t.value.orderStatus,
     align: "left",
     field: getOrderCurrentStatus,
+  },
+  {
+    name: "dishCount",
+    label: t.value.dishCount,
+    align: "left",
+    field: (row: IOrdersState["ordersPage"][number]) => row.dishes.length,
+  },
+  {
+    name: "total",
+    label: t.value.total,
+    align: "left",
+    field: (row: IOrdersState["ordersPage"][number]) =>
+      formatCurrency(getOrderTotalCost(row.dishes), false),
   },
 ];
 

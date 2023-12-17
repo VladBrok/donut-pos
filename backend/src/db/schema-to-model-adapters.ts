@@ -145,7 +145,12 @@ export const ordersAdapter = (data: OrderSchema[]): OrderModel[] => {
       tableNumber: uniqueOrder.order.tableNumber || "",
       comment: uniqueOrder.order.comment || "",
       client: uniqueOrder.client,
-      employee: uniqueOrder.employee,
+      employee: uniqueOrder.employee
+        ? {
+            ...uniqueOrder.employee,
+            passwordHash: "",
+          }
+        : null,
       statuses: data
         .filter(
           (order) =>
@@ -173,8 +178,10 @@ export const ordersAdapter = (data: OrderSchema[]): OrderModel[] => {
           isActive: order.dish?.isActive || false,
           modifications: data
             .filter(
-              (order) =>
-                order.order.id === uniqueOrder.order.id && order.modification
+              (innerOrder) =>
+                innerOrder.order.id === uniqueOrder.order.id &&
+                innerOrder.dish?.id === order.dish?.id &&
+                order.modification
             )
             .filter(onlyUnique((item) => item.modification?.id || ""))
             .map((order) => ({

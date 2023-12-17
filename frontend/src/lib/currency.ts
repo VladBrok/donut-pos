@@ -6,10 +6,12 @@ export function fractionalToWhole(fractional: number) {
   return fractional / 100;
 }
 
-export function formatCurrency(fractional: number) {
+export function formatCurrency(fractional: number, showSymbol = true) {
   const result: string = new Intl.NumberFormat("pl-PL", {
-    style: "currency",
-    currency: "PLN",
+    ...(showSymbol && { style: "currency" }),
+    ...(showSymbol && { currency: "PLN" }),
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   }).format(fractionalToWhole(fractional));
 
   return result;

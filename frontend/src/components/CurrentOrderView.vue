@@ -149,6 +149,7 @@ import DishInOrder from "src/components/DishInOrder.vue";
 import { SUCCESS_TIMEOUT_MS } from "src/lib/constants";
 import { formatCurrency } from "src/lib/currency";
 import { onFormValidationError } from "src/lib/on-form-validation-error";
+import { getOrderDishTotalCost } from "src/lib/order";
 import { computed, ref } from "vue";
 import { CHANNELS } from "../../../shared/src/constants";
 import { useI18nStore } from "../lib/i18n";
@@ -180,13 +181,14 @@ const dishesInOrder = computed(() =>
           dish: foundDish,
           count: dish.count,
           modifications: foundModifications,
-          totalCost:
-            (foundDish.price +
-              foundModifications.reduce(
-                (sum, cur) => sum + cur.modification.price * cur.count,
-                0
-              )) *
-            dish.count,
+          totalCost: getOrderDishTotalCost({
+            count: dish.count,
+            price: foundDish.price,
+            modifications: foundModifications.map((x) => ({
+              count: x.count,
+              price: x.modification.price,
+            })),
+          }),
         };
       })
 );

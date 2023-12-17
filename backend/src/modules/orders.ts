@@ -37,6 +37,7 @@ export default function ordersModule(server: Server) {
         page: 1,
         employeeId: ctx.userId,
         perPage: ITEMS_PER_PAGE,
+        status: "created",
       });
       return ordersPageLoadedAction({
         ordersPage: ordersPage,

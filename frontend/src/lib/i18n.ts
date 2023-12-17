@@ -125,6 +125,8 @@ export const messages = i18n("messages", {
   orderNumber: "Order number",
   tableNumber: "Table",
   orderStatus: "Status",
+  dishCount: "Dishes",
+  total: "Total, zł",
 
   // Order statuses
   orderStatus_all: "All",
