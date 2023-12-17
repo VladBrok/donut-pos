@@ -167,7 +167,7 @@ const updatePage = ({ pagination: { page } }: any) => {
       loadOrdersPageAction({
         page: page,
         status:
-          selectedOrderStatus.value === "all"
+          selectedOrderStatus.value === "all" || searchInput.value
             ? undefined
             : selectedOrderStatus.value,
         orderNumber: searchInput.value || undefined,
