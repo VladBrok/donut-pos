@@ -8,6 +8,7 @@ export const CHANNELS = {
   ROLES: "roles",
   ORDERS: "orders",
   ORDERS_OF_EMPLOYEE: "orders/:employeeId",
+  ORDER_SINGLE: "singleOrder/:orderNumber",
 };
 
 export const ANONYMOUS = {
@@ -28,6 +29,8 @@ export const ORDER_STATUSES = {
   COOKING: "cooking",
   COOKED: "cooked",
   PAID: "paid",
+  DELIVERING: "delivering",
+  DELIVERED: "delivered",
 } as const;
 export const ORDER_STATUSES_ARR = Object.values(ORDER_STATUSES);
 export type OrderStatus = (typeof ORDER_STATUSES)[keyof typeof ORDER_STATUSES];

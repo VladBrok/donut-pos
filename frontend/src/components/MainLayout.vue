@@ -12,7 +12,7 @@
           flat
           round
           icon="o_shopping_basket"
-          @click="toggleOrderDrawer"
+          @click="toggleCurrentOrderDrawer"
         >
           <q-tooltip> {{ t.openCurrentOrder }} </q-tooltip>
           <q-badge
@@ -68,24 +68,45 @@
       </q-scroll-area>
     </q-drawer>
 
-    <q-drawer
-      v-model="isOrderDrawerOpen"
-      side="right"
-      bordered
-      :width="$q.screen.xs ? 320 : 400"
+    <!-- TODO: extract logic related to Waiter to WaiterLayout -->
+
+    <order-drawer
+      :model-value="isCurrentOrderOpen"
+      @update:model-value="store.commit.local(closeCurrentOrderAction())"
+      @close="store.commit.local(closeCurrentOrderAction())"
     >
-      <div class="q-pa-sm">
-        <div class="row justify-between q-mb-md q-mt-sm">
-          <p class="text-h5">
-            {{ t.currentOrder }}
-          </p>
-          <q-btn dense flat round icon="close" @click="toggleOrderDrawer" />
-        </div>
-        <div class="q-px-sm">
-          <current-order-view> </current-order-view>
-        </div>
-      </div>
-    </q-drawer>
+      <template #title>
+        <p class="text-h5">
+          {{ t.currentOrder }}
+        </p>
+      </template>
+      <template #content>
+        <current-order-view> </current-order-view>
+      </template>
+    </order-drawer>
+
+    <order-drawer
+      :model-value="Boolean(selectedOrder)"
+      @update:model-value="store.commit.local(closeArbitraryOrderAction())"
+      @close="store.commit.local(closeArbitraryOrderAction())"
+    >
+      <template #title>
+        <p class="text-h5">
+          {{ `${t.order} #${selectedOrder?.orderNumber}` }}
+        </p>
+        <p v-if="selectedOrder" class="text-h6 text-weight-regular">
+          {{
+            `${t.orderStatus.toLowerCase()}: ${getOrderCurrentStatus(
+              selectedOrder
+            )}`
+          }}
+        </p>
+      </template>
+      <template #content>
+        <order-details-view v-if="selectedOrder" :order="selectedOrder">
+        </order-details-view>
+      </template>
+    </order-drawer>
 
     <q-page-container>
       <div class="scroll full-width page-wrapper-height">
@@ -101,7 +122,15 @@
 
 <script setup lang="ts">
 import { logoutAction } from "donut-shared/src/actions/auth";
+import OrderDetailsView from "src/components/OrderDetailsView.vue";
+import OrderDrawer from "src/components/OrderDrawer.vue";
+import { getOrderCurrentStatus } from "src/lib/order";
 import { computed, ref } from "vue";
+import {
+  closeArbitraryOrderAction,
+  closeCurrentOrderAction,
+  openCurrentOrderAction,
+} from "../../../shared";
 import { useI18nStore } from "../lib/i18n";
 import { useStore } from "../store";
 import CurrentOrderView from "./CurrentOrderView.vue";
@@ -116,20 +145,27 @@ defineProps<{
 }>();
 
 const isMenuDrawerOpen = ref(false);
-const isOrderDrawerOpen = ref(false);
 const t = useI18nStore();
 const store = useStore();
 const isWaiter = computed(
   () => store.state.auth.user.role?.codeName === "waiter"
 );
 const currentOrder = computed(() => store.state.currentOrder.order);
+const selectedOrder = computed(() => store.state.orderDrawer.order);
+const isCurrentOrderOpen = computed(
+  () => store.state.orderDrawer.isCurrentOrderOpen
+);
 
 function toggleMenuDrawer() {
   isMenuDrawerOpen.value = !isMenuDrawerOpen.value;
 }
 
-function toggleOrderDrawer() {
-  isOrderDrawerOpen.value = !isOrderDrawerOpen.value;
+function toggleCurrentOrderDrawer() {
+  if (isCurrentOrderOpen.value) {
+    store.commit.local(closeCurrentOrderAction());
+  } else {
+    store.commit.local(openCurrentOrderAction());
+  }
 }
 
 function logout() {

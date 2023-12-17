@@ -14,7 +14,7 @@
           </span>
           <span> ({{ count }} x {{ formatCurrency(dish.price) }}) </span>
         </div>
-        <div>
+        <div v-if="!viewOnly">
           <q-btn
             color="negative"
             dense
@@ -42,7 +42,7 @@
           </div>
         </div>
         <div class="q-mt-md row gap-sm justify-between">
-          <div>
+          <div v-if="!viewOnly">
             <product-counter
               @increment="emit('increment')"
               @decrement="emit('decrement')"
@@ -67,7 +67,11 @@ import { loadModificationsAction } from "../../../shared";
 import { loadDishesAction } from "../../../shared/src/actions/dishes";
 
 defineProps<{
-  dish: ReturnType<typeof loadDishesAction>["payload"]["dishes"][number];
+  dish: Pick<
+    ReturnType<typeof loadDishesAction>["payload"]["dishes"][number],
+    "imageUrl" | "name" | "price"
+  >;
+  viewOnly?: boolean;
   count: number;
   totalCost: number;
   modifications: {

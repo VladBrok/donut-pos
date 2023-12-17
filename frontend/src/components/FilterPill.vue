@@ -1,9 +1,11 @@
 <template>
   <q-btn
-    :color="isSelected ? 'primary' : 'dark-gray'"
+    :color="isSelected && !customColor ? 'primary' : customColor || 'dark-gray'"
     :unelevated="isSelected"
     :outline="!isSelected"
-    :class="`${!isSelected ? 'bg-white' : ''}`"
+    :class="{
+      'bg-white': !isSelected,
+    }"
     rounded
     padding="sm md"
   >
@@ -27,6 +29,7 @@ const props = defineProps<{
   imageUrl?: string;
   name: string;
   selectedId: string;
+  customColor?: string;
 }>();
 
 const isSelected = computed(() => props.id === props.selectedId);

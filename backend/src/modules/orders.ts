@@ -2,6 +2,7 @@ import { Server } from "@logux/server";
 import { createOrderAction, orderCreatedAction } from "donut-shared";
 import {
   loadOrdersPageAction,
+  orderLoadedAction,
   ordersPageLoadedAction,
 } from "donut-shared/src/actions/orders.js";
 import { CHANNELS, ITEMS_PER_PAGE } from "donut-shared/src/constants.js";
@@ -23,6 +24,21 @@ export default function ordersModule(server: Server) {
     },
   });
 
+  // TODO: resend order updates via this channel so that the client can see live changes
+  server.channel<{
+    orderNumber: string;
+  }>(CHANNELS.ORDER_SINGLE, {
+    async access(ctx, action, meta) {
+      return true;
+    },
+    async load(ctx, action, meta) {
+      const order = await db.getSingleOrder(ctx.params.orderNumber, ctx.userId);
+      return orderLoadedAction({
+        order: order,
+      });
+    },
+  });
+
   server.channel<{
     employeeId: string;
   }>(CHANNELS.ORDERS_OF_EMPLOYEE, {
@@ -33,11 +49,12 @@ export default function ordersModule(server: Server) {
       );
     },
     async load(ctx, action, meta) {
-      const { ordersPage, total } = await db.getOrdersPage(
-        1,
-        ITEMS_PER_PAGE,
-        ctx.userId
-      );
+      const { ordersPage, total } = await db.getOrdersPage({
+        page: 1,
+        employeeId: ctx.userId,
+        perPage: ITEMS_PER_PAGE,
+        status: "created",
+      });
       return ordersPageLoadedAction({
         ordersPage: ordersPage,
         totalOrders: total,
@@ -50,12 +67,13 @@ export default function ordersModule(server: Server) {
       return await hasWaiterPermission(ctx.userId);
     },
     async process(ctx, action, meta) {
-      const { ordersPage, total } = await db.getOrdersPage(
-        action.payload.page,
-        ITEMS_PER_PAGE,
-        ctx.userId,
-        action.payload.status
-      );
+      const { ordersPage, total } = await db.getOrdersPage({
+        page: action.payload.page,
+        perPage: ITEMS_PER_PAGE,
+        employeeId: ctx.userId,
+        status: action.payload.status,
+        orderNumber: action.payload.orderNumber,
+      });
       await ctx.sendBack(
         ordersPageLoadedAction({
           ordersPage: ordersPage,

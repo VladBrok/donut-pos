@@ -112,6 +112,7 @@ export const messages = i18n("messages", {
   openCurrentOrder: "Open current order",
   currentOrder: "Current Order",
   emptyOrder: "Order is empty",
+  order: "Order",
   createOrder: "Create order",
   clearOrder: "Clear",
   tableNumberLabel: "Table number",
@@ -125,6 +126,11 @@ export const messages = i18n("messages", {
   orderNumber: "Order number",
   tableNumber: "Table",
   orderStatus: "Status",
+  dishCount: "Dishes",
+  total: "Total, zł",
+
+  // Client pages
+  orderDetails: "Order details",
 
   // Order statuses
   orderStatus_all: "All",
@@ -132,6 +138,8 @@ export const messages = i18n("messages", {
   orderStatus_cooking: "Cooking",
   orderStatus_cooked: "Cooked",
   orderStatus_paid: "Paid",
+  orderStatus_delivering: "Delivering",
+  orderStatus_delivered: "Delivered",
 
   // Login page
   adminLoginPageTitle: "Admin login",

@@ -3,7 +3,7 @@
     <big-spinner v-if="isSubscribing" />
     <q-table
       v-else
-      class="q-mx-auto max-w-md sticky-last-column-table"
+      class="q-mx-auto max-w-lg sticky-last-column-table"
       :rows="categoriesFiltered"
       :columns="columns"
       row-key="id"

@@ -7,6 +7,7 @@
           class="bg-white"
           outlined
           v-model="searchInput"
+          debounce="500"
           :placeholder="t.searchOrders"
           clearable
         >
@@ -21,6 +22,7 @@
           :key="filter"
           :id="filter"
           :name="t[`orderStatus_${filter}`]"
+          :custom-color="filter === 'all' ? undefined : filter"
           :selected-id="selectedOrderStatus"
           @click="handleStatusFilterChange(filter)"
         >
@@ -28,20 +30,28 @@
       </div>
       <div>
         <q-table
-          class="max-w-lg shadow-0 q-pa-sm"
+          class="max-w-lg q-pa-sm"
           :rows="ordersPage"
           :columns="columns"
           :loading="isUpdatingPage"
           row-key="id"
           :rows-per-page-label="t.perPage"
           :rows-per-page-options="[]"
-          :filter="selectedOrderStatus"
+          :filter="tableFilter"
           v-model:pagination="pagination"
           @request="updatePage"
+          @row-click="
+            (_, row) =>
+              store.commit.local(openArbitraryOrderAction({ order: row }))
+          "
         >
-          <!-- @row-click="
-        (_, row) => $router.push(`/admin/dish-categories/update/${row.id}`)
-      " -->
+          <template v-slot:body-cell-status="props">
+            <q-td :props="props">
+              <span :class="`text-${getOrderCurrentStatus(props.row)}`">{{
+                getOrderCurrentStatus(props.row)
+              }}</span>
+            </q-td>
+          </template>
           <template v-slot:no-data>
             <no-data></no-data>
           </template>
@@ -53,19 +63,19 @@
 
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
-import { ANONYMOUS } from "donut-shared";
+import { ANONYMOUS, openArbitraryOrderAction } from "donut-shared";
 import BigSpinner from "src/components/BigSpinner.vue";
 import FilterPill from "src/components/FilterPill.vue";
 import NoData from "src/components/NoData.vue";
 import { ROWS_PER_TABLE_PAGE } from "src/lib/constants";
-import { getOrderCurrentStatus } from "src/lib/get-order-current-status";
+import { formatCurrency } from "src/lib/currency";
 import { useI18nStore } from "src/lib/i18n";
+import { getOrderCurrentStatus, getOrderTotalCost } from "src/lib/order";
 import { useStore } from "src/store";
+import { IOrdersState } from "src/store/orders/state";
 import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import { loadOrdersPageAction } from "../../../../shared/src/actions/orders";
 import { ORDER_STATUSES_ARR } from "../../../../shared/src/constants";
-
-// TODO: search by order number - debounce, case-insensitive, trim
 
 const store = useStore();
 const t = useI18nStore();
@@ -86,7 +96,10 @@ const statusFilters = computed<OrderStatusFilter[]>(() => [
 ]);
 const searchInput = ref<string | null>(null);
 const isUpdatingPage = ref(false);
-const selectedOrderStatus = ref<OrderStatusFilter>("all");
+const selectedOrderStatus = ref<OrderStatusFilter>("created");
+const tableFilter = computed(
+  () => selectedOrderStatus.value + searchInput.value
+);
 const pagination = ref({
   page: 1,
   rowsPerPage: ROWS_PER_TABLE_PAGE,
@@ -107,10 +120,22 @@ const columns: any[] = [
     field: "tableNumber",
   },
   {
+    name: "dishCount",
+    label: t.value.dishCount,
+    align: "left",
+    field: (row: IOrdersState["ordersPage"][number]) => row.dishes.length,
+  },
+  {
+    name: "total",
+    label: t.value.total,
+    align: "left",
+    field: (row: IOrdersState["ordersPage"][number]) =>
+      formatCurrency(getOrderTotalCost(row.dishes), false),
+  },
+  {
     name: "status",
     label: t.value.orderStatus,
     align: "left",
-    field: getOrderCurrentStatus,
   },
 ];
 
@@ -142,9 +167,10 @@ const updatePage = ({ pagination: { page } }: any) => {
       loadOrdersPageAction({
         page: page,
         status:
-          selectedOrderStatus.value === "all"
+          selectedOrderStatus.value === "all" || searchInput.value
             ? undefined
             : selectedOrderStatus.value,
+        orderNumber: searchInput.value || undefined,
       })
     )
     .then(() => {
