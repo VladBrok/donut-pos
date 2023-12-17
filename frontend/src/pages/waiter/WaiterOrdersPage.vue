@@ -59,9 +59,18 @@
   >
     <div class="q-pa-sm">
       <div class="row justify-between q-mb-md q-mt-sm">
-        <p class="text-h5">
-          {{ `${t.order} ${selectedOrder?.orderNumber}` }}
-        </p>
+        <div>
+          <p class="text-h5">
+            {{ `${t.order} ${selectedOrder?.orderNumber}` }}
+          </p>
+          <p v-if="selectedOrder" class="text-h6 text-weight-regular">
+            {{
+              `${t.orderStatus.toLowerCase()}: ${getOrderCurrentStatus(
+                selectedOrder
+              )}`
+            }}
+          </p>
+        </div>
         <q-btn dense flat round icon="close" @click="selectedOrder = null" />
       </div>
       <div class="q-px-sm">
