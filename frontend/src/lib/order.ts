@@ -1,5 +1,5 @@
-import dayjs from "dayjs";
 import { OrderStatus } from "donut-shared/src/constants";
+import { sortByDate } from "src/lib/date";
 import { IOrdersState } from "src/store/orders/state";
 
 interface IDish {
@@ -22,8 +22,5 @@ export function getOrderTotalCost(dishes: IDish[]): number {
 export function getOrderCurrentStatus(
   order: IOrdersState["ordersPage"][number]
 ): OrderStatus {
-  return order.statuses
-    .slice()
-    .sort((a, b) => dayjs.utc(a.date).unix() - dayjs.utc(b.date).unix())
-    .at(-1)?.codeName;
+  return sortByDate(order.statuses, (status) => status.date).at(-1)?.codeName;
 }

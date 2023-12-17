@@ -70,7 +70,9 @@
             }}
           </p>
         </div>
-        <q-btn dense flat round icon="close" @click="selectedOrder = null" />
+        <div>
+          <q-btn dense flat round icon="close" @click="selectedOrder = null" />
+        </div>
       </div>
       <div class="q-px-sm">
         <order-details-view v-if="selectedOrder" :order="selectedOrder">

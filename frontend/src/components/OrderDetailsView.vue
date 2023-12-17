@@ -23,6 +23,7 @@
                 type="textarea"
                 readonly
                 rows="3"
+                class="q-mb-md"
               />
             </div>
 
@@ -42,6 +43,8 @@
                 />
                 <q-separator />
               </div>
+              <order-history class="q-mt-xl" :statuses="order.statuses">
+              </order-history>
             </div>
           </div>
         </div>
@@ -67,6 +70,7 @@
 
 <script setup lang="ts">
 import DishInOrder from "src/components/DishInOrder.vue";
+import OrderHistory from "src/components/OrderHistory.vue";
 import { formatCurrency } from "src/lib/currency";
 import { getOrderDishTotalCost, getOrderTotalCost } from "src/lib/order";
 import { computed } from "vue";
