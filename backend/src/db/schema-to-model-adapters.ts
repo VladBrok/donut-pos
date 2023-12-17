@@ -144,11 +144,16 @@ export const ordersAdapter = (data: OrderSchema[]): OrderModel[] => {
       orderNumber: uniqueOrder.order.number || "",
       tableNumber: uniqueOrder.order.tableNumber || "",
       comment: uniqueOrder.order.comment || "",
-      client: uniqueOrder.client,
+      client: uniqueOrder.client
+        ? {
+            id: uniqueOrder.client.id,
+          }
+        : null,
       employee: uniqueOrder.employee
         ? {
-            ...uniqueOrder.employee,
-            passwordHash: "",
+            id: uniqueOrder.employee.id,
+            firstName: uniqueOrder.employee.firstName || "",
+            lastName: uniqueOrder.employee.lastName || "",
           }
         : null,
       statuses: data

@@ -2,6 +2,7 @@ import { Server } from "@logux/server";
 import { createOrderAction, orderCreatedAction } from "donut-shared";
 import {
   loadOrdersPageAction,
+  orderLoadedAction,
   ordersPageLoadedAction,
 } from "donut-shared/src/actions/orders.js";
 import { CHANNELS, ITEMS_PER_PAGE } from "donut-shared/src/constants.js";
@@ -20,6 +21,21 @@ export default function ordersModule(server: Server) {
       // TODO: return orders created by this employee ?
       // const dishes = await db.getAllDishes();
       // return loadDishesAction({ dishes });
+    },
+  });
+
+  // TODO: resend order updates via this channel so that the client can see live changes
+  server.channel<{
+    id: string;
+  }>(CHANNELS.ORDER_SINGLE, {
+    async access(ctx, action, meta) {
+      return ctx.userId === ctx.params.id;
+    },
+    async load(ctx, action, meta) {
+      const order = await db.getSingleOrder(ctx.params.id, ctx.userId);
+      return orderLoadedAction({
+        order: order,
+      });
     },
   });
 

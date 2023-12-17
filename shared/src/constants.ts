@@ -8,6 +8,7 @@ export const CHANNELS = {
   ROLES: "roles",
   ORDERS: "orders",
   ORDERS_OF_EMPLOYEE: "orders/:employeeId",
+  ORDER_SINGLE: "orders/:id",
 };
 
 export const ANONYMOUS = {

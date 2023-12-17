@@ -64,6 +64,16 @@ export async function getOrdersPage(params: IGetOrdersPage) {
   return { ordersPage: ordersAdapter(data), total: total?.[0].value || 0 };
 }
 
+export async function getSingleOrder(orderNumber: string, userId: string) {
+  const result = await getOrdersPage({
+    employeeId: userId,
+    page: 1,
+    perPage: 1,
+    orderNumber: orderNumber,
+  });
+  return result.ordersPage?.[0] || null;
+}
+
 function makeWhereFilter(params: IGetOrdersPage) {
   return and(
     eq(order.employeeId, params.employeeId),
