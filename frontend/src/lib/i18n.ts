@@ -129,6 +129,9 @@ export const messages = i18n("messages", {
   dishCount: "Dishes",
   total: "Total, zł",
 
+  // Client pages
+  orderDetails: "Order details",
+
   // Order statuses
   orderStatus_all: "All",
   orderStatus_created: "Created",

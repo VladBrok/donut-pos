@@ -43,7 +43,7 @@ export interface IOrder {
 
 export const orderLoadedAction = createAction<{
   order: IOrder | null;
-}>("orders/loadSingle");
+}>("orders/orderLoaded");
 
 export const loadOrdersPageAction = createAction<{
   page: number;

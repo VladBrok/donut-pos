@@ -26,13 +26,13 @@ export default function ordersModule(server: Server) {
 
   // TODO: resend order updates via this channel so that the client can see live changes
   server.channel<{
-    id: string;
+    orderNumber: string;
   }>(CHANNELS.ORDER_SINGLE, {
     async access(ctx, action, meta) {
-      return ctx.userId === ctx.params.id;
+      return true;
     },
     async load(ctx, action, meta) {
-      const order = await db.getSingleOrder(ctx.params.id, ctx.userId);
+      const order = await db.getSingleOrder(ctx.params.orderNumber, ctx.userId);
       return orderLoadedAction({
         order: order,
       });

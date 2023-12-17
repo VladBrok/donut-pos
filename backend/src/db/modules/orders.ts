@@ -23,6 +23,7 @@ export interface IGetOrdersPage {
   employeeId: string;
   status?: OrderStatus;
   orderNumber?: string;
+  strictOrderNumberCompare?: boolean;
 }
 
 // TODO: add index to status name
@@ -70,6 +71,7 @@ export async function getSingleOrder(orderNumber: string, userId: string) {
     page: 1,
     perPage: 1,
     orderNumber: orderNumber,
+    strictOrderNumberCompare: true,
   });
   return result.ordersPage?.[0] || null;
 }
@@ -78,7 +80,12 @@ function makeWhereFilter(params: IGetOrdersPage) {
   return and(
     eq(order.employeeId, params.employeeId),
     params.orderNumber
-      ? ilike(order.number, `%${params.orderNumber.trim()}%`)
+      ? ilike(
+          order.number,
+          params.strictOrderNumberCompare
+            ? params.orderNumber?.trim()
+            : `%${params.orderNumber.trim()}%`
+        )
       : undefined,
     params.status
       ? sql`EXISTS ${filterByOrderStatusSubquery(params.status)}`
