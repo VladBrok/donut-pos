@@ -67,7 +67,7 @@ export async function getOrdersPage(params: IGetOrdersPage) {
 
 export async function getSingleOrder(orderNumber: string, userId: string) {
   const result = await getOrdersPage({
-    employeeId: userId,
+    employeeId: userId, // TODO: this will be a client id
     page: 1,
     perPage: 1,
     orderNumber: orderNumber,
