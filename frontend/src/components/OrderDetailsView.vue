@@ -1,83 +1,66 @@
 <template>
-  <div class="full-height">
-    <q-card v-if="order" class="full-height shadow-0">
+  <OrderView
+    :has-content="Boolean(order)"
+    :dish-count="order?.dishes.length"
+    :total-cost="totalCost"
+  >
+    <template #content>
       <div>
-        <div class="scroll current-order-height">
-          <div>
-            <div>
-              <!-- TODO: add client field -->
-              <q-input
-                :model-value="order.tableNumber || '-'"
-                readonly
-                stack-label
-                :label="`${t.tableNumberLabel}`"
-                lazy-rules
-                type="text"
-                class="q-mb-md"
-              />
-              <q-input
-                :model-value="order.comment || '-'"
-                stack-label
-                :label="`${t.commentLabel}`"
-                lazy-rules
-                type="textarea"
-                readonly
-                rows="3"
-                class="q-mb-md"
-              />
-            </div>
-
-            <div>
-              <div v-for="(dish, i) of order.dishes" :key="i">
-                <dish-in-order
-                  :dish="dish"
-                  :count="dish.count"
-                  :total-cost="getOrderDishTotalCost(dish)"
-                  :modifications="
-                    dish.modifications.map((x) => ({
-                      count: x.count,
-                      modification: x,
-                    }))
-                  "
-                  view-only
-                />
-                <q-separator />
-              </div>
-              <order-history class="q-mt-xl" :statuses="order.statuses">
-              </order-history>
-            </div>
-          </div>
+        <div>
+          <!-- TODO: add client field -->
+          <q-input
+            :model-value="order.tableNumber || '-'"
+            readonly
+            stack-label
+            :label="`${t.tableNumberLabel}`"
+            lazy-rules
+            type="text"
+            class="q-mb-md"
+          />
+          <q-input
+            :model-value="order.comment || '-'"
+            stack-label
+            :label="`${t.commentLabel}`"
+            lazy-rules
+            type="textarea"
+            readonly
+            rows="3"
+            class="q-mb-md"
+          />
         </div>
 
-        <template v-if="order.dishes.length">
-          <div>
+        <div>
+          <div v-for="(dish, i) of order.dishes" :key="i">
+            <dish-in-order
+              :dish="dish"
+              :count="dish.count"
+              :total-cost="getOrderDishTotalCost(dish)"
+              :modifications="
+                dish.modifications.map((x) => ({
+                  count: x.count,
+                  modification: x,
+                }))
+              "
+              view-only
+            />
             <q-separator />
-            <div class="row justify-between gap-sm q-pt-md q-mb-sm">
-              <div class="text-h5">
-                {{ t.totalDishes(order.dishes.length) }}
-              </div>
-              <div class="text-weight-medium text-h5">
-                {{ formatCurrency(totalCost) }}
-              </div>
-            </div>
           </div>
-        </template>
+          <order-history class="q-mt-xl" :statuses="order.statuses">
+          </order-history>
+        </div>
       </div>
-    </q-card>
-    <no-data v-else class="q-mt-xl" :text="t.emptyOrder"> </no-data>
-  </div>
+    </template>
+  </OrderView>
 </template>
 
 <script setup lang="ts">
 import DishInOrder from "src/components/DishInOrder.vue";
 import OrderHistory from "src/components/OrderHistory.vue";
-import { formatCurrency } from "src/lib/currency";
+import OrderView from "src/components/OrderView.vue";
 import { getOrderDishTotalCost, getOrderTotalCost } from "src/lib/order";
 import { computed } from "vue";
 import { ordersPageLoadedAction } from "../../../shared/src/actions/orders";
 import { useI18nStore } from "../lib/i18n";
-import { useStore } from "../store";
-import NoData from "./NoData.vue";
 
 const props = defineProps<{
   order: ReturnType<
@@ -85,7 +68,6 @@ const props = defineProps<{
   >["payload"]["ordersPage"][number];
 }>();
 
-const store = useStore();
 const order = computed(() => props.order);
 const totalCost = computed(() => getOrderTotalCost(order.value.dishes));
 const t = useI18nStore();

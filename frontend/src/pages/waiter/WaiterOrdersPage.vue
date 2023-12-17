@@ -143,12 +143,6 @@ const columns: any[] = [
     field: "tableNumber",
   },
   {
-    name: "status",
-    label: t.value.orderStatus,
-    align: "left",
-    field: getOrderCurrentStatus,
-  },
-  {
     name: "dishCount",
     label: t.value.dishCount,
     align: "left",
@@ -160,6 +154,12 @@ const columns: any[] = [
     align: "left",
     field: (row: IOrdersState["ordersPage"][number]) =>
       formatCurrency(getOrderTotalCost(row.dishes), false),
+  },
+  {
+    name: "status",
+    label: t.value.orderStatus,
+    align: "left",
+    field: getOrderCurrentStatus,
   },
 ];
 
