@@ -10,9 +10,10 @@
                 :model-value="order.tableNumber || '-'"
                 readonly
                 stack-label
-                :label="`${t.tableNumberLabel} *`"
+                :label="`${t.tableNumberLabel}`"
                 lazy-rules
                 type="text"
+                class="q-mb-md"
               />
               <q-input
                 :model-value="order.comment || '-'"
@@ -20,12 +21,13 @@
                 :label="`${t.commentLabel}`"
                 lazy-rules
                 type="textarea"
+                readonly
                 rows="3"
               />
             </div>
 
             <div>
-              <div v-for="dish of order.dishes" :key="dish.id">
+              <div v-for="(dish, i) of order.dishes" :key="i">
                 <dish-in-order
                   :dish="dish"
                   :count="dish.count"
@@ -36,6 +38,7 @@
                       modification: x,
                     }))
                   "
+                  view-only
                 />
                 <q-separator />
               </div>

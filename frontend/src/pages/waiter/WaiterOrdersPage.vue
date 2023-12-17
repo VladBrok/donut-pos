@@ -40,10 +40,8 @@
           bordered
           v-model:pagination="pagination"
           @request="updatePage"
+          @row-click="(_, row) => (selectedOrder = row)"
         >
-          <!-- @row-click="
-        (_, row) => $router.push(`/admin/dish-categories/update/${row.id}`)
-      " -->
           <template v-slot:no-data>
             <no-data></no-data>
           </template>
@@ -51,6 +49,27 @@
       </div>
     </div>
   </div>
+
+  <q-drawer
+    :model-value="Boolean(selectedOrder)"
+    @update:model-value="selectedOrder = null"
+    side="right"
+    bordered
+    :width="$q.screen.xs ? 320 : 400"
+  >
+    <div class="q-pa-sm">
+      <div class="row justify-between q-mb-md q-mt-sm">
+        <p class="text-h5">
+          {{ `${t.order} ${selectedOrder?.orderNumber}` }}
+        </p>
+        <q-btn dense flat round icon="close" @click="selectedOrder = null" />
+      </div>
+      <div class="q-px-sm">
+        <order-details-view v-if="selectedOrder" :order="selectedOrder">
+        </order-details-view>
+      </div>
+    </div>
+  </q-drawer>
 </template>
 
 <script setup lang="ts">
@@ -59,6 +78,7 @@ import { ANONYMOUS } from "donut-shared";
 import BigSpinner from "src/components/BigSpinner.vue";
 import FilterPill from "src/components/FilterPill.vue";
 import NoData from "src/components/NoData.vue";
+import OrderDetailsView from "src/components/OrderDetailsView.vue";
 import { ROWS_PER_TABLE_PAGE } from "src/lib/constants";
 import { formatCurrency } from "src/lib/currency";
 import { useI18nStore } from "src/lib/i18n";
@@ -97,6 +117,7 @@ const pagination = ref({
   rowsPerPage: ROWS_PER_TABLE_PAGE,
   rowsNumber: ROWS_PER_TABLE_PAGE,
 });
+const selectedOrder = ref<IOrdersState["ordersPage"][number] | null>(null);
 
 const columns: any[] = [
   {

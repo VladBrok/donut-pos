@@ -112,6 +112,7 @@ export const messages = i18n("messages", {
   openCurrentOrder: "Open current order",
   currentOrder: "Current Order",
   emptyOrder: "Order is empty",
+  order: "Order",
   createOrder: "Create order",
   clearOrder: "Clear",
   tableNumberLabel: "Table number",
