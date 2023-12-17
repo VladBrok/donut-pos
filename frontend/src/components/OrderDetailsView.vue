@@ -62,13 +62,11 @@ import OrderHistory from "src/components/OrderHistory.vue";
 import OrderView from "src/components/OrderView.vue";
 import { getOrderDishTotalCost, getOrderTotalCost } from "src/lib/order";
 import { computed } from "vue";
-import { ordersPageLoadedAction } from "../../../shared/src/actions/orders";
+import { IOrder } from "../../../shared/src/actions/orders";
 import { useI18nStore } from "../lib/i18n";
 
 const props = defineProps<{
-  order: ReturnType<
-    typeof ordersPageLoadedAction
-  >["payload"]["ordersPage"][number];
+  order: IOrder;
   fullScreen?: boolean;
 }>();
 

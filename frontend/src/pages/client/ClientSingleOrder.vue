@@ -29,7 +29,7 @@ const orderNumber = computed(
 const order = computed(() => store.state.orders.order);
 const store = useStore();
 const channels = computed(() => {
-  return [`orders/${orderNumber.value}`];
+  return [`singleOrder/${orderNumber.value}`];
 });
 let isSubscribing = useSubscription(channels, { store: store as any });
 

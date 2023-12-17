@@ -1,9 +1,7 @@
-import { ordersPageLoadedAction } from "donut-shared/src/actions/orders";
+import { IOrder } from "donut-shared/src/actions/orders";
 
 export interface IOrderDrawerState {
-  order:
-    | ReturnType<typeof ordersPageLoadedAction>["payload"]["ordersPage"][number]
-    | null;
+  order: IOrder | null;
   isCurrentOrderOpen: boolean;
 }
 
