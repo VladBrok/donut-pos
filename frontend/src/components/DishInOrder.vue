@@ -67,7 +67,10 @@ import { loadModificationsAction } from "../../../shared";
 import { loadDishesAction } from "../../../shared/src/actions/dishes";
 
 defineProps<{
-  dish: ReturnType<typeof loadDishesAction>["payload"]["dishes"][number];
+  dish: Pick<
+    ReturnType<typeof loadDishesAction>["payload"]["dishes"][number],
+    "imageUrl" | "name" | "price"
+  >;
   count: number;
   totalCost: number;
   modifications: {
