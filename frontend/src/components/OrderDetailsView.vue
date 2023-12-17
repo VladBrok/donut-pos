@@ -3,10 +3,13 @@
     :has-content="Boolean(order)"
     :dish-count="order?.dishes.length"
     :total-cost="totalCost"
+    :full-content-height="fullScreen"
+    :card-padding="fullScreen"
+    :apply-shadow="fullScreen"
   >
     <template #content>
       <div>
-        <div>
+        <div v-if="!fullScreen">
           <!-- TODO: add client field -->
           <q-input
             :model-value="order.tableNumber || '-'"
@@ -66,6 +69,7 @@ const props = defineProps<{
   order: ReturnType<
     typeof ordersPageLoadedAction
   >["payload"]["ordersPage"][number];
+  fullScreen?: boolean;
 }>();
 
 const order = computed(() => props.order);

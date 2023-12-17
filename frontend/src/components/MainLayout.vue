@@ -92,7 +92,7 @@
     >
       <template #title>
         <p class="text-h5">
-          {{ `${t.order} ${selectedOrder?.orderNumber}` }}
+          {{ `${t.order} #${selectedOrder?.orderNumber}` }}
         </p>
         <p v-if="selectedOrder" class="text-h6 text-weight-regular">
           {{

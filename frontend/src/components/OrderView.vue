@@ -1,8 +1,20 @@
 <template>
   <div class="full-height">
-    <q-card v-if="hasContent" class="full-height shadow-0">
+    <q-card
+      v-if="hasContent"
+      class="full-height"
+      :class="{
+        'q-pa-lg': cardPadding,
+        'shadow-0': !applyShadow,
+      }"
+    >
       <div>
-        <div class="scroll order-view-content-height">
+        <div
+          class="scroll"
+          :class="{
+            'order-view-content-height': !fullContentHeight,
+          }"
+        >
           <slot name="content" />
         </div>
 
@@ -35,6 +47,9 @@ import NoData from "./NoData.vue";
 defineProps<{
   hasContent: boolean;
   totalCost: number;
+  cardPadding?: boolean;
+  applyShadow?: boolean;
+  fullContentHeight?: boolean;
   dishCount?: number;
 }>();
 
