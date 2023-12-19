@@ -88,8 +88,7 @@ export const messages = i18n("messages", {
   updateModification: "Update modification",
   createEmployee: "Create employee",
   updateEmployee: "Update employee",
-  phoneShouldStartWith: "Phone should start with +48",
-  invalidPhoneLengths: "Phone should have exactly 9 digits after +48",
+  invalidPhoneLengths: "Phone should have exactly 9 digits",
   passwordShouldContainDigit: "Password should contain at least 1 digit",
   passwordShouldContainUppercase:
     "Password should contain at least 1 uppercase latin letter",

@@ -52,7 +52,7 @@
               </q-item>
             </template>
           </q-select>
-          <phone-input v-model.trim="phone" shouldValidateFormat> </phone-input>
+          <phone-input v-model="phone" shouldValidateFormat> </phone-input>
           <password-input
             v-model="password"
             should-validate-format
