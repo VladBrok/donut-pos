@@ -91,8 +91,8 @@
       @close="store.commit.local(closeArbitraryOrderAction())"
     >
       <template #title>
-        <p class="text-h5">
-          {{ `${t.order} #${selectedOrder?.orderNumber}` }}
+        <p v-if="selectedOrder" class="text-h5">
+          <order-number-title :order-number="selectedOrder.orderNumber" />
         </p>
         <p v-if="selectedOrder" class="text-h6 text-weight-regular">
           {{
@@ -124,6 +124,7 @@
 import { logoutAction } from "donut-shared/src/actions/auth";
 import OrderDetailsView from "src/components/OrderDetailsView.vue";
 import OrderDrawer from "src/components/OrderDrawer.vue";
+import OrderNumberTitle from "src/components/OrderNumberTitle.vue";
 import { getOrderCurrentStatus } from "src/lib/order";
 import { computed, ref } from "vue";
 import {
