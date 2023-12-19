@@ -31,12 +31,29 @@ export interface IGetOrdersPage {
 export async function getOrdersPage(params: IGetOrdersPage) {
   console.time("get_orders");
 
+  const statusSortHelper = db
+    .select({
+      orderId: orderToOrderStatus.orderId,
+      date: orderToOrderStatus.date,
+    })
+    .from(orderToOrderStatus)
+    .leftJoin(
+      orderStatus,
+      and(
+        eq(orderStatus.codeName, ORDER_STATUSES.CREATED),
+        eq(orderStatus.id, orderToOrderStatus.orderStatusId)
+      )
+    )
+    .as("otos");
+
   const data = await db
     .select()
     .from(
       db
         .select()
         .from(order)
+        .leftJoin(statusSortHelper, eq(order.id, statusSortHelper.orderId))
+        .orderBy(desc(statusSortHelper.date))
         .where(makeWhereFilter(params))
         .offset((params.page - 1) * params.perPage)
         .limit(params.perPage)

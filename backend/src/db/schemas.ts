@@ -36,7 +36,9 @@ export type ModificationSchema = typeof modification.$inferSelect;
 export type RoleSchema = typeof role.$inferSelect;
 
 export type OrderSchema = {
-  [order._.name]: typeof order.$inferSelect;
+  order: {
+    [order._.name]: typeof order.$inferSelect;
+  };
   [employee._.name]: typeof employee.$inferSelect | null;
   [client._.name]: typeof client.$inferSelect | null;
   [dish._.name]: typeof dish.$inferSelect | null;

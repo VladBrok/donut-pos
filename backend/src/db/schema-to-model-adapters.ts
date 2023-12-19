@@ -138,12 +138,12 @@ export const roleAdapter = (data: RoleSchema[]): RoleModel[] => {
 
 export const ordersAdapter = (data: OrderSchema[]): OrderModel[] => {
   return data
-    .filter(onlyUnique((item) => item.order.id))
+    .filter(onlyUnique((item) => item.order.order.id))
     .map((uniqueOrder) => ({
-      id: uniqueOrder.order.id,
-      orderNumber: uniqueOrder.order.number || "",
-      tableNumber: uniqueOrder.order.tableNumber || "",
-      comment: uniqueOrder.order.comment || "",
+      id: uniqueOrder.order.order.id,
+      orderNumber: uniqueOrder.order.order.number || "",
+      tableNumber: uniqueOrder.order.order.tableNumber || "",
+      comment: uniqueOrder.order.order.comment || "",
       client: uniqueOrder.client
         ? {
             id: uniqueOrder.client.id,
@@ -159,7 +159,8 @@ export const ordersAdapter = (data: OrderSchema[]): OrderModel[] => {
       statuses: data
         .filter(
           (order) =>
-            order.order.id === uniqueOrder.order.id && order.order_status
+            order.order.order.id === uniqueOrder.order.order.id &&
+            order.order_status
         )
         .filter(onlyUnique((item) => item.order_status?.id || ""))
         .map((order) => ({
@@ -169,7 +170,8 @@ export const ordersAdapter = (data: OrderSchema[]): OrderModel[] => {
         })),
       dishes: data
         .filter(
-          (order) => order.order.id === uniqueOrder.order.id && order.dish
+          (order) =>
+            order.order.order.id === uniqueOrder.order.order.id && order.dish
         )
         .filter(onlyUnique((item) => item.dish?.id || ""))
         .map((order) => ({
@@ -184,13 +186,13 @@ export const ordersAdapter = (data: OrderSchema[]): OrderModel[] => {
           modifications: data
             .filter(
               (innerOrder) =>
-                innerOrder.order.id === uniqueOrder.order.id &&
+                innerOrder.order.order.id === uniqueOrder.order.order.id &&
                 innerOrder.dish?.id === order.dish?.id &&
                 order.modification
             )
             .filter(onlyUnique((item) => item.modification?.id || ""))
             .map((order) => ({
-              id: order.order?.id || "",
+              id: order.order?.order.id || "",
               name: order.modification?.name || "",
               imageUrl: order.modification?.imageUrl || "",
               price: order.modification?.price || 0,
