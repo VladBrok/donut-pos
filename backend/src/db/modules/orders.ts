@@ -29,6 +29,8 @@ export interface IGetOrdersPage {
 // TODO: add index to status name
 // TODO: optimize...
 export async function getOrdersPage(params: IGetOrdersPage) {
+  console.time("get_orders");
+
   const data = await db
     .select()
     .from(
@@ -61,6 +63,8 @@ export async function getOrdersPage(params: IGetOrdersPage) {
     })
     .from(order)
     .where(makeWhereFilter(params));
+
+  console.timeEnd("get_orders");
 
   return { ordersPage: ordersAdapter(data), total: total?.[0].value || 0 };
 }
