@@ -92,7 +92,10 @@
     >
       <template #title>
         <p v-if="selectedOrder" class="text-h5">
-          <order-number-title :order-number="selectedOrder.orderNumber" />
+          <order-number-title
+            :order-number="selectedOrder.orderNumber"
+            copy-button-size="sm"
+          />
         </p>
         <p v-if="selectedOrder" class="text-h6 text-weight-regular">
           {{

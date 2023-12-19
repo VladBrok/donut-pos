@@ -128,6 +128,7 @@ export const messages = i18n("messages", {
   orderStatus: "Status",
   dishCount: "Dishes",
   total: "Total, zł",
+  copyOrderNumber: "Copy order number to clipboard",
 
   // Client pages
   orderDetails: "Order details",
@@ -171,6 +172,7 @@ export const messages = i18n("messages", {
   deleteSuccess: "Deleted successfully",
   createSuccess: "Created successfully",
   updateSuccess: "Updated successfully",
+  copyToClipboardSuccess: "Copied to clipboard",
 
   // Errors
   [USER_NOT_FOUND]: params("User with phone {phone} was not found"),
@@ -187,6 +189,7 @@ export const messages = i18n("messages", {
   ),
   imageCorrupted: "The image is corrupted. Try to choose a different one",
   [ACCESS_DENIED]: "Access denied",
+  copyToClipboardError: "Failed to copy",
 });
 
 export function useI18nStore() {
