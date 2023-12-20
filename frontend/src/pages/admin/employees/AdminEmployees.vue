@@ -109,6 +109,7 @@ import { assert } from "donut-shared";
 import { deleteEmployeeAction } from "donut-shared/src/actions/employees";
 import { CHANNELS } from "donut-shared/src/constants";
 import { Notify } from "quasar";
+import { formatPhoneNumber } from "src/lib/phone";
 import { useStore } from "src/store";
 import { computed, ref } from "vue";
 import BigSpinner from "../../../components/BigSpinner.vue";
@@ -191,6 +192,7 @@ const columns: any[] = [
     align: "center",
     field: "phone",
     sortable: true,
+    format: formatPhoneNumber,
   },
   {
     name: "isPhoneVerified",

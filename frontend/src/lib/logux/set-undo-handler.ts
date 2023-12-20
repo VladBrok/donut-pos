@@ -7,6 +7,7 @@ import {
 } from "donut-shared/src/constants";
 import { logError, logInfo, logWarn } from "donut-shared/src/lib/log";
 import { Notify } from "quasar";
+import { formatPhoneNumber } from "src/lib/phone";
 import { ERROR_TIMEOUT_MS, NO_TIMEOUT } from "../constants";
 import { useI18nStore } from "../i18n";
 
@@ -29,7 +30,7 @@ export function setUndoHandler(Store: LoguxVuexStore) {
       message =
         reason === USER_NOT_FOUND
           ? t.value.userNotFound({
-              phone: undone.action.payload.phone,
+              phone: formatPhoneNumber(undone.action.payload.phone),
             })
           : reason === CATEGORY_NAME_EXISTS
           ? t.value.categoryNameExists({
