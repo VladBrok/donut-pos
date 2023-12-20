@@ -40,7 +40,7 @@ const onSubmit = async (data: { password: string; phone: string }) => {
         store.state.auth.user.userId || "",
         store.state.auth.user.accessToken || ""
       );
-      router.push("/admin");
+      return router.push("/admin");
     })
     .finally(() => {
       isLoggingIn.value = false;
