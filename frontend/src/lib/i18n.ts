@@ -105,7 +105,7 @@ export const messages = i18n("messages", {
   searchDishes: "Search by name, price, category or weight",
   searchOrders: "Search by order number",
   allMenu: "All menu",
-  addToCurrentOrder: "Add to current order",
+  addToCurrentOrder: "Add to order",
   addToOrderButton: "Add to order",
   modificationsTitle: "In addition",
   openCurrentOrder: "Open current order",
@@ -128,6 +128,7 @@ export const messages = i18n("messages", {
   dishCount: "Dishes",
   total: "Total, zł",
   copyOrderNumber: "Copy order number to clipboard",
+  outOfStock: "Out of stock",
 
   // Client pages
   orderDetails: "Order details",

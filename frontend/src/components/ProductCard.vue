@@ -7,7 +7,11 @@
           alt=""
           fit="cover"
           class="image-card shadow-3 rounded-borders"
-        />
+        >
+          <div v-if="caption" class="absolute-full text-h6 flex flex-center">
+            {{ caption }}
+          </div>
+        </q-img>
       </q-card-section>
       <div class="row justify-between q-px-md">
         <div class="q-mr-sm" :class="textClass">
@@ -36,6 +40,7 @@ const props = defineProps<{
   imageUrl: string;
   noShadow?: boolean;
   textSize?: "sm" | "lg";
+  caption?: string;
 }>();
 
 const textClass = computed(() => ({

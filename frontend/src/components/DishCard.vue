@@ -4,9 +4,11 @@
     :image-url="dish.imageUrl"
     :price="dish.price"
     :name="dish.name"
+    :caption="dish.isActive ? undefined : t.outOfStock"
   >
     <q-card-section v-if="!expanded" class="q-mt-auto row justify-end">
       <q-btn
+        v-if="dish.isActive"
         color="primary"
         icon-right="shopping_basket"
         padding="0 sm"
