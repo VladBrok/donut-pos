@@ -131,12 +131,22 @@ export async function createOrder(data: ICurrentOrder, employeeId: string) {
   const orderToCreate = { id: generateUuid(), ...data };
 
   await db.transaction(async (tx) => {
+    const orderNumber = generateOrderNumber();
+    const existing = await tx
+      .select()
+      .from(order)
+      .where(eq(order.number, orderNumber));
+
+    if (existing?.length) {
+      throw new Error(`Duplicate order number was generated: ${orderNumber}`);
+    }
+
     await tx.insert(order).values({
       id: orderToCreate.id,
       comment: data.comment,
       tableNumber: data.tableNumber,
       employeeId: employeeId,
-      number: generateOrderNumber(),
+      number: orderNumber,
     });
 
     await Promise.all([
