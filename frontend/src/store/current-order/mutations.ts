@@ -6,15 +6,9 @@ import {
   updateCurrentOrderCommentAction,
   updateCurrentOrderTableNumberAction,
 } from "donut-shared";
-import { ICurrentOrderDishPayload } from "donut-shared/src/actions/current-order";
+import { getUniqueDishId } from "src/lib/get-unique-dish-id";
 import { MutationTree } from "vuex";
 import { ICurrentOrderState, makeEmptyOrder } from "./state";
-
-function getUniqueId(dish: ICurrentOrderDishPayload) {
-  return (
-    dish.id + dish.modifications.map((x) => `${x.id}_${x.count}`).join(",")
-  );
-}
 
 const mutation: MutationTree<ICurrentOrderState> = {
   addDish(
@@ -25,7 +19,7 @@ const mutation: MutationTree<ICurrentOrderState> = {
       state.order = makeEmptyOrder();
     }
 
-    const uniqueId = getUniqueId(action.payload.dish);
+    const uniqueId = getUniqueDishId(action.payload.dish);
     const existingIdx = state.order.dishes.findIndex(
       (x) => x.uniqueId === uniqueId
     );
@@ -48,7 +42,7 @@ const mutation: MutationTree<ICurrentOrderState> = {
   ) {
     assert(state.order, "Cannot decrement dish on empty order");
 
-    const uniqueId = getUniqueId(action.payload.dish);
+    const uniqueId = getUniqueDishId(action.payload.dish);
     const existingIdx = state.order.dishes.findIndex(
       (x) => x.uniqueId === uniqueId
     );

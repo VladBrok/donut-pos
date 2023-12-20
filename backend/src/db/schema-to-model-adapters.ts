@@ -1,6 +1,6 @@
 import {
   EMPLOYEE_PERMISSIONS,
-  OrderStatus,
+  ORDER_STATUSES_ARR,
 } from "donut-shared/src/constants.js";
 import {
   DishCategoryModel,
@@ -160,12 +160,17 @@ export const ordersAdapter = (data: OrderSchema[]): OrderModel[] => {
         .filter(
           (order) =>
             order.order.order.id === uniqueOrder.order.order.id &&
-            order.order_status
+            order.order_to_order_status
         )
-        .filter(onlyUnique((item) => item.order_status?.id || ""))
+        .filter(
+          onlyUnique((item) => item.order_to_order_status?.orderStatusId || "")
+        )
         .map((order) => ({
-          id: order.order_status?.id || "",
-          codeName: (order.order_status?.codeName || "") as OrderStatus,
+          id: order.order_to_order_status?.orderStatusId || "",
+          codeName:
+            ORDER_STATUSES_ARR.find(
+              (x) => x.id === order.order_to_order_status?.orderStatusId
+            )?.name || "",
           date: order.order_to_order_status?.date?.toISOString() || "",
         })),
       dishes: data

@@ -6,7 +6,6 @@ import {
   employee,
   modification,
   order,
-  orderStatus,
   orderToDish,
   orderToDishToModification,
   orderToOrderStatus,
@@ -43,7 +42,6 @@ export type OrderSchema = {
   [client._.name]: typeof client.$inferSelect | null;
   [dish._.name]: typeof dish.$inferSelect | null;
   [orderToOrderStatus._.name]: typeof orderToOrderStatus.$inferSelect | null;
-  [orderStatus._.name]: typeof orderStatus.$inferSelect | null;
   [orderToDish._.name]: typeof orderToDish.$inferSelect | null;
   [orderToDishToModification._.name]:
     | typeof orderToDishToModification.$inferSelect
