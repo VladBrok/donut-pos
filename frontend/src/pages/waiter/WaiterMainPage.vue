@@ -27,7 +27,7 @@
         >
         </filter-pill>
       </div>
-      <div v-if="dishesFiltered.length" class="q-mx-auto w-fit card-grid">
+      <div v-if="dishesFiltered.length" class="q-mx-auto card-grid">
         <dish-card
           v-for="dish in dishesFiltered"
           :dish="dish"

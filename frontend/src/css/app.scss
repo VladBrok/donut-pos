@@ -107,38 +107,8 @@ body {
 
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(1, 280px);
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 25px;
-}
-
-@media screen and (min-width: 400px) {
-  .card-grid {
-    grid-template-columns: repeat(2, 180px);
-  }
-}
-
-@media screen and (min-width: 700px) {
-  .card-grid {
-    grid-template-columns: repeat(2, 220px);
-  }
-}
-
-@media screen and (min-width: 800px) {
-  .card-grid {
-    grid-template-columns: repeat(3, 220px);
-  }
-}
-
-@media screen and (min-width: 1300px) {
-  .card-grid {
-    grid-template-columns: repeat(4, 220px);
-  }
-}
-
-@media screen and (min-width: 1500px) {
-  .card-grid {
-    grid-template-columns: repeat(4, 250px);
-  }
 }
 
 .max-w-xl {
