@@ -129,6 +129,8 @@ export const messages = i18n("messages", {
   total: "Total, zł",
   copyOrderNumber: "Copy order number to clipboard",
   outOfStock: "Out of stock",
+  cannotCreateOrderWithOutOfStock:
+    "Some dishes are out of stock. Please remove them from the order before proceeding",
 
   // Client pages
   orderDetails: "Order details",
