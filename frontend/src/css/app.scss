@@ -105,6 +105,10 @@ body {
   gap: 20px;
 }
 
+.w-100 {
+  width: 100%;
+}
+
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));

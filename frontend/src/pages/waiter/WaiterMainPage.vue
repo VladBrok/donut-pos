@@ -2,20 +2,22 @@
   <div>
     <big-spinner v-if="isSubscribing" />
     <div v-else>
-      <div class="q-mb-lg max-w-sm">
-        <q-input
-          class="bg-white"
-          outlined
-          v-model="searchInput"
-          :placeholder="t.searchDishes"
-          clearable
-        >
-          <template v-slot:append>
-            <q-icon v-if="!searchInput?.length" name="search" />
-          </template>
-        </q-input>
-      </div>
-      <div class="q-mb-lg gap-sm row">
+      <q-page-sticky position="top" expand style="z-index: 10">
+        <div class="bg-gray-lightest q-py-md q-px-md w-100">
+          <q-input
+            class="bg-white max-w-sm"
+            outlined
+            v-model="searchInput"
+            :placeholder="t.searchDishes"
+            clearable
+          >
+            <template v-slot:append>
+              <q-icon v-if="!searchInput?.length" name="search" />
+            </template>
+          </q-input>
+        </div>
+      </q-page-sticky>
+      <div class="q-mb-lg q-mt-md gap-sm row">
         <filter-pill
           v-for="category in categories"
           :key="category.id"
