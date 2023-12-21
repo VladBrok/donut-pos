@@ -2,6 +2,7 @@ import {
   EMPLOYEE_PERMISSIONS,
   ORDER_STATUSES_ARR,
 } from "donut-shared/src/constants.js";
+import { onlyUnique } from "src/lib/only-unique.js";
 import {
   DishCategoryModel,
   DishModel,
@@ -18,11 +19,6 @@ import {
   OrderSchema,
   RoleSchema,
 } from "./schemas.js";
-
-function onlyUnique<T>(getId: (item: T) => string) {
-  return (value: T, index: number, array: T[]) =>
-    array.findIndex((x) => getId(x) === getId(value)) === index;
-}
 
 export const employeeAdapter = (
   data: EmployeeSchema[]
