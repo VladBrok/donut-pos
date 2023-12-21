@@ -5,7 +5,7 @@
       <q-page-sticky position="top" expand style="z-index: 10">
         <div class="bg-gray-lightest q-py-md q-px-md w-100">
           <q-input
-            class="bg-white max-w-sm"
+            class="bg-white max-w-sm rounded-borders"
             outlined
             v-model="searchInput"
             :placeholder="t.searchDishes"
