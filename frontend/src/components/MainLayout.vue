@@ -90,11 +90,10 @@
           />
         </p>
         <p v-if="selectedOrder" class="text-h6 text-weight-regular">
-          {{
-            `${t.orderStatus.toLowerCase()}: ${getOrderCurrentStatus(
-              selectedOrder
-            )}`
-          }}
+          {{ t.orderStatus.toLowerCase() }}:
+          <span :class="`text-${getOrderCurrentStatus(selectedOrder)}`">
+            {{ getOrderCurrentStatus(selectedOrder) }}
+          </span>
         </p>
       </template>
       <template #content>
