@@ -39,14 +39,6 @@
       <q-scroll-area class="fit">
         <!-- TODO: add logo here -->
         <div class="q-pa-sm">
-          <!-- <q-btn
-            dense
-            flat
-            round
-            icon="menu"
-            @click="toggleDrawer"
-            class="q-mb-md"
-          /> -->
           <q-list>
             <template v-for="(menuItem, index) in menuList" :key="index">
               <q-item

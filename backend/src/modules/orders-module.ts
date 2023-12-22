@@ -12,16 +12,12 @@ import { hasWaiterPermission } from "../lib/access.js";
 // TODO: consider creating separate channels for client's orders ?
 
 export default function ordersModule(server: Server) {
-  // TODO: no one is currently listening this channel. But it sends resends `orderCreatedAction`
+  // TODO: no one is currently listening this channel. But it resends `orderCreatedAction`
   server.channel(CHANNELS.ORDERS, {
     access(ctx) {
-      return hasWaiterPermission(ctx.userId); // TODO: cooks and clients should aslo be notified
+      return hasWaiterPermission(ctx.userId);
     },
-    async load() {
-      // TODO: return orders created by this employee ?
-      // const dishes = await db.getAllDishes();
-      // return loadDishesAction({ dishes });
-    },
+    async load() {},
   });
 
   // TODO: resend order updates via this channel so that the client can see live changes

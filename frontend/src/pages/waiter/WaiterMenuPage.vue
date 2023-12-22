@@ -61,13 +61,11 @@ import DishCard from "../../components/DishCard.vue";
 import FilterPill from "../../components/FilterPill.vue";
 import NoData from "../../components/NoData.vue";
 
-import { loadDishesAction } from "../../../../shared/src/actions/dishes";
+import { loadDishesAction } from "donut-shared/src/actions/dishes";
 import DishDetailsModal from "../../components/DishDetailsModal.vue";
 import { createFuzzySearcher } from "../../lib/fuzzy-search";
 import { useI18nStore } from "../../lib/i18n";
 import { useStore } from "../../store";
-
-// TODO: show "found results" when some filter is active ?
 
 const store = useStore();
 const dishes = computed(() => store.state.dishes.dishes);

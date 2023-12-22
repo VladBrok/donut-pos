@@ -12,7 +12,7 @@ const menuList = [
   {
     icon: "o_restaurant_menu",
     label: t.value.menu,
-    to: "/waiter",
+    to: "/waiter/menu",
     meta: t.value.menu,
   },
   {

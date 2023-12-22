@@ -2,7 +2,6 @@ import { ICurrentOrder } from "src/actions/current-order.js";
 import { OrderStatus } from "src/constants.js";
 import { createAction } from "./index.js";
 
-// TODO: use this interface where needed
 export interface IOrder {
   id: string;
   comment: string;

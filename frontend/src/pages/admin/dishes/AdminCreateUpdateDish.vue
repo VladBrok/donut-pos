@@ -320,7 +320,7 @@ const deleteModification = (index: number) => {
 
 const filterModifications = (index: number) => {
   return (val: string, update: any) => {
-    // TODO: use fuzzy search ?
+    // TODO: use fuzzy search here and in other places where similar needle stuff is used
     update(() => {
       const needle = val.toLowerCase();
       modifications[index].filteredNames =

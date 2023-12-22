@@ -52,6 +52,6 @@ const props = defineProps<{
 
 const textClass = computed(() => ({
   "text-h5": !props.textSize || props.textSize === "lg",
-  "text-body1": props.textSize === "sm",
+  "text-h6": props.textSize === "sm",
 }));
 </script>
