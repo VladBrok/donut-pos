@@ -171,6 +171,7 @@ import {
 import { Notify } from "quasar";
 import WysiwygEditor from "src/components/WysiwygEditor.vue";
 import { fractionalToWhole, wholeToFractional } from "src/lib/currency";
+import { createFuzzySearcher } from "src/lib/fuzzy-search";
 import { onFormValidationError } from "src/lib/on-form-validation-error";
 import { useStore } from "src/store";
 import { computed, reactive, ref, watch, watchEffect } from "vue";
@@ -194,7 +195,6 @@ const imageFile = ref<File>();
 const price = ref<number | string>("");
 const weight = ref<number | string>("");
 const categoryName = ref("");
-const filteredCategoryNames = ref<string[]>();
 const modifications = reactive<{ name: string; filteredNames: string[] }[]>([]);
 const isActive = ref(true);
 const description = ref("");
@@ -214,6 +214,13 @@ const channels = computed(() =>
     : [CHANNELS.DISH_CATEGORIES, CHANNELS.MODIFICATIONS]
 );
 const isSubscribing = useSubscription(channels, { store: store as any });
+const fuzzySearch = computed(() =>
+  createFuzzySearcher(store.state.dishCategories.categories, ["name"])
+);
+const categorySearchInput = ref("");
+const filteredCategoryNames = computed(() =>
+  fuzzySearch.value.search(categorySearchInput.value).map((x) => x.name)
+);
 
 const unsubscribe = watchEffect(
   () => {
@@ -242,9 +249,6 @@ watch(
   isSubscribing,
   () => {
     if (!isSubscribing) {
-      filteredCategoryNames.value = store.state.dishCategories.categories.map(
-        (x) => x.name
-      );
       modifications.forEach((x) => (x.filteredNames = modificationNames.value));
     }
   },
@@ -277,10 +281,7 @@ const filterModifications = (index: number) => {
 
 const filterCategories = (val: string, update: any) => {
   update(() => {
-    const needle = val.toLowerCase();
-    filteredCategoryNames.value = store.state.dishCategories.categories
-      .filter((v) => v.name.toLowerCase().indexOf(needle) > -1)
-      .map((x) => x.name);
+    categorySearchInput.value = val;
   });
 };
 
