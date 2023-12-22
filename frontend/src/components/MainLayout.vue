@@ -6,23 +6,7 @@
         <q-toolbar-title>
           {{ $route.meta.title || "" }}
         </q-toolbar-title>
-        <q-btn
-          v-if="isWaiter"
-          class="q-mr-md"
-          flat
-          round
-          icon="o_shopping_basket"
-          @click="toggleCurrentOrderDrawer"
-        >
-          <q-tooltip> {{ t.openCurrentOrder }} </q-tooltip>
-          <q-badge
-            v-if="currentOrder"
-            rounded
-            floating
-            color="red"
-            :label="currentOrder.dishes.length || ''"
-          />
-        </q-btn>
+        <slot name="actions" />
         <q-btn flat round icon="logout" @click="logout">
           <q-tooltip> {{ t.logout }} </q-tooltip>
         </q-btn>
@@ -60,22 +44,7 @@
       </q-scroll-area>
     </q-drawer>
 
-    <!-- TODO: extract logic related to Waiter to WaiterLayout -->
-
-    <order-drawer
-      :model-value="isCurrentOrderOpen"
-      @update:model-value="store.commit.local(closeCurrentOrderAction())"
-      @close="store.commit.local(closeCurrentOrderAction())"
-    >
-      <template #title>
-        <p class="text-h5">
-          {{ t.currentOrder }}
-        </p>
-      </template>
-      <template #content>
-        <current-order-view> </current-order-view>
-      </template>
-    </order-drawer>
+    <slot name="drawers" />
 
     <order-drawer
       :model-value="Boolean(selectedOrder)"
@@ -121,14 +90,9 @@ import OrderDrawer from "src/components/OrderDrawer.vue";
 import OrderNumberTitle from "src/components/OrderNumberTitle.vue";
 import { getOrderCurrentStatus } from "src/lib/order";
 import { computed, ref } from "vue";
-import {
-  closeArbitraryOrderAction,
-  closeCurrentOrderAction,
-  openCurrentOrderAction,
-} from "../../../shared";
+import { closeArbitraryOrderAction } from "../../../shared";
 import { useI18nStore } from "../lib/i18n";
 import { useStore } from "../store";
-import CurrentOrderView from "./CurrentOrderView.vue";
 
 defineProps<{
   menuList: {
@@ -142,25 +106,10 @@ defineProps<{
 const isMenuDrawerOpen = ref(false);
 const t = useI18nStore();
 const store = useStore();
-const isWaiter = computed(
-  () => store.state.auth.user.role?.codeName === "waiter"
-);
-const currentOrder = computed(() => store.state.currentOrder.order);
 const selectedOrder = computed(() => store.state.orderDrawer.order);
-const isCurrentOrderOpen = computed(
-  () => store.state.orderDrawer.isCurrentOrderOpen
-);
 
 function toggleMenuDrawer() {
   isMenuDrawerOpen.value = !isMenuDrawerOpen.value;
-}
-
-function toggleCurrentOrderDrawer() {
-  if (isCurrentOrderOpen.value) {
-    store.commit.local(closeCurrentOrderAction());
-  } else {
-    store.commit.local(openCurrentOrderAction());
-  }
 }
 
 function logout() {
