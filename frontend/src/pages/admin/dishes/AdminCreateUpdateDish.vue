@@ -271,7 +271,6 @@ const deleteModification = (index: number) => {
 
 const filterModifications = (index: number) => {
   return (val: string, update: any) => {
-    // TODO: use fuzzy search here and in other places where similar needle stuff is used
     update(() => {
       modifications[index].filteredNames = modificationsFuzzySearch.value
         .search(val)
