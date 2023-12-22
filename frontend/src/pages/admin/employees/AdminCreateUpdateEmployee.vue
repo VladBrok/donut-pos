@@ -88,9 +88,10 @@ import {
   LAST_NAME_MAX_LENGTH,
 } from "donut-shared/src/constants";
 import { Notify } from "quasar";
+import { createFuzzySearcher } from "src/lib/fuzzy-search";
 import { onFormValidationError } from "src/lib/on-form-validation-error";
 import { useStore } from "src/store";
-import { computed, ref, watch, watchEffect } from "vue";
+import { computed, ref, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 import BackButton from "../../../components/BackButton.vue";
 import BigSpinner from "../../../components/BigSpinner.vue";
@@ -109,7 +110,6 @@ const firstName = ref("");
 const lastName = ref("");
 const phone = ref("");
 const password = ref("");
-const filteredRoleNames = ref<string[]>();
 
 const id = computed(() => router.currentRoute.value.params.id);
 const originalEmployee = computed(() => {
@@ -123,6 +123,13 @@ const channels = computed(() =>
     : [CHANNELS.ROLES]
 );
 let isSubscribing = useSubscription(channels, { store: store as any });
+const fuzzySearch = computed(() =>
+  createFuzzySearcher(store.state.roles.roles, ["codeName"])
+);
+const roleSearchInput = ref("");
+const filteredRoleNames = computed(() =>
+  fuzzySearch.value.search(roleSearchInput.value).map((x) => x.codeName)
+);
 
 const unsubscribe = watchEffect(
   () => {
@@ -141,22 +148,9 @@ const unsubscribe = watchEffect(
   }
 );
 
-watch(
-  isSubscribing,
-  () => {
-    if (!isSubscribing) {
-      filteredRoleNames.value = store.state.roles.roles.map((x) => x.codeName);
-    }
-  },
-  { immediate: true }
-);
-
 const filterRoles = (val: string, update: any) => {
   update(() => {
-    const needle = val.toLowerCase();
-    filteredRoleNames.value = store.state.roles.roles
-      .filter((v) => v.codeName.toLowerCase().indexOf(needle) > -1)
-      .map((x) => x.codeName);
+    roleSearchInput.value = val;
   });
 };
 
