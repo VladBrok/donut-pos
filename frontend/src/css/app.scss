@@ -211,9 +211,12 @@ p {
   font-size: 16px;
 }
 
-.q-table .sortable .q-table__sort-icon {
-  position: absolute;
-  padding-top: 2px;
+.q-table .sortable.sort-desc .q-table__sort-icon {
+  padding-bottom: 4px;
+}
+
+.q-table .sortable.sort-desc .q-table__sort-icon {
+  padding-top: 5px;
 }
 
 .q-table thead,
