@@ -3,6 +3,7 @@
     :image-url="modification.imageUrl"
     :price="modification.price"
     :name="modification.name"
+    :weight="modification.weight"
     text-size="sm"
   >
     <q-card-section class="q-mt-auto row justify-end">

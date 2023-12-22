@@ -3,6 +3,7 @@
     :no-shadow="expanded"
     :image-url="dish.imageUrl"
     :price="dish.price"
+    :weight="dish.weight"
     :name="dish.name"
     :caption="dish.isActive ? undefined : t.outOfStock"
   >
