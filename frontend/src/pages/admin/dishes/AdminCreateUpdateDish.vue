@@ -129,66 +129,9 @@
             <label class="q-mb-sm q-mt-md d-block text-label">{{
               t.description
             }}</label>
-            <q-editor
+            <wysiwyg-editor
               v-model="description"
               :placeholder="t.dishDescriptionPlaceholder"
-              :toolbar="[
-                ['bold', 'italic', 'strike', 'underline'],
-                [
-                  {
-                    label: $q.lang.editor.align,
-                    icon: $q.iconSet.editor.align,
-                    fixedLabel: true,
-                    options: ['left', 'center', 'right', 'justify'],
-                  },
-                  {
-                    label: $q.lang.editor.fontSize,
-                    icon: $q.iconSet.editor.fontSize,
-                    fixedLabel: true,
-                    fixedIcon: true,
-                    list: 'no-icons',
-                    options: [
-                      'size-1',
-                      'size-2',
-                      'size-3',
-                      'size-4',
-                      'size-5',
-                      'size-6',
-                      'size-7',
-                    ],
-                  },
-                  {
-                    label: $q.lang.editor.defaultFont,
-                    icon: $q.iconSet.editor.font,
-                    fixedIcon: true,
-                    list: 'no-icons',
-                    options: [
-                      'default_font',
-                      'arial',
-                      'arial_black',
-                      'comic_sans',
-                      'courier_new',
-                      'impact',
-                      'lucida_grande',
-                      'times_new_roman',
-                      'verdana',
-                    ],
-                  },
-                  'removeFormat',
-                ],
-                ['print', 'fullscreen'],
-                ['undo', 'redo'],
-              ]"
-              :fonts="{
-                arial: 'Arial',
-                arial_black: 'Arial Black',
-                comic_sans: 'Comic Sans MS',
-                courier_new: 'Courier New',
-                impact: 'Impact',
-                lucida_grande: 'Lucida Grande',
-                times_new_roman: 'Times New Roman',
-                verdana: 'Verdana',
-              }"
             />
           </div>
         </q-card-section>
@@ -226,6 +169,7 @@ import {
   MIN_DISH_WEIGHT,
 } from "donut-shared/src/constants";
 import { Notify } from "quasar";
+import WysiwygEditor from "src/components/WysiwygEditor.vue";
 import { fractionalToWhole, wholeToFractional } from "src/lib/currency";
 import { onFormValidationError } from "src/lib/on-form-validation-error";
 import { useStore } from "src/store";
