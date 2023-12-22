@@ -19,6 +19,7 @@ export function createFuzzySearcher<T extends object>(
 
   return {
     search: (pattern: string) => {
+      pattern = pattern.trim();
       return pattern ? fuse.search(pattern).map((x) => x.item) : list;
     },
   };

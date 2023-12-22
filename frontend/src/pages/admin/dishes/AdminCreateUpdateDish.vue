@@ -214,12 +214,15 @@ const channels = computed(() =>
     : [CHANNELS.DISH_CATEGORIES, CHANNELS.MODIFICATIONS]
 );
 const isSubscribing = useSubscription(channels, { store: store as any });
-const fuzzySearch = computed(() =>
+const categoryFuzzySearch = computed(() =>
   createFuzzySearcher(store.state.dishCategories.categories, ["name"])
+);
+const modificationsFuzzySearch = computed(() =>
+  createFuzzySearcher(store.state.modifications.modifications, ["name"])
 );
 const categorySearchInput = ref("");
 const filteredCategoryNames = computed(() =>
-  fuzzySearch.value.search(categorySearchInput.value).map((x) => x.name)
+  categoryFuzzySearch.value.search(categorySearchInput.value).map((x) => x.name)
 );
 
 const unsubscribe = watchEffect(
@@ -270,11 +273,9 @@ const filterModifications = (index: number) => {
   return (val: string, update: any) => {
     // TODO: use fuzzy search here and in other places where similar needle stuff is used
     update(() => {
-      const needle = val.toLowerCase();
-      modifications[index].filteredNames =
-        store.state.modifications.modifications
-          .filter((v) => v.name.toLowerCase().indexOf(needle) > -1)
-          .map((x) => x.name);
+      modifications[index].filteredNames = modificationsFuzzySearch.value
+        .search(val)
+        .map((x) => x.name);
     });
   };
 };
