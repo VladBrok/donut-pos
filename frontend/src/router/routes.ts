@@ -158,7 +158,6 @@ const routes: RouteRecordRaw[] = [
         redirect: "/waiter/menu",
       },
       {
-        // TODO: change to "menu"
         path: "menu",
         component: () => import("src/pages/waiter/WaiterMenuPage.vue"),
         meta: {
