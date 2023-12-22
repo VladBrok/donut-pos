@@ -85,60 +85,34 @@ body {
 }
 
 .image-xs {
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
 }
 
 .fit-cover {
   object-fit: cover;
 }
 
-.gap-md {
-  gap: 20px;
+.gap-xs {
+  gap: 10px;
 }
 
 .gap-sm {
   gap: 15px;
 }
 
-.gap-xs {
-  gap: 10px;
+.gap-md {
+  gap: 20px;
+}
+
+.w-100 {
+  width: 100%;
 }
 
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(1, 280px);
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 25px;
-}
-
-@media screen and (min-width: 400px) {
-  .card-grid {
-    grid-template-columns: repeat(2, 180px);
-  }
-}
-
-@media screen and (min-width: 700px) {
-  .card-grid {
-    grid-template-columns: repeat(2, 220px);
-  }
-}
-
-@media screen and (min-width: 800px) {
-  .card-grid {
-    grid-template-columns: repeat(3, 220px);
-  }
-}
-
-@media screen and (min-width: 1300px) {
-  .card-grid {
-    grid-template-columns: repeat(4, 220px);
-  }
-}
-
-@media screen and (min-width: 1500px) {
-  .card-grid {
-    grid-template-columns: repeat(4, 250px);
-  }
 }
 
 .max-w-xl {
@@ -237,9 +211,12 @@ p {
   font-size: 16px;
 }
 
-.q-table .sortable .q-table__sort-icon {
-  position: absolute;
-  padding-top: 2px;
+.q-table .sortable.sort-desc .q-table__sort-icon {
+  padding-bottom: 4px;
+}
+
+.q-table .sortable.sort-desc .q-table__sort-icon {
+  padding-top: 5px;
 }
 
 .q-table thead,

@@ -40,7 +40,7 @@ const onSubmit = async (data: { password: string; phone: string }) => {
         store.state.auth.user.userId || "",
         store.state.auth.user.accessToken || ""
       );
-      router.push("/waiter");
+      return router.push("/waiter");
     })
     .finally(() => {
       isLoggingIn.value = false;

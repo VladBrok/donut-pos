@@ -5,7 +5,14 @@
       alt=""
       fit="cover"
       class="image-sm-md shadow-3 rounded-borders no-shrink"
-    />
+    >
+      <div
+        v-if="!dish.isActive && !viewOnly"
+        class="absolute-full text-body1 flex flex-center"
+      >
+        {{ t.outOfStock }}
+      </div>
+    </q-img>
     <div class="flex-grow">
       <div class="row no-wrap items-baseline justify-between">
         <div>
@@ -48,6 +55,7 @@
               @decrement="emit('decrement')"
               :min="1"
               :count="count"
+              :disable="!dish.isActive"
             >
             </product-counter>
           </div>
@@ -63,13 +71,14 @@
 <script setup lang="ts">
 import ProductCounter from "src/components/ProductCounter.vue";
 import { formatCurrency } from "src/lib/currency";
+import { useI18nStore } from "src/lib/i18n";
 import { loadModificationsAction } from "../../../shared";
 import { loadDishesAction } from "../../../shared/src/actions/dishes";
 
 defineProps<{
   dish: Pick<
     ReturnType<typeof loadDishesAction>["payload"]["dishes"][number],
-    "imageUrl" | "name" | "price"
+    "imageUrl" | "name" | "price" | "isActive"
   >;
   viewOnly?: boolean;
   count: number;
@@ -82,5 +91,6 @@ defineProps<{
   }[];
 }>();
 
+const t = useI18nStore();
 const emit = defineEmits(["delete", "increment", "decrement"]);
 </script>

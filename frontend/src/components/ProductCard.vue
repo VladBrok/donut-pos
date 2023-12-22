@@ -7,16 +7,25 @@
           alt=""
           fit="cover"
           class="image-card shadow-3 rounded-borders"
-        />
+        >
+          <div v-if="caption" class="absolute-full text-h6 flex flex-center">
+            {{ caption }}
+          </div>
+        </q-img>
       </q-card-section>
       <div class="row justify-between q-px-md">
         <div class="q-mr-sm" :class="textClass">
-          {{ textSize === "sm" ? cutText(name, 20) : name }}
-          <q-tooltip v-if="textSize === 'sm'">
-            {{ name }}
-          </q-tooltip>
+          <div>
+            {{ textSize === "sm" ? cutText(name, 20) : name }}
+            <q-tooltip v-if="textSize === 'sm'">
+              {{ name }}
+            </q-tooltip>
+          </div>
+          <div class="text-body2 text-dark-gray">
+            {{ formatWeightGram(weight) }}
+          </div>
         </div>
-        <div class="text-primary" :class="textClass">
+        <div class="text-primary flex-grow text-right" :class="textClass">
           {{ formatCurrency(price) }}
         </div>
       </div>
@@ -26,20 +35,23 @@
 </template>
 
 <script setup lang="ts">
+import { formatWeightGram } from "src/lib/weight";
 import { computed } from "vue";
 import { formatCurrency } from "../lib/currency";
 import { cutText } from "../lib/cut-text";
 
 const props = defineProps<{
   price: number;
+  weight: number;
   name: string;
   imageUrl: string;
   noShadow?: boolean;
   textSize?: "sm" | "lg";
+  caption?: string;
 }>();
 
 const textClass = computed(() => ({
-  "text-h6": !props.textSize || props.textSize === "lg",
-  "text-body1": props.textSize === "sm",
+  "text-h5": !props.textSize || props.textSize === "lg",
+  "text-h6": props.textSize === "sm",
 }));
 </script>

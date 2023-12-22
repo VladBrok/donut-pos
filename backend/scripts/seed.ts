@@ -46,8 +46,8 @@ db.delete(orderStatus);
 
 for (const status of ORDER_STATUSES_ARR) {
   await db.insert(orderStatus).values({
-    id: generateUuid(),
-    codeName: status,
+    id: status.id,
+    codeName: status.name,
   });
 }
 

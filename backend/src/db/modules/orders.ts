@@ -1,5 +1,9 @@
 import { ICurrentOrder } from "donut-shared";
-import { ORDER_STATUSES, OrderStatus } from "donut-shared/src/constants.js";
+import {
+  ORDER_STATUSES,
+  ORDER_STATUSES_ARR,
+  OrderStatus,
+} from "donut-shared/src/constants.js";
 import { and, desc, eq, ilike, sql } from "drizzle-orm";
 import {
   client,
@@ -7,7 +11,6 @@ import {
   employee,
   modification,
   order,
-  orderStatus,
   orderToDish,
   orderToDishToModification,
   orderToOrderStatus,
@@ -26,22 +29,33 @@ export interface IGetOrdersPage {
   strictOrderNumberCompare?: boolean;
 }
 
-// TODO: add index to status name
 // TODO: optimize...
 export async function getOrdersPage(params: IGetOrdersPage) {
+  console.time("get_orders");
+
+  const statusSortHelper = db
+    .select({
+      orderId: orderToOrderStatus.orderId,
+      date: orderToOrderStatus.date,
+    })
+    .from(orderToOrderStatus)
+    .where(eq(orderToOrderStatus.orderStatusId, ORDER_STATUSES.CREATED.id))
+    .as("otos");
+
+  const orders = db
+    .select()
+    .from(order)
+    .leftJoin(statusSortHelper, eq(order.id, statusSortHelper.orderId))
+    .orderBy(desc(statusSortHelper.date))
+    .where(makeWhereFilter(params))
+    .offset((params.page - 1) * params.perPage)
+    .limit(params.perPage)
+    .as("order");
+
   const data = await db
     .select()
-    .from(
-      db
-        .select()
-        .from(order)
-        .where(makeWhereFilter(params))
-        .offset((params.page - 1) * params.perPage)
-        .limit(params.perPage)
-        .as("order")
-    )
+    .from(orders)
     .leftJoin(orderToOrderStatus, eq(order.id, orderToOrderStatus.orderId))
-    .leftJoin(orderStatus, eq(orderToOrderStatus.orderStatusId, orderStatus.id))
     .leftJoin(orderToDish, eq(orderToDish.orderId, order.id))
     .leftJoin(dish, eq(dish.id, orderToDish.dishId))
     .leftJoin(
@@ -53,7 +67,8 @@ export async function getOrdersPage(params: IGetOrdersPage) {
       eq(modification.id, orderToDishToModification.modificationId)
     )
     .leftJoin(employee, eq(employee.id, order.employeeId))
-    .leftJoin(client, eq(client.id, order.clientId));
+    .leftJoin(client, eq(client.id, order.clientId))
+    .orderBy(desc(orders.otos.date));
 
   const total = await db
     .select({
@@ -61,6 +76,8 @@ export async function getOrdersPage(params: IGetOrdersPage) {
     })
     .from(order)
     .where(makeWhereFilter(params));
+
+  console.timeEnd("get_orders");
 
   return { ordersPage: ordersAdapter(data), total: total?.[0].value || 0 };
 }
@@ -94,24 +111,19 @@ function makeWhereFilter(params: IGetOrdersPage) {
 }
 
 function filterByOrderStatusSubquery(status: OrderStatus): any {
+  const statusId = ORDER_STATUSES_ARR.find((x) => x.name === status)?.id || "";
   return db
-    .select({
-      codeName: orderStatus.codeName,
-    })
+    .select()
     .from(
       db
         .select()
         .from(orderToOrderStatus)
         .where(eq(orderToOrderStatus.orderId, order.id))
         .orderBy(desc(orderToOrderStatus.date))
-        .leftJoin(
-          orderStatus,
-          eq(orderStatus.id, orderToOrderStatus.orderStatusId)
-        )
         .limit(1)
-        .as("order_status")
+        .as("order_to_order_status")
     )
-    .where(eq(orderStatus.codeName, status));
+    .where(eq(orderToOrderStatus.orderStatusId, statusId));
 }
 
 // TODO: find a way to make it faster
@@ -119,25 +131,30 @@ export async function createOrder(data: ICurrentOrder, employeeId: string) {
   const orderToCreate = { id: generateUuid(), ...data };
 
   await db.transaction(async (tx) => {
+    const orderNumber = generateOrderNumber();
+    const existing = await tx
+      .select()
+      .from(order)
+      .where(eq(order.number, orderNumber));
+
+    if (existing?.length) {
+      throw new Error(`Duplicate order number was generated: ${orderNumber}`);
+    }
+
     await tx.insert(order).values({
       id: orderToCreate.id,
       comment: data.comment,
       tableNumber: data.tableNumber,
       employeeId: employeeId,
-      number: generateOrderNumber(),
+      number: orderNumber,
     });
-
-    const status = await tx
-      .select()
-      .from(orderStatus)
-      .where(eq(orderStatus.codeName, ORDER_STATUSES.CREATED));
 
     await Promise.all([
       tx.insert(orderToOrderStatus).values({
         id: generateUuid(),
         date: new Date(),
         orderId: orderToCreate.id,
-        orderStatusId: status?.[0]?.id || "",
+        orderStatusId: ORDER_STATUSES.CREATED.id,
       }),
       ...data.dishes.map(async (dish) => {
         const orderToDishUuid = generateUuid();

@@ -88,8 +88,7 @@ export const messages = i18n("messages", {
   updateModification: "Update modification",
   createEmployee: "Create employee",
   updateEmployee: "Update employee",
-  phoneShouldStartWith: "Phone should start with +48",
-  invalidPhoneLengths: "Phone should have exactly 9 digits after +48",
+  invalidPhoneLengths: "Phone should have exactly 9 digits",
   passwordShouldContainDigit: "Password should contain at least 1 digit",
   passwordShouldContainUppercase:
     "Password should contain at least 1 uppercase latin letter",
@@ -106,7 +105,7 @@ export const messages = i18n("messages", {
   searchDishes: "Search by name, price, category or weight",
   searchOrders: "Search by order number",
   allMenu: "All menu",
-  addToCurrentOrder: "Add to current order",
+  addToCurrentOrder: "Add to order",
   addToOrderButton: "Add to order",
   modificationsTitle: "In addition",
   openCurrentOrder: "Open current order",
@@ -128,6 +127,10 @@ export const messages = i18n("messages", {
   orderStatus: "Status",
   dishCount: "Dishes",
   total: "Total, zł",
+  copyOrderNumber: "Copy order number to clipboard",
+  outOfStock: "Out of stock",
+  cannotCreateOrderWithOutOfStock:
+    "Some dishes are out of stock. Please remove them from the order before proceeding",
 
   // Client pages
   orderDetails: "Order details",
@@ -171,6 +174,7 @@ export const messages = i18n("messages", {
   deleteSuccess: "Deleted successfully",
   createSuccess: "Created successfully",
   updateSuccess: "Updated successfully",
+  copyToClipboardSuccess: "Copied to clipboard",
 
   // Errors
   [USER_NOT_FOUND]: params("User with phone {phone} was not found"),
@@ -187,6 +191,7 @@ export const messages = i18n("messages", {
   ),
   imageCorrupted: "The image is corrupted. Try to choose a different one",
   [ACCESS_DENIED]: "Access denied",
+  copyToClipboardError: "Failed to copy",
 });
 
 export function useI18nStore() {

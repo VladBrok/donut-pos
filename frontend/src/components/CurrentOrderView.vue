@@ -103,8 +103,20 @@
           >
             {{ t.clearOrder }}
           </q-btn>
-          <q-btn color="primary" type="submit" :loading="isSubmitting">
+          <q-btn
+            color="primary"
+            type="submit"
+            :loading="isSubmitting"
+            :disable="hasDishOutOfStock"
+          >
             {{ t.createOrder }}
+            <q-tooltip
+              v-if="hasDishOutOfStock"
+              class="bg-negative text-white text-body1"
+              max-width="200px"
+            >
+              {{ t.cannotCreateOrderWithOutOfStock }}
+            </q-tooltip>
           </q-btn>
         </div>
       </template>
@@ -179,6 +191,9 @@ const dishesInOrder = computed(() =>
           }),
         };
       })
+);
+const hasDishOutOfStock = computed(
+  () => dishesInOrder.value?.some((x) => !x.dish.isActive) || false
 );
 const totalCost = computed(
   () => dishesInOrder.value?.reduce((sum, cur) => sum + cur.totalCost, 0) || 0

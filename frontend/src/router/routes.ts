@@ -154,9 +154,12 @@ const routes: RouteRecordRaw[] = [
     component: () => import("layouts/WaiterLayout.vue"),
     children: [
       {
-        // TODO: change to "menu"
         path: "",
-        component: () => import("pages/waiter/WaiterMainPage.vue"),
+        redirect: "/waiter/menu",
+      },
+      {
+        path: "menu",
+        component: () => import("src/pages/waiter/WaiterMenuPage.vue"),
         meta: {
           title: t.value.menu,
         },
@@ -177,7 +180,7 @@ const routes: RouteRecordRaw[] = [
     path: "/orders/:orderNumber", // TODO: this page should be wrapped in client layout
     component: () => import("src/pages/client/ClientSingleOrder.vue"),
     meta: {
-      title: t.value.orderDetails, // TODO: display order number
+      title: t.value.orderDetails,
     },
   },
 

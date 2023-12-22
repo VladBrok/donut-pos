@@ -4,7 +4,7 @@
       <big-spinner v-if="isSubscribing" />
       <div v-else-if="order">
         <h1 class="text-h4">
-          {{ `${t.order} #${order?.orderNumber}` }}
+          <order-number-title :order-number="order.orderNumber" />
         </h1>
         <order-details-view :order="order" full-screen> </order-details-view>
       </div>
@@ -16,6 +16,7 @@
 import { useSubscription } from "@logux/vuex";
 import BigSpinner from "src/components/BigSpinner.vue";
 import OrderDetailsView from "src/components/OrderDetailsView.vue";
+import OrderNumberTitle from "src/components/OrderNumberTitle.vue";
 import { useI18nStore } from "src/lib/i18n";
 import { useStore } from "src/store";
 import { computed, watch } from "vue";

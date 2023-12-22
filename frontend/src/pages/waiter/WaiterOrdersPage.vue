@@ -89,10 +89,10 @@ const unsubscribe = ref(() => {
   /* */
 });
 
-type OrderStatusFilter = (typeof ORDER_STATUSES_ARR)[number] | "all";
+type OrderStatusFilter = (typeof ORDER_STATUSES_ARR)[number]["name"] | "all";
 const statusFilters = computed<OrderStatusFilter[]>(() => [
   "all",
-  ...ORDER_STATUSES_ARR,
+  ...ORDER_STATUSES_ARR.map((x) => x.name),
 ]);
 const searchInput = ref<string | null>(null);
 const isUpdatingPage = ref(false);

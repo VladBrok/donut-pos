@@ -16,7 +16,7 @@
       >
         <q-card class="q-pa-md">
           <q-card-section class="q-gutter-lg">
-            <phone-input v-model.trim="phone" :shouldValidateFormat="false">
+            <phone-input v-model="phone" :shouldValidateFormat="false">
             </phone-input>
             <password-input
               v-model="password"

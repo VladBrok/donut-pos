@@ -33,7 +33,7 @@
         </div>
 
         <div>
-          <div v-for="(dish, i) of order.dishes" :key="i">
+          <div v-for="dish of order.dishes" :key="getUniqueDishId(dish)">
             <dish-in-order
               :dish="dish"
               :count="dish.count"
@@ -60,6 +60,7 @@
 import DishInOrder from "src/components/DishInOrder.vue";
 import OrderHistory from "src/components/OrderHistory.vue";
 import OrderView from "src/components/OrderView.vue";
+import { getUniqueDishId } from "src/lib/get-unique-dish-id";
 import { getOrderDishTotalCost, getOrderTotalCost } from "src/lib/order";
 import { computed } from "vue";
 import { IOrder } from "../../../shared/src/actions/orders";

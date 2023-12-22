@@ -25,15 +25,19 @@ export const EMPLOYEE_PERMISSIONS = structuredClone(EMPLOYEE_ROLES);
 export const EMPLOYEE_ROLES_ARR = Object.values(EMPLOYEE_ROLES);
 
 export const ORDER_STATUSES = {
-  CREATED: "created",
-  COOKING: "cooking",
-  COOKED: "cooked",
-  PAID: "paid",
-  DELIVERING: "delivering",
-  DELIVERED: "delivered",
+  CREATED: { name: "created", id: "90e08aa9-fc21-49f9-89ec-2aa4bf8ebb21" },
+  COOKING: { name: "cooking", id: "99dddebe-b2a3-4aaa-815e-101c7e8d7a46" },
+  COOKED: { name: "cooked", id: "6fc7a2a4-6f19-4a5b-bbc5-136f7ca3e8ed" },
+  PAID: { name: "paid", id: "ef33eeda-6952-42d0-9a99-6fa1a4c20d64" },
+  DELIVERING: {
+    name: "delivering",
+    id: "be756f75-6262-42ff-9fba-6e71cb8a966f",
+  },
+  DELIVERED: { name: "delivered", id: "1eda5fc6-a1d9-440d-b0de-b178e0f6c7f3" },
 } as const;
 export const ORDER_STATUSES_ARR = Object.values(ORDER_STATUSES);
-export type OrderStatus = (typeof ORDER_STATUSES)[keyof typeof ORDER_STATUSES];
+export type OrderStatus =
+  (typeof ORDER_STATUSES)[keyof typeof ORDER_STATUSES]["name"];
 
 export const MISSING_PHOTO_PLACEHOLDER_URL =
   "https://i.ibb.co/DzSX5s3/placeholder.png";
@@ -65,7 +69,7 @@ export const PASSWORD_SPECIAL_CHARS = "! @ # $ % ^ & * ( ) + = < > / ? ~";
 export const FIRST_NAME_MAX_LENGTH = 50;
 export const LAST_NAME_MAX_LENGTH = 50;
 
-export const PHONE_REGEX = /^\+48\d{9}$/;
+export const PHONE_REGEX = /^\d{9}$/;
 
 export const MAX_IMAGE_FILE_SIZE_BYTES = 1000000 * 5;
 export const ALLOWED_IMAGE_TYPES = [

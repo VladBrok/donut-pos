@@ -2,20 +2,22 @@
   <div>
     <big-spinner v-if="isSubscribing" />
     <div v-else>
-      <div class="q-mb-lg max-w-sm">
-        <q-input
-          class="bg-white"
-          outlined
-          v-model="searchInput"
-          :placeholder="t.searchDishes"
-          clearable
-        >
-          <template v-slot:append>
-            <q-icon v-if="!searchInput?.length" name="search" />
-          </template>
-        </q-input>
-      </div>
-      <div class="q-mb-lg gap-sm row">
+      <q-page-sticky position="top" expand style="z-index: 10">
+        <div class="bg-gray-lightest q-py-md q-px-md w-100">
+          <q-input
+            class="bg-white max-w-sm rounded-borders"
+            outlined
+            v-model="searchInput"
+            :placeholder="t.searchDishes"
+            clearable
+          >
+            <template v-slot:append>
+              <q-icon v-if="!searchInput?.length" name="search" />
+            </template>
+          </q-input>
+        </div>
+      </q-page-sticky>
+      <div class="q-mb-lg q-mt-md gap-sm row">
         <filter-pill
           v-for="category in categories"
           :key="category.id"
@@ -27,7 +29,7 @@
         >
         </filter-pill>
       </div>
-      <div v-if="dishesFiltered.length" class="q-mx-auto w-fit card-grid">
+      <div v-if="dishesFiltered.length" class="q-mx-auto card-grid">
         <dish-card
           v-for="dish in dishesFiltered"
           :dish="dish"
@@ -59,13 +61,11 @@ import DishCard from "../../components/DishCard.vue";
 import FilterPill from "../../components/FilterPill.vue";
 import NoData from "../../components/NoData.vue";
 
-import { loadDishesAction } from "../../../../shared/src/actions/dishes";
+import { loadDishesAction } from "donut-shared/src/actions/dishes";
 import DishDetailsModal from "../../components/DishDetailsModal.vue";
 import { createFuzzySearcher } from "../../lib/fuzzy-search";
 import { useI18nStore } from "../../lib/i18n";
 import { useStore } from "../../store";
-
-// TODO: show "found results" when some filter is active ?
 
 const store = useStore();
 const dishes = computed(() => store.state.dishes.dishes);

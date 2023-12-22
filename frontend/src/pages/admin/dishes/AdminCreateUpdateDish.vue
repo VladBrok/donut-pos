@@ -129,66 +129,9 @@
             <label class="q-mb-sm q-mt-md d-block text-label">{{
               t.description
             }}</label>
-            <q-editor
+            <wysiwyg-editor
               v-model="description"
               :placeholder="t.dishDescriptionPlaceholder"
-              :toolbar="[
-                ['bold', 'italic', 'strike', 'underline'],
-                [
-                  {
-                    label: $q.lang.editor.align,
-                    icon: $q.iconSet.editor.align,
-                    fixedLabel: true,
-                    options: ['left', 'center', 'right', 'justify'],
-                  },
-                  {
-                    label: $q.lang.editor.fontSize,
-                    icon: $q.iconSet.editor.fontSize,
-                    fixedLabel: true,
-                    fixedIcon: true,
-                    list: 'no-icons',
-                    options: [
-                      'size-1',
-                      'size-2',
-                      'size-3',
-                      'size-4',
-                      'size-5',
-                      'size-6',
-                      'size-7',
-                    ],
-                  },
-                  {
-                    label: $q.lang.editor.defaultFont,
-                    icon: $q.iconSet.editor.font,
-                    fixedIcon: true,
-                    list: 'no-icons',
-                    options: [
-                      'default_font',
-                      'arial',
-                      'arial_black',
-                      'comic_sans',
-                      'courier_new',
-                      'impact',
-                      'lucida_grande',
-                      'times_new_roman',
-                      'verdana',
-                    ],
-                  },
-                  'removeFormat',
-                ],
-                ['print', 'fullscreen'],
-                ['undo', 'redo'],
-              ]"
-              :fonts="{
-                arial: 'Arial',
-                arial_black: 'Arial Black',
-                comic_sans: 'Comic Sans MS',
-                courier_new: 'Courier New',
-                impact: 'Impact',
-                lucida_grande: 'Lucida Grande',
-                times_new_roman: 'Times New Roman',
-                verdana: 'Verdana',
-              }"
             />
           </div>
         </q-card-section>
@@ -226,7 +169,9 @@ import {
   MIN_DISH_WEIGHT,
 } from "donut-shared/src/constants";
 import { Notify } from "quasar";
+import WysiwygEditor from "src/components/WysiwygEditor.vue";
 import { fractionalToWhole, wholeToFractional } from "src/lib/currency";
+import { createFuzzySearcher } from "src/lib/fuzzy-search";
 import { onFormValidationError } from "src/lib/on-form-validation-error";
 import { useStore } from "src/store";
 import { computed, reactive, ref, watch, watchEffect } from "vue";
@@ -250,7 +195,6 @@ const imageFile = ref<File>();
 const price = ref<number | string>("");
 const weight = ref<number | string>("");
 const categoryName = ref("");
-const filteredCategoryNames = ref<string[]>();
 const modifications = reactive<{ name: string; filteredNames: string[] }[]>([]);
 const isActive = ref(true);
 const description = ref("");
@@ -270,6 +214,16 @@ const channels = computed(() =>
     : [CHANNELS.DISH_CATEGORIES, CHANNELS.MODIFICATIONS]
 );
 const isSubscribing = useSubscription(channels, { store: store as any });
+const categoryFuzzySearch = computed(() =>
+  createFuzzySearcher(store.state.dishCategories.categories, ["name"])
+);
+const modificationsFuzzySearch = computed(() =>
+  createFuzzySearcher(store.state.modifications.modifications, ["name"])
+);
+const categorySearchInput = ref("");
+const filteredCategoryNames = computed(() =>
+  categoryFuzzySearch.value.search(categorySearchInput.value).map((x) => x.name)
+);
 
 const unsubscribe = watchEffect(
   () => {
@@ -298,9 +252,6 @@ watch(
   isSubscribing,
   () => {
     if (!isSubscribing) {
-      filteredCategoryNames.value = store.state.dishCategories.categories.map(
-        (x) => x.name
-      );
       modifications.forEach((x) => (x.filteredNames = modificationNames.value));
     }
   },
@@ -320,23 +271,17 @@ const deleteModification = (index: number) => {
 
 const filterModifications = (index: number) => {
   return (val: string, update: any) => {
-    // TODO: use fuzzy search ?
     update(() => {
-      const needle = val.toLowerCase();
-      modifications[index].filteredNames =
-        store.state.modifications.modifications
-          .filter((v) => v.name.toLowerCase().indexOf(needle) > -1)
-          .map((x) => x.name);
+      modifications[index].filteredNames = modificationsFuzzySearch.value
+        .search(val)
+        .map((x) => x.name);
     });
   };
 };
 
 const filterCategories = (val: string, update: any) => {
   update(() => {
-    const needle = val.toLowerCase();
-    filteredCategoryNames.value = store.state.dishCategories.categories
-      .filter((v) => v.name.toLowerCase().indexOf(needle) > -1)
-      .map((x) => x.name);
+    categorySearchInput.value = val;
   });
 };
 
