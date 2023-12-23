@@ -19,7 +19,12 @@
           <span class="text-h6 q-pr-sm">
             {{ dish.name }}
           </span>
-          <span> ({{ count }} x {{ formatCurrency(dish.price) }}) </span>
+          <span v-if="forKitchen && count > 1" class="text-h6 text-dark-gray">
+            (x {{ count }})
+          </span>
+          <span v-else-if="!forKitchen" class="text-dark-gray">
+            ({{ count }} x {{ formatCurrency(dish.price) }})
+          </span>
         </div>
         <div v-if="!viewOnly">
           <q-btn
@@ -42,7 +47,8 @@
             <span class="">
               {{ modification.modification.name }}
             </span>
-            <span class="">
+            <span v-if="forKitchen"> (x {{ modification.count }}) </span>
+            <span v-else-if="!forKitchen">
               ({{ modification.count }} x
               {{ formatCurrency(modification.modification.price) }})
             </span>
@@ -59,7 +65,7 @@
             >
             </product-counter>
           </div>
-          <div class="text-primary text-h5 q-pr-sm">
+          <div v-if="totalCost" class="text-primary text-h5 q-pr-sm">
             {{ formatCurrency(totalCost) }}
           </div>
         </div>
@@ -81,8 +87,9 @@ defineProps<{
     "imageUrl" | "name" | "price" | "isActive"
   >;
   viewOnly?: boolean;
+  forKitchen?: boolean;
   count: number;
-  totalCost: number;
+  totalCost?: number;
   modifications: {
     modification: ReturnType<
       typeof loadModificationsAction

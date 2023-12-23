@@ -46,21 +46,21 @@
             </div>
 
             <div>
-              <!-- <div v-for="dish of order.dishes" :key="getUniqueDishId(dish)">
-            <dish-in-order
-              :dish="dish"
-              :count="dish.count"
-              :total-cost="getOrderDishTotalCost(dish)"
-              :modifications="
-                dish.modifications.map((x) => ({
-                  count: x.count,
-                  modification: x,
-                }))
-              "
-              view-only
-            />
-            <q-separator />
-          </div> -->
+              <div v-for="dish of order.dishes" :key="getUniqueDishId(dish)">
+                <dish-in-order
+                  :dish="dish"
+                  :count="dish.count"
+                  :modifications="
+                    dish.modifications.map((x) => ({
+                      count: x.count,
+                      modification: x,
+                    }))
+                  "
+                  view-only
+                  for-kitchen
+                />
+                <q-separator />
+              </div>
             </div>
           </template>
         </OrderView>
@@ -73,7 +73,9 @@
 import { useSubscription } from "@logux/vuex";
 import { CHANNELS } from "donut-shared/src/constants";
 import BigSpinner from "src/components/BigSpinner.vue";
+import DishInOrder from "src/components/DishInOrder.vue";
 import OrderView from "src/components/OrderView.vue";
+import { getUniqueDishId } from "src/lib/get-unique-dish-id";
 import { useI18nStore } from "src/lib/i18n";
 import { useStore } from "src/store";
 import { computed } from "vue";
