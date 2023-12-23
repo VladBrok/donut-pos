@@ -5,7 +5,7 @@ import {
   ORDER_STATUSES_ARR,
   OrderStatus,
 } from "donut-shared/src/constants.js";
-import { and, desc, eq, ilike, sql } from "drizzle-orm";
+import { and, asc, desc, eq, ilike, sql } from "drizzle-orm";
 import {
   client,
   dish,
@@ -28,6 +28,7 @@ export interface IGetOrdersPage {
   status?: OrderStatus;
   orderNumber?: string;
   strictOrderNumberCompare?: boolean;
+  orderBy?: "desc" | "asc";
 }
 
 // TODO: optimize...
@@ -69,7 +70,9 @@ export async function getOrdersPage(params: IGetOrdersPage) {
     )
     .leftJoin(employee, eq(employee.id, order.employeeId))
     .leftJoin(client, eq(client.id, order.clientId))
-    .orderBy(desc(orders.otos.date));
+    .orderBy(
+      params.orderBy === "asc" ? asc(orders.otos.date) : desc(orders.otos.date)
+    );
 
   const total = await db
     .select({
@@ -99,6 +102,7 @@ export async function getCreatedOrders() {
     page: 1,
     perPage: 100,
     status: "created",
+    orderBy: "asc",
   });
   return result.ordersPage;
 }

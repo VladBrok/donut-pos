@@ -1,4 +1,6 @@
 import {
+  createdOrdersLoadedAction,
+  orderCreatedAction,
   orderLoadedAction,
   ordersPageLoadedAction,
 } from "donut-shared/src/actions/orders";
@@ -19,6 +21,17 @@ const mutation: MutationTree<IOrdersState> = {
     action: ReturnType<typeof orderLoadedAction>
   ) {
     state.order = action.payload.order;
+  },
+
+  createdOrdersLoaded(
+    state: IOrdersState,
+    action: ReturnType<typeof createdOrdersLoadedAction>
+  ) {
+    state.createdOrders = action.payload.createdOrders;
+  },
+
+  created(state: IOrdersState, action: ReturnType<typeof orderCreatedAction>) {
+    state.createdOrders.push(action.payload.order);
   },
 };
 
