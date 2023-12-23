@@ -27,7 +27,8 @@
             lazy-rules
             type="textarea"
             readonly
-            rows="3"
+            rows="1"
+            autogrow
             class="q-mb-md"
           />
         </div>

@@ -43,7 +43,8 @@
               :label="`${t.commentLabel}`"
               lazy-rules
               type="textarea"
-              rows="3"
+              rows="1"
+              autogrow
               :rules="[
                 (val) =>
                   !val ||

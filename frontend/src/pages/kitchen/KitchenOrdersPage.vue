@@ -2,7 +2,69 @@
   <div>
     <big-spinner v-if="isSubscribing" />
     <div v-else>
-      {{ JSON.stringify(orders, undefined, 4) }}
+      <div class="card-grid-lg">
+        <OrderView
+          v-for="order in orders"
+          :key="order.id"
+          has-content
+          card-padding
+          apply-shadow
+        >
+          <template #content>
+            <div>
+              <q-input
+                :model-value="order.tableNumber || '-'"
+                readonly
+                stack-label
+                :label="`${t.tableNumberLabel}`"
+                lazy-rules
+                type="text"
+                class="q-mb-md"
+              />
+              <q-input
+                :model-value="
+                  order.employee?.lastName + ' ' + order.employee?.firstName
+                "
+                readonly
+                stack-label
+                :label="`${t.waiterName}`"
+                lazy-rules
+                type="text"
+                class="q-mb-md"
+              />
+              <q-input
+                :model-value="order.comment || '-'"
+                stack-label
+                :label="`${t.commentLabel}`"
+                lazy-rules
+                type="textarea"
+                readonly
+                rows="1"
+                autogrow
+                class="q-mb-md"
+              />
+            </div>
+
+            <div>
+              <!-- <div v-for="dish of order.dishes" :key="getUniqueDishId(dish)">
+            <dish-in-order
+              :dish="dish"
+              :count="dish.count"
+              :total-cost="getOrderDishTotalCost(dish)"
+              :modifications="
+                dish.modifications.map((x) => ({
+                  count: x.count,
+                  modification: x,
+                }))
+              "
+              view-only
+            />
+            <q-separator />
+          </div> -->
+            </div>
+          </template>
+        </OrderView>
+      </div>
     </div>
   </div>
 </template>
@@ -11,6 +73,8 @@
 import { useSubscription } from "@logux/vuex";
 import { CHANNELS } from "donut-shared/src/constants";
 import BigSpinner from "src/components/BigSpinner.vue";
+import OrderView from "src/components/OrderView.vue";
+import { useI18nStore } from "src/lib/i18n";
 import { useStore } from "src/store";
 import { computed } from "vue";
 
@@ -18,4 +82,5 @@ const store = useStore();
 const channels = computed(() => [CHANNELS.CREATED_ORDERS]);
 const isSubscribing = useSubscription(channels, { store: store as any });
 const orders = computed(() => store.state.orders.createdOrders);
+const t = useI18nStore();
 </script>

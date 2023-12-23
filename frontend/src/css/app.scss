@@ -115,6 +115,12 @@ body {
   gap: 25px;
 }
 
+.card-grid-lg {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 25px;
+}
+
 .max-w-xl {
   max-width: 1200px;
 }

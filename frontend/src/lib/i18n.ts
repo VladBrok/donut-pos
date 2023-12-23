@@ -115,6 +115,7 @@ export const messages = i18n("messages", {
   createOrder: "Create order",
   clearOrder: "Clear",
   tableNumberLabel: "Table number",
+  waiterName: "Waiter",
   commentLabel: "Comment",
   totalDishes: count({
     one: "{count} dish",

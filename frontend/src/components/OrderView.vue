@@ -25,7 +25,7 @@
               <div class="text-h5">
                 {{ t.totalDishes(dishCount) }}
               </div>
-              <div class="text-weight-medium text-h5">
+              <div v-if="totalCost != null" class="text-weight-medium text-h5">
                 {{ formatCurrency(totalCost) }}
               </div>
             </div>
@@ -46,7 +46,7 @@ import NoData from "./NoData.vue";
 
 defineProps<{
   hasContent: boolean;
-  totalCost: number;
+  totalCost?: number;
   cardPadding?: boolean;
   applyShadow?: boolean;
   fullContentHeight?: boolean;
