@@ -45,7 +45,7 @@
               />
             </div>
 
-            <div>
+            <TransitionGroup tag="div" name="fade">
               <div v-for="dish of order.dishes" :key="getUniqueDishId(dish)">
                 <dish-in-order
                   :dish="dish"
@@ -65,7 +65,7 @@
                 />
                 <q-separator />
               </div>
-            </div>
+            </TransitionGroup>
           </template>
         </OrderView>
       </div>
