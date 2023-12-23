@@ -2,7 +2,7 @@
   <div class="row no-wrap gap-md q-py-md">
     <component
       :is="forKitchen ? QBtn : 'div'"
-      @click="expand"
+      @click="forKitchen && expand()"
       dense
       unelevated
       class="rounded-borders q-pa-none"
