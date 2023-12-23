@@ -168,6 +168,8 @@ Table order_to_dish {
   order_id UUID
   dish_id UUID
   dish_count INT
+  is_cooking BOOLEAN
+  is_ready BOOLEAN
   Indexes {
     order_id [name: 'order_to_dish_order_id_idx']
     dish_id [name: 'order_to_dish_dish_id_idx']

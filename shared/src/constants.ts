@@ -11,6 +11,7 @@ export const CHANNELS = {
   ORDER_SINGLE: "singleOrder/:orderNumber",
   ORDER_CREATED: "orderCreated",
   ORDER_COOKED: "orderCooked",
+  KITCHEN: "kitchen",
 };
 
 export const ANONYMOUS = {

@@ -128,7 +128,9 @@ CREATE TABLE "order_to_dish" (
   "id" UUID PRIMARY KEY,
   "order_id" UUID,
   "dish_id" UUID,
-  "dish_count" INT
+  "dish_count" INT,
+  "is_cooking" BOOLEAN,
+  "is_ready" BOOLEAN
 );
 
 CREATE TABLE "order_to_dish_to_modification" (

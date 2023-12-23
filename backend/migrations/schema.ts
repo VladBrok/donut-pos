@@ -111,6 +111,8 @@ export const orderToDish = pgTable("order_to_dish", {
 	orderId: uuid("order_id").references(() => order.id, { onDelete: "set null" } ).references(() => order.id, { onDelete: "set null" } ).references(() => order.id, { onDelete: "set null" } ),
 	dishId: uuid("dish_id").references(() => dish.id, { onDelete: "set null" } ).references(() => dish.id, { onDelete: "set null" } ).references(() => dish.id, { onDelete: "set null" } ),
 	dishCount: integer("dish_count"),
+	isCooking: boolean("is_cooking"),
+	isReady: boolean("is_ready"),
 },
 (table) => {
 	return {
