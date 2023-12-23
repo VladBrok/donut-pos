@@ -8,14 +8,14 @@ import {
 } from "donut-shared/src/actions/orders.js";
 import { CHANNELS, ITEMS_PER_PAGE } from "donut-shared/src/constants.js";
 import * as db from "../db/modules/orders.js";
-import { hasWaiterPermission } from "../lib/access.js";
+import { hasCookPermissions, hasWaiterPermission } from "../lib/access.js";
 
 // TODO: consider creating separate channels for client's orders ?
 
 export default function ordersModule(server: Server) {
   server.channel(CHANNELS.CREATED_ORDERS, {
     access(ctx) {
-      return hasWaiterPermission(ctx.userId);
+      return hasCookPermissions(ctx.userId);
     },
     async load() {
       const orders = await db.getCreatedOrders();

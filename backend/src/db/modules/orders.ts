@@ -1,6 +1,7 @@
 import { ICurrentOrder } from "donut-shared";
 import { IOrder } from "donut-shared/src/actions/orders.js";
 import {
+  ITEMS_PER_PAGE,
   ORDER_STATUSES,
   ORDER_STATUSES_ARR,
   OrderStatus,
@@ -100,7 +101,7 @@ export async function getSingleOrder(orderNumber: string, userId?: string) {
 export async function getCreatedOrders() {
   const result = await getOrdersPage({
     page: 1,
-    perPage: 100,
+    perPage: ITEMS_PER_PAGE * 3,
     status: "created",
     orderBy: "asc",
   });
