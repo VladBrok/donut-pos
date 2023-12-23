@@ -9,6 +9,8 @@ export const CHANNELS = {
   ORDERS: "orders",
   ORDERS_OF_EMPLOYEE: "orders/:employeeId",
   ORDER_SINGLE: "singleOrder/:orderNumber",
+  ORDER_CREATED: "orderCreated",
+  ORDER_COOKED: "orderCooked",
 };
 
 export const ANONYMOUS = {

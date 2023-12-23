@@ -174,6 +174,32 @@ const routes: RouteRecordRaw[] = [
     ],
   },
 
+  // Kitchen
+  {
+    path: "/kitchen/login",
+    component: () => import("pages/kitchen/KitchenLogin.vue"),
+    meta: {
+      title: t.value.logIn,
+    },
+  },
+  {
+    path: "/kitchen",
+    component: () => import("layouts/KitchenLayout.vue"),
+    children: [
+      {
+        path: "",
+        redirect: "/kitchen/orders",
+      },
+      {
+        path: "orders",
+        component: () => import("pages/kitchen/KitchenOrdersPage.vue"),
+        meta: {
+          title: t.value.orders,
+        },
+      },
+    ],
+  },
+
   // Client
   // TODO: same as for other roles - if not authed, redirect to ClientLogin
   {

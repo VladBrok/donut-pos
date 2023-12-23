@@ -147,6 +147,7 @@ export const messages = i18n("messages", {
   // Login page
   adminLoginPageTitle: "Admin login",
   waiterLoginPageTitle: "Waiter login",
+  kitchenLoginPageTitle: "Login to kitchen",
   passwordRequired: "Please enter a password",
   phoneRequired: "Please enter a phone number",
   phoneLabel: "Phone",
