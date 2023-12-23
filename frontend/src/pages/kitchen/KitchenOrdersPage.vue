@@ -11,6 +11,12 @@
           apply-shadow
         >
           <template #content>
+            <order-number-title
+              :order-number="order.orderNumber"
+              class="text-h6 q-mb-sm"
+              copy-button-size="sm"
+            >
+            </order-number-title>
             <div>
               <q-input
                 :model-value="order.tableNumber || '-'"
@@ -79,6 +85,7 @@ import { useSubscription } from "@logux/vuex";
 import { CHANNELS } from "donut-shared/src/constants";
 import BigSpinner from "src/components/BigSpinner.vue";
 import DishInOrder from "src/components/DishInOrder.vue";
+import OrderNumberTitle from "src/components/OrderNumberTitle.vue";
 import OrderView from "src/components/OrderView.vue";
 import { getUniqueDishId } from "src/lib/get-unique-dish-id";
 import { useI18nStore } from "src/lib/i18n";
