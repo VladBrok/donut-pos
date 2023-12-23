@@ -5,7 +5,7 @@
         <div>
           <slot name="title" />
         </div>
-        <div>
+        <div class="flex-grow row justify-end items-start">
           <q-btn dense flat round icon="close" @click="emit('close')" />
         </div>
       </div>
