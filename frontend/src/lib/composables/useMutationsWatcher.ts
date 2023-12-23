@@ -39,7 +39,8 @@ export const useMutationsWatcher = () => {
         }
 
         case logoutAction.type: {
-          const redirectTo = `/${getUserFromStorage()?.role.codeName}/login`;
+          const role = getUserFromStorage()?.role.codeName;
+          const redirectTo = `/${role === "cook" ? "kitchen" : role}/login`;
           removeItem(Keys.User);
           store.client.changeUser(ANONYMOUS.userId);
           router.push(redirectTo);
