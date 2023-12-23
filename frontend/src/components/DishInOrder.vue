@@ -1,18 +1,26 @@
 <template>
   <div class="row no-wrap gap-md q-py-md">
-    <q-img
-      :src="dish.imageUrl"
-      alt=""
-      fit="cover"
-      class="image-sm-md shadow-3 rounded-borders no-shrink"
+    <component
+      :is="forKitchen ? QBtn : 'div'"
+      @click="expand"
+      dense
+      unelevated
+      class="rounded-borders q-pa-none"
     >
-      <div
-        v-if="!dish.isActive && !viewOnly"
-        class="absolute-full text-body1 flex flex-center"
+      <q-img
+        :src="dish.imageUrl"
+        alt=""
+        fit="cover"
+        class="image-sm-md shadow-3 rounded-borders no-shrink"
       >
-        {{ t.outOfStock }}
-      </div>
-    </q-img>
+        <div
+          v-if="!dish.isActive"
+          class="absolute-full text-body1 flex flex-center no-text-transform"
+        >
+          {{ capitalize(t.outOfStock) }}
+        </div>
+      </q-img>
+    </component>
     <div class="flex-grow">
       <div class="row no-wrap items-baseline justify-between">
         <div>
@@ -35,6 +43,19 @@
             icon="close"
             @click="emit('delete')"
           />
+        </div>
+        <div v-if="forKitchen">
+          <q-btn
+            dense
+            flat
+            round
+            size="sm"
+            icon="open_in_new"
+            color="dark-gray"
+            @click="expand"
+          >
+            <q-tooltip>{{ t.viewDetails }}</q-tooltip>
+          </q-btn>
         </div>
       </div>
       <div>
@@ -71,16 +92,29 @@
         </div>
       </div>
     </div>
+
+    <dish-details-modal
+      :dish="dish"
+      v-model="isModalOpen"
+      view-only
+      :count="count"
+    >
+    </dish-details-modal>
   </div>
 </template>
 
 <script setup lang="ts">
+import { QBtn } from "quasar";
+import DishDetailsModal from "src/components/DishDetailsModal.vue";
 import ProductCounter from "src/components/ProductCounter.vue";
+import { capitalize } from "src/lib/capitalize";
 import { formatCurrency } from "src/lib/currency";
 import { useI18nStore } from "src/lib/i18n";
+import { ref } from "vue";
 import { loadModificationsAction } from "../../../shared";
 import { loadDishesAction } from "../../../shared/src/actions/dishes";
 
+// TODO: too many booleans. Split this component, restructure it
 defineProps<{
   dish: Pick<
     ReturnType<typeof loadDishesAction>["payload"]["dishes"][number],
@@ -98,6 +132,11 @@ defineProps<{
   }[];
 }>();
 
-const t = useI18nStore();
 const emit = defineEmits(["delete", "increment", "decrement"]);
+const t = useI18nStore();
+const isModalOpen = ref(false);
+
+function expand() {
+  isModalOpen.value = true;
+}
 </script>

@@ -133,6 +133,9 @@ export const messages = i18n("messages", {
   cannotCreateOrderWithOutOfStock:
     "Some dishes are out of stock. Please remove them from the order before proceeding",
 
+  // Kitchen pages
+  viewDetails: "View details",
+
   // Client pages
   orderDetails: "Order details",
 

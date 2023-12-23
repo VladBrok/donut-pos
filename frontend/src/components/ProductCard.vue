@@ -25,8 +25,11 @@
             {{ formatWeightGram(weight) }}
           </div>
         </div>
-        <div class="text-primary flex-grow text-right" :class="textClass">
-          {{ formatCurrency(price) }}
+        <div class="flex-grow text-right" :class="textClass">
+          <span v-if="price" class="text-primary">{{
+            formatCurrency(price)
+          }}</span>
+          <slot name="right" />
         </div>
       </div>
       <slot />
@@ -41,7 +44,7 @@ import { formatCurrency } from "../lib/currency";
 import { cutText } from "../lib/cut-text";
 
 const props = defineProps<{
-  price: number;
+  price?: number;
   weight: number;
   name: string;
   imageUrl: string;

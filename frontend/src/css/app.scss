@@ -20,6 +20,10 @@ body {
   display: none;
 }
 
+.no-text-transform {
+  text-transform: none;
+}
+
 .min-height-window {
   min-height: 100vh;
 }
