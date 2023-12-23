@@ -53,6 +53,7 @@
                   :is-cooking="dish.isCooking"
                   :is-ready="dish.isReady"
                   :order-number="order.orderNumber"
+                  :order-id="order.id"
                   :dish-id-in-order="dish.dishIdInOrder"
                   :modifications="
                     dish.modifications.map((x) => ({

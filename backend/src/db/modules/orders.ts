@@ -201,13 +201,29 @@ export async function createOrder(
   return await getSingleOrder(orderNumber);
 }
 
-export async function startCookingDish(dishIdInOrder: string) {
-  return await db
-    .update(orderToDish)
-    .set({
-      isCooking: true,
-    })
-    .where(eq(orderToDish.id, dishIdInOrder));
+export async function startCookingDish(orderId: string, dishIdInOrder: string) {
+  await db.transaction(async (tx) => {
+    const statuses = await tx
+      .select()
+      .from(orderToOrderStatus)
+      .where(eq(orderToOrderStatus.orderId, orderId));
+
+    if (!statuses.find((x) => x.orderStatusId === ORDER_STATUSES.COOKING.id)) {
+      await tx.insert(orderToOrderStatus).values({
+        id: generateUuid(),
+        date: new Date(),
+        orderId: orderId,
+        orderStatusId: ORDER_STATUSES.COOKING.id,
+      });
+    }
+
+    await tx
+      .update(orderToDish)
+      .set({
+        isCooking: true,
+      })
+      .where(eq(orderToDish.id, dishIdInOrder));
+  });
 }
 
 export async function finishCookingDish(dishIdInOrder: string) {

@@ -137,6 +137,7 @@ const props = defineProps<{
     ReturnType<typeof loadDishesAction>["payload"]["dishes"][number],
     "imageUrl" | "name" | "price" | "isActive"
   >;
+  orderId?: string;
   orderNumber?: string;
   viewOnly?: boolean;
   forKitchen?: boolean;
@@ -171,6 +172,7 @@ function updateStatus() {
   if (!props.isCooking) {
     promise = store.commit.sync(
       startCookingDishAction({
+        orderId: props.orderId || "",
         orderNumber: props.orderNumber || "",
         dishIdInOrder: props.dishIdInOrder || "",
       })
@@ -178,6 +180,7 @@ function updateStatus() {
   } else {
     promise = store.commit.sync(
       finishCookingDishAction({
+        orderId: props.orderId || "",
         orderNumber: props.orderNumber || "",
         dishIdInOrder: props.dishIdInOrder || "",
       })

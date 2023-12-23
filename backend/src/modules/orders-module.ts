@@ -101,7 +101,10 @@ export default function ordersModule(server: Server) {
       return await hasCookPermissions(ctx.userId);
     },
     async process(ctx, action, meta) {
-      await db.startCookingDish(action.payload.dishIdInOrder);
+      await db.startCookingDish(
+        action.payload.orderId,
+        action.payload.dishIdInOrder
+      );
       await server.process(dishStartedCookingAction(action.payload));
     },
   });

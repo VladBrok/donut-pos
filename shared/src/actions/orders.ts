@@ -72,23 +72,27 @@ export const orderCreatedAction = createAction<{
 }>("orders/created");
 
 export const startCookingDishAction = createAction<{
+  orderId: string;
   orderNumber: string;
   dishIdInOrder: string;
 }>("orders/startCookingDish");
 
 // TODO: if it's a first dish in order that started cooking, update the order status to Cooking
 export const dishStartedCookingAction = createAction<{
+  orderId: string;
   orderNumber: string;
   dishIdInOrder: string;
 }>("orders/dishStartedCooking");
 
 export const finishCookingDishAction = createAction<{
+  orderId: string;
   orderNumber: string;
   dishIdInOrder: string;
 }>("orders/finishCookingDish");
 
 // TODO: if all dishes in order are cooked, update the order status to Cooked
 export const dishFinishedCookingAction = createAction<{
+  orderId: string;
   orderNumber: string;
   dishIdInOrder: string;
 }>("orders/dishFinishedCooking");
