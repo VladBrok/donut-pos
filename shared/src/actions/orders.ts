@@ -55,6 +55,10 @@ export const ordersPageLoadedAction = createAction<{
   ordersPage: IOrder[];
 }>("orders/pageLoaded");
 
+export const createdOrdersLoadedAction = createAction<{
+  createdOrders: IOrder[];
+}>("orders/createdOrdersLoaded");
+
 export const createOrderAction = createAction<{
   order: ICurrentOrder;
 }>("orders/create");

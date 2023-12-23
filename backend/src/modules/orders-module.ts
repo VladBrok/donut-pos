@@ -1,6 +1,7 @@
 import { Server } from "@logux/server";
 import { createOrderAction, orderCreatedAction } from "donut-shared";
 import {
+  createdOrdersLoadedAction,
   loadOrdersPageAction,
   orderLoadedAction,
   ordersPageLoadedAction,
@@ -12,6 +13,18 @@ import { hasWaiterPermission } from "../lib/access.js";
 // TODO: consider creating separate channels for client's orders ?
 
 export default function ordersModule(server: Server) {
+  server.channel(CHANNELS.CREATED_ORDERS, {
+    access(ctx) {
+      return hasWaiterPermission(ctx.userId);
+    },
+    async load() {
+      const orders = await db.getCreatedOrders();
+      return createdOrdersLoadedAction({
+        createdOrders: orders,
+      });
+    },
+  });
+
   // TODO: no one is currently listening this channel. But it resends `orderCreatedAction`
   server.channel(CHANNELS.ORDERS, {
     access(ctx) {

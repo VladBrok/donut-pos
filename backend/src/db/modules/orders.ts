@@ -23,7 +23,7 @@ import { db } from "../index.js";
 export interface IGetOrdersPage {
   page: number;
   perPage: number;
-  employeeId: string;
+  employeeId?: string;
   status?: OrderStatus;
   orderNumber?: string;
   strictOrderNumberCompare?: boolean;
@@ -93,9 +93,18 @@ export async function getSingleOrder(orderNumber: string, userId: string) {
   return result.ordersPage?.[0] || null;
 }
 
+export async function getCreatedOrders() {
+  const result = await getOrdersPage({
+    page: 1,
+    perPage: 100,
+    status: "created",
+  });
+  return result.ordersPage;
+}
+
 function makeWhereFilter(params: IGetOrdersPage) {
   return and(
-    eq(order.employeeId, params.employeeId),
+    params.employeeId ? eq(order.employeeId, params.employeeId) : undefined,
     params.orderNumber
       ? ilike(
           order.number,
