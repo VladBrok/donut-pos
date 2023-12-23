@@ -29,6 +29,8 @@ export interface IOrder {
     price: number;
     weight: number;
     isActive: boolean;
+    isCooking: boolean;
+    isReady: boolean;
     modifications: {
       id: string;
       name: string;

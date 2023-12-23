@@ -135,6 +135,9 @@ export const messages = i18n("messages", {
 
   // Kitchen pages
   viewDetails: "View details",
+  startCooking: "Start",
+  finishCooking: "Ready",
+  done: "Done",
 
   // Client pages
   orderDetails: "Order details",

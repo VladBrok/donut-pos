@@ -178,6 +178,8 @@ export const ordersAdapter = (data: OrderSchema[]): OrderModel[] => {
         .map((order) => ({
           id: order.dish?.id || "",
           count: order.order_to_dish?.dishCount || 0,
+          isCooking: order.order_to_dish?.isCooking || false,
+          isReady: order.order_to_dish?.isReady || false,
           name: order.dish?.name || "",
           imageUrl: order.dish?.imageUrl || "",
           description: order.dish?.description || "",

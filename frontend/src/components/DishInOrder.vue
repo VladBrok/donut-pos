@@ -86,6 +86,17 @@
             >
             </product-counter>
           </div>
+          <div v-if="forKitchen">
+            <q-btn
+              :color="isCooking ? 'positive' : isReady ? 'grey' : 'primary'"
+              :disable="isReady"
+              @click="updateStatus"
+            >
+              {{
+                isCooking ? t.finishCooking : isReady ? t.done : t.startCooking
+              }}
+            </q-btn>
+          </div>
           <div v-if="totalCost" class="text-primary text-h5 q-pr-sm">
             {{ formatCurrency(totalCost) }}
           </div>
@@ -115,14 +126,16 @@ import { loadModificationsAction } from "../../../shared";
 import { loadDishesAction } from "../../../shared/src/actions/dishes";
 
 // TODO: too many booleans. Split this component, restructure it
-defineProps<{
+const props = defineProps<{
   dish: Pick<
     ReturnType<typeof loadDishesAction>["payload"]["dishes"][number],
     "imageUrl" | "name" | "price" | "isActive"
   >;
   viewOnly?: boolean;
   forKitchen?: boolean;
-  count: number;
+  count: number; // TODO: with should take count, isReady, isCooking from dish. Refactor.
+  isCooking?: boolean;
+  isReady?: boolean;
   totalCost?: number;
   modifications: {
     modification: ReturnType<
@@ -138,5 +151,9 @@ const isModalOpen = ref(false);
 
 function expand() {
   isModalOpen.value = true;
+}
+
+function updateStatus() {
+  console.log("update status", props.isCooking, props.isReady);
 }
 </script>

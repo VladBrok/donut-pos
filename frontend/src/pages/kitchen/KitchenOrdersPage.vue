@@ -50,6 +50,8 @@
                 <dish-in-order
                   :dish="dish"
                   :count="dish.count"
+                  :is-cooking="dish.isCooking"
+                  :is-ready="dish.isReady"
                   :modifications="
                     dish.modifications.map((x) => ({
                       count: x.count,
