@@ -76,6 +76,9 @@ const mutation: MutationTree<IOrdersState> = {
     );
     if (dish) {
       dish.isReady = true;
+      if (order?.dishes.every((x) => x.isReady)) {
+        state.ordersForKitchen.splice(state.ordersForKitchen.indexOf(order), 1);
+      }
       state.ordersForKitchen = sortDishesByCookingStatus(
         state.ordersForKitchen
       );

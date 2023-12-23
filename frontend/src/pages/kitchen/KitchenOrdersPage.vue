@@ -2,7 +2,7 @@
   <div>
     <big-spinner v-if="isSubscribing" />
     <div v-else>
-      <div class="card-grid-lg">
+      <TransitionGroup tag="div" name="fade" class="card-grid-lg">
         <OrderView
           v-for="order in orders"
           :key="order.id"
@@ -75,7 +75,7 @@
             </TransitionGroup>
           </template>
         </OrderView>
-      </div>
+      </TransitionGroup>
     </div>
   </div>
 </template>
