@@ -63,4 +63,6 @@ export const createOrderAction = createAction<{
   order: ICurrentOrder;
 }>("orders/create");
 
-export const orderCreatedAction = createAction("orders/created");
+export const orderCreatedAction = createAction<{
+  order: IOrder;
+}>("orders/created");

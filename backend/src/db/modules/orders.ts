@@ -1,4 +1,5 @@
 import { ICurrentOrder } from "donut-shared";
+import { IOrder } from "donut-shared/src/actions/orders.js";
 import {
   ORDER_STATUSES,
   ORDER_STATUSES_ARR,
@@ -82,7 +83,7 @@ export async function getOrdersPage(params: IGetOrdersPage) {
   return { ordersPage: ordersAdapter(data), total: total?.[0].value || 0 };
 }
 
-export async function getSingleOrder(orderNumber: string, userId: string) {
+export async function getSingleOrder(orderNumber: string, userId?: string) {
   const result = await getOrdersPage({
     employeeId: userId, // TODO: this will be a client id
     page: 1,
@@ -136,20 +137,23 @@ function filterByOrderStatusSubquery(status: OrderStatus): any {
 }
 
 // TODO: find a way to make it faster
-export async function createOrder(data: ICurrentOrder, employeeId: string) {
+export async function createOrder(
+  data: ICurrentOrder,
+  employeeId: string
+): Promise<IOrder> {
+  const orderNumber = generateOrderNumber();
+  const existing = await db
+    .select()
+    .from(order)
+    .where(eq(order.number, orderNumber));
+
+  if (existing?.length) {
+    throw new Error(`Duplicate order number was generated: ${orderNumber}`);
+  }
+
   const orderToCreate = { id: generateUuid(), ...data };
 
   await db.transaction(async (tx) => {
-    const orderNumber = generateOrderNumber();
-    const existing = await tx
-      .select()
-      .from(order)
-      .where(eq(order.number, orderNumber));
-
-    if (existing?.length) {
-      throw new Error(`Duplicate order number was generated: ${orderNumber}`);
-    }
-
     await tx.insert(order).values({
       id: orderToCreate.id,
       comment: data.comment,
@@ -189,5 +193,5 @@ export async function createOrder(data: ICurrentOrder, employeeId: string) {
     ]);
   });
 
-  return orderToCreate;
+  return await getSingleOrder(orderNumber);
 }

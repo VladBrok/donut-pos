@@ -25,7 +25,7 @@ export default function ordersModule(server: Server) {
     },
   });
 
-  // TODO: no one is currently listening this channel. But it resends `orderCreatedAction`
+  // TODO: maybe remove this channel?
   server.channel(CHANNELS.ORDERS, {
     access(ctx) {
       return hasWaiterPermission(ctx.userId);
@@ -98,7 +98,11 @@ export default function ordersModule(server: Server) {
     },
     async process(ctx, action, meta) {
       const created = await db.createOrder(action.payload.order, ctx.userId);
-      await server.process(orderCreatedAction()); // TODO: send created order as payload so that it can be added to clients & cooks
+      await server.process(
+        orderCreatedAction({
+          order: created,
+        })
+      );
     },
   });
 
@@ -107,7 +111,7 @@ export default function ordersModule(server: Server) {
       return false;
     },
     resend() {
-      return CHANNELS.ORDERS;
+      return CHANNELS.CREATED_ORDERS;
     },
   });
 }
