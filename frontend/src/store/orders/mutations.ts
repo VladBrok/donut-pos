@@ -1,5 +1,7 @@
 import {
   createdOrdersLoadedAction,
+  dishFinishedCookingAction,
+  dishStartedCookingAction,
   orderCreatedAction,
   orderLoadedAction,
   ordersPageLoadedAction,
@@ -32,6 +34,38 @@ const mutation: MutationTree<IOrdersState> = {
 
   created(state: IOrdersState, action: ReturnType<typeof orderCreatedAction>) {
     state.createdOrders.push(action.payload.order);
+  },
+
+  dishStartedCooking(
+    state: IOrdersState,
+    action: ReturnType<typeof dishStartedCookingAction>
+  ) {
+    console.log("started", action.payload);
+    const order = state.createdOrders.find(
+      (x) => x.orderNumber === action.payload.orderNumber
+    );
+    const dish = order?.dishes.find(
+      (x) => x.dishIdInOrder === action.payload.dishIdInOrder
+    );
+    if (dish) {
+      console.log("started cooking", dish);
+      dish.isCooking = true;
+    }
+  },
+
+  dishFinishedCooking(
+    state: IOrdersState,
+    action: ReturnType<typeof dishFinishedCookingAction>
+  ) {
+    const order = state.createdOrders.find(
+      (x) => x.orderNumber === action.payload.orderNumber
+    );
+    const dish = order?.dishes.find(
+      (x) => x.dishIdInOrder === action.payload.dishIdInOrder
+    );
+    if (dish) {
+      dish.isReady = true;
+    }
   },
 };
 

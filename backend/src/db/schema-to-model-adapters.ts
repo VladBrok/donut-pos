@@ -177,6 +177,7 @@ export const ordersAdapter = (data: OrderSchema[]): OrderModel[] => {
         .filter(onlyUnique((item) => item.dish?.id || ""))
         .map((order) => ({
           id: order.dish?.id || "",
+          dishIdInOrder: order.order_to_dish?.id,
           count: order.order_to_dish?.dishCount || 0,
           isCooking: order.order_to_dish?.isCooking || false,
           isReady: order.order_to_dish?.isReady || false,

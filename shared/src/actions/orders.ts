@@ -22,6 +22,8 @@ export interface IOrder {
   }[];
   dishes: {
     id: string;
+    orderNumber: string;
+    dishIdInOrder: string;
     count: number;
     name: string;
     imageUrl: string;
@@ -68,3 +70,25 @@ export const createOrderAction = createAction<{
 export const orderCreatedAction = createAction<{
   order: IOrder;
 }>("orders/created");
+
+export const startCookingDishAction = createAction<{
+  orderNumber: string;
+  dishIdInOrder: string;
+}>("orders/startCookingDish");
+
+// TODO: if it's a first dish in order that started cooking, update the order status to Cooking
+export const dishStartedCookingAction = createAction<{
+  orderNumber: string;
+  dishIdInOrder: string;
+}>("orders/dishStartedCooking");
+
+export const finishCookingDishAction = createAction<{
+  orderNumber: string;
+  dishIdInOrder: string;
+}>("orders/finishCookingDish");
+
+// TODO: if all dishes in order are cooked, update the order status to Cooked
+export const dishFinishedCookingAction = createAction<{
+  orderNumber: string;
+  dishIdInOrder: string;
+}>("orders/dishFinishedCooking");

@@ -200,3 +200,21 @@ export async function createOrder(
 
   return await getSingleOrder(orderNumber);
 }
+
+export async function startCookingDish(dishIdInOrder: string) {
+  return await db
+    .update(orderToDish)
+    .set({
+      isCooking: true,
+    })
+    .where(eq(orderToDish.id, dishIdInOrder));
+}
+
+export async function finishCookingDish(dishIdInOrder: string) {
+  return await db
+    .update(orderToDish)
+    .set({
+      isReady: true,
+    })
+    .where(eq(orderToDish.id, dishIdInOrder));
+}

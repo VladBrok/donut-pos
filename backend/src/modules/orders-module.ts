@@ -2,9 +2,13 @@ import { Server } from "@logux/server";
 import { createOrderAction, orderCreatedAction } from "donut-shared";
 import {
   createdOrdersLoadedAction,
+  dishFinishedCookingAction,
+  dishStartedCookingAction,
+  finishCookingDishAction,
   loadOrdersPageAction,
   orderLoadedAction,
   ordersPageLoadedAction,
+  startCookingDishAction,
 } from "donut-shared/src/actions/orders.js";
 import { CHANNELS, ITEMS_PER_PAGE } from "donut-shared/src/constants.js";
 import * as db from "../db/modules/orders.js";
@@ -89,6 +93,44 @@ export default function ordersModule(server: Server) {
           totalOrders: total,
         })
       );
+    },
+  });
+
+  server.type(startCookingDishAction, {
+    async access(ctx) {
+      return await hasCookPermissions(ctx.userId);
+    },
+    async process(ctx, action, meta) {
+      await db.startCookingDish(action.payload.dishIdInOrder);
+      await server.process(dishStartedCookingAction(action.payload));
+    },
+  });
+
+  server.type(dishStartedCookingAction, {
+    async access() {
+      return false;
+    },
+    resend() {
+      return CHANNELS.CREATED_ORDERS;
+    },
+  });
+
+  server.type(finishCookingDishAction, {
+    async access(ctx) {
+      return await hasCookPermissions(ctx.userId);
+    },
+    async process(ctx, action, meta) {
+      await db.finishCookingDish(action.payload.dishIdInOrder);
+      await server.process(dishFinishedCookingAction(action.payload));
+    },
+  });
+
+  server.type(dishFinishedCookingAction, {
+    async access() {
+      return false;
+    },
+    resend() {
+      return CHANNELS.CREATED_ORDERS;
     },
   });
 
