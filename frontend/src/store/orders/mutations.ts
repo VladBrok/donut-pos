@@ -1,4 +1,5 @@
 import {
+  IOrder,
   createdOrdersLoadedAction,
   dishFinishedCookingAction,
   dishStartedCookingAction,
@@ -8,6 +9,15 @@ import {
 } from "donut-shared/src/actions/orders";
 import { MutationTree } from "vuex";
 import { IOrdersState } from "./state";
+
+function sortDishesByCookingStatus(orders: IOrder[]) {
+  return orders.map((order) => ({
+    ...order,
+    dishes: order.dishes
+      .slice()
+      .sort((a, b) => (a.isReady ? 1 : b.isReady ? -1 : 0)),
+  }));
+}
 
 const mutation: MutationTree<IOrdersState> = {
   pageLoaded(
@@ -29,7 +39,9 @@ const mutation: MutationTree<IOrdersState> = {
     state: IOrdersState,
     action: ReturnType<typeof createdOrdersLoadedAction>
   ) {
-    state.createdOrders = action.payload.createdOrders;
+    state.createdOrders = sortDishesByCookingStatus(
+      action.payload.createdOrders
+    );
   },
 
   created(state: IOrdersState, action: ReturnType<typeof orderCreatedAction>) {
@@ -48,6 +60,7 @@ const mutation: MutationTree<IOrdersState> = {
     );
     if (dish) {
       dish.isCooking = true;
+      state.createdOrders = sortDishesByCookingStatus(state.createdOrders);
     }
   },
 
@@ -63,6 +76,7 @@ const mutation: MutationTree<IOrdersState> = {
     );
     if (dish) {
       dish.isReady = true;
+      state.createdOrders = sortDishesByCookingStatus(state.createdOrders);
     }
   },
 };
