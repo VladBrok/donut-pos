@@ -40,7 +40,6 @@ const mutation: MutationTree<IOrdersState> = {
     state: IOrdersState,
     action: ReturnType<typeof dishStartedCookingAction>
   ) {
-    console.log("started", action.payload);
     const order = state.createdOrders.find(
       (x) => x.orderNumber === action.payload.orderNumber
     );
@@ -48,7 +47,6 @@ const mutation: MutationTree<IOrdersState> = {
       (x) => x.dishIdInOrder === action.payload.dishIdInOrder
     );
     if (dish) {
-      console.log("started cooking", dish);
       dish.isCooking = true;
     }
   },
