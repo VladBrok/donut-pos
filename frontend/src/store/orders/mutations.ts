@@ -1,10 +1,10 @@
 import {
   IOrder,
-  createdOrdersLoadedAction,
   dishFinishedCookingAction,
   dishStartedCookingAction,
   orderCreatedAction,
   orderLoadedAction,
+  ordersForKitchenLoadedAction,
   ordersPageLoadedAction,
 } from "donut-shared/src/actions/orders";
 import { MutationTree } from "vuex";
@@ -35,24 +35,22 @@ const mutation: MutationTree<IOrdersState> = {
     state.order = action.payload.order;
   },
 
-  createdOrdersLoaded(
+  ordersForKitchenLoaded(
     state: IOrdersState,
-    action: ReturnType<typeof createdOrdersLoadedAction>
+    action: ReturnType<typeof ordersForKitchenLoadedAction>
   ) {
-    state.createdOrders = sortDishesByCookingStatus(
-      action.payload.createdOrders
-    );
+    state.ordersForKitchen = sortDishesByCookingStatus(action.payload.orders);
   },
 
   created(state: IOrdersState, action: ReturnType<typeof orderCreatedAction>) {
-    state.createdOrders.push(action.payload.order);
+    state.ordersForKitchen.push(action.payload.order);
   },
 
   dishStartedCooking(
     state: IOrdersState,
     action: ReturnType<typeof dishStartedCookingAction>
   ) {
-    const order = state.createdOrders.find(
+    const order = state.ordersForKitchen.find(
       (x) => x.orderNumber === action.payload.orderNumber
     );
     const dish = order?.dishes.find(
@@ -60,7 +58,9 @@ const mutation: MutationTree<IOrdersState> = {
     );
     if (dish) {
       dish.isCooking = true;
-      state.createdOrders = sortDishesByCookingStatus(state.createdOrders);
+      state.ordersForKitchen = sortDishesByCookingStatus(
+        state.ordersForKitchen
+      );
     }
   },
 
@@ -68,7 +68,7 @@ const mutation: MutationTree<IOrdersState> = {
     state: IOrdersState,
     action: ReturnType<typeof dishFinishedCookingAction>
   ) {
-    const order = state.createdOrders.find(
+    const order = state.ordersForKitchen.find(
       (x) => x.orderNumber === action.payload.orderNumber
     );
     const dish = order?.dishes.find(
@@ -76,7 +76,9 @@ const mutation: MutationTree<IOrdersState> = {
     );
     if (dish) {
       dish.isReady = true;
-      state.createdOrders = sortDishesByCookingStatus(state.createdOrders);
+      state.ordersForKitchen = sortDishesByCookingStatus(
+        state.ordersForKitchen
+      );
     }
   },
 };

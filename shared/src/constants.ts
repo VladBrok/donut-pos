@@ -6,10 +6,9 @@ export const CHANNELS = {
   MODIFICATIONS: "modifications",
   EMPLOYEES: "employees",
   ROLES: "roles",
-  ORDERS: "orders",
   ORDERS_OF_EMPLOYEE: "orders/:employeeId",
   ORDER_SINGLE: "singleOrder/:orderNumber",
-  CREATED_ORDERS: "createdOrders",
+  ORDERS_FOR_KITCHEN: "ordersForKitchen",
   COOKED_ORDERS: "cookedOrders",
 };
 

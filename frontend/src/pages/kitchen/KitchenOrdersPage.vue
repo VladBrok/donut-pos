@@ -86,8 +86,8 @@ import { useStore } from "src/store";
 import { computed } from "vue";
 
 const store = useStore();
-const channels = computed(() => [CHANNELS.CREATED_ORDERS]);
+const channels = computed(() => [CHANNELS.ORDERS_FOR_KITCHEN]);
 const isSubscribing = useSubscription(channels, { store: store as any });
-const orders = computed(() => store.state.orders.createdOrders);
+const orders = computed(() => store.state.orders.ordersForKitchen);
 const t = useI18nStore();
 </script>

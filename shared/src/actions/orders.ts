@@ -59,9 +59,9 @@ export const ordersPageLoadedAction = createAction<{
   ordersPage: IOrder[];
 }>("orders/pageLoaded");
 
-export const createdOrdersLoadedAction = createAction<{
-  createdOrders: IOrder[];
-}>("orders/createdOrdersLoaded");
+export const ordersForKitchenLoadedAction = createAction<{
+  orders: IOrder[];
+}>("orders/ordersForKitchenLoaded");
 
 export const createOrderAction = createAction<{
   order: ICurrentOrder;

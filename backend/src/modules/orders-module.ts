@@ -1,12 +1,12 @@
 import { Server } from "@logux/server";
 import { createOrderAction, orderCreatedAction } from "donut-shared";
 import {
-  createdOrdersLoadedAction,
   dishFinishedCookingAction,
   dishStartedCookingAction,
   finishCookingDishAction,
   loadOrdersPageAction,
   orderLoadedAction,
+  ordersForKitchenLoadedAction,
   ordersPageLoadedAction,
   startCookingDishAction,
 } from "donut-shared/src/actions/orders.js";
@@ -17,24 +17,16 @@ import { hasCookPermissions, hasWaiterPermission } from "../lib/access.js";
 // TODO: consider creating separate channels for client's orders ?
 
 export default function ordersModule(server: Server) {
-  server.channel(CHANNELS.CREATED_ORDERS, {
+  server.channel(CHANNELS.ORDERS_FOR_KITCHEN, {
     access(ctx) {
       return hasCookPermissions(ctx.userId);
     },
     async load() {
-      const orders = await db.getCreatedOrders();
-      return createdOrdersLoadedAction({
-        createdOrders: orders,
+      const orders = await db.getOrdersForKitchen();
+      return ordersForKitchenLoadedAction({
+        orders: orders,
       });
     },
-  });
-
-  // TODO: maybe remove this channel?
-  server.channel(CHANNELS.ORDERS, {
-    access(ctx) {
-      return hasWaiterPermission(ctx.userId);
-    },
-    async load() {},
   });
 
   // TODO: resend order updates via this channel so that the client can see live changes
@@ -66,7 +58,7 @@ export default function ordersModule(server: Server) {
         page: 1,
         employeeId: ctx.userId,
         perPage: ITEMS_PER_PAGE,
-        status: "created",
+        statuses: ["created"],
       });
       return ordersPageLoadedAction({
         ordersPage: ordersPage,
@@ -84,7 +76,7 @@ export default function ordersModule(server: Server) {
         page: action.payload.page,
         perPage: ITEMS_PER_PAGE,
         employeeId: ctx.userId,
-        status: action.payload.status,
+        statuses: [action.payload.status],
         orderNumber: action.payload.orderNumber,
       });
       await ctx.sendBack(
@@ -109,12 +101,13 @@ export default function ordersModule(server: Server) {
     },
   });
 
+  // TODO: resend to waiter page also... and to indifidual order page (orders/12-23333 channel) also...
   server.type(dishStartedCookingAction, {
     async access() {
       return false;
     },
     resend() {
-      return CHANNELS.CREATED_ORDERS;
+      return [CHANNELS.ORDERS_FOR_KITCHEN];
     },
   });
 
@@ -123,17 +116,21 @@ export default function ordersModule(server: Server) {
       return await hasCookPermissions(ctx.userId);
     },
     async process(ctx, action, meta) {
-      await db.finishCookingDish(action.payload.dishIdInOrder);
+      await db.finishCookingDish(
+        action.payload.orderId,
+        action.payload.dishIdInOrder
+      );
       await server.process(dishFinishedCookingAction(action.payload));
     },
   });
 
+  // TODO: resend to waiter page also... and to indifidual order page (orders/12-23333 channel) also...
   server.type(dishFinishedCookingAction, {
     async access() {
       return false;
     },
     resend() {
-      return CHANNELS.CREATED_ORDERS;
+      return CHANNELS.ORDERS_FOR_KITCHEN;
     },
   });
 
@@ -151,12 +148,13 @@ export default function ordersModule(server: Server) {
     },
   });
 
+  // TODO: resend to waiter page also... and to indifidual order page (orders/12-23333 channel) also...
   server.type(orderCreatedAction, {
     async access() {
       return false;
     },
     resend() {
-      return CHANNELS.CREATED_ORDERS;
+      return CHANNELS.ORDERS_FOR_KITCHEN;
     },
   });
 }

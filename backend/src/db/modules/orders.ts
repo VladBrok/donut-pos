@@ -6,7 +6,7 @@ import {
   ORDER_STATUSES_ARR,
   OrderStatus,
 } from "donut-shared/src/constants.js";
-import { and, asc, desc, eq, ilike, sql } from "drizzle-orm";
+import { and, asc, desc, eq, ilike, or, sql } from "drizzle-orm";
 import {
   client,
   dish,
@@ -26,7 +26,7 @@ export interface IGetOrdersPage {
   page: number;
   perPage: number;
   employeeId?: string;
-  status?: OrderStatus;
+  statuses?: OrderStatus[];
   orderNumber?: string;
   strictOrderNumberCompare?: boolean;
   orderBy?: "desc" | "asc";
@@ -98,11 +98,11 @@ export async function getSingleOrder(orderNumber: string, userId?: string) {
   return result.ordersPage?.[0] || null;
 }
 
-export async function getCreatedOrders() {
+export async function getOrdersForKitchen() {
   const result = await getOrdersPage({
     page: 1,
     perPage: ITEMS_PER_PAGE * 3,
-    status: "created",
+    statuses: ["created", "cooking"],
     orderBy: "asc",
   });
   return result.ordersPage;
@@ -119,8 +119,12 @@ function makeWhereFilter(params: IGetOrdersPage) {
             : `%${params.orderNumber.trim()}%`
         )
       : undefined,
-    params.status
-      ? sql`EXISTS ${filterByOrderStatusSubquery(params.status)}`
+    params.statuses
+      ? or(
+          ...params.statuses.map(
+            (status) => sql`EXISTS ${filterByOrderStatusSubquery(status)}`
+          )
+        )
       : undefined
   );
 }
@@ -226,11 +230,38 @@ export async function startCookingDish(orderId: string, dishIdInOrder: string) {
   });
 }
 
-export async function finishCookingDish(dishIdInOrder: string) {
-  return await db
-    .update(orderToDish)
-    .set({
-      isReady: true,
-    })
-    .where(eq(orderToDish.id, dishIdInOrder));
+export async function finishCookingDish(
+  orderId: string,
+  dishIdInOrder: string
+) {
+  await db.transaction(async (tx) => {
+    const statuses = await tx
+      .select()
+      .from(orderToOrderStatus)
+      .where(eq(orderToOrderStatus.orderId, orderId));
+    const dishes = await tx
+      .select()
+      .from(orderToDish)
+      .where(eq(orderToDish.orderId, orderId));
+    const leftToCook = dishes.length - dishes.filter((x) => x.isReady)?.length;
+
+    if (
+      leftToCook - 1 === 0 &&
+      !statuses.find((x) => x.orderStatusId === ORDER_STATUSES.COOKED.id)
+    ) {
+      await tx.insert(orderToOrderStatus).values({
+        id: generateUuid(),
+        date: new Date(),
+        orderId: orderId,
+        orderStatusId: ORDER_STATUSES.COOKED.id,
+      });
+    }
+
+    await tx
+      .update(orderToDish)
+      .set({
+        isReady: true,
+      })
+      .where(eq(orderToDish.id, dishIdInOrder));
+  });
 }
