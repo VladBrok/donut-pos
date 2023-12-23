@@ -138,6 +138,7 @@ export const messages = i18n("messages", {
   startCooking: "Start",
   finishCooking: "Ready",
   done: "Done",
+  orderCreated: params(`New order: #{orderNumber}`),
 
   // Client pages
   orderDetails: "Order details",

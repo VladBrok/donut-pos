@@ -3,12 +3,16 @@ import {
   assert,
   clearCurrentOrderAction,
   decrementDishInCurrentOrderAction,
+  orderCreatedAction,
   removeDishFromCurrentOrderAction,
   updateCurrentOrderCommentAction,
   updateCurrentOrderTableNumberAction,
 } from "donut-shared";
 import { loggedInAction, logoutAction } from "donut-shared/src/actions/auth";
 import { ANONYMOUS } from "donut-shared/src/constants";
+import { Notify } from "quasar";
+import { INFO_TIMEOUT_MS } from "src/lib/constants";
+import { useI18nStore } from "src/lib/i18n";
 import { useStore } from "src/store";
 import { onMounted, onUnmounted, ref } from "vue";
 import { useRouter } from "vue-router";
@@ -29,6 +33,7 @@ export const useMutationsWatcher = () => {
   const store = useStore();
   const unsubscribe = ref<() => void>();
   const router = useRouter();
+  const t = useI18nStore();
 
   onMounted(() => {
     unsubscribe.value = store.subscribe((mutation, state) => {
@@ -58,6 +63,20 @@ export const useMutationsWatcher = () => {
 
         case clearCurrentOrderAction.type: {
           saveCurrentOrderToStorage(null);
+          break;
+        }
+
+        case orderCreatedAction.type: {
+          Notify.create({
+            type: "info",
+            position: "top",
+            timeout: INFO_TIMEOUT_MS,
+            message: t.value.orderCreated({
+              orderNumber: mutation.payload.payload.order.orderNumber,
+            }),
+            multiLine: true,
+            group: false,
+          });
           break;
         }
       }
