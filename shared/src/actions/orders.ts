@@ -2,6 +2,35 @@ import { ICurrentOrder } from "../actions/current-order.js";
 import { DishInOrderStatus, OrderStatus } from "../constants.js";
 import { createAction } from "./index.js";
 
+export interface ICookedDish {
+  order: IShallowOrder;
+  dish: Omit<IDishInOrder, "modifications">;
+}
+
+export interface IDishInOrder {
+  id: string;
+  dishIdInOrder: string;
+  count: number;
+  name: string;
+  imageUrl: string;
+  description: string;
+  price: number;
+  weight: number;
+  isActive: boolean;
+  status: DishInOrderStatus;
+  cookingDate: string;
+  cookedDate: string;
+  deliveredDate: string;
+  modifications: {
+    id: string;
+    name: string;
+    imageUrl: string;
+    price: number;
+    weight: number;
+    count: number;
+  }[];
+}
+
 export interface IOrder {
   id: string;
   comment: string;
@@ -22,29 +51,7 @@ export interface IOrder {
   client: {
     id: string;
   } | null;
-  dishes: {
-    id: string;
-    dishIdInOrder: string;
-    count: number;
-    name: string;
-    imageUrl: string;
-    description: string;
-    price: number;
-    weight: number;
-    isActive: boolean;
-    status: DishInOrderStatus;
-    cookingDate: string;
-    cookedDate: string;
-    deliveredDate: string;
-    modifications: {
-      id: string;
-      name: string;
-      imageUrl: string;
-      price: number;
-      weight: number;
-      count: number;
-    }[];
-  }[];
+  dishes: IDishInOrder[];
 }
 
 export interface IShallowOrder {
@@ -118,3 +125,7 @@ export const dishFinishedCookingAction = createAction<{
   dishIdInOrder: string;
   order: IShallowOrder;
 }>("orders/dishFinishedCooking");
+
+export const cookedDishesLoadedAction = createAction<{
+  dishes: ICookedDish[];
+}>("orders/cookedDishesLoaded");

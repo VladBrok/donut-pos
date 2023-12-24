@@ -50,3 +50,11 @@ export type ShallowOrderSchema = {
   [employee._.name]: typeof employee.$inferSelect | null;
   [client._.name]: typeof client.$inferSelect | null;
 };
+
+export type DishInOrderSchema = {
+  [order._.name]: typeof order.$inferSelect;
+  [dish._.name]: typeof dish.$inferSelect | null;
+  [orderToDish._.name]: typeof orderToDish.$inferSelect | null;
+  [employee._.name]: typeof employee.$inferSelect | null;
+  [client._.name]: typeof client.$inferSelect | null;
+};

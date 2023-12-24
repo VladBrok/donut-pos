@@ -1,6 +1,7 @@
 import { Server } from "@logux/server";
 import { createOrderAction, orderCreatedAction } from "donut-shared";
 import {
+  cookedDishesLoadedAction,
   dishFinishedCookingAction,
   dishStartedCookingAction,
   finishCookingDishAction,
@@ -40,6 +41,23 @@ export default function ordersModule(server: Server) {
       const order = await db.getSingleOrder(ctx.params.orderNumber, ctx.userId);
       return orderLoadedAction({
         order: order,
+      });
+    },
+  });
+
+  server.channel<{
+    employeeId: string;
+  }>(CHANNELS.COOKED_DISHES_OF_EMPLOYEE, {
+    async access(ctx, action, meta) {
+      return (
+        ctx.userId === ctx.params.employeeId &&
+        (await hasWaiterPermission(ctx.userId))
+      );
+    },
+    async load(ctx, action, meta) {
+      const dishes = await db.getCookedDishes(ctx.userId);
+      return cookedDishesLoadedAction({
+        dishes: dishes,
       });
     },
   });

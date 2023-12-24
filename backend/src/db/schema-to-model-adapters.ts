@@ -1,4 +1,4 @@
-import { IShallowOrder } from "donut-shared/src/actions/orders.js";
+import { ICookedDish, IShallowOrder } from "donut-shared/src/actions/orders.js";
 import {
   DishInOrderStatus,
   EMPLOYEE_PERMISSIONS,
@@ -15,6 +15,7 @@ import {
 } from "./models.js";
 import {
   DishCategorySchema,
+  DishInOrderSchema,
   DishSchema,
   EmployeeSchema,
   ModificationSchema,
@@ -235,5 +236,32 @@ export const shallowOrdersAdapter = (
             lastName: uniqueOrder.employee.lastName || "",
           }
         : null,
+    }));
+};
+
+export const cookedDishesAdapter = (
+  data: DishInOrderSchema[]
+): ICookedDish[] => {
+  return data
+    .filter(
+      onlyUnique((item) => (item.order_to_dish && item.order_to_dish.id) || "")
+    )
+    .map((item) => ({
+      order: shallowOrdersAdapter([item])[0],
+      dish: {
+        id: item.order?.id || "",
+        dishIdInOrder: item?.order_to_dish?.id || "",
+        status: (item.order_to_dish?.status || "") as DishInOrderStatus,
+        cookingDate: item.order_to_dish?.cookingDate?.toISOString() || "",
+        cookedDate: item.order_to_dish?.cookedDate?.toISOString() || "",
+        deliveredDate: item.order_to_dish?.deliveredDate?.toISOString() || "",
+        count: item.order_to_dish?.dishCount || 0,
+        name: item.dish?.name || "",
+        imageUrl: item.dish?.imageUrl || "",
+        description: item.dish?.description || "",
+        price: item.dish?.price || 0,
+        weight: item.dish?.weight || 0,
+        isActive: item.dish?.isActive || false,
+      },
     }));
 };

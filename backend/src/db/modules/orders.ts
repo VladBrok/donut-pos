@@ -18,6 +18,7 @@ import {
   orderToDishToModification,
 } from "migrations/schema.js";
 import {
+  cookedDishesAdapter,
   ordersAdapter,
   shallowOrdersAdapter,
 } from "src/db/schema-to-model-adapters.js";
@@ -256,4 +257,19 @@ export async function getOrdersShallow(params: IGetOrder) {
     .leftJoin(client, eq(client.id, order.clientId));
 
   return shallowOrdersAdapter(data);
+}
+
+export async function getCookedDishes(employeeId: string) {
+  const dishes = await db
+    .select()
+    .from(order)
+    .where(eq(order.employeeId, employeeId))
+    .leftJoin(employee, eq(employee.id, order.employeeId))
+    .leftJoin(client, eq(client.id, order.clientId))
+    .leftJoin(orderToDish, eq(order.id, orderToDish.id))
+    .where(eq(orderToDish.status, DISH_IN_ORDER_STATUSES.COOKED))
+    .leftJoin(dish, eq(dish.id, orderToDish.dishId))
+    .orderBy(asc(order.createdDate));
+
+  return cookedDishesAdapter(dishes);
 }
