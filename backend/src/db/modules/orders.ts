@@ -186,10 +186,13 @@ export async function startCookingDish(orderId: string, dishIdInOrder: string) {
     )[0];
 
     if (theOrder?.status === ORDER_STATUSES.CREATED) {
-      await tx.update(order).set({
-        status: ORDER_STATUSES.COOKING,
-        cookingDate: new Date(),
-      });
+      await tx
+        .update(order)
+        .set({
+          status: ORDER_STATUSES.COOKING,
+          cookingDate: new Date(),
+        })
+        .where(eq(order.id, orderId));
     }
 
     await tx
@@ -206,28 +209,32 @@ export async function finishCookingDish(
   orderId: string,
   dishIdInOrder: string
 ) {
-  const theOrder = (
-    await db.select().from(order).where(eq(order.id, orderId))
-  )[0];
+  return await db.transaction(async (tx) => {
+    const theOrder = (
+      await db.select().from(order).where(eq(order.id, orderId))
+    )[0];
 
-  await db.transaction(async (tx) => {
     const dishes = await tx
       .select()
       .from(orderToDish)
       .where(eq(orderToDish.orderId, orderId));
+
     const leftToCook =
       dishes.length -
       dishes.filter(
         (x) =>
           x.status === DISH_IN_ORDER_STATUSES.COOKED ||
-          x.status == DISH_IN_ORDER_STATUSES.DELIVERED
+          x.status === DISH_IN_ORDER_STATUSES.DELIVERED
       )?.length;
 
     if (leftToCook - 1 === 0 && theOrder?.status === ORDER_STATUSES.COOKING) {
-      await tx.update(order).set({
-        status: ORDER_STATUSES.COOKED,
-        cookedDate: new Date(),
-      });
+      await tx
+        .update(order)
+        .set({
+          status: ORDER_STATUSES.COOKED,
+          cookedDate: new Date(),
+        })
+        .where(eq(order.id, orderId));
     }
 
     await tx
@@ -237,9 +244,11 @@ export async function finishCookingDish(
         cookedDate: new Date(),
       })
       .where(eq(orderToDish.id, dishIdInOrder));
-  });
 
-  return (await getCookedDishes(theOrder?.employeeId || "", dishIdInOrder))[0];
+    return (
+      await getCookedDishes(theOrder?.employeeId || "", dishIdInOrder, tx)
+    )[0];
+  });
 }
 
 export async function getOrdersShallow(params: IGetOrder) {
@@ -255,15 +264,16 @@ export async function getOrdersShallow(params: IGetOrder) {
 
 export async function getCookedDishes(
   employeeId: string,
-  dishIdInOrder?: string
+  dishIdInOrder?: string,
+  dbOrTx = db
 ) {
-  const dishes = await db
+  const dishes = await dbOrTx
     .select()
     .from(order)
     .where(eq(order.employeeId, employeeId))
     .leftJoin(employee, eq(employee.id, order.employeeId))
     .leftJoin(client, eq(client.id, order.clientId))
-    .leftJoin(orderToDish, eq(order.id, orderToDish.id))
+    .leftJoin(orderToDish, eq(order.id, orderToDish.orderId))
     .where(eq(orderToDish.status, DISH_IN_ORDER_STATUSES.COOKED))
     .where(dishIdInOrder ? eq(orderToDish.id, dishIdInOrder) : undefined)
     .leftJoin(dish, eq(dish.id, orderToDish.dishId))

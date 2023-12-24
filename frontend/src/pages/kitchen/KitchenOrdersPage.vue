@@ -57,7 +57,7 @@
             </div>
 
             <TransitionGroup tag="div" name="fade">
-              <div v-for="dish of order.dishes" :key="getUniqueDishId(dish)">
+              <div v-for="dish of order.dishes" :key="dish.dishIdInOrder">
                 <dish-in-order
                   :dish="dish"
                   :count="dish.count"
@@ -91,7 +91,6 @@ import DishInOrder from "src/components/DishInOrder.vue";
 import NoData from "src/components/NoData.vue";
 import OrderNumberTitle from "src/components/OrderNumberTitle.vue";
 import OrderView from "src/components/OrderView.vue";
-import { getUniqueDishId } from "src/lib/get-unique-dish-id";
 import { useI18nStore } from "src/lib/i18n";
 import { useStore } from "src/store";
 import { computed } from "vue";

@@ -165,20 +165,18 @@ export const ordersAdapter = (data: OrderSchema[]): OrderModel[] => {
         : null,
       dishes: data
         .filter(
-          (order) => order.order.id === uniqueOrder.order.id && order.dish
+          (order) =>
+            order.order.id === uniqueOrder.order.id && order.order_to_dish
         )
-        .filter(onlyUnique((item) => item.dish?.id || ""))
+        .filter(onlyUnique((item) => item.order_to_dish?.id || ""))
         .map((order) => ({
           id: order.dish?.id || "",
           dishIdInOrder: order.order_to_dish?.id || "",
-          status: (uniqueOrder.order_to_dish?.status ||
-            "") as DishInOrderStatus,
-          cookingDate:
-            uniqueOrder.order_to_dish?.cookingDate?.toISOString() || "",
-          cookedDate:
-            uniqueOrder.order_to_dish?.cookedDate?.toISOString() || "",
+          status: (order.order_to_dish?.status || "") as DishInOrderStatus,
+          cookingDate: order.order_to_dish?.cookingDate?.toISOString() || "",
+          cookedDate: order.order_to_dish?.cookedDate?.toISOString() || "",
           deliveredDate:
-            uniqueOrder.order_to_dish?.deliveredDate?.toISOString() || "",
+            order.order_to_dish?.deliveredDate?.toISOString() || "",
           count: order.order_to_dish?.dishCount || 0,
           name: order.dish?.name || "",
           imageUrl: order.dish?.imageUrl || "",
@@ -189,7 +187,7 @@ export const ordersAdapter = (data: OrderSchema[]): OrderModel[] => {
           modifications: data
             .filter(
               (innerOrder) =>
-                innerOrder.order.id === uniqueOrder.order.id &&
+                innerOrder.order.id === order.order.id &&
                 innerOrder.dish?.id === order.dish?.id &&
                 order.modification
             )
@@ -243,9 +241,8 @@ export const cookedDishesAdapter = (
   data: DishInOrderSchema[]
 ): ICookedDish[] => {
   return data
-    .filter(
-      onlyUnique((item) => (item.order_to_dish && item.order_to_dish.id) || "")
-    )
+    .filter((item) => item.order_to_dish)
+    .filter(onlyUnique((item) => item.dish?.id || ""))
     .map((item) => ({
       order: shallowOrdersAdapter([item])[0],
       dish: {
