@@ -8,7 +8,6 @@ import {
   order,
   orderToDish,
   orderToDishToModification,
-  orderToOrderStatus,
   permission,
   role,
   roleToPermission,
@@ -35,16 +34,27 @@ export type ModificationSchema = typeof modification.$inferSelect;
 export type RoleSchema = typeof role.$inferSelect;
 
 export type OrderSchema = {
-  order: {
-    [order._.name]: typeof order.$inferSelect;
-  };
+  [order._.name]: typeof order.$inferSelect;
   [employee._.name]: typeof employee.$inferSelect | null;
   [client._.name]: typeof client.$inferSelect | null;
   [dish._.name]: typeof dish.$inferSelect | null;
-  [orderToOrderStatus._.name]: typeof orderToOrderStatus.$inferSelect | null;
   [orderToDish._.name]: typeof orderToDish.$inferSelect | null;
   [orderToDishToModification._.name]:
     | typeof orderToDishToModification.$inferSelect
     | null;
   [modification._.name]: typeof modification.$inferSelect | null;
+};
+
+export type ShallowOrderSchema = {
+  [order._.name]: typeof order.$inferSelect;
+  [employee._.name]: typeof employee.$inferSelect | null;
+  [client._.name]: typeof client.$inferSelect | null;
+};
+
+export type DishInOrderSchema = {
+  [order._.name]: typeof order.$inferSelect;
+  [dish._.name]: typeof dish.$inferSelect | null;
+  [orderToDish._.name]: typeof orderToDish.$inferSelect | null;
+  [employee._.name]: typeof employee.$inferSelect | null;
+  [client._.name]: typeof client.$inferSelect | null;
 };

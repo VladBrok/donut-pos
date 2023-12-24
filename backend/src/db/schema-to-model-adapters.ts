@@ -1,6 +1,8 @@
+import { ICookedDish, IShallowOrder } from "donut-shared/src/actions/orders.js";
 import {
+  DishInOrderStatus,
   EMPLOYEE_PERMISSIONS,
-  ORDER_STATUSES_ARR,
+  OrderStatus,
 } from "donut-shared/src/constants.js";
 import { onlyUnique } from "src/lib/only-unique.js";
 import {
@@ -13,11 +15,13 @@ import {
 } from "./models.js";
 import {
   DishCategorySchema,
+  DishInOrderSchema,
   DishSchema,
   EmployeeSchema,
   ModificationSchema,
   OrderSchema,
   RoleSchema,
+  ShallowOrderSchema,
 } from "./schemas.js";
 
 export const employeeAdapter = (
@@ -134,12 +138,19 @@ export const roleAdapter = (data: RoleSchema[]): RoleModel[] => {
 
 export const ordersAdapter = (data: OrderSchema[]): OrderModel[] => {
   return data
-    .filter(onlyUnique((item) => item.order.order.id))
+    .filter(onlyUnique((item) => item.order.id))
     .map((uniqueOrder) => ({
-      id: uniqueOrder.order.order.id,
-      orderNumber: uniqueOrder.order.order.number || "",
-      tableNumber: uniqueOrder.order.order.tableNumber || "",
-      comment: uniqueOrder.order.order.comment || "",
+      id: uniqueOrder.order.id,
+      orderNumber: uniqueOrder.order.number || "",
+      tableNumber: uniqueOrder.order.tableNumber || "",
+      comment: uniqueOrder.order.comment || "",
+      status: (uniqueOrder.order.status || "") as OrderStatus,
+      createdDate: uniqueOrder.order.createdDate?.toISOString() || "",
+      cookingDate: uniqueOrder.order.cookingDate?.toISOString() || "",
+      cookedDate: uniqueOrder.order.cookedDate?.toISOString() || "",
+      deliveringDate: uniqueOrder.order.deliveringDate?.toISOString() || "",
+      deliveredDate: uniqueOrder.order.deliveredDate?.toISOString() || "",
+      paidDate: uniqueOrder.order.paidDate?.toISOString() || "",
       client: uniqueOrder.client
         ? {
             id: uniqueOrder.client.id,
@@ -152,31 +163,20 @@ export const ordersAdapter = (data: OrderSchema[]): OrderModel[] => {
             lastName: uniqueOrder.employee.lastName || "",
           }
         : null,
-      statuses: data
-        .filter(
-          (order) =>
-            order.order.order.id === uniqueOrder.order.order.id &&
-            order.order_to_order_status
-        )
-        .filter(
-          onlyUnique((item) => item.order_to_order_status?.orderStatusId || "")
-        )
-        .map((order) => ({
-          id: order.order_to_order_status?.orderStatusId || "",
-          codeName:
-            ORDER_STATUSES_ARR.find(
-              (x) => x.id === order.order_to_order_status?.orderStatusId
-            )?.name || "",
-          date: order.order_to_order_status?.date?.toISOString() || "",
-        })),
       dishes: data
         .filter(
           (order) =>
-            order.order.order.id === uniqueOrder.order.order.id && order.dish
+            order.order.id === uniqueOrder.order.id && order.order_to_dish
         )
-        .filter(onlyUnique((item) => item.dish?.id || ""))
+        .filter(onlyUnique((item) => item.order_to_dish?.id || ""))
         .map((order) => ({
           id: order.dish?.id || "",
+          dishIdInOrder: order.order_to_dish?.id || "",
+          status: (order.order_to_dish?.status || "") as DishInOrderStatus,
+          cookingDate: order.order_to_dish?.cookingDate?.toISOString() || "",
+          cookedDate: order.order_to_dish?.cookedDate?.toISOString() || "",
+          deliveredDate:
+            order.order_to_dish?.deliveredDate?.toISOString() || "",
           count: order.order_to_dish?.dishCount || 0,
           name: order.dish?.name || "",
           imageUrl: order.dish?.imageUrl || "",
@@ -187,13 +187,13 @@ export const ordersAdapter = (data: OrderSchema[]): OrderModel[] => {
           modifications: data
             .filter(
               (innerOrder) =>
-                innerOrder.order.order.id === uniqueOrder.order.order.id &&
+                innerOrder.order.id === order.order.id &&
                 innerOrder.dish?.id === order.dish?.id &&
                 order.modification
             )
             .filter(onlyUnique((item) => item.modification?.id || ""))
             .map((order) => ({
-              id: order.order?.order.id || "",
+              id: order.order?.id || "",
               name: order.modification?.name || "",
               imageUrl: order.modification?.imageUrl || "",
               price: order.modification?.price || 0,
@@ -202,5 +202,63 @@ export const ordersAdapter = (data: OrderSchema[]): OrderModel[] => {
                 order.order_to_dish_to_modification?.modificationCount || 0,
             })),
         })),
+    }));
+};
+
+export const shallowOrdersAdapter = (
+  data: ShallowOrderSchema[]
+): IShallowOrder[] => {
+  return data
+    .filter(onlyUnique((item) => item.order.id))
+    .map((uniqueOrder) => ({
+      id: uniqueOrder.order.id,
+      orderNumber: uniqueOrder.order.number || "",
+      tableNumber: uniqueOrder.order.tableNumber || "",
+      comment: uniqueOrder.order.comment || "",
+      status: (uniqueOrder.order.status || "") as OrderStatus,
+      createdDate: uniqueOrder.order.createdDate?.toISOString() || "",
+      cookingDate: uniqueOrder.order.cookingDate?.toISOString() || "",
+      cookedDate: uniqueOrder.order.cookedDate?.toISOString() || "",
+      deliveringDate: uniqueOrder.order.deliveringDate?.toISOString() || "",
+      deliveredDate: uniqueOrder.order.deliveredDate?.toISOString() || "",
+      paidDate: uniqueOrder.order.paidDate?.toISOString() || "",
+      client: uniqueOrder.client
+        ? {
+            id: uniqueOrder.client.id,
+          }
+        : null,
+      employee: uniqueOrder.employee
+        ? {
+            id: uniqueOrder.employee.id,
+            firstName: uniqueOrder.employee.firstName || "",
+            lastName: uniqueOrder.employee.lastName || "",
+          }
+        : null,
+    }));
+};
+
+export const cookedDishesAdapter = (
+  data: DishInOrderSchema[]
+): ICookedDish[] => {
+  return data
+    .filter((item) => item.order_to_dish)
+    .filter(onlyUnique((item) => item.order_to_dish?.id || ""))
+    .map((item) => ({
+      order: shallowOrdersAdapter([item])[0],
+      dish: {
+        id: item.order?.id || "",
+        dishIdInOrder: item?.order_to_dish?.id || "",
+        status: (item.order_to_dish?.status || "") as DishInOrderStatus,
+        cookingDate: item.order_to_dish?.cookingDate?.toISOString() || "",
+        cookedDate: item.order_to_dish?.cookedDate?.toISOString() || "",
+        deliveredDate: item.order_to_dish?.deliveredDate?.toISOString() || "",
+        count: item.order_to_dish?.dishCount || 0,
+        name: item.dish?.name || "",
+        imageUrl: item.dish?.imageUrl || "",
+        description: item.dish?.description || "",
+        price: item.dish?.price || 0,
+        weight: item.dish?.weight || 0,
+        isActive: item.dish?.isActive || false,
+      },
     }));
 };

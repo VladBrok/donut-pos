@@ -1,6 +1,48 @@
 <template>
   <main-layout :menu-list="menuList">
     <template #actions>
+      <q-btn class="q-mr-md" flat round icon="o_notifications">
+        <q-tooltip> {{ t.showNotifications }} </q-tooltip>
+        <q-badge
+          v-if="cookedDishes.length"
+          rounded
+          floating
+          color="red"
+          :label="cookedDishes.length || ''"
+        />
+        <q-menu fit style="overflow-x: hidden">
+          <div style="min-width: 320px" class="q-px-xs">
+            <TransitionGroup tag="div" name="fade">
+              <dish-in-order
+                v-for="item of cookedDishes"
+                :key="item.dish.dishIdInOrder"
+                :dish="item.dish"
+                :count="item.dish.count"
+                :order="item.order"
+                :dish-in-order="item.dish"
+                view-only
+                hide-price
+              >
+                <template #additonal-info>
+                  <div class="text-body2">
+                    <div>
+                      {{ t.tableNumber }}
+                      {{ item.order.tableNumber }},
+                    </div>
+                    <OrderNumberTitle
+                      :order-number="item.order.orderNumber"
+                      is-link
+                    />
+                  </div>
+                </template>
+                <template #actions>
+                  <cooked-dish-status-button :cooked-dish="item" />
+                </template>
+              </dish-in-order>
+            </TransitionGroup>
+          </div>
+        </q-menu>
+      </q-btn>
       <q-btn
         class="q-mr-md"
         flat
@@ -38,14 +80,19 @@
 </template>
 
 <script setup lang="ts">
+import { useSubscription } from "@logux/vuex";
+import { ANONYMOUS } from "donut-shared";
 import {
   closeCurrentOrderAction,
   openCurrentOrderAction,
 } from "donut-shared/src/actions/order-drawer";
+import CookedDishStatusButton from "src/components/CookedDishStatusButton.vue";
 import CurrentOrderView from "src/components/CurrentOrderView.vue";
+import DishInOrder from "src/components/DishInOrder.vue";
 import OrderDrawer from "src/components/OrderDrawer.vue";
+import OrderNumberTitle from "src/components/OrderNumberTitle.vue";
 import { useStore } from "src/store";
-import { computed } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 import MainLayout from "../components/MainLayout.vue";
 import { useI18nStore } from "../lib/i18n";
 
@@ -71,6 +118,27 @@ const currentOrder = computed(() => store.state.currentOrder.order);
 const isCurrentOrderOpen = computed(
   () => store.state.orderDrawer.isCurrentOrderOpen
 );
+const userId = ref(store.state.auth.user.userId);
+const channels = computed(() => {
+  return userId.value === ANONYMOUS.userId
+    ? []
+    : [`cookedDishes/${userId.value}`];
+});
+let isSubscribing = useSubscription(channels, { store: store as any });
+const cookedDishes = computed(() => store.state.orders.cookedDishes);
+const unsubscribe = ref(() => {
+  /* */
+});
+
+onMounted(() => {
+  unsubscribe.value = store.client.on("user", (newId) => {
+    userId.value = newId;
+  });
+});
+
+onUnmounted(() => {
+  unsubscribe.value();
+});
 
 function toggleCurrentOrderDrawer() {
   if (isCurrentOrderOpen.value) {

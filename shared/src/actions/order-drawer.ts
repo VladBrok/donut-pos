@@ -1,4 +1,4 @@
-import { ordersPageLoadedAction } from "src/actions/orders.js";
+import { ordersPageLoadedAction } from "../actions/orders.js";
 import { createAction } from "./index.js";
 
 export const openArbitraryOrderAction = createAction<{

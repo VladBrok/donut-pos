@@ -11,7 +11,13 @@
           class="col-12 col-sm-6"
           :class="{ 'q-mx-auto': !dish.modifications.length }"
         >
-          <DishCard :dish="dish" expanded> </DishCard>
+          <dish-card
+            :dish="dish"
+            expanded
+            :hide-price="viewOnly"
+            :count="count"
+          >
+          </dish-card>
         </div>
         <q-card-section
           v-if="dish.modifications.length"
@@ -22,13 +28,21 @@
           </div>
           <div class="q-mt-sm row">
             <div
-              v-for="modification of dish.modifications"
+              v-for="modification of modificationsComputed"
               :key="modification.id"
               class="col-12 col-md-6 q-pa-sm"
             >
-              <modification-card :modification="modification">
+              <modification-card
+                :modification="modification"
+                :hide-price="viewOnly"
+              >
                 <product-counter
-                  :count="modificationCounts.get(modification.id) || 0"
+                  :view-only="viewOnly"
+                  :count="
+                    modifications
+                      ? modification.count
+                      : modificationCounts.get(modification.id) || 0
+                  "
                   @increment="incrementModification(modification.id)"
                   @decrement="decrementModification(modification.id)"
                 ></product-counter>
@@ -38,19 +52,25 @@
         </q-card-section>
       </div>
 
-      <q-separator />
-      <q-card-section class="row">
-        <q-space />
-        <q-btn color="primary" v-close-popup @click="addToOrder">
-          {{ t.addToOrderButton }}
-        </q-btn>
-      </q-card-section>
+      <template v-if="!viewOnly">
+        <q-separator />
+        <q-card-section class="row">
+          <q-space />
+          <q-btn color="primary" v-close-popup @click="addToOrder">
+            {{ t.addToOrderButton }}
+          </q-btn>
+        </q-card-section>
+      </template>
     </q-card>
   </q-dialog>
 </template>
 
 <script setup lang="ts">
-import { addDishToCurrentOrderAction, assert } from "donut-shared";
+import {
+  addDishToCurrentOrderAction,
+  assert,
+  loadModificationsAction,
+} from "donut-shared";
 import { computed, ref, watch } from "vue";
 import { loadDishesAction } from "../../../shared/src/actions/dishes";
 import { useI18nStore } from "../lib/i18n";
@@ -59,10 +79,25 @@ import DishCard from "./DishCard.vue";
 import ModificationCard from "./ModificationCard.vue";
 import ProductCounter from "./ProductCounter.vue";
 
+// TODO: same problem with booleans
+
 const props = defineProps<{
   dish: ReturnType<typeof loadDishesAction>["payload"]["dishes"][number] | null;
+  viewOnly?: boolean;
+  count?: number;
+  modifications?: {
+    modification: ReturnType<
+      typeof loadModificationsAction
+    >["payload"]["modifications"][number];
+    count: number;
+  }[];
 }>();
 const dish = computed(() => props.dish);
+const modificationsComputed = computed(
+  () =>
+    props.modifications?.map((x) => ({ ...x.modification, count: x.count })) ||
+    dish.value?.modifications
+);
 
 const t = useI18nStore();
 const store = useStore();

@@ -102,18 +102,6 @@ CREATE TABLE "dish_to_modification" (
   "modification_id" UUID
 );
 
-CREATE TABLE "order_status" (
-  "id" UUID PRIMARY KEY,
-  "code_name" TEXT
-);
-
-CREATE TABLE "order_to_order_status" (
-  "id" UUID PRIMARY KEY,
-  "order_id" UUID,
-  "order_status_id" UUID,
-  "date" TIMESTAMP
-);
-
 CREATE TABLE "order" (
   "id" UUID PRIMARY KEY,
   "client_id" UUID,
@@ -121,14 +109,25 @@ CREATE TABLE "order" (
   "sale_point_id" UUID,
   "number" TEXT,
   "table_number" TEXT,
-  "comment" TEXT
+  "comment" TEXT,
+  "status" TEXT,
+  "created_date" TIMESTAMP,
+  "cooking_date" TIMESTAMP,
+  "cooked_date" TIMESTAMP,
+  "delivering_date" TIMESTAMP,
+  "delivered_date" TIMESTAMP,
+  "paid_date" TIMESTAMP
 );
 
 CREATE TABLE "order_to_dish" (
   "id" UUID PRIMARY KEY,
   "order_id" UUID,
   "dish_id" UUID,
-  "dish_count" INT
+  "dish_count" INT,
+  "status" TEXT,
+  "cooking_date" TIMESTAMP,
+  "cooked_date" TIMESTAMP,
+  "delivered_date" TIMESTAMP
 );
 
 CREATE TABLE "order_to_dish_to_modification" (
@@ -164,10 +163,6 @@ CREATE INDEX "dish_to_modification_dish_id_idx" ON "dish_to_modification" ("dish
 
 CREATE INDEX "dish_to_modification_modification_id_idx" ON "dish_to_modification" ("modification_id");
 
-CREATE INDEX "order_to_order_status_order_id_idx" ON "order_to_order_status" ("order_id");
-
-CREATE INDEX "order_to_order_status_order_status_id_idx" ON "order_to_order_status" ("order_status_id");
-
 CREATE INDEX "order_client_id_idx" ON "order" ("client_id");
 
 CREATE INDEX "order_employee_id_idx" ON "order" ("employee_id");
@@ -176,9 +171,13 @@ CREATE INDEX "order_sale_point_id_idx" ON "order" ("sale_point_id");
 
 CREATE INDEX "order_number_idx" ON "order" ("number");
 
+CREATE INDEX "order_status_idx" ON "order" ("status");
+
 CREATE INDEX "order_to_dish_order_id_idx" ON "order_to_dish" ("order_id");
 
 CREATE INDEX "order_to_dish_dish_id_idx" ON "order_to_dish" ("dish_id");
+
+CREATE INDEX "order_to_dish_status_idx" ON "order_to_dish" ("status");
 
 CREATE INDEX "order_to_dish_to_modification_order_to_dish_id_idx" ON "order_to_dish_to_modification" ("order_to_dish_id");
 
@@ -219,7 +218,3 @@ ALTER TABLE "dish_to_modification" ADD FOREIGN KEY ("modification_id") REFERENCE
 ALTER TABLE "order_to_dish_to_modification" ADD FOREIGN KEY ("order_to_dish_id") REFERENCES "order_to_dish" ("id") ON DELETE SET NULL;
 
 ALTER TABLE "order_to_dish_to_modification" ADD FOREIGN KEY ("modification_id") REFERENCES "modification" ("id") ON DELETE SET NULL;
-
-ALTER TABLE "order_to_order_status" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id") ON DELETE SET NULL;
-
-ALTER TABLE "order_to_order_status" ADD FOREIGN KEY ("order_status_id") REFERENCES "order_status" ("id") ON DELETE SET NULL;

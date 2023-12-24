@@ -1,6 +1,7 @@
 <template>
   <div class="row items-center gap-sm">
     <q-btn
+      v-if="!viewOnly"
       padding="xs"
       color="primary"
       outline
@@ -9,9 +10,10 @@
       @click="emit('decrement')"
     />
     <div class="text-weight-bold">
-      {{ count }}
+      <span v-if="viewOnly">x</span> {{ count }}
     </div>
     <q-btn
+      v-if="!viewOnly"
       padding="xs"
       color="primary"
       icon="add"
@@ -22,7 +24,12 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{ count: number; min?: number; disable?: boolean }>();
+defineProps<{
+  count: number;
+  min?: number;
+  disable?: boolean;
+  viewOnly?: boolean;
+}>();
 
 const emit = defineEmits<{
   increment: [];

@@ -2,7 +2,7 @@
   <product-card
     :no-shadow="expanded"
     :image-url="dish.imageUrl"
-    :price="dish.price"
+    :price="hidePrice ? undefined : dish.price"
     :weight="dish.weight"
     :name="dish.name"
     :caption="dish.isActive ? undefined : t.outOfStock"
@@ -24,6 +24,9 @@
     <q-card-section v-if="expanded && dish.description">
       <div class="text-body1" v-html="sanitizeHtml(dish.description)"></div>
     </q-card-section>
+    <template #right>
+      <span v-if="count != null"> x {{ count }} </span>
+    </template>
   </product-card>
 </template>
 
@@ -36,6 +39,8 @@ import ProductCard from "./ProductCard.vue";
 defineProps<{
   dish: ReturnType<typeof loadDishesAction>["payload"]["dishes"][number];
   expanded?: boolean;
+  hidePrice?: boolean;
+  count?: number;
 }>();
 
 const emit = defineEmits(["addClick"]);

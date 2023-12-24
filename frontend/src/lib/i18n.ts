@@ -108,6 +108,7 @@ export const messages = i18n("messages", {
   addToCurrentOrder: "Add to order",
   addToOrderButton: "Add to order",
   modificationsTitle: "In addition",
+  showNotifications: "Show notifications",
   openCurrentOrder: "Open current order",
   currentOrder: "Current Order",
   emptyOrder: "Order is empty",
@@ -115,6 +116,7 @@ export const messages = i18n("messages", {
   createOrder: "Create order",
   clearOrder: "Clear",
   tableNumberLabel: "Table number",
+  waiterName: "Waiter",
   commentLabel: "Comment",
   totalDishes: count({
     one: "{count} dish",
@@ -131,6 +133,15 @@ export const messages = i18n("messages", {
   outOfStock: "Out of stock",
   cannotCreateOrderWithOutOfStock:
     "Some dishes are out of stock. Please remove them from the order before proceeding",
+  dishCooked: params(`{dishName} for table {table} is ready`),
+  delivered: "Delivered",
+
+  // Kitchen pages
+  viewDetails: "View details",
+  startCooking: "Start",
+  finishCooking: "Ready",
+  done: "Done",
+  orderCreated: params(`New order: #{orderNumber}`),
 
   // Client pages
   orderDetails: "Order details",
@@ -147,6 +158,7 @@ export const messages = i18n("messages", {
   // Login page
   adminLoginPageTitle: "Admin login",
   waiterLoginPageTitle: "Waiter login",
+  kitchenLoginPageTitle: "Login to kitchen",
   passwordRequired: "Please enter a password",
   phoneRequired: "Please enter a phone number",
   phoneLabel: "Phone",

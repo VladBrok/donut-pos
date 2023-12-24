@@ -62,7 +62,9 @@ console.log();
 const phone = ref(
   router.currentRoute.value.path.includes("admin")
     ? "+48000000000"
-    : "+48100000001"
+    : router.currentRoute.value.path.includes("waiter")
+    ? "+48100000001"
+    : "+48300020009"
 ); // TODO: remove
 const password = ref(
   router.currentRoute.value.path.includes("admin") ? "1234" : "1234Db_3333>"

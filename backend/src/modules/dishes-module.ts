@@ -22,7 +22,7 @@ export default function dishesModule(server: Server) {
       return true;
     },
     async load() {
-      const dishes = await db.getAllDishes();
+      const dishes = await db.getDishes();
       return loadDishesAction({ dishes });
     },
   });
@@ -74,7 +74,7 @@ export default function dishesModule(server: Server) {
         return;
       }
 
-      const toUpdate: Partial<DishModel> & {
+      const toUpdate: Partial<Omit<DishModel, "modifications">> & {
         imageBase64?: string;
         categoryId: string;
       } = {

@@ -27,13 +27,14 @@
             lazy-rules
             type="textarea"
             readonly
-            rows="3"
+            rows="1"
+            autogrow
             class="q-mb-md"
           />
         </div>
 
         <div>
-          <div v-for="dish of order.dishes" :key="getUniqueDishId(dish)">
+          <div v-for="dish of order.dishes" :key="dish.dishIdInOrder">
             <dish-in-order
               :dish="dish"
               :count="dish.count"
@@ -48,8 +49,7 @@
             />
             <q-separator />
           </div>
-          <order-history class="q-mt-xl" :statuses="order.statuses">
-          </order-history>
+          <order-history class="q-mt-xl" :order="order"> </order-history>
         </div>
       </div>
     </template>
@@ -60,7 +60,6 @@
 import DishInOrder from "src/components/DishInOrder.vue";
 import OrderHistory from "src/components/OrderHistory.vue";
 import OrderView from "src/components/OrderView.vue";
-import { getUniqueDishId } from "src/lib/get-unique-dish-id";
 import { getOrderDishTotalCost, getOrderTotalCost } from "src/lib/order";
 import { computed } from "vue";
 import { IOrder } from "../../../shared/src/actions/orders";

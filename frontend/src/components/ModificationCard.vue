@@ -1,7 +1,7 @@
 <template>
   <product-card
     :image-url="modification.imageUrl"
-    :price="modification.price"
+    :price="hidePrice ? undefined : modification.price"
     :name="modification.name"
     :weight="modification.weight"
     text-size="sm"
@@ -20,5 +20,6 @@ defineProps<{
   modification: ReturnType<
     typeof loadModificationsAction
   >["payload"]["modifications"][number];
+  hidePrice?: boolean;
 }>();
 </script>

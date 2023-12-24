@@ -11,10 +11,11 @@ import { generateUuid } from "../../lib/uuid.js";
 import { DishModel } from "../models.js";
 import { dishAdapter } from "../schema-to-model-adapters.js";
 
-export async function getAllDishes(): Promise<DishModel[]> {
+export async function getDishes(id?: string): Promise<DishModel[]> {
   const data = await db
     .select()
     .from(dish)
+    .where(id ? eq(dish.id, id) : undefined)
     .leftJoin(dishCategory, eq(dish.categoryId, dishCategory.id))
     .leftJoin(dishToModification, eq(dishToModification.dishId, dish.id))
     .leftJoin(
@@ -29,8 +30,13 @@ export async function deleteDish(id: string) {
   return await db.delete(dish).where(eq(dish.id, id));
 }
 
-export async function createDish(data: Omit<DishModel, "id">) {
+export async function createDish(
+  data: Omit<DishModel, "id" | "modifications"> & {
+    modifications: { id: string }[];
+  }
+) {
   const toCreate = { id: generateUuid(), ...data };
+
   await db.transaction(async (tx) => {
     await tx.insert(dish).values({
       ...toCreate,
@@ -51,11 +57,15 @@ export async function createDish(data: Omit<DishModel, "id">) {
       );
     }
   });
-  return toCreate;
+
+  return (await getDishes(toCreate.id))[0];
 }
 
 export async function updateDish(
-  data: Partial<DishModel> & { categoryId: string }
+  data: Partial<DishModel> & {
+    categoryId: string;
+    modifications?: { id: string }[];
+  }
 ) {
   const dataWithoutModifications = structuredClone(data);
   delete dataWithoutModifications.modifications;
