@@ -148,12 +148,16 @@ export default function ordersModule(server: Server) {
   });
 
   // TODO: resend to waiter page also... and to indifidual order page (orders/12-23333 channel) also...
+  // TODO: find a way to use constants for channels such as "cookedDishes/:employeeId"
   server.type(dishFinishedCookingAction, {
     async access() {
       return false;
     },
     resend(ctx, action) {
-      return [CHANNELS.ORDERS_FOR_KITCHEN];
+      return [
+        CHANNELS.ORDERS_FOR_KITCHEN,
+        `cookedDishes/${action.payload.order.employee?.id}`,
+      ];
     },
   });
 
