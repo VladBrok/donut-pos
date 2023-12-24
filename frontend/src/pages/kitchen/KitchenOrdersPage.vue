@@ -2,7 +2,12 @@
   <div>
     <big-spinner v-if="isSubscribing" />
     <div v-else>
-      <TransitionGroup tag="div" name="fade" class="card-grid-lg">
+      <TransitionGroup
+        v-if="orders.length"
+        tag="div"
+        name="fade"
+        class="card-grid-lg"
+      >
         <OrderView
           v-for="order in orders"
           :key="order.id"
@@ -73,6 +78,7 @@
           </template>
         </OrderView>
       </TransitionGroup>
+      <NoData v-else> </NoData>
     </div>
   </div>
 </template>
@@ -82,6 +88,7 @@ import { useSubscription } from "@logux/vuex";
 import { CHANNELS } from "donut-shared/src/constants";
 import BigSpinner from "src/components/BigSpinner.vue";
 import DishInOrder from "src/components/DishInOrder.vue";
+import NoData from "src/components/NoData.vue";
 import OrderNumberTitle from "src/components/OrderNumberTitle.vue";
 import OrderView from "src/components/OrderView.vue";
 import { getUniqueDishId } from "src/lib/get-unique-dish-id";

@@ -49,8 +49,7 @@
             />
             <q-separator />
           </div>
-          <order-history class="q-mt-xl" :statuses="order.statuses">
-          </order-history>
+          <order-history class="q-mt-xl" :order="order"> </order-history>
         </div>
       </div>
     </template>

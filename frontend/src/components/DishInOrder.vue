@@ -102,6 +102,7 @@
 
     <dish-details-modal
       :dish="dishInOrder"
+      :modifications="modifications"
       v-model="isModalOpen"
       view-only
       :count="count"

@@ -28,7 +28,7 @@
           </div>
           <div class="q-mt-sm row">
             <div
-              v-for="modification of modifications"
+              v-for="modification of modificationsComputed"
               :key="modification.id"
               class="col-12 col-md-6 q-pa-sm"
             >
@@ -93,7 +93,7 @@ const props = defineProps<{
   }[];
 }>();
 const dish = computed(() => props.dish);
-const modifications = computed(
+const modificationsComputed = computed(
   () =>
     props.modifications?.map((x) => ({ ...x.modification, count: x.count })) ||
     dish.value?.modifications
