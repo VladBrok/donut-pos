@@ -1,6 +1,5 @@
 import {
   IOrder,
-  cookedOrdersOfEmployeeLoadedAction,
   dishFinishedCookingAction,
   dishStartedCookingAction,
   orderCreatedAction,
@@ -16,7 +15,13 @@ function sortDishesByCookingStatus(orders: IOrder[]) {
     ...order,
     dishes: order.dishes
       .slice()
-      .sort((a, b) => (a.isReady ? 1 : b.isReady ? -1 : 0)),
+      .sort((a, b) =>
+        a.status === "cooked" || a.status === "delivered"
+          ? 1
+          : b.status === "cooked" || b.status === "delivered"
+          ? -1
+          : 0
+      ),
   }));
 }
 
@@ -58,7 +63,8 @@ const mutation: MutationTree<IOrdersState> = {
       (x) => x.dishIdInOrder === action.payload.dishIdInOrder
     );
     if (dish) {
-      dish.isCooking = true;
+      dish.status = "cooking";
+      dish.cookingDate = new Date().toISOString();
       state.ordersForKitchen = sortDishesByCookingStatus(
         state.ordersForKitchen
       );
@@ -69,12 +75,8 @@ const mutation: MutationTree<IOrdersState> = {
     state: IOrdersState,
     action: ReturnType<typeof dishFinishedCookingAction>
   ) {
-    if (action.payload.isOrderCooked) {
-      state.cookedOrders.push(action.payload.order);
-    }
-
     const order = state.ordersForKitchen.find(
-      (x) => x.orderNumber === action.payload.orderNumber
+      (x) => x.orderNumber === action.payload.order.orderNumber
     );
     const dish = order?.dishes.find(
       (x) => x.dishIdInOrder === action.payload.dishIdInOrder
@@ -84,20 +86,17 @@ const mutation: MutationTree<IOrdersState> = {
       return;
     }
 
-    dish.isReady = true;
-    const orderIsCooked = order?.dishes.every((x) => x.isReady);
+    dish.status = "cooked";
+    dish.cookedDate = new Date().toISOString();
+    // TODO: extract code for working with dish-in-order statuses and use it on BE and FE (I already wrote similar TODO in some other component)
+    const orderIsCooked = order?.dishes.every(
+      (x) => x.status === "cooked" || x.status === "delivered"
+    );
     if (orderIsCooked && order) {
       state.ordersForKitchen.splice(state.ordersForKitchen.indexOf(order), 1);
     }
 
     state.ordersForKitchen = sortDishesByCookingStatus(state.ordersForKitchen);
-  },
-
-  cookedOrdersOfEmployeeLoaded(
-    state: IOrdersState,
-    action: ReturnType<typeof cookedOrdersOfEmployeeLoadedAction>
-  ) {
-    state.cookedOrders = action.payload.orders;
   },
 };
 

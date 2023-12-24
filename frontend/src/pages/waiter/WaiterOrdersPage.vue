@@ -47,8 +47,8 @@
         >
           <template v-slot:body-cell-status="props">
             <q-td :props="props">
-              <span :class="`text-${getOrderCurrentStatus(props.row)}`">{{
-                getOrderCurrentStatus(props.row)
+              <span :class="`text-${props.row.status}`">{{
+                props.row.status
               }}</span>
             </q-td>
           </template>
@@ -70,12 +70,15 @@ import NoData from "src/components/NoData.vue";
 import { ROWS_PER_TABLE_PAGE } from "src/lib/constants";
 import { formatCurrency } from "src/lib/currency";
 import { useI18nStore } from "src/lib/i18n";
-import { getOrderCurrentStatus, getOrderTotalCost } from "src/lib/order";
+import { getOrderTotalCost } from "src/lib/order";
 import { useStore } from "src/store";
 import { IOrdersState } from "src/store/orders/state";
 import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import { loadOrdersPageAction } from "../../../../shared/src/actions/orders";
-import { ORDER_STATUSES_ARR } from "../../../../shared/src/constants";
+import {
+  ORDER_STATUSES_ARR,
+  OrderStatus,
+} from "../../../../shared/src/constants";
 
 const store = useStore();
 const t = useI18nStore();
@@ -89,10 +92,10 @@ const unsubscribe = ref(() => {
   /* */
 });
 
-type OrderStatusFilter = (typeof ORDER_STATUSES_ARR)[number]["name"] | "all";
+type OrderStatusFilter = OrderStatus | "all";
 const statusFilters = computed<OrderStatusFilter[]>(() => [
   "all",
-  ...ORDER_STATUSES_ARR.map((x) => x.name),
+  ...ORDER_STATUSES_ARR,
 ]);
 const searchInput = ref<string | null>(null);
 const isUpdatingPage = ref(false);

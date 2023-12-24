@@ -60,8 +60,8 @@
         </p>
         <p v-if="selectedOrder" class="text-h6 text-weight-regular">
           {{ t.orderStatus.toLowerCase() }}:
-          <span :class="`text-${getOrderCurrentStatus(selectedOrder)}`">
-            {{ getOrderCurrentStatus(selectedOrder) }}
+          <span :class="`text-${selectedOrder.status}`">
+            {{ selectedOrder.status }}
           </span>
         </p>
       </template>
@@ -88,7 +88,6 @@ import { logoutAction } from "donut-shared/src/actions/auth";
 import OrderDetailsView from "src/components/OrderDetailsView.vue";
 import OrderDrawer from "src/components/OrderDrawer.vue";
 import OrderNumberTitle from "src/components/OrderNumberTitle.vue";
-import { getOrderCurrentStatus } from "src/lib/order";
 import { computed, ref } from "vue";
 import { closeArbitraryOrderAction } from "../../../shared";
 import { useI18nStore } from "../lib/i18n";

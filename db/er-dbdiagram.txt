@@ -131,35 +131,27 @@ Table dish_to_modification {
   }
 }
 
-Table order_status {
-  id UUID [pk]
-  code_name TEXT // "creating" | "created" | "cooking" | "cooked" | "paid"
-}
-
-Table order_to_order_status {
-  id UUID [pk]
-  order_id UUID
-  order_status_id UUID
-  date TIMESTAMP // current status of the order is the most recent
-  Indexes {
-    order_id [name: 'order_to_order_status_order_id_idx']
-    order_status_id [name: 'order_to_order_status_order_status_id_idx']
-  }
-}
-
 Table order {
   id UUID [pk]
   client_id UUID
   employee_id UUID
   sale_point_id UUID
-  number TEXT // e.g. 29-01-23-KL1C
+  number TEXT
   table_number TEXT
   comment TEXT
+  status TEXT
+  created_date TIMESTAMP
+  cooking_date TIMESTAMP
+  cooked_date TIMESTAMP
+  delivering_date TIMESTAMP
+  delivered_date TIMESTAMP
+  paid_date TIMESTAMP
   Indexes {
     client_id [name: 'order_client_id_idx']
     employee_id [name: 'order_employee_id_idx']
     sale_point_id [name: 'order_sale_point_id_idx']
     number [name: 'order_number_idx']
+    status [name: 'order_status_idx']
   }
 }
 
@@ -168,11 +160,14 @@ Table order_to_dish {
   order_id UUID
   dish_id UUID
   dish_count INT
-  is_cooking BOOLEAN
-  is_ready BOOLEAN
+  status TEXT
+  cooking_date TIMESTAMP
+  cooked_date TIMESTAMP
+  delivered_date TIMESTAMP
   Indexes {
     order_id [name: 'order_to_dish_order_id_idx']
     dish_id [name: 'order_to_dish_dish_id_idx']
+    status [name: 'order_to_dish_status_idx']
   }
 }
 
@@ -205,5 +200,3 @@ Ref: dish_to_modification.dish_id > dish.id [delete: set null]
 Ref: dish_to_modification.modification_id > modification.id [delete: set null]
 Ref: order_to_dish_to_modification.order_to_dish_id > order_to_dish.id [delete: set null]
 Ref: order_to_dish_to_modification.modification_id > modification.id [delete: set null]
-Ref: order_to_order_status.order_id > order.id [delete: set null]
-Ref: order_to_order_status.order_status_id > order_status.id [delete: set null]

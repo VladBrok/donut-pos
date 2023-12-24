@@ -56,11 +56,8 @@
                 <dish-in-order
                   :dish="dish"
                   :count="dish.count"
-                  :is-cooking="dish.isCooking"
-                  :is-ready="dish.isReady"
-                  :order-number="order.orderNumber"
-                  :order-id="order.id"
-                  :dish-id-in-order="dish.dishIdInOrder"
+                  :order="order"
+                  :dish-in-order="dish"
                   :modifications="
                     dish.modifications.map((x) => ({
                       count: x.count,

@@ -1,12 +1,13 @@
 import { ICurrentOrder } from "donut-shared";
 import { IOrder } from "donut-shared/src/actions/orders.js";
 import {
+  DISH_IN_ORDER_STATUSES,
   ITEMS_PER_PAGE,
   ORDER_STATUSES,
-  ORDER_STATUSES_ARR,
   OrderStatus,
 } from "donut-shared/src/constants.js";
 import { and, asc, desc, eq, ilike, or, sql } from "drizzle-orm";
+import { PgColumn } from "drizzle-orm/pg-core";
 import {
   client,
   dish,
@@ -15,7 +16,6 @@ import {
   order,
   orderToDish,
   orderToDishToModification,
-  orderToOrderStatus,
 } from "migrations/schema.js";
 import {
   ordersAdapter,
@@ -42,20 +42,10 @@ export interface IGetOrdersPage extends IGetOrder {
 export async function getOrdersPage(params: IGetOrdersPage) {
   console.time("get_orders");
 
-  const statusSortHelper = db
-    .select({
-      orderId: orderToOrderStatus.orderId,
-      date: orderToOrderStatus.date,
-    })
-    .from(orderToOrderStatus)
-    .where(eq(orderToOrderStatus.orderStatusId, ORDER_STATUSES.CREATED.id))
-    .as("otos");
-
   const orders = db
     .select()
     .from(order)
-    .leftJoin(statusSortHelper, eq(order.id, statusSortHelper.orderId))
-    .orderBy(desc(statusSortHelper.date))
+    .orderBy(makeOrderByFilter(params, order.createdDate))
     .where(makeWhereFilter(params))
     .offset((params.page - 1) * params.perPage)
     .limit(params.perPage)
@@ -64,7 +54,6 @@ export async function getOrdersPage(params: IGetOrdersPage) {
   const data = await db
     .select()
     .from(orders)
-    .leftJoin(orderToOrderStatus, eq(order.id, orderToOrderStatus.orderId))
     .leftJoin(orderToDish, eq(orderToDish.orderId, order.id))
     .leftJoin(dish, eq(dish.id, orderToDish.dishId))
     .leftJoin(
@@ -77,9 +66,7 @@ export async function getOrdersPage(params: IGetOrdersPage) {
     )
     .leftJoin(employee, eq(employee.id, order.employeeId))
     .leftJoin(client, eq(client.id, order.clientId))
-    .orderBy(
-      params.orderBy === "asc" ? asc(orders.otos.date) : desc(orders.otos.date)
-    );
+    .orderBy(makeOrderByFilter(params, orders.createdDate));
 
   const total = await db
     .select({
@@ -95,7 +82,7 @@ export async function getOrdersPage(params: IGetOrdersPage) {
 
 export async function getSingleOrder(orderNumber: string, userId?: string) {
   const result = await getOrdersPage({
-    employeeId: userId, // TODO: this will be a client id
+    employeeId: userId, // TODO: this may aslo be a client id...
     page: 1,
     perPage: 1,
     orderNumber: orderNumber,
@@ -114,6 +101,10 @@ export async function getOrdersForKitchen() {
   return result.ordersPage;
 }
 
+export function makeOrderByFilter(params: IGetOrder, createdDateCol: PgColumn) {
+  return params.orderBy === "asc" ? asc(createdDateCol) : desc(createdDateCol);
+}
+
 function makeWhereFilter(params: IGetOrder) {
   return and(
     params.employeeId ? eq(order.employeeId, params.employeeId) : undefined,
@@ -126,32 +117,12 @@ function makeWhereFilter(params: IGetOrder) {
         )
       : undefined,
     params.statuses
-      ? or(
-          ...params.statuses.map(
-            (status) => sql`EXISTS ${filterByOrderStatusSubquery(status)}`
-          )
-        )
+      ? or(...params.statuses.map((status) => eq(order.status, status)))
       : undefined
   );
 }
 
-function filterByOrderStatusSubquery(status: OrderStatus): any {
-  const statusId = ORDER_STATUSES_ARR.find((x) => x.name === status)?.id || "";
-  return db
-    .select()
-    .from(
-      db
-        .select()
-        .from(orderToOrderStatus)
-        .where(eq(orderToOrderStatus.orderId, order.id))
-        .orderBy(desc(orderToOrderStatus.date))
-        .limit(1)
-        .as("order_to_order_status")
-    )
-    .where(eq(orderToOrderStatus.orderStatusId, statusId));
-}
-
-// TODO: find a way to make it faster
+// TODO: find a way to make it faster (store jsons?)
 export async function createOrder(
   data: ICurrentOrder,
   employeeId: string
@@ -175,15 +146,11 @@ export async function createOrder(
       tableNumber: data.tableNumber,
       employeeId: employeeId,
       number: orderNumber,
+      createdDate: new Date(),
+      status: ORDER_STATUSES.CREATED,
     });
 
     await Promise.all([
-      tx.insert(orderToOrderStatus).values({
-        id: generateUuid(),
-        date: new Date(),
-        orderId: orderToCreate.id,
-        orderStatusId: ORDER_STATUSES.CREATED.id,
-      }),
       ...data.dishes.map(async (dish) => {
         const orderToDishUuid = generateUuid();
 
@@ -213,24 +180,22 @@ export async function createOrder(
 
 export async function startCookingDish(orderId: string, dishIdInOrder: string) {
   await db.transaction(async (tx) => {
-    const statuses = await tx
-      .select()
-      .from(orderToOrderStatus)
-      .where(eq(orderToOrderStatus.orderId, orderId));
+    const theOrder = (
+      await tx.select().from(order).where(eq(order.id, orderId))
+    )[0];
 
-    if (!statuses.find((x) => x.orderStatusId === ORDER_STATUSES.COOKING.id)) {
-      await tx.insert(orderToOrderStatus).values({
-        id: generateUuid(),
-        date: new Date(),
-        orderId: orderId,
-        orderStatusId: ORDER_STATUSES.COOKING.id,
+    if (theOrder?.status === ORDER_STATUSES.CREATED) {
+      await tx.update(order).set({
+        status: ORDER_STATUSES.COOKING,
+        cookingDate: new Date(),
       });
     }
 
     await tx
       .update(orderToDish)
       .set({
-        isCooking: true,
+        status: DISH_IN_ORDER_STATUSES.COOKING,
+        cookingDate: new Date(),
       })
       .where(eq(orderToDish.id, dishIdInOrder));
   });
@@ -240,50 +205,46 @@ export async function finishCookingDish(
   orderId: string,
   dishIdInOrder: string
 ) {
-  let isOrderCooked = { value: false };
   await db.transaction(async (tx) => {
-    const statuses = await tx
-      .select()
-      .from(orderToOrderStatus)
-      .where(eq(orderToOrderStatus.orderId, orderId));
+    const theOrder = (
+      await tx.select().from(order).where(eq(order.id, orderId))
+    )[0];
     const dishes = await tx
       .select()
       .from(orderToDish)
       .where(eq(orderToDish.orderId, orderId));
-    const leftToCook = dishes.length - dishes.filter((x) => x.isReady)?.length;
+    const leftToCook =
+      dishes.length -
+      dishes.filter(
+        (x) =>
+          x.status === DISH_IN_ORDER_STATUSES.COOKED ||
+          x.status == DISH_IN_ORDER_STATUSES.DELIVERED
+      )?.length;
 
-    if (
-      leftToCook - 1 === 0 &&
-      !statuses.find((x) => x.orderStatusId === ORDER_STATUSES.COOKED.id)
-    ) {
-      isOrderCooked.value = true;
-      await tx.insert(orderToOrderStatus).values({
-        id: generateUuid(),
-        date: new Date(),
-        orderId: orderId,
-        orderStatusId: ORDER_STATUSES.COOKED.id,
+    if (leftToCook - 1 === 0 && theOrder?.status === ORDER_STATUSES.COOKING) {
+      await tx.update(order).set({
+        status: ORDER_STATUSES.COOKED,
+        cookedDate: new Date(),
       });
     }
 
     await tx
       .update(orderToDish)
       .set({
-        isReady: true,
+        status: DISH_IN_ORDER_STATUSES.COOKED,
+        cookedDate: new Date(),
       })
       .where(eq(orderToDish.id, dishIdInOrder));
   });
 
-  return {
-    order: shallowOrdersAdapter(
-      await db
-        .select()
-        .from(order)
-        .where(eq(order.id, orderId))
-        .leftJoin(employee, eq(employee.id, order.employeeId))
-        .leftJoin(client, eq(client.id, order.clientId))
-    )[0],
-    isOrderCooked: isOrderCooked.value,
-  };
+  return shallowOrdersAdapter(
+    await db
+      .select()
+      .from(order)
+      .where(eq(order.id, orderId))
+      .leftJoin(employee, eq(employee.id, order.employeeId))
+      .leftJoin(client, eq(client.id, order.clientId))
+  )[0];
 }
 
 export async function getOrdersShallow(params: IGetOrder) {

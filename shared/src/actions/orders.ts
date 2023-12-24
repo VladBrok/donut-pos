@@ -1,5 +1,5 @@
-import { ICurrentOrder } from "src/actions/current-order.js";
-import { OrderStatus } from "src/constants.js";
+import { ICurrentOrder } from "../actions/current-order.js";
+import { DishInOrderStatus, OrderStatus } from "../constants.js";
 import { createAction } from "./index.js";
 
 export interface IOrder {
@@ -7,6 +7,13 @@ export interface IOrder {
   comment: string;
   tableNumber: string;
   orderNumber: string;
+  status: OrderStatus;
+  createdDate: string;
+  cookingDate: string;
+  cookedDate: string;
+  deliveringDate: string;
+  deliveredDate: string;
+  paidDate: string;
   employee: {
     id: string;
     firstName: string;
@@ -15,14 +22,8 @@ export interface IOrder {
   client: {
     id: string;
   } | null;
-  statuses: {
-    id: string;
-    codeName: OrderStatus;
-    date: string;
-  }[];
   dishes: {
     id: string;
-    orderNumber: string;
     dishIdInOrder: string;
     count: number;
     name: string;
@@ -31,8 +32,10 @@ export interface IOrder {
     price: number;
     weight: number;
     isActive: boolean;
-    isCooking: boolean;
-    isReady: boolean;
+    status: DishInOrderStatus;
+    cookingDate: string;
+    cookedDate: string;
+    deliveredDate: string;
     modifications: {
       id: string;
       name: string;
@@ -49,6 +52,13 @@ export interface IShallowOrder {
   comment: string;
   tableNumber: string;
   orderNumber: string;
+  status: OrderStatus;
+  createdDate: string;
+  cookingDate: string;
+  cookedDate: string;
+  deliveringDate: string;
+  deliveredDate: string;
+  paidDate: string;
   employee: {
     id: string;
     firstName: string;
@@ -105,13 +115,6 @@ export const finishCookingDishAction = createAction<{
 }>("orders/finishCookingDish");
 
 export const dishFinishedCookingAction = createAction<{
-  orderId: string;
-  orderNumber: string;
   dishIdInOrder: string;
   order: IShallowOrder;
-  isOrderCooked: boolean;
 }>("orders/dishFinishedCooking");
-
-export const cookedOrdersOfEmployeeLoadedAction = createAction<{
-  orders: IShallowOrder[];
-}>("orders/cookedOrdersOfEmployeeLoaded");

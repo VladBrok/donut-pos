@@ -109,7 +109,6 @@ export const messages = i18n("messages", {
   addToOrderButton: "Add to order",
   modificationsTitle: "In addition",
   openCurrentOrder: "Open current order",
-  showCookedOrders: "Show cooked orders",
   currentOrder: "Current Order",
   emptyOrder: "Order is empty",
   order: "Order",

@@ -1,7 +1,8 @@
 import { IShallowOrder } from "donut-shared/src/actions/orders.js";
 import {
+  DishInOrderStatus,
   EMPLOYEE_PERMISSIONS,
-  ORDER_STATUSES_ARR,
+  OrderStatus,
 } from "donut-shared/src/constants.js";
 import { onlyUnique } from "src/lib/only-unique.js";
 import {
@@ -136,12 +137,19 @@ export const roleAdapter = (data: RoleSchema[]): RoleModel[] => {
 
 export const ordersAdapter = (data: OrderSchema[]): OrderModel[] => {
   return data
-    .filter(onlyUnique((item) => item.order.order.id))
+    .filter(onlyUnique((item) => item.order.id))
     .map((uniqueOrder) => ({
-      id: uniqueOrder.order.order.id,
-      orderNumber: uniqueOrder.order.order.number || "",
-      tableNumber: uniqueOrder.order.order.tableNumber || "",
-      comment: uniqueOrder.order.order.comment || "",
+      id: uniqueOrder.order.id,
+      orderNumber: uniqueOrder.order.number || "",
+      tableNumber: uniqueOrder.order.tableNumber || "",
+      comment: uniqueOrder.order.comment || "",
+      status: (uniqueOrder.order.status || "") as OrderStatus,
+      createdDate: uniqueOrder.order.createdDate?.toISOString() || "",
+      cookingDate: uniqueOrder.order.cookingDate?.toISOString() || "",
+      cookedDate: uniqueOrder.order.cookedDate?.toISOString() || "",
+      deliveringDate: uniqueOrder.order.deliveringDate?.toISOString() || "",
+      deliveredDate: uniqueOrder.order.deliveredDate?.toISOString() || "",
+      paidDate: uniqueOrder.order.paidDate?.toISOString() || "",
       client: uniqueOrder.client
         ? {
             id: uniqueOrder.client.id,
@@ -154,35 +162,23 @@ export const ordersAdapter = (data: OrderSchema[]): OrderModel[] => {
             lastName: uniqueOrder.employee.lastName || "",
           }
         : null,
-      statuses: data
-        .filter(
-          (order) =>
-            order.order.order.id === uniqueOrder.order.order.id &&
-            order.order_to_order_status
-        )
-        .filter(
-          onlyUnique((item) => item.order_to_order_status?.orderStatusId || "")
-        )
-        .map((order) => ({
-          id: order.order_to_order_status?.orderStatusId || "",
-          codeName:
-            ORDER_STATUSES_ARR.find(
-              (x) => x.id === order.order_to_order_status?.orderStatusId
-            )?.name || "",
-          date: order.order_to_order_status?.date?.toISOString() || "",
-        })),
       dishes: data
         .filter(
-          (order) =>
-            order.order.order.id === uniqueOrder.order.order.id && order.dish
+          (order) => order.order.id === uniqueOrder.order.id && order.dish
         )
         .filter(onlyUnique((item) => item.dish?.id || ""))
         .map((order) => ({
           id: order.dish?.id || "",
-          dishIdInOrder: order.order_to_dish?.id,
+          dishIdInOrder: order.order_to_dish?.id || "",
+          status: (uniqueOrder.order_to_dish?.status ||
+            "") as DishInOrderStatus,
+          cookingDate:
+            uniqueOrder.order_to_dish?.cookingDate?.toISOString() || "",
+          cookedDate:
+            uniqueOrder.order_to_dish?.cookedDate?.toISOString() || "",
+          deliveredDate:
+            uniqueOrder.order_to_dish?.deliveredDate?.toISOString() || "",
           count: order.order_to_dish?.dishCount || 0,
-          isCooking: order.order_to_dish?.isCooking || false,
-          isReady: order.order_to_dish?.isReady || false,
           name: order.dish?.name || "",
           imageUrl: order.dish?.imageUrl || "",
           description: order.dish?.description || "",
@@ -192,13 +188,13 @@ export const ordersAdapter = (data: OrderSchema[]): OrderModel[] => {
           modifications: data
             .filter(
               (innerOrder) =>
-                innerOrder.order.order.id === uniqueOrder.order.order.id &&
+                innerOrder.order.id === uniqueOrder.order.id &&
                 innerOrder.dish?.id === order.dish?.id &&
                 order.modification
             )
             .filter(onlyUnique((item) => item.modification?.id || ""))
             .map((order) => ({
-              id: order.order?.order.id || "",
+              id: order.order?.id || "",
               name: order.modification?.name || "",
               imageUrl: order.modification?.imageUrl || "",
               price: order.modification?.price || 0,
@@ -220,6 +216,13 @@ export const shallowOrdersAdapter = (
       orderNumber: uniqueOrder.order.number || "",
       tableNumber: uniqueOrder.order.tableNumber || "",
       comment: uniqueOrder.order.comment || "",
+      status: (uniqueOrder.order.status || "") as OrderStatus,
+      createdDate: uniqueOrder.order.createdDate?.toISOString() || "",
+      cookingDate: uniqueOrder.order.cookingDate?.toISOString() || "",
+      cookedDate: uniqueOrder.order.cookedDate?.toISOString() || "",
+      deliveringDate: uniqueOrder.order.deliveringDate?.toISOString() || "",
+      deliveredDate: uniqueOrder.order.deliveredDate?.toISOString() || "",
+      paidDate: uniqueOrder.order.paidDate?.toISOString() || "",
       client: uniqueOrder.client
         ? {
             id: uniqueOrder.client.id,
