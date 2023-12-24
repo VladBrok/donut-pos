@@ -9,6 +9,7 @@ import {
   updateCurrentOrderTableNumberAction,
 } from "donut-shared";
 import { loggedInAction, logoutAction } from "donut-shared/src/actions/auth";
+import { dishFinishedCookingAction } from "donut-shared/src/actions/orders";
 import { ANONYMOUS } from "donut-shared/src/constants";
 import { Notify } from "quasar";
 import { INFO_TIMEOUT_MS } from "src/lib/constants";
@@ -77,6 +78,22 @@ export const useMutationsWatcher = () => {
             multiLine: true,
             group: false,
           });
+          break;
+        }
+
+        case dishFinishedCookingAction.type: {
+          if (mutation.payload.payload.isOrderCooked) {
+            Notify.create({
+              type: "info",
+              position: "top",
+              timeout: INFO_TIMEOUT_MS,
+              message: t.value.allDishesCooked({
+                orderNumber: mutation.payload.payload.order.orderNumber,
+              }),
+              multiLine: true,
+              group: false,
+            });
+          }
           break;
         }
       }

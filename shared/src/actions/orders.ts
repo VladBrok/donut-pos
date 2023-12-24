@@ -44,6 +44,21 @@ export interface IOrder {
   }[];
 }
 
+export interface IShallowOrder {
+  id: string;
+  comment: string;
+  tableNumber: string;
+  orderNumber: string;
+  employee: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  } | null;
+  client: {
+    id: string;
+  } | null;
+}
+
 export const orderLoadedAction = createAction<{
   order: IOrder | null;
 }>("orders/orderLoaded");
@@ -77,7 +92,6 @@ export const startCookingDishAction = createAction<{
   dishIdInOrder: string;
 }>("orders/startCookingDish");
 
-// TODO: if it's a first dish in order that started cooking, update the order status to Cooking
 export const dishStartedCookingAction = createAction<{
   orderId: string;
   orderNumber: string;
@@ -90,9 +104,14 @@ export const finishCookingDishAction = createAction<{
   dishIdInOrder: string;
 }>("orders/finishCookingDish");
 
-// TODO: if all dishes in order are cooked, update the order status to Cooked
 export const dishFinishedCookingAction = createAction<{
   orderId: string;
   orderNumber: string;
   dishIdInOrder: string;
+  order: IShallowOrder;
+  isOrderCooked: boolean;
 }>("orders/dishFinishedCooking");
+
+export const cookedOrdersOfEmployeeLoadedAction = createAction<{
+  orders: IShallowOrder[];
+}>("orders/cookedOrdersOfEmployeeLoaded");

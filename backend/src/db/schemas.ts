@@ -48,3 +48,9 @@ export type OrderSchema = {
     | null;
   [modification._.name]: typeof modification.$inferSelect | null;
 };
+
+export type ShallowOrderSchema = {
+  [order._.name]: typeof order.$inferSelect;
+  [employee._.name]: typeof employee.$inferSelect | null;
+  [client._.name]: typeof client.$inferSelect | null;
+};

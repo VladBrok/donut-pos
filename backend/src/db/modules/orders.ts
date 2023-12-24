@@ -17,19 +17,25 @@ import {
   orderToDishToModification,
   orderToOrderStatus,
 } from "migrations/schema.js";
-import { ordersAdapter } from "src/db/schema-to-model-adapters.js";
+import {
+  ordersAdapter,
+  shallowOrdersAdapter,
+} from "src/db/schema-to-model-adapters.js";
 import { generateOrderNumber } from "src/lib/generate-order-number.js";
 import { generateUuid } from "../../lib/uuid.js";
 import { db } from "../index.js";
 
-export interface IGetOrdersPage {
-  page: number;
-  perPage: number;
+export interface IGetOrder {
   employeeId?: string;
   statuses?: OrderStatus[];
   orderNumber?: string;
   strictOrderNumberCompare?: boolean;
   orderBy?: "desc" | "asc";
+}
+
+export interface IGetOrdersPage extends IGetOrder {
+  page: number;
+  perPage: number;
 }
 
 // TODO: optimize...
@@ -108,7 +114,7 @@ export async function getOrdersForKitchen() {
   return result.ordersPage;
 }
 
-function makeWhereFilter(params: IGetOrdersPage) {
+function makeWhereFilter(params: IGetOrder) {
   return and(
     params.employeeId ? eq(order.employeeId, params.employeeId) : undefined,
     params.orderNumber
@@ -234,6 +240,7 @@ export async function finishCookingDish(
   orderId: string,
   dishIdInOrder: string
 ) {
+  let isOrderCooked = { value: false };
   await db.transaction(async (tx) => {
     const statuses = await tx
       .select()
@@ -249,6 +256,7 @@ export async function finishCookingDish(
       leftToCook - 1 === 0 &&
       !statuses.find((x) => x.orderStatusId === ORDER_STATUSES.COOKED.id)
     ) {
+      isOrderCooked.value = true;
       await tx.insert(orderToOrderStatus).values({
         id: generateUuid(),
         date: new Date(),
@@ -264,4 +272,27 @@ export async function finishCookingDish(
       })
       .where(eq(orderToDish.id, dishIdInOrder));
   });
+
+  return {
+    order: shallowOrdersAdapter(
+      await db
+        .select()
+        .from(order)
+        .where(eq(order.id, orderId))
+        .leftJoin(employee, eq(employee.id, order.employeeId))
+        .leftJoin(client, eq(client.id, order.clientId))
+    )[0],
+    isOrderCooked: isOrderCooked.value,
+  };
+}
+
+export async function getOrdersShallow(params: IGetOrder) {
+  const data = await db
+    .select()
+    .from(order)
+    .where(makeWhereFilter(params))
+    .leftJoin(employee, eq(employee.id, order.employeeId))
+    .leftJoin(client, eq(client.id, order.clientId));
+
+  return shallowOrdersAdapter(data);
 }

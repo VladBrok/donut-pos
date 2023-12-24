@@ -1,3 +1,4 @@
+import { IShallowOrder } from "donut-shared/src/actions/orders.js";
 import {
   EMPLOYEE_PERMISSIONS,
   ORDER_STATUSES_ARR,
@@ -18,6 +19,7 @@ import {
   ModificationSchema,
   OrderSchema,
   RoleSchema,
+  ShallowOrderSchema,
 } from "./schemas.js";
 
 export const employeeAdapter = (
@@ -205,5 +207,30 @@ export const ordersAdapter = (data: OrderSchema[]): OrderModel[] => {
                 order.order_to_dish_to_modification?.modificationCount || 0,
             })),
         })),
+    }));
+};
+
+export const shallowOrdersAdapter = (
+  data: ShallowOrderSchema[]
+): IShallowOrder[] => {
+  return data
+    .filter(onlyUnique((item) => item.order.id))
+    .map((uniqueOrder) => ({
+      id: uniqueOrder.order.id,
+      orderNumber: uniqueOrder.order.number || "",
+      tableNumber: uniqueOrder.order.tableNumber || "",
+      comment: uniqueOrder.order.comment || "",
+      client: uniqueOrder.client
+        ? {
+            id: uniqueOrder.client.id,
+          }
+        : null,
+      employee: uniqueOrder.employee
+        ? {
+            id: uniqueOrder.employee.id,
+            firstName: uniqueOrder.employee.firstName || "",
+            lastName: uniqueOrder.employee.lastName || "",
+          }
+        : null,
     }));
 };

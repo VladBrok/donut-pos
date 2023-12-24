@@ -1,6 +1,7 @@
 import { Server } from "@logux/server";
 import { createOrderAction, orderCreatedAction } from "donut-shared";
 import {
+  cookedOrdersOfEmployeeLoadedAction,
   dishFinishedCookingAction,
   dishStartedCookingAction,
   finishCookingDishAction,
@@ -17,6 +18,25 @@ import { hasCookPermissions, hasWaiterPermission } from "../lib/access.js";
 // TODO: consider creating separate channels for client's orders ?
 
 export default function ordersModule(server: Server) {
+  server.channel<{
+    employeeId: string;
+  }>(CHANNELS.COOKED_ORDERS_OF_EMPLOYEE, {
+    access(ctx) {
+      return (
+        ctx.userId === ctx.params.employeeId && hasWaiterPermission(ctx.userId)
+      );
+    },
+    async load(ctx) {
+      const orders = await db.getOrdersShallow({
+        employeeId: ctx.userId,
+        statuses: ["cooked"],
+      });
+      return cookedOrdersOfEmployeeLoadedAction({
+        orders: orders,
+      });
+    },
+  });
+
   server.channel(CHANNELS.ORDERS_FOR_KITCHEN, {
     access(ctx) {
       return hasCookPermissions(ctx.userId);
@@ -116,11 +136,17 @@ export default function ordersModule(server: Server) {
       return await hasCookPermissions(ctx.userId);
     },
     async process(ctx, action, meta) {
-      await db.finishCookingDish(
+      const { order, isOrderCooked } = await db.finishCookingDish(
         action.payload.orderId,
         action.payload.dishIdInOrder
       );
-      await server.process(dishFinishedCookingAction(action.payload));
+      await server.process(
+        dishFinishedCookingAction({
+          ...action.payload,
+          order: order,
+          isOrderCooked: isOrderCooked,
+        })
+      );
     },
   });
 
@@ -129,8 +155,12 @@ export default function ordersModule(server: Server) {
     async access() {
       return false;
     },
-    resend() {
-      return CHANNELS.ORDERS_FOR_KITCHEN;
+    resend(ctx, action) {
+      // TODO: i don't like the pattern of using this channel name without constant here...
+      return [
+        CHANNELS.ORDERS_FOR_KITCHEN,
+        `cookedOrders/${action.payload.order.employee?.id || ""}`,
+      ];
     },
   });
 
