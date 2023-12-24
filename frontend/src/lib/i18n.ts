@@ -133,7 +133,7 @@ export const messages = i18n("messages", {
   outOfStock: "Out of stock",
   cannotCreateOrderWithOutOfStock:
     "Some dishes are out of stock. Please remove them from the order before proceeding",
-  allDishesCooked: params(`All dishes in order #{orderNumber} are cooked`), // TODO: add link to order (here and in similar places?)
+  dishCooked: params(`{dishName} for table {table} is ready`),
   delivered: "Delivered",
 
   // Kitchen pages

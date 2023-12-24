@@ -4,6 +4,9 @@
       {{ t.order }}
       <component
         :is="isLink ? RouterLink : 'span'"
+        :class="{
+          link: isLink,
+        }"
         :to="`/orders/${orderNumber}`"
         >{{ `#${orderNumber}` }}</component
       >

@@ -72,7 +72,7 @@
                   for-kitchen
                   hide-price
                 >
-                  <template #actions?>
+                  <template #actions>
                     <dish-in-order-status-button
                       :order="order"
                       :dish-in-order="dish"
