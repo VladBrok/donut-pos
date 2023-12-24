@@ -251,6 +251,42 @@ export async function finishCookingDish(
   });
 }
 
+export async function deliverDish(orderId: string, dishIdInOrder: string) {
+  return await db.transaction(async (tx) => {
+    const theOrder = (
+      await db.select().from(order).where(eq(order.id, orderId))
+    )[0];
+
+    const dishes = await tx
+      .select()
+      .from(orderToDish)
+      .where(eq(orderToDish.orderId, orderId));
+
+    const leftToDeliver =
+      dishes.length -
+      dishes.filter((x) => x.status !== DISH_IN_ORDER_STATUSES.DELIVERED)
+        ?.length;
+
+    if (leftToDeliver - 1 === 0 && theOrder?.status === ORDER_STATUSES.COOKED) {
+      await tx
+        .update(order)
+        .set({
+          status: ORDER_STATUSES.DELIVERED,
+          deliveredDate: new Date(),
+        })
+        .where(eq(order.id, orderId));
+    }
+
+    await tx
+      .update(orderToDish)
+      .set({
+        status: DISH_IN_ORDER_STATUSES.DELIVERED,
+        deliveredDate: new Date(),
+      })
+      .where(eq(orderToDish.id, dishIdInOrder));
+  });
+}
+
 export async function getOrdersShallow(params: IGetOrder) {
   const data = await db
     .select()
@@ -273,8 +309,13 @@ export async function getCookedDishes(
     .where(eq(order.employeeId, employeeId))
     .leftJoin(employee, eq(employee.id, order.employeeId))
     .leftJoin(client, eq(client.id, order.clientId))
-    .leftJoin(orderToDish, eq(order.id, orderToDish.orderId))
-    .where(eq(orderToDish.status, DISH_IN_ORDER_STATUSES.COOKED))
+    .leftJoin(
+      orderToDish,
+      and(
+        eq(order.id, orderToDish.orderId),
+        eq(orderToDish.status, DISH_IN_ORDER_STATUSES.COOKED)
+      )
+    )
     .where(dishIdInOrder ? eq(orderToDish.id, dishIdInOrder) : undefined)
     .leftJoin(dish, eq(dish.id, orderToDish.dishId))
     .orderBy(asc(order.createdDate));

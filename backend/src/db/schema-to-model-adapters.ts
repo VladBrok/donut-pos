@@ -242,7 +242,7 @@ export const cookedDishesAdapter = (
 ): ICookedDish[] => {
   return data
     .filter((item) => item.order_to_dish)
-    .filter(onlyUnique((item) => item.dish?.id || ""))
+    .filter(onlyUnique((item) => item.order_to_dish?.id || ""))
     .map((item) => ({
       order: shallowOrdersAdapter([item])[0],
       dish: {

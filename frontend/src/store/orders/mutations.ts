@@ -1,6 +1,7 @@
 import {
   IOrder,
   cookedDishesLoadedAction,
+  dishDeliveredAction,
   dishFinishedCookingAction,
   dishStartedCookingAction,
   orderCreatedAction,
@@ -107,6 +108,18 @@ const mutation: MutationTree<IOrdersState> = {
     action: ReturnType<typeof cookedDishesLoadedAction>
   ) {
     state.cookedDishes = action.payload.dishes;
+  },
+
+  dishDelivered(
+    state: IOrdersState,
+    action: ReturnType<typeof dishDeliveredAction>
+  ) {
+    const idxOf = state.cookedDishes.findIndex(
+      (x) => x.order.id === action.payload.orderId
+    );
+    if (idxOf > -1) {
+      state.cookedDishes.splice(idxOf, 1);
+    }
   },
 };
 

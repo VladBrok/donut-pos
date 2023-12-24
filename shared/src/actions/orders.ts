@@ -125,6 +125,18 @@ export const dishFinishedCookingAction = createAction<{
   cookedDish: ICookedDish;
 }>("orders/dishFinishedCooking");
 
+export const startDeliveredDishAction = createAction<{
+  orderId: string;
+  dishIdInOrder: string;
+  employeeId: string;
+}>("orders/startDeliveringDish");
+
+export const dishDeliveredAction = createAction<{
+  orderId: string;
+  dishIdInOrder: string;
+  employeeId: string;
+}>("orders/dishDelivered");
+
 export const cookedDishesLoadedAction = createAction<{
   dishes: ICookedDish[];
 }>("orders/cookedDishesLoaded");

@@ -2,6 +2,7 @@ import { Server } from "@logux/server";
 import { createOrderAction, orderCreatedAction } from "donut-shared";
 import {
   cookedDishesLoadedAction,
+  dishDeliveredAction,
   dishFinishedCookingAction,
   dishStartedCookingAction,
   finishCookingDishAction,
@@ -10,6 +11,7 @@ import {
   ordersForKitchenLoadedAction,
   ordersPageLoadedAction,
   startCookingDishAction,
+  startDeliveredDishAction,
 } from "donut-shared/src/actions/orders.js";
 import { CHANNELS, ITEMS_PER_PAGE } from "donut-shared/src/constants.js";
 import * as db from "../db/modules/orders.js";
@@ -119,7 +121,7 @@ export default function ordersModule(server: Server) {
     },
   });
 
-  // TODO: resend to waiter page also... and to indifidual order page (orders/12-23333 channel) also...
+  // TODO: resend to waiter page also... and to indifidual order page (orders/12-23333 channel) also... and in other places also
   server.type(dishStartedCookingAction, {
     async access() {
       return false;
@@ -157,6 +159,28 @@ export default function ordersModule(server: Server) {
         CHANNELS.ORDERS_FOR_KITCHEN,
         `cookedDishes/${action.payload.cookedDish.order.employee?.id}`,
       ];
+    },
+  });
+
+  server.type(startDeliveredDishAction, {
+    async access(ctx) {
+      return await hasWaiterPermission(ctx.userId);
+    },
+    async process(ctx, action, meta) {
+      await db.deliverDish(
+        action.payload.orderId,
+        action.payload.dishIdInOrder
+      );
+      await server.process(dishDeliveredAction(action.payload));
+    },
+  });
+
+  server.type(dishDeliveredAction, {
+    async access() {
+      return false;
+    },
+    resend(ctx, action) {
+      return [`cookedDishes/${action.payload.employeeId}`];
     },
   });
 
