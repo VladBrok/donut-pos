@@ -2,6 +2,7 @@
   <main-layout :menu-list="menuList">
     <template #actions>
       <q-btn class="q-mr-md" flat round icon="o_notifications">
+        <q-tooltip> {{ t.showNotifications }} </q-tooltip>
         <q-badge
           v-if="cookedDishes.length"
           rounded
@@ -9,6 +10,38 @@
           color="red"
           :label="cookedDishes.length || ''"
         />
+        <q-menu fit style="overflow-x: hidden">
+          <div style="min-width: 320px" class="q-px-xs">
+            <TransitionGroup tag="div" name="fade">
+              <dish-in-order
+                v-for="item of cookedDishes"
+                :key="item.dish.dishIdInOrder"
+                :dish="item.dish"
+                :count="item.dish.count"
+                :order="item.order"
+                :dish-in-order="item.dish"
+                view-only
+                hide-price
+              >
+                <template #additonal-info>
+                  <div class="text-body2">
+                    <div>
+                      {{ t.tableNumber }}
+                      {{ item.order.tableNumber }},
+                    </div>
+                    <OrderNumberTitle
+                      :order-number="item.order.orderNumber"
+                      is-link
+                    />
+                  </div>
+                </template>
+                <template #actions>
+                  <cooked-dish-status-button :cooked-dish="item" />
+                </template>
+              </dish-in-order>
+            </TransitionGroup>
+          </div>
+        </q-menu>
       </q-btn>
       <q-btn
         class="q-mr-md"
@@ -53,8 +86,11 @@ import {
   closeCurrentOrderAction,
   openCurrentOrderAction,
 } from "donut-shared/src/actions/order-drawer";
+import CookedDishStatusButton from "src/components/CookedDishStatusButton.vue";
 import CurrentOrderView from "src/components/CurrentOrderView.vue";
+import DishInOrder from "src/components/DishInOrder.vue";
 import OrderDrawer from "src/components/OrderDrawer.vue";
+import OrderNumberTitle from "src/components/OrderNumberTitle.vue";
 import { useStore } from "src/store";
 import { computed, onMounted, onUnmounted, ref } from "vue";
 import MainLayout from "../components/MainLayout.vue";

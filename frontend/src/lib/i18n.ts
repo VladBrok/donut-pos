@@ -108,6 +108,7 @@ export const messages = i18n("messages", {
   addToCurrentOrder: "Add to order",
   addToOrderButton: "Add to order",
   modificationsTitle: "In addition",
+  showNotifications: "Show notifications",
   openCurrentOrder: "Open current order",
   currentOrder: "Current Order",
   emptyOrder: "Order is empty",
@@ -133,6 +134,7 @@ export const messages = i18n("messages", {
   cannotCreateOrderWithOutOfStock:
     "Some dishes are out of stock. Please remove them from the order before proceeding",
   allDishesCooked: params(`All dishes in order #{orderNumber} are cooked`), // TODO: add link to order (here and in similar places?)
+  delivered: "Delivered",
 
   // Kitchen pages
   viewDetails: "View details",

@@ -6,6 +6,17 @@ body {
   overflow-x: hidden;
 }
 
+a,
+a:visited,
+a:hover,
+a:active {
+  color: #0000ee;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
 .body--light {
   color: $dark !important;
 }

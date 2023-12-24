@@ -61,7 +61,6 @@
                 <dish-in-order
                   :dish="dish"
                   :count="dish.count"
-                  :order="order"
                   :dish-in-order="dish"
                   :modifications="
                     dish.modifications.map((x) => ({
@@ -71,7 +70,16 @@
                   "
                   view-only
                   for-kitchen
-                />
+                  hide-price
+                >
+                  <template #actions?>
+                    <dish-in-order-status-button
+                      :order="order"
+                      :dish-in-order="dish"
+                    >
+                    </dish-in-order-status-button>
+                  </template>
+                </dish-in-order>
                 <q-separator />
               </div>
             </TransitionGroup>
@@ -88,6 +96,7 @@ import { useSubscription } from "@logux/vuex";
 import { CHANNELS } from "donut-shared/src/constants";
 import BigSpinner from "src/components/BigSpinner.vue";
 import DishInOrder from "src/components/DishInOrder.vue";
+import DishInOrderStatusButton from "src/components/DishInOrderStatusButton.vue";
 import NoData from "src/components/NoData.vue";
 import OrderNumberTitle from "src/components/OrderNumberTitle.vue";
 import OrderView from "src/components/OrderView.vue";

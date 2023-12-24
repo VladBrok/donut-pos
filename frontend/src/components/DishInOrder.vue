@@ -1,5 +1,5 @@
 <template>
-  <div class="row no-wrap gap-md q-py-md">
+  <div class="row no-wrap gap-md q-py-md q-px-xs">
     <component
       :is="forKitchen ? QBtn : 'div'"
       @click="forKitchen && expand()"
@@ -27,10 +27,10 @@
           <span class="text-h6 q-pr-sm">
             {{ dish.name }}
           </span>
-          <span v-if="forKitchen && count > 1" class="text-h6 text-dark-gray">
+          <span v-if="hidePrice" class="text-h6 text-dark-gray">
             (x {{ count }})
           </span>
-          <span v-else-if="!forKitchen" class="text-dark-gray">
+          <span v-else class="text-dark-gray">
             ({{ count }} x {{ formatCurrency(dish.price) }})
           </span>
         </div>
@@ -58,9 +58,10 @@
           </q-btn>
         </div>
       </div>
+      <slot name="additonal-info" />
       <div>
         <div
-          v-for="modification of modifications"
+          v-for="modification of modificationsList"
           :key="modification.modification.id"
           class="q-mb-xs"
         >
@@ -68,8 +69,8 @@
             <span class="">
               {{ modification.modification.name }}
             </span>
-            <span v-if="forKitchen"> (x {{ modification.count }}) </span>
-            <span v-else-if="!forKitchen">
+            <span v-if="hidePrice"> (x {{ modification.count }}) </span>
+            <span v-else>
               ({{ modification.count }} x
               {{ formatCurrency(modification.modification.price) }})
             </span>
@@ -86,13 +87,7 @@
             >
             </product-counter>
           </div>
-          <div v-if="forKitchen && order && dishInOrder">
-            <dish-in-order-status-button
-              :order="order"
-              :dish-in-order="dishInOrder"
-            >
-            </dish-in-order-status-button>
-          </div>
+          <slot name="actions" />
           <div v-if="totalCost" class="text-primary text-h5 q-pr-sm">
             {{ formatCurrency(totalCost) }}
           </div>
@@ -101,8 +96,9 @@
     </div>
 
     <dish-details-modal
+      v-if="forKitchen"
       :dish="dishInOrder"
-      :modifications="modifications"
+      :modifications="modificationsList"
       v-model="isModalOpen"
       view-only
       :count="count"
@@ -112,31 +108,30 @@
 </template>
 
 <script setup lang="ts">
-import { IOrder } from "donut-shared/src/actions/orders";
+import { IDishInOrder } from "donut-shared/src/actions/orders";
 import { QBtn } from "quasar";
 import DishDetailsModal from "src/components/DishDetailsModal.vue";
-import DishInOrderStatusButton from "src/components/DishInOrderStatusButton.vue";
 import ProductCounter from "src/components/ProductCounter.vue";
 import { capitalize } from "src/lib/capitalize";
 import { formatCurrency } from "src/lib/currency";
 import { useI18nStore } from "src/lib/i18n";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { loadModificationsAction } from "../../../shared";
 import { loadDishesAction } from "../../../shared/src/actions/dishes";
 
-// TODO: split this component, restructure it, because we should not have "dish" and "dishInOrder" at the same time
-defineProps<{
+// TODO: split this component, restructure it, because we should not have "dish" and "dishInOrder" at the same time (use slots similar to "actions" slot...)
+const props = defineProps<{
   dish: Pick<
     ReturnType<typeof loadDishesAction>["payload"]["dishes"][number],
     "imageUrl" | "name" | "price" | "isActive"
   >;
-  dishInOrder?: IOrder["dishes"][number];
-  order?: IOrder;
+  dishInOrder?: IDishInOrder | Omit<IDishInOrder, "modifications">;
   viewOnly?: boolean;
   forKitchen?: boolean;
+  hidePrice?: boolean;
   totalCost?: number;
   count: number;
-  modifications: {
+  modifications?: {
     modification: ReturnType<
       typeof loadModificationsAction
     >["payload"]["modifications"][number];
@@ -147,6 +142,7 @@ defineProps<{
 const emit = defineEmits(["delete", "increment", "decrement"]);
 const t = useI18nStore();
 const isModalOpen = ref(false);
+const modificationsList = computed(() => props.modifications || []);
 
 function expand() {
   isModalOpen.value = true;
