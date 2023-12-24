@@ -206,10 +206,11 @@ export async function finishCookingDish(
   orderId: string,
   dishIdInOrder: string
 ) {
+  const theOrder = (
+    await db.select().from(order).where(eq(order.id, orderId))
+  )[0];
+
   await db.transaction(async (tx) => {
-    const theOrder = (
-      await tx.select().from(order).where(eq(order.id, orderId))
-    )[0];
     const dishes = await tx
       .select()
       .from(orderToDish)
@@ -238,14 +239,7 @@ export async function finishCookingDish(
       .where(eq(orderToDish.id, dishIdInOrder));
   });
 
-  return shallowOrdersAdapter(
-    await db
-      .select()
-      .from(order)
-      .where(eq(order.id, orderId))
-      .leftJoin(employee, eq(employee.id, order.employeeId))
-      .leftJoin(client, eq(client.id, order.clientId))
-  )[0];
+  return (await getCookedDishes(theOrder?.employeeId || "", dishIdInOrder))[0];
 }
 
 export async function getOrdersShallow(params: IGetOrder) {
@@ -259,7 +253,10 @@ export async function getOrdersShallow(params: IGetOrder) {
   return shallowOrdersAdapter(data);
 }
 
-export async function getCookedDishes(employeeId: string) {
+export async function getCookedDishes(
+  employeeId: string,
+  dishIdInOrder?: string
+) {
   const dishes = await db
     .select()
     .from(order)
@@ -268,6 +265,7 @@ export async function getCookedDishes(employeeId: string) {
     .leftJoin(client, eq(client.id, order.clientId))
     .leftJoin(orderToDish, eq(order.id, orderToDish.id))
     .where(eq(orderToDish.status, DISH_IN_ORDER_STATUSES.COOKED))
+    .where(dishIdInOrder ? eq(orderToDish.id, dishIdInOrder) : undefined)
     .leftJoin(dish, eq(dish.id, orderToDish.dishId))
     .orderBy(asc(order.createdDate));
 

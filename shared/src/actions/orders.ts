@@ -122,8 +122,7 @@ export const finishCookingDishAction = createAction<{
 }>("orders/finishCookingDish");
 
 export const dishFinishedCookingAction = createAction<{
-  dishIdInOrder: string;
-  order: IShallowOrder;
+  cookedDish: ICookedDish;
 }>("orders/dishFinishedCooking");
 
 export const cookedDishesLoadedAction = createAction<{

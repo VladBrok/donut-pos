@@ -134,14 +134,13 @@ export default function ordersModule(server: Server) {
       return await hasCookPermissions(ctx.userId);
     },
     async process(ctx, action, meta) {
-      const order = await db.finishCookingDish(
+      const result = await db.finishCookingDish(
         action.payload.orderId,
         action.payload.dishIdInOrder
       );
       await server.process(
         dishFinishedCookingAction({
-          ...action.payload,
-          order: order,
+          cookedDish: result,
         })
       );
     },
@@ -156,7 +155,7 @@ export default function ordersModule(server: Server) {
     resend(ctx, action) {
       return [
         CHANNELS.ORDERS_FOR_KITCHEN,
-        `cookedDishes/${action.payload.order.employee?.id}`,
+        `cookedDishes/${action.payload.cookedDish.order.employee?.id}`,
       ];
     },
   });
