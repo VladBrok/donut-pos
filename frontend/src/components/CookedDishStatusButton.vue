@@ -30,6 +30,7 @@ function updateStatus() {
       startDeliveredDishAction({
         employeeId: userId.value || "",
         orderId: props.cookedDish.order.id,
+        orderNumber: props.cookedDish.order.orderNumber,
         dishIdInOrder: props.cookedDish.dish.dishIdInOrder,
       })
     )

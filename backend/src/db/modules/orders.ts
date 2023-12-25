@@ -284,11 +284,21 @@ export async function deliverDish(orderId: string, dishIdInOrder: string) {
         deliveredDate: new Date(),
       })
       .where(eq(orderToDish.id, dishIdInOrder));
+
+    return (
+      await getOrdersShallow(
+        {
+          orderNumber: theOrder?.number || "",
+          strictOrderNumberCompare: true,
+        },
+        tx
+      )
+    )[0];
   });
 }
 
-export async function getOrdersShallow(params: IGetOrder) {
-  const data = await db
+export async function getOrdersShallow(params: IGetOrder, dbOrTx = db) {
+  const data = await dbOrTx
     .select()
     .from(order)
     .where(makeWhereFilter(params))

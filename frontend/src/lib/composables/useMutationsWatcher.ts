@@ -85,6 +85,10 @@ export const useMutationsWatcher = () => {
         }
 
         case dishFinishedCookingAction.type: {
+          if (state.auth.user.role?.codeName !== "waiter") {
+            return;
+          }
+
           const cooked: ICookedDish = mutation.payload.payload.cookedDish;
           Notify.create({
             type: "info",

@@ -12,6 +12,8 @@ import {
 import { MutationTree } from "vuex";
 import { IOrdersState } from "./state";
 
+// TODO: the fact that I have to duplicate logic for updating order status in DB and here is frustrating. I would rather just silently update the whole order with whatever the server sent instead of updating individual props (isCooked, etc.). Think how to do that in a most effective way because it otherwise will cause a lot of bugs going forward
+
 function sortDishesByCookingStatus(orders: IOrder[]) {
   return orders.map((order) => ({
     ...order,
@@ -58,6 +60,11 @@ const mutation: MutationTree<IOrdersState> = {
     state: IOrdersState,
     action: ReturnType<typeof dishStartedCookingAction>
   ) {
+    if (state.order?.orderNumber === action.payload.orderNumber) {
+      state.order.status = "cooking";
+      state.order.cookingDate = new Date().toISOString();
+    }
+
     const order = state.ordersForKitchen.find(
       (x) => x.orderNumber === action.payload.orderNumber
     );
@@ -86,21 +93,44 @@ const mutation: MutationTree<IOrdersState> = {
       (x) => x.dishIdInOrder === action.payload.cookedDish.dish.dishIdInOrder
     );
 
-    if (!dish) {
-      return;
+    if (dish) {
+      dish.status = "cooked";
+      dish.cookedDate = new Date().toISOString();
     }
 
-    dish.status = "cooked";
-    dish.cookedDate = new Date().toISOString();
     // TODO: extract code for working with dish-in-order statuses and use it on BE and FE (I already wrote similar TODO in some other component)
-    const orderIsCooked = order?.dishes.every(
-      (x) => x.status === "cooked" || x.status === "delivered"
-    );
-    if (orderIsCooked && order) {
-      state.ordersForKitchen.splice(state.ordersForKitchen.indexOf(order), 1);
+
+    if (action.payload.cookedDish.order.status === "cooked") {
+      if (order) {
+        state.ordersForKitchen.splice(state.ordersForKitchen.indexOf(order), 1);
+      }
+      if (
+        state.order?.orderNumber === action.payload.cookedDish.order.orderNumber
+      ) {
+        state.order.status = "cooked";
+        state.order.cookedDate = new Date().toISOString();
+      }
     }
 
     state.ordersForKitchen = sortDishesByCookingStatus(state.ordersForKitchen);
+  },
+
+  dishDelivered(
+    state: IOrdersState,
+    action: ReturnType<typeof dishDeliveredAction>
+  ) {
+    // TODO: extract func for updating order status and use it on BE and FE
+    if (action.payload.order.status === "delivered" && state.order) {
+      state.order.status = "delivered";
+      state.order.deliveredDate = new Date().toISOString();
+    }
+
+    const idxOf = state.cookedDishes.findIndex(
+      (x) => x.order.id === action.payload.order.id
+    );
+    if (idxOf > -1) {
+      state.cookedDishes.splice(idxOf, 1);
+    }
   },
 
   cookedDishesLoaded(
@@ -108,18 +138,6 @@ const mutation: MutationTree<IOrdersState> = {
     action: ReturnType<typeof cookedDishesLoadedAction>
   ) {
     state.cookedDishes = action.payload.dishes;
-  },
-
-  dishDelivered(
-    state: IOrdersState,
-    action: ReturnType<typeof dishDeliveredAction>
-  ) {
-    const idxOf = state.cookedDishes.findIndex(
-      (x) => x.order.id === action.payload.orderId
-    );
-    if (idxOf > -1) {
-      state.cookedDishes.splice(idxOf, 1);
-    }
   },
 };
 

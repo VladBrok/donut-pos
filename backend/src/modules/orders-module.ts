@@ -126,8 +126,11 @@ export default function ordersModule(server: Server) {
     async access() {
       return false;
     },
-    resend() {
-      return [CHANNELS.ORDERS_FOR_KITCHEN];
+    resend(ctx, action) {
+      return [
+        CHANNELS.ORDERS_FOR_KITCHEN,
+        `singleOrder/${action.payload.orderNumber}`,
+      ];
     },
   });
 
@@ -158,6 +161,7 @@ export default function ordersModule(server: Server) {
       return [
         CHANNELS.ORDERS_FOR_KITCHEN,
         `cookedDishes/${action.payload.cookedDish.order.employee?.id}`,
+        `singleOrder/${action.payload.cookedDish.order.orderNumber}`,
       ];
     },
   });
@@ -167,11 +171,16 @@ export default function ordersModule(server: Server) {
       return await hasWaiterPermission(ctx.userId);
     },
     async process(ctx, action, meta) {
-      await db.deliverDish(
+      const order = await db.deliverDish(
         action.payload.orderId,
         action.payload.dishIdInOrder
       );
-      await server.process(dishDeliveredAction(action.payload));
+      await server.process(
+        dishDeliveredAction({
+          order: order,
+          dishIdInOrder: action.payload.dishIdInOrder,
+        })
+      );
     },
   });
 
@@ -180,7 +189,10 @@ export default function ordersModule(server: Server) {
       return false;
     },
     resend(ctx, action) {
-      return [`cookedDishes/${action.payload.employeeId}`];
+      return [
+        `cookedDishes/${action.payload.order.employee?.id}`,
+        `singleOrder/${action.payload.order.orderNumber}`,
+      ];
     },
   });
 

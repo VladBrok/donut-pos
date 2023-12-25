@@ -127,14 +127,14 @@ export const dishFinishedCookingAction = createAction<{
 
 export const startDeliveredDishAction = createAction<{
   orderId: string;
+  orderNumber: string;
   dishIdInOrder: string;
   employeeId: string;
 }>("orders/startDeliveringDish");
 
 export const dishDeliveredAction = createAction<{
-  orderId: string;
   dishIdInOrder: string;
-  employeeId: string;
+  order: IShallowOrder;
 }>("orders/dishDelivered");
 
 export const cookedDishesLoadedAction = createAction<{
