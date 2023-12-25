@@ -60,6 +60,14 @@ const mutation: MutationTree<IOrdersState> = {
     state: IOrdersState,
     action: ReturnType<typeof dishStartedCookingAction>
   ) {
+    const orderInPage = state.ordersPage.find(
+      (x) => x.orderNumber === action.payload.orderNumber
+    );
+    if (orderInPage) {
+      orderInPage.status = "cooking";
+      orderInPage.cookingDate = new Date().toISOString();
+    }
+
     if (state.order?.orderNumber === action.payload.orderNumber) {
       state.order.status = "cooking";
       state.order.cookingDate = new Date().toISOString();
@@ -110,6 +118,13 @@ const mutation: MutationTree<IOrdersState> = {
         state.order.status = "cooked";
         state.order.cookedDate = new Date().toISOString();
       }
+      const orderInPage = state.ordersPage.find(
+        (x) => x.orderNumber === action.payload.cookedDish.order.orderNumber
+      );
+      if (orderInPage) {
+        orderInPage.status = "cooked";
+        orderInPage.cookedDate = new Date().toISOString();
+      }
     }
 
     state.ordersForKitchen = sortDishesByCookingStatus(state.ordersForKitchen);
@@ -119,6 +134,14 @@ const mutation: MutationTree<IOrdersState> = {
     state: IOrdersState,
     action: ReturnType<typeof dishDeliveredAction>
   ) {
+    const orderInPage = state.ordersPage.find(
+      (x) => x.orderNumber === action.payload.order.orderNumber
+    );
+    if (action.payload.order.status === "delivered" && orderInPage) {
+      orderInPage.status = "delivered";
+      orderInPage.deliveredDate = new Date().toISOString();
+    }
+
     // TODO: extract func for updating order status and use it on BE and FE
     if (action.payload.order.status === "delivered" && state.order) {
       state.order.status = "delivered";

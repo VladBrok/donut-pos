@@ -264,7 +264,7 @@ export async function deliverDish(orderId: string, dishIdInOrder: string) {
 
     const leftToDeliver =
       dishes.length -
-      dishes.filter((x) => x.status !== DISH_IN_ORDER_STATUSES.DELIVERED)
+      dishes.filter((x) => x.status === DISH_IN_ORDER_STATUSES.DELIVERED)
         ?.length;
 
     if (leftToDeliver - 1 === 0 && theOrder?.status === ORDER_STATUSES.COOKED) {

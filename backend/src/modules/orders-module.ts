@@ -121,7 +121,6 @@ export default function ordersModule(server: Server) {
     },
   });
 
-  // TODO: resend to waiter page also... and to indifidual order page (orders/12-23333 channel) also... and in other places also
   server.type(dishStartedCookingAction, {
     async access() {
       return false;
@@ -130,6 +129,7 @@ export default function ordersModule(server: Server) {
       return [
         CHANNELS.ORDERS_FOR_KITCHEN,
         `singleOrder/${action.payload.orderNumber}`,
+        `orders/${action.payload.employeeId}`,
       ];
     },
   });
@@ -162,6 +162,7 @@ export default function ordersModule(server: Server) {
         CHANNELS.ORDERS_FOR_KITCHEN,
         `cookedDishes/${action.payload.cookedDish.order.employee?.id}`,
         `singleOrder/${action.payload.cookedDish.order.orderNumber}`,
+        `orders/${action.payload.cookedDish.order.employee?.id}`,
       ];
     },
   });
@@ -192,6 +193,7 @@ export default function ordersModule(server: Server) {
       return [
         `cookedDishes/${action.payload.order.employee?.id}`,
         `singleOrder/${action.payload.order.orderNumber}`,
+        `orders/${action.payload.order.employee?.id}`,
       ];
     },
   });

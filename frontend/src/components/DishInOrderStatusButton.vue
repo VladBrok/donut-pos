@@ -51,6 +51,7 @@ function updateStatus() {
   if (!props.dishInOrder.status) {
     promise = store.commit.sync(
       startCookingDishAction({
+        employeeId: props.order.employee?.id || "",
         orderId: props.order.id || "",
         orderNumber: props.order.orderNumber || "",
         dishIdInOrder: props.dishInOrder.dishIdInOrder || "",
