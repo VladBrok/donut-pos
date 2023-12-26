@@ -17,7 +17,7 @@
           </q-input>
         </div>
       </q-page-sticky>
-      <div class="q-mb-lg q-mt-md gap-sm row">
+      <div class="q-mb-lg q-mt-lg gap-sm row">
         <filter-pill
           v-for="category in categories"
           :key="category.id"

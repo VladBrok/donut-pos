@@ -21,8 +21,6 @@ import {
 import * as db from "../db/modules/orders.js";
 import { hasCookPermissions, hasWaiterPermission } from "../lib/access.js";
 
-// TODO: consider creating separate channels for client's orders ?
-
 export default function ordersModule(server: Server) {
   server.channel(CHANNELS.ORDERS_FOR_KITCHEN, {
     access(ctx) {
