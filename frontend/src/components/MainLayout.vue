@@ -72,7 +72,7 @@
     </order-drawer>
 
     <q-page-container>
-      <div class="scroll full-width page-wrapper-height">
+      <div class="scroll full-width page-wrapper-height overflow-x-hidden">
         <q-page padding>
           <div class="q-pb-xl q-pt-xl">
             <router-view />
