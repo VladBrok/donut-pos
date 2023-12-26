@@ -32,7 +32,6 @@ export default function ordersModule(server: Server) {
     },
   });
 
-  // TODO: resend order updates via this channel so that the client can see live changes
   server.channel<{
     orderNumber: string;
   }>(CHANNELS.ORDER_SINGLE, {
@@ -151,7 +150,6 @@ export default function ordersModule(server: Server) {
     },
   });
 
-  // TODO: resend to waiter page also... and to indifidual order page (orders/12-23333 channel) also...
   // TODO: find a way to use constants for channels such as "cookedDishes/:employeeId"
   server.type(dishFinishedCookingAction, {
     async access() {
@@ -212,7 +210,6 @@ export default function ordersModule(server: Server) {
     },
   });
 
-  // TODO: resend to waiter page also... and to indifidual order page (orders/12-23333 channel) also...
   server.type(orderCreatedAction, {
     async access() {
       return false;
