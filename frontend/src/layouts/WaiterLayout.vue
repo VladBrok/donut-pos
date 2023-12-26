@@ -19,7 +19,6 @@
                 :dish="item.dish"
                 :count="item.dish.count"
                 :order="item.order"
-                :dish-in-order="item.dish"
                 view-only
                 hide-price
               >

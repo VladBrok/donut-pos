@@ -103,7 +103,6 @@
 </template>
 
 <script setup lang="ts">
-import { IDishInOrder } from "donut-shared/src/actions/orders";
 import { QBtn } from "quasar";
 import ProductCounter from "src/components/ProductCounter.vue";
 import { capitalize } from "src/lib/capitalize";
@@ -119,7 +118,6 @@ const props = defineProps<{
     ReturnType<typeof loadDishesAction>["payload"]["dishes"][number],
     "imageUrl" | "name" | "price" | "isActive"
   >;
-  dishInOrder?: IDishInOrder | Omit<IDishInOrder, "modifications">;
   viewOnly?: boolean;
   forKitchen?: boolean;
   hidePrice?: boolean;
