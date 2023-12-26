@@ -4,7 +4,7 @@ export const CHANNELS = {
   MODIFICATIONS: "modifications",
   EMPLOYEES: "employees",
   ROLES: "roles",
-  ORDERS_OF_EMPLOYEE: "orders/:employeeId",
+  ORDERS_OF_EMPLOYEE: (id = ":employeeId") => `orders/${id}`,
   ORDER_SINGLE: "singleOrder/:orderNumber",
   COOKED_DISHES_OF_EMPLOYEE: "cookedDishes/:employeeId",
   ORDERS_FOR_KITCHEN: "ordersForKitchen",

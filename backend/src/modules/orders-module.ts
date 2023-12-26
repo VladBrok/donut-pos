@@ -69,7 +69,7 @@ export default function ordersModule(server: Server) {
 
   server.channel<{
     employeeId: string;
-  }>(CHANNELS.ORDERS_OF_EMPLOYEE, {
+  }>(CHANNELS.ORDERS_OF_EMPLOYEE(), {
     async access(ctx, action, meta) {
       return (
         ctx.userId === ctx.params.employeeId &&
@@ -132,7 +132,7 @@ export default function ordersModule(server: Server) {
       return [
         CHANNELS.ORDERS_FOR_KITCHEN,
         `singleOrder/${action.payload.orderNumber}`,
-        `orders/${action.payload.employeeId}`,
+        CHANNELS.ORDERS_OF_EMPLOYEE(action.payload.employeeId),
       ];
     },
   });
@@ -164,7 +164,9 @@ export default function ordersModule(server: Server) {
         CHANNELS.ORDERS_FOR_KITCHEN,
         `cookedDishes/${action.payload.cookedDish.order.employee?.id}`,
         `singleOrder/${action.payload.cookedDish.order.orderNumber}`,
-        `orders/${action.payload.cookedDish.order.employee?.id}`,
+        CHANNELS.ORDERS_OF_EMPLOYEE(
+          action.payload.cookedDish.order.employee?.id
+        ),
       ];
     },
   });
@@ -195,7 +197,7 @@ export default function ordersModule(server: Server) {
       return [
         `cookedDishes/${action.payload.order.employee?.id}`,
         `singleOrder/${action.payload.order.orderNumber}`,
-        `orders/${action.payload.order.employee?.id}`,
+        CHANNELS.ORDERS_OF_EMPLOYEE(action.payload.order.employee?.id),
       ];
     },
   });

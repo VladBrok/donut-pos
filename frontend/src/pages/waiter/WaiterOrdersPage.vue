@@ -65,6 +65,7 @@
 import { useSubscription } from "@logux/vuex";
 import {
   ANONYMOUS,
+  CHANNELS,
   ORDER_STATUSES_ARR,
   OrderStatus,
   openArbitraryOrderAction,
@@ -86,7 +87,9 @@ const t = useI18nStore();
 const ordersPage = computed(() => store.state.orders.ordersPage);
 const userId = ref(store.state.auth.user.userId);
 const channels = computed(() => {
-  return userId.value === ANONYMOUS.userId ? [] : [`orders/${userId.value}`];
+  return userId.value === ANONYMOUS.userId
+    ? []
+    : [CHANNELS.ORDERS_OF_EMPLOYEE(userId.value)];
 });
 let isSubscribing = useSubscription(channels, { store: store as any });
 const unsubscribe = ref(() => {
