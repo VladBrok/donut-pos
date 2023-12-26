@@ -47,7 +47,6 @@ function updateStatus() {
   let promise: Promise<any> | null = null;
   isUpdatingStatus.value = true;
 
-  // TODO: extract functions to work with dish-in-order statuses and use them both on FE and BE. The "disable=color === 'grey'" should not exist
   if (!props.dishInOrder.status) {
     promise = store.commit.sync(
       startCookingDishAction({

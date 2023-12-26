@@ -19,13 +19,7 @@ function sortDishesByCookingStatus(orders: IOrder[]) {
     ...order,
     dishes: order.dishes
       .slice()
-      .sort((a, b) =>
-        a.status === "cooked" || a.status === "delivered"
-          ? 1
-          : b.status === "cooked" || b.status === "delivered"
-          ? -1
-          : 0
-      ),
+      .sort((a, b) => (a.cookedDate ? 1 : b.cookedDate ? -1 : 0)),
   }));
 }
 
@@ -106,8 +100,6 @@ const mutation: MutationTree<IOrdersState> = {
       dish.cookedDate = new Date().toISOString();
     }
 
-    // TODO: extract code for working with dish-in-order statuses and use it on BE and FE (I already wrote similar TODO in some other component)
-
     if (action.payload.cookedDish.order.status === "cooked") {
       if (order) {
         state.ordersForKitchen.splice(state.ordersForKitchen.indexOf(order), 1);
@@ -142,7 +134,6 @@ const mutation: MutationTree<IOrdersState> = {
       orderInPage.deliveredDate = new Date().toISOString();
     }
 
-    // TODO: extract func for updating order status and use it on BE and FE
     if (action.payload.order.status === "delivered" && state.order) {
       state.order.status = "delivered";
       state.order.deliveredDate = new Date().toISOString();

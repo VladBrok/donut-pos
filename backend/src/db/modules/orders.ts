@@ -184,7 +184,7 @@ export async function startCookingDish(orderId: string, dishIdInOrder: string) {
       await tx.select().from(order).where(eq(order.id, orderId))
     )[0];
 
-    if (theOrder?.status === ORDER_STATUSES.CREATED) {
+    if (!theOrder?.cookingDate) {
       await tx
         .update(order)
         .set({
@@ -219,14 +219,9 @@ export async function finishCookingDish(
       .where(eq(orderToDish.orderId, orderId));
 
     const leftToCook =
-      dishes.length -
-      dishes.filter(
-        (x) =>
-          x.status === DISH_IN_ORDER_STATUSES.COOKED ||
-          x.status === DISH_IN_ORDER_STATUSES.DELIVERED
-      )?.length;
+      dishes.length - dishes.filter((x) => x.cookedDate)?.length;
 
-    if (leftToCook - 1 === 0 && theOrder?.status === ORDER_STATUSES.COOKING) {
+    if (leftToCook - 1 === 0 && !theOrder?.cookedDate) {
       await tx
         .update(order)
         .set({
@@ -262,11 +257,9 @@ export async function deliverDish(orderId: string, dishIdInOrder: string) {
       .where(eq(orderToDish.orderId, orderId));
 
     const leftToDeliver =
-      dishes.length -
-      dishes.filter((x) => x.status === DISH_IN_ORDER_STATUSES.DELIVERED)
-        ?.length;
+      dishes.length - dishes.filter((x) => x.deliveredDate)?.length;
 
-    if (leftToDeliver - 1 === 0 && theOrder?.status === ORDER_STATUSES.COOKED) {
+    if (leftToDeliver - 1 === 0 && !theOrder?.deliveredDate) {
       await tx
         .update(order)
         .set({
