@@ -1,5 +1,5 @@
 <template>
-  <div class="row no-wrap gap-md q-py-md q-px-xs">
+  <div class="row no-wrap gap-md q-py-md q-px-xs items-center">
     <component
       :is="forKitchen ? QBtn : 'div'"
       @click="forKitchen && expand()"
@@ -63,10 +63,9 @@
         <div
           v-for="modification of modificationsList"
           :key="modification.modification.id"
-          class="q-mb-xs"
         >
           <div class="text-body2">
-            <span class="">
+            <span>
               {{ modification.modification.name }}
             </span>
             <span v-if="hidePrice"> (x {{ modification.count }}) </span>
@@ -95,22 +94,17 @@
       </div>
     </div>
 
-    <dish-details-modal
-      v-if="forKitchen"
-      :dish="dishInOrder"
-      :modifications="modificationsList"
-      v-model="isModalOpen"
-      view-only
-      :count="count"
-    >
-    </dish-details-modal>
+    <slot
+      name="modal"
+      :modal-open="isModalOpen"
+      :update-model-open="(val: boolean) => (isModalOpen = val)"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { IDishInOrder } from "donut-shared/src/actions/orders";
 import { QBtn } from "quasar";
-import DishDetailsModal from "src/components/DishDetailsModal.vue";
 import ProductCounter from "src/components/ProductCounter.vue";
 import { capitalize } from "src/lib/capitalize";
 import { formatCurrency } from "src/lib/currency";

@@ -72,6 +72,21 @@
                   for-kitchen
                   hide-price
                 >
+                  <template #modal="{ modalOpen, updateModelOpen }">
+                    <dish-details-modal
+                      :dish="dish"
+                      :modifications="
+                        dish.modifications.map((x) => ({
+                          count: x.count,
+                          modification: x,
+                        }))
+                      "
+                      :model-value="modalOpen"
+                      @update:model-value="updateModelOpen($event)"
+                      view-only
+                    >
+                    </dish-details-modal>
+                  </template>
                   <template #actions>
                     <dish-in-order-status-button
                       :order="order"
@@ -95,6 +110,7 @@
 import { useSubscription } from "@logux/vuex";
 import { CHANNELS } from "donut-shared";
 import BigSpinner from "src/components/BigSpinner.vue";
+import DishDetailsModal from "src/components/DishDetailsModal.vue";
 import DishInOrder from "src/components/DishInOrder.vue";
 import DishInOrderStatusButton from "src/components/DishInOrderStatusButton.vue";
 import NoData from "src/components/NoData.vue";
