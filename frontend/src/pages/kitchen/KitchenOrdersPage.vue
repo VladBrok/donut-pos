@@ -75,14 +75,9 @@
                   <template #modal="{ modalOpen, updateModelOpen }">
                     <dish-details-modal
                       :dish="dish"
-                      :modifications="
-                        dish.modifications.map((x) => ({
-                          count: x.count,
-                          modification: x,
-                        }))
-                      "
                       :model-value="modalOpen"
                       @update:model-value="updateModelOpen($event)"
+                      :count="dish.count"
                       view-only
                     >
                     </dish-details-modal>

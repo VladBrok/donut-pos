@@ -28,7 +28,7 @@
           </div>
           <div class="q-mt-sm row">
             <div
-              v-for="modification of modificationsComputed"
+              v-for="modification of dish.modifications"
               :key="modification.id"
               class="col-12 col-md-6 q-pa-sm"
             >
@@ -38,11 +38,7 @@
               >
                 <product-counter
                   :view-only="viewOnly"
-                  :count="
-                    modifications
-                      ? modification.count
-                      : modificationCounts.get(modification.id) || 0
-                  "
+                  :count="modificationCounts.get(modification.id) || 0"
                   @increment="incrementModification(modification.id)"
                   @decrement="decrementModification(modification.id)"
                 ></product-counter>
@@ -72,7 +68,6 @@ import {
   loadModificationsAction,
 } from "donut-shared";
 import { computed, ref, watch } from "vue";
-import { loadDishesAction } from "../../../shared/src/actions/dishes";
 import { useI18nStore } from "../lib/i18n";
 import { useStore } from "../store";
 import DishCard from "./DishCard.vue";
@@ -82,22 +77,22 @@ import ProductCounter from "./ProductCounter.vue";
 // TODO: same problem with booleans
 
 const props = defineProps<{
-  dish: ReturnType<typeof loadDishesAction>["payload"]["dishes"][number] | null;
+  dish: {
+    id: string;
+    name: string;
+    imageUrl: string;
+    description: string;
+    price: number;
+    weight: number;
+    isActive: boolean;
+    modifications: (ReturnType<
+      typeof loadModificationsAction
+    >["payload"]["modifications"][number] & { count?: number })[];
+  } | null;
   viewOnly?: boolean;
   count?: number;
-  modifications?: {
-    modification: ReturnType<
-      typeof loadModificationsAction
-    >["payload"]["modifications"][number];
-    count: number;
-  }[];
 }>();
 const dish = computed(() => props.dish);
-const modificationsComputed = computed(
-  () =>
-    props.modifications?.map((x) => ({ ...x.modification, count: x.count })) ||
-    dish.value?.modifications
-);
 
 const t = useI18nStore();
 const store = useStore();
@@ -109,7 +104,7 @@ watch(
     modificationCounts.value.clear();
 
     dish.value?.modifications.forEach((modification) => {
-      modificationCounts.value.set(modification.id, 0);
+      modificationCounts.value.set(modification.id, modification?.count || 0);
     });
   },
   { immediate: true }
