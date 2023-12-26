@@ -2,7 +2,6 @@ import { ICurrentOrder } from "donut-shared";
 import { IOrder } from "donut-shared/src/actions/orders.js";
 import {
   DISH_IN_ORDER_STATUSES,
-  ITEMS_PER_PAGE,
   ORDER_STATUSES,
   OrderStatus,
 } from "donut-shared/src/constants.js";
@@ -95,7 +94,7 @@ export async function getSingleOrder(orderNumber: string, userId?: string) {
 export async function getOrdersForKitchen() {
   const result = await getOrdersPage({
     page: 1,
-    perPage: ITEMS_PER_PAGE * 3,
+    perPage: Number.MAX_SAFE_INTEGER,
     statuses: ["created", "cooking"],
     orderBy: "asc",
   });
