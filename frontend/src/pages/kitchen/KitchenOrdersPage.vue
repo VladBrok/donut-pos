@@ -91,8 +91,7 @@
                     <dish-in-order-status-button
                       :order="order"
                       :dish-in-order="dish"
-                    >
-                    </dish-in-order-status-button>
+                    />
                   </template>
                 </dish-in-order>
                 <q-separator />
