@@ -52,7 +52,7 @@ export default function ordersModule(server: Server) {
 
   server.channel<{
     employeeId: string;
-  }>(CHANNELS.COOKED_DISHES_OF_EMPLOYEE, {
+  }>(CHANNELS.COOKED_DISHES_OF_EMPLOYEE(), {
     async access(ctx, action, meta) {
       return (
         ctx.userId === ctx.params.employeeId &&
@@ -154,7 +154,6 @@ export default function ordersModule(server: Server) {
     },
   });
 
-  // TODO: find a way to use constants for channels such as "cookedDishes/:employeeId"
   server.type(dishFinishedCookingAction, {
     async access() {
       return false;
@@ -162,7 +161,9 @@ export default function ordersModule(server: Server) {
     resend(ctx, action) {
       return [
         CHANNELS.ORDERS_FOR_KITCHEN,
-        `cookedDishes/${action.payload.cookedDish.order.employee?.id}`,
+        CHANNELS.COOKED_DISHES_OF_EMPLOYEE(
+          action.payload.cookedDish.order.employee?.id
+        ),
         `singleOrder/${action.payload.cookedDish.order.orderNumber}`,
         CHANNELS.ORDERS_OF_EMPLOYEE(
           action.payload.cookedDish.order.employee?.id
@@ -195,7 +196,7 @@ export default function ordersModule(server: Server) {
     },
     resend(ctx, action) {
       return [
-        `cookedDishes/${action.payload.order.employee?.id}`,
+        CHANNELS.COOKED_DISHES_OF_EMPLOYEE(action.payload.order.employee?.id),
         `singleOrder/${action.payload.order.orderNumber}`,
         CHANNELS.ORDERS_OF_EMPLOYEE(action.payload.order.employee?.id),
       ];

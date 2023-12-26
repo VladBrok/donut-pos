@@ -81,7 +81,7 @@
 
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
-import { ANONYMOUS } from "donut-shared";
+import { ANONYMOUS, CHANNELS } from "donut-shared";
 import {
   closeCurrentOrderAction,
   openCurrentOrderAction,
@@ -122,7 +122,7 @@ const userId = ref(store.state.auth.user.userId);
 const channels = computed(() => {
   return userId.value === ANONYMOUS.userId
     ? []
-    : [`cookedDishes/${userId.value}`];
+    : [CHANNELS.COOKED_DISHES_OF_EMPLOYEE(userId.value)];
 });
 let isSubscribing = useSubscription(channels, { store: store as any });
 const cookedDishes = computed(() => store.state.orders.cookedDishes);
