@@ -1,9 +1,9 @@
-import { ICookedDish, IShallowOrder } from "donut-shared/src/actions/orders.js";
 import {
   DishInOrderStatus,
   EMPLOYEE_PERMISSIONS,
   OrderStatus,
-} from "donut-shared/src/constants.js";
+} from "donut-shared";
+import { ICookedDish, IShallowOrder } from "donut-shared/src/actions/orders.js";
 import { onlyUnique } from "src/lib/only-unique.js";
 import {
   DishCategoryModel,

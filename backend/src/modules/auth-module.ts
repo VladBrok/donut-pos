@@ -1,7 +1,11 @@
 import { Server } from "@logux/server";
-import { ANONYMOUS, USER_NOT_FOUND, WRONG_PASSWORD } from "donut-shared";
+import {
+  ACCESS_DENIED,
+  ANONYMOUS,
+  USER_NOT_FOUND,
+  WRONG_PASSWORD,
+} from "donut-shared";
 import { loggedInAction, loginAction } from "donut-shared/src/actions/auth.js";
-import { ACCESS_DENIED } from "donut-shared/src/constants.js";
 import * as db from "../db/modules/employees.js";
 import { compareWithHash } from "../lib/crypt.js";
 import { decodeJwt, encodeJwt } from "../lib/jwt.js";

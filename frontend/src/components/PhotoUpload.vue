@@ -40,13 +40,13 @@
 </template>
 
 <script setup lang="ts">
-import { assert } from "donut-shared";
 import {
   ALLOWED_IMAGE_EXTENSIONS,
   ALLOWED_IMAGE_TYPES,
   MAX_IMAGE_FILE_SIZE_BYTES,
   MISSING_PHOTO_PLACEHOLDER_URL,
-} from "donut-shared/src/constants";
+  assert,
+} from "donut-shared";
 import { QFile } from "quasar";
 import { computed, onUnmounted, ref } from "vue";
 import { useI18nStore } from "../lib/i18n";

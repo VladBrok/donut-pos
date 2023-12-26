@@ -1,4 +1,4 @@
-import { EMPLOYEE_PERMISSIONS } from "../constants.js";
+import { EMPLOYEE_PERMISSIONS } from "src/constants/employee.js";
 import { createAction } from "./index.js";
 import { loadRolesAction } from "./roles.js";
 

@@ -1,5 +1,5 @@
+import { ANONYMOUS } from "donut-shared";
 import { loggedInAction } from "donut-shared/src/actions/auth";
-import { ANONYMOUS } from "donut-shared/src/constants";
 import { MutationTree } from "vuex";
 import { IAuthState } from "./state";
 

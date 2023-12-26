@@ -44,14 +44,11 @@
 
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
+import { CHANNELS, MAX_DISH_CATEGORY_NAME_LENGTH } from "donut-shared";
 import {
   createDishCategoryAction,
   updateDishCategoryAction,
 } from "donut-shared/src/actions/dish-categories";
-import {
-  CHANNELS,
-  MAX_DISH_CATEGORY_NAME_LENGTH,
-} from "donut-shared/src/constants";
 import { Notify } from "quasar";
 import { onFormValidationError } from "src/lib/on-form-validation-error";
 import { useStore } from "src/store";

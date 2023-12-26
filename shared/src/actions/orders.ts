@@ -1,5 +1,6 @@
+import { DishInOrderStatus } from "src/constants/dish-in-order-statuses.js";
+import { OrderStatus } from "src/constants/order-statuses.js";
 import { ICurrentOrder } from "../actions/current-order.js";
-import { DishInOrderStatus, OrderStatus } from "../constants.js";
 import { createAction } from "./index.js";
 
 export interface ICookedDish {

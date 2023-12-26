@@ -54,7 +54,7 @@
 
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
-import { CHANNELS, MENU_IMAGE_URL } from "donut-shared/src/constants";
+import { CHANNELS, MENU_IMAGE_URL } from "donut-shared";
 import { computed, ref } from "vue";
 import BigSpinner from "../../components/BigSpinner.vue";
 import DishCard from "../../components/DishCard.vue";

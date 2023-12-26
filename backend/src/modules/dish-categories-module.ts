@@ -1,5 +1,10 @@
 import { Action, Server, ServerMeta } from "@logux/server";
 import {
+  CATEGORY_NAME_EXISTS,
+  CHANNELS,
+  IMAGE_UPLOAD_FAIL,
+} from "donut-shared";
+import {
   createDishCategoryAction,
   deleteDishCategoryAction,
   dishCategoryCreatedAction,
@@ -8,11 +13,6 @@ import {
   loadDishCategoriesAction,
   updateDishCategoryAction,
 } from "donut-shared/src/actions/dish-categories.js";
-import {
-  CATEGORY_NAME_EXISTS,
-  CHANNELS,
-  IMAGE_UPLOAD_FAIL,
-} from "donut-shared/src/constants.js";
 import { logError } from "donut-shared/src/lib/log.js";
 import { DishCategoryModel } from "../db/models.js";
 import * as db from "../db/modules/dish-categories.js";

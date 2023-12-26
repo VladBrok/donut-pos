@@ -93,7 +93,7 @@
 
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
-import { CHANNELS } from "donut-shared/src/constants";
+import { CHANNELS } from "donut-shared";
 import BigSpinner from "src/components/BigSpinner.vue";
 import DishInOrder from "src/components/DishInOrder.vue";
 import DishInOrderStatusButton from "src/components/DishInOrderStatusButton.vue";

@@ -63,7 +63,12 @@
 
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
-import { ANONYMOUS, openArbitraryOrderAction } from "donut-shared";
+import {
+  ANONYMOUS,
+  ORDER_STATUSES_ARR,
+  OrderStatus,
+  openArbitraryOrderAction,
+} from "donut-shared";
 import BigSpinner from "src/components/BigSpinner.vue";
 import FilterPill from "src/components/FilterPill.vue";
 import NoData from "src/components/NoData.vue";
@@ -75,10 +80,6 @@ import { useStore } from "src/store";
 import { IOrdersState } from "src/store/orders/state";
 import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import { loadOrdersPageAction } from "../../../../shared/src/actions/orders";
-import {
-  ORDER_STATUSES_ARR,
-  OrderStatus,
-} from "../../../../shared/src/constants";
 
 const store = useStore();
 const t = useI18nStore();

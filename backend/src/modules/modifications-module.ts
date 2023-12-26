@@ -1,6 +1,8 @@
 import { Action, Server, ServerMeta } from "@logux/server";
 import {
+  CHANNELS,
   IMAGE_UPLOAD_FAIL,
+  MODIFICATION_NAME_EXISTS,
   createModificationAction,
   deleteModificationAction,
   loadModificationsAction,
@@ -9,10 +11,6 @@ import {
   modificationUpdatedAction,
   updateModificationAction,
 } from "donut-shared";
-import {
-  CHANNELS,
-  MODIFICATION_NAME_EXISTS,
-} from "donut-shared/src/constants.js";
 import { logError } from "donut-shared/src/lib/log.js";
 import { ModificationModel } from "../db/models.js";
 import * as db from "../db/modules/modifications.js";

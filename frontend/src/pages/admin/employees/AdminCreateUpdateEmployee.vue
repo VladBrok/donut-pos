@@ -81,12 +81,13 @@
 
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
-import { createEmployeeAction, updateEmployeeAction } from "donut-shared";
 import {
   CHANNELS,
   FIRST_NAME_MAX_LENGTH,
   LAST_NAME_MAX_LENGTH,
-} from "donut-shared/src/constants";
+  createEmployeeAction,
+  updateEmployeeAction,
+} from "donut-shared";
 import { Notify } from "quasar";
 import { createFuzzySearcher } from "src/lib/fuzzy-search";
 import { onFormValidationError } from "src/lib/on-form-validation-error";

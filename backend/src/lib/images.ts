@@ -1,4 +1,4 @@
-import { MISSING_PHOTO_PLACEHOLDER_URL } from "donut-shared/src/constants.js";
+import { MISSING_PHOTO_PLACEHOLDER_URL } from "donut-shared";
 
 export interface IUploadImageResponse {
   url: string;

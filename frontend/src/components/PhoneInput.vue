@@ -21,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import { PHONE_REGEX } from "donut-shared/src/constants";
+import { PHONE_REGEX } from "donut-shared";
 import { computed } from "vue";
 import { useI18nStore } from "../lib/i18n";
 

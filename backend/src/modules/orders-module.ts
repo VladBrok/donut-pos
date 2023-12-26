@@ -1,5 +1,10 @@
 import { Server } from "@logux/server";
-import { createOrderAction, orderCreatedAction } from "donut-shared";
+import {
+  CHANNELS,
+  ITEMS_PER_PAGE,
+  createOrderAction,
+  orderCreatedAction,
+} from "donut-shared";
 import {
   cookedDishesLoadedAction,
   dishDeliveredAction,
@@ -13,7 +18,6 @@ import {
   startCookingDishAction,
   startDeliveredDishAction,
 } from "donut-shared/src/actions/orders.js";
-import { CHANNELS, ITEMS_PER_PAGE } from "donut-shared/src/constants.js";
 import * as db from "../db/modules/orders.js";
 import { hasCookPermissions, hasWaiterPermission } from "../lib/access.js";
 

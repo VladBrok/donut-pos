@@ -1,4 +1,5 @@
 import { Action, Server, ServerMeta } from "@logux/server";
+import { CHANNELS, EMPLOYEE_WITH_PHONE_EXISTS } from "donut-shared";
 import {
   createEmployeeAction,
   deleteEmployeeAction,
@@ -8,10 +9,6 @@ import {
   loadEmployeesAction,
   updateEmployeeAction,
 } from "donut-shared/src/actions/employees.js";
-import {
-  CHANNELS,
-  EMPLOYEE_WITH_PHONE_EXISTS,
-} from "donut-shared/src/constants.js";
 import { EmployeeModel } from "../db/models.js";
 import * as db from "../db/modules/employees.js";
 import { hasAdminPermission, isAdminRole } from "../lib/access.js";
