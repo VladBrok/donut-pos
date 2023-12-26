@@ -172,6 +172,13 @@ a:hover {
   transform: translate(-50%, -50%);
 }
 
+.absolute-top-right-offset {
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform: translate(35%, -35%);
+}
+
 // Quasar styles overrides
 
 ::-webkit-scrollbar {

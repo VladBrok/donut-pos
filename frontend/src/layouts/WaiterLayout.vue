@@ -3,6 +3,12 @@
     <template #actions>
       <q-btn class="q-mr-md" flat round icon="o_notifications">
         <q-tooltip> {{ t.showNotifications }} </q-tooltip>
+        <q-spinner-rings
+          v-if="isSubscribing"
+          color="primary"
+          size="40px"
+          class="absolute-top-right-offset"
+        />
         <q-badge
           v-if="cookedDishes.length"
           rounded
