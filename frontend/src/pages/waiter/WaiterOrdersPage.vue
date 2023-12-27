@@ -63,7 +63,13 @@
 
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
-import { ANONYMOUS, openArbitraryOrderAction } from "donut-shared";
+import {
+  ANONYMOUS,
+  CHANNELS,
+  ORDER_STATUSES_ARR,
+  OrderStatus,
+  openArbitraryOrderAction,
+} from "donut-shared";
 import BigSpinner from "src/components/BigSpinner.vue";
 import FilterPill from "src/components/FilterPill.vue";
 import NoData from "src/components/NoData.vue";
@@ -75,17 +81,15 @@ import { useStore } from "src/store";
 import { IOrdersState } from "src/store/orders/state";
 import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import { loadOrdersPageAction } from "../../../../shared/src/actions/orders";
-import {
-  ORDER_STATUSES_ARR,
-  OrderStatus,
-} from "../../../../shared/src/constants";
 
 const store = useStore();
 const t = useI18nStore();
 const ordersPage = computed(() => store.state.orders.ordersPage);
 const userId = ref(store.state.auth.user.userId);
 const channels = computed(() => {
-  return userId.value === ANONYMOUS.userId ? [] : [`orders/${userId.value}`];
+  return userId.value === ANONYMOUS.userId
+    ? []
+    : [CHANNELS.ORDERS_OF_EMPLOYEE(userId.value)];
 });
 let isSubscribing = useSubscription(channels, { store: store as any });
 const unsubscribe = ref(() => {

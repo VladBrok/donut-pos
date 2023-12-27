@@ -1,11 +1,10 @@
-import { ICurrentOrder } from "donut-shared";
-import { IOrder } from "donut-shared/src/actions/orders.js";
 import {
   DISH_IN_ORDER_STATUSES,
-  ITEMS_PER_PAGE,
+  ICurrentOrder,
   ORDER_STATUSES,
   OrderStatus,
-} from "donut-shared/src/constants.js";
+} from "donut-shared";
+import { IOrder } from "donut-shared/src/actions/orders.js";
 import { and, asc, desc, eq, ilike, or, sql } from "drizzle-orm";
 import { PgColumn } from "drizzle-orm/pg-core";
 import {
@@ -95,7 +94,7 @@ export async function getSingleOrder(orderNumber: string, userId?: string) {
 export async function getOrdersForKitchen() {
   const result = await getOrdersPage({
     page: 1,
-    perPage: ITEMS_PER_PAGE * 3,
+    perPage: Number.MAX_SAFE_INTEGER,
     statuses: ["created", "cooking"],
     orderBy: "asc",
   });
@@ -185,7 +184,7 @@ export async function startCookingDish(orderId: string, dishIdInOrder: string) {
       await tx.select().from(order).where(eq(order.id, orderId))
     )[0];
 
-    if (theOrder?.status === ORDER_STATUSES.CREATED) {
+    if (!theOrder?.cookingDate) {
       await tx
         .update(order)
         .set({
@@ -220,14 +219,9 @@ export async function finishCookingDish(
       .where(eq(orderToDish.orderId, orderId));
 
     const leftToCook =
-      dishes.length -
-      dishes.filter(
-        (x) =>
-          x.status === DISH_IN_ORDER_STATUSES.COOKED ||
-          x.status === DISH_IN_ORDER_STATUSES.DELIVERED
-      )?.length;
+      dishes.length - dishes.filter((x) => x.cookedDate)?.length;
 
-    if (leftToCook - 1 === 0 && theOrder?.status === ORDER_STATUSES.COOKING) {
+    if (leftToCook - 1 === 0 && !theOrder?.cookedDate) {
       await tx
         .update(order)
         .set({
@@ -263,11 +257,9 @@ export async function deliverDish(orderId: string, dishIdInOrder: string) {
       .where(eq(orderToDish.orderId, orderId));
 
     const leftToDeliver =
-      dishes.length -
-      dishes.filter((x) => x.status !== DISH_IN_ORDER_STATUSES.DELIVERED)
-        ?.length;
+      dishes.length - dishes.filter((x) => x.deliveredDate)?.length;
 
-    if (leftToDeliver - 1 === 0 && theOrder?.status === ORDER_STATUSES.COOKED) {
+    if (leftToDeliver - 1 === 0 && !theOrder?.deliveredDate) {
       await tx
         .update(order)
         .set({
@@ -284,11 +276,21 @@ export async function deliverDish(orderId: string, dishIdInOrder: string) {
         deliveredDate: new Date(),
       })
       .where(eq(orderToDish.id, dishIdInOrder));
+
+    return (
+      await getOrdersShallow(
+        {
+          orderNumber: theOrder?.number || "",
+          strictOrderNumberCompare: true,
+        },
+        tx
+      )
+    )[0];
   });
 }
 
-export async function getOrdersShallow(params: IGetOrder) {
-  const data = await db
+export async function getOrdersShallow(params: IGetOrder, dbOrTx = db) {
+  const data = await dbOrTx
     .select()
     .from(order)
     .where(makeWhereFilter(params))

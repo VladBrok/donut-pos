@@ -31,13 +31,20 @@
 </template>
 
 <script setup lang="ts">
-import { loadDishesAction } from "donut-shared/src/actions/dishes";
 import { useI18nStore } from "../lib/i18n";
 import { sanitizeHtml } from "../lib/sanitize-html";
 import ProductCard from "./ProductCard.vue";
 
 defineProps<{
-  dish: ReturnType<typeof loadDishesAction>["payload"]["dishes"][number];
+  dish: {
+    id: string;
+    name: string;
+    imageUrl: string;
+    description: string;
+    price: number;
+    weight: number;
+    isActive: boolean;
+  };
   expanded?: boolean;
   hidePrice?: boolean;
   count?: number;

@@ -135,6 +135,7 @@
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
 import {
+  CHANNELS,
   COMMENT_MAX_LENGTH,
   TABLE_NUMBER_MAX_LENGTH,
   addDishToCurrentOrderAction,
@@ -153,7 +154,6 @@ import { SUCCESS_TIMEOUT_MS } from "src/lib/constants";
 import { onFormValidationError } from "src/lib/on-form-validation-error";
 import { getOrderDishTotalCost } from "src/lib/order";
 import { computed, ref } from "vue";
-import { CHANNELS } from "../../../shared/src/constants";
 import { useI18nStore } from "../lib/i18n";
 import { useStore } from "../store";
 import ConfirmDialog from "./ConfirmDialog.vue";
@@ -210,7 +210,7 @@ async function onSubmit() {
   store.commit
     .sync(
       createOrderAction({
-        order: order.value,
+        order: order.value!,
       })
     )
     .then(() => {

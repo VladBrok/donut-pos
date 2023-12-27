@@ -1,4 +1,4 @@
-import { ITEMS_PER_PAGE } from "donut-shared/src/constants";
+import { ITEMS_PER_PAGE } from "donut-shared";
 
 export const NO_TIMEOUT = 1000000000;
 export const ERROR_TIMEOUT_MS = 4000;

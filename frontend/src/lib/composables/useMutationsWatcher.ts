@@ -1,4 +1,5 @@
 import {
+  ANONYMOUS,
   addDishToCurrentOrderAction,
   assert,
   clearCurrentOrderAction,
@@ -13,7 +14,6 @@ import {
   ICookedDish,
   dishFinishedCookingAction,
 } from "donut-shared/src/actions/orders";
-import { ANONYMOUS } from "donut-shared/src/constants";
 import { Notify } from "quasar";
 import { INFO_TIMEOUT_MS } from "src/lib/constants";
 import { useI18nStore } from "src/lib/i18n";
@@ -85,6 +85,10 @@ export const useMutationsWatcher = () => {
         }
 
         case dishFinishedCookingAction.type: {
+          if (state.auth.user.role?.codeName !== "waiter") {
+            return;
+          }
+
           const cooked: ICookedDish = mutation.payload.payload.cookedDish;
           Notify.create({
             type: "info",

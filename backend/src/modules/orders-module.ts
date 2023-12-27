@@ -1,5 +1,10 @@
 import { Server } from "@logux/server";
-import { createOrderAction, orderCreatedAction } from "donut-shared";
+import {
+  CHANNELS,
+  ITEMS_PER_PAGE,
+  createOrderAction,
+  orderCreatedAction,
+} from "donut-shared";
 import {
   cookedDishesLoadedAction,
   dishDeliveredAction,
@@ -13,11 +18,8 @@ import {
   startCookingDishAction,
   startDeliveredDishAction,
 } from "donut-shared/src/actions/orders.js";
-import { CHANNELS, ITEMS_PER_PAGE } from "donut-shared/src/constants.js";
 import * as db from "../db/modules/orders.js";
 import { hasCookPermissions, hasWaiterPermission } from "../lib/access.js";
-
-// TODO: consider creating separate channels for client's orders ?
 
 export default function ordersModule(server: Server) {
   server.channel(CHANNELS.ORDERS_FOR_KITCHEN, {
@@ -32,10 +34,9 @@ export default function ordersModule(server: Server) {
     },
   });
 
-  // TODO: resend order updates via this channel so that the client can see live changes
   server.channel<{
     orderNumber: string;
-  }>(CHANNELS.ORDER_SINGLE, {
+  }>(CHANNELS.ORDER_SINGLE(), {
     async access(ctx, action, meta) {
       return true;
     },
@@ -49,7 +50,7 @@ export default function ordersModule(server: Server) {
 
   server.channel<{
     employeeId: string;
-  }>(CHANNELS.COOKED_DISHES_OF_EMPLOYEE, {
+  }>(CHANNELS.COOKED_DISHES_OF_EMPLOYEE(), {
     async access(ctx, action, meta) {
       return (
         ctx.userId === ctx.params.employeeId &&
@@ -66,7 +67,7 @@ export default function ordersModule(server: Server) {
 
   server.channel<{
     employeeId: string;
-  }>(CHANNELS.ORDERS_OF_EMPLOYEE, {
+  }>(CHANNELS.ORDERS_OF_EMPLOYEE(), {
     async access(ctx, action, meta) {
       return (
         ctx.userId === ctx.params.employeeId &&
@@ -121,13 +122,16 @@ export default function ordersModule(server: Server) {
     },
   });
 
-  // TODO: resend to waiter page also... and to indifidual order page (orders/12-23333 channel) also... and in other places also
   server.type(dishStartedCookingAction, {
     async access() {
       return false;
     },
-    resend() {
-      return [CHANNELS.ORDERS_FOR_KITCHEN];
+    resend(ctx, action) {
+      return [
+        CHANNELS.ORDERS_FOR_KITCHEN,
+        CHANNELS.ORDER_SINGLE(action.payload.orderNumber),
+        CHANNELS.ORDERS_OF_EMPLOYEE(action.payload.employeeId),
+      ];
     },
   });
 
@@ -148,8 +152,6 @@ export default function ordersModule(server: Server) {
     },
   });
 
-  // TODO: resend to waiter page also... and to indifidual order page (orders/12-23333 channel) also...
-  // TODO: find a way to use constants for channels such as "cookedDishes/:employeeId"
   server.type(dishFinishedCookingAction, {
     async access() {
       return false;
@@ -157,7 +159,13 @@ export default function ordersModule(server: Server) {
     resend(ctx, action) {
       return [
         CHANNELS.ORDERS_FOR_KITCHEN,
-        `cookedDishes/${action.payload.cookedDish.order.employee?.id}`,
+        CHANNELS.COOKED_DISHES_OF_EMPLOYEE(
+          action.payload.cookedDish.order.employee?.id
+        ),
+        CHANNELS.ORDER_SINGLE(action.payload.cookedDish.order.orderNumber),
+        CHANNELS.ORDERS_OF_EMPLOYEE(
+          action.payload.cookedDish.order.employee?.id
+        ),
       ];
     },
   });
@@ -167,11 +175,16 @@ export default function ordersModule(server: Server) {
       return await hasWaiterPermission(ctx.userId);
     },
     async process(ctx, action, meta) {
-      await db.deliverDish(
+      const order = await db.deliverDish(
         action.payload.orderId,
         action.payload.dishIdInOrder
       );
-      await server.process(dishDeliveredAction(action.payload));
+      await server.process(
+        dishDeliveredAction({
+          order: order,
+          dishIdInOrder: action.payload.dishIdInOrder,
+        })
+      );
     },
   });
 
@@ -180,7 +193,11 @@ export default function ordersModule(server: Server) {
       return false;
     },
     resend(ctx, action) {
-      return [`cookedDishes/${action.payload.employeeId}`];
+      return [
+        CHANNELS.COOKED_DISHES_OF_EMPLOYEE(action.payload.order.employee?.id),
+        CHANNELS.ORDER_SINGLE(action.payload.order.orderNumber),
+        CHANNELS.ORDERS_OF_EMPLOYEE(action.payload.order.employee?.id),
+      ];
     },
   });
 
@@ -198,7 +215,6 @@ export default function ordersModule(server: Server) {
     },
   });
 
-  // TODO: resend to waiter page also... and to indifidual order page (orders/12-23333 channel) also...
   server.type(orderCreatedAction, {
     async access() {
       return false;

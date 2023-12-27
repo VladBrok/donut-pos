@@ -2,26 +2,30 @@ import { EmployeeModel, RoleModel } from "../db/models.js";
 import * as employeeDb from "../db/modules/employees.js";
 import * as roleDb from "../db/modules/roles.js";
 
-// TODO: extract common has*Permissions func
+async function hasPermission(
+  data: string | EmployeeModel,
+  check: (employee: EmployeeModel | null) => boolean
+) {
+  const employee =
+    typeof data === "string" ? await employeeDb.findEmployeeById(data) : data;
+  return check(employee);
+}
 
 export async function hasAdminPermission(
   data: string | EmployeeModel
 ): Promise<boolean> {
-  const employee =
-    typeof data === "string" ? await employeeDb.findEmployeeById(data) : data;
-  return !!employee?.permissions.admin;
+  return await hasPermission(data, (employee) => !!employee?.permissions.admin);
 }
 
 export async function hasWaiterPermission(data: string | EmployeeModel) {
-  const employee =
-    typeof data === "string" ? await employeeDb.findEmployeeById(data) : data;
-  return !!employee?.permissions.waiter;
+  return await hasPermission(
+    data,
+    (employee) => !!employee?.permissions.waiter
+  );
 }
 
 export async function hasCookPermissions(data: string | EmployeeModel) {
-  const employee =
-    typeof data === "string" ? await employeeDb.findEmployeeById(data) : data;
-  return !!employee?.permissions.cook;
+  return await hasPermission(data, (employee) => !!employee?.permissions.cook);
 }
 
 export async function isAdminRole(data: string | RoleModel): Promise<boolean> {

@@ -97,8 +97,7 @@
 
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
-import { assert, deleteModificationAction } from "donut-shared";
-import { CHANNELS } from "donut-shared/src/constants";
+import { CHANNELS, assert, deleteModificationAction } from "donut-shared";
 import { Notify } from "quasar";
 import { formatCurrency } from "src/lib/currency";
 import { useStore } from "src/store";

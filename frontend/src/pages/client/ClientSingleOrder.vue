@@ -14,6 +14,7 @@
 
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
+import { CHANNELS } from "donut-shared";
 import BigSpinner from "src/components/BigSpinner.vue";
 import OrderDetailsView from "src/components/OrderDetailsView.vue";
 import OrderNumberTitle from "src/components/OrderNumberTitle.vue";
@@ -30,7 +31,7 @@ const orderNumber = computed(
 const order = computed(() => store.state.orders.order);
 const store = useStore();
 const channels = computed(() => {
-  return [`singleOrder/${orderNumber.value}`];
+  return [CHANNELS.ORDER_SINGLE(orderNumber.value?.toString())];
 });
 let isSubscribing = useSubscription(channels, { store: store as any });
 

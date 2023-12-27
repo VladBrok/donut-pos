@@ -1,5 +1,6 @@
+import { DishInOrderStatus } from "src/constants/dish-in-order-statuses.js";
+import { OrderStatus } from "src/constants/order-statuses.js";
 import { ICurrentOrder } from "../actions/current-order.js";
-import { DishInOrderStatus, OrderStatus } from "../constants.js";
 import { createAction } from "./index.js";
 
 export interface ICookedDish {
@@ -104,12 +105,14 @@ export const orderCreatedAction = createAction<{
 }>("orders/created");
 
 export const startCookingDishAction = createAction<{
+  employeeId: string;
   orderId: string;
   orderNumber: string;
   dishIdInOrder: string;
 }>("orders/startCookingDish");
 
 export const dishStartedCookingAction = createAction<{
+  employeeId: string;
   orderId: string;
   orderNumber: string;
   dishIdInOrder: string;
@@ -127,14 +130,14 @@ export const dishFinishedCookingAction = createAction<{
 
 export const startDeliveredDishAction = createAction<{
   orderId: string;
+  orderNumber: string;
   dishIdInOrder: string;
   employeeId: string;
 }>("orders/startDeliveringDish");
 
 export const dishDeliveredAction = createAction<{
-  orderId: string;
   dishIdInOrder: string;
-  employeeId: string;
+  order: IShallowOrder;
 }>("orders/dishDelivered");
 
 export const cookedDishesLoadedAction = createAction<{

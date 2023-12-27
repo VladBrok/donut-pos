@@ -1,6 +1,5 @@
 import { Server } from "@logux/server";
-import { loadRolesAction } from "donut-shared";
-import { CHANNELS } from "donut-shared/src/constants.js";
+import { CHANNELS, loadRolesAction } from "donut-shared";
 import * as db from "../db/modules/roles.js";
 import { hasAdminPermission, isAdminRole } from "../lib/access.js";
 

@@ -79,17 +79,15 @@
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
 import {
-  createModificationAction,
-  updateModificationAction,
-} from "donut-shared";
-import {
   CHANNELS,
   MAX_MODIFICATION_NAME_LENGTH,
   MAX_MODIFICATION_PRICE,
   MAX_MODIFICATION_WEIGHT,
   MIN_MODIFICATION_PRICE,
   MIN_MODIFICATION_WEIGHT,
-} from "donut-shared/src/constants";
+  createModificationAction,
+  updateModificationAction,
+} from "donut-shared";
 import { Notify } from "quasar";
 import { fractionalToWhole, wholeToFractional } from "src/lib/currency";
 import { onFormValidationError } from "src/lib/on-form-validation-error";

@@ -201,9 +201,9 @@ const routes: RouteRecordRaw[] = [
   },
 
   // Client
-  // TODO: same as for other roles - if not authed, redirect to ClientLogin
+  // TODO: same as for other roles - if not authed, redirect to ClientLogin + client layout
   {
-    path: "/orders/:orderNumber", // TODO: this page should be wrapped in client layout
+    path: "/orders/:orderNumber",
     component: () => import("src/pages/client/ClientSingleOrder.vue"),
     meta: {
       title: t.value.orderDetails,

@@ -157,17 +157,17 @@
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
 import {
-  createDishAction,
-  updateDishAction,
-} from "donut-shared/src/actions/dishes";
-import {
   CHANNELS,
   MAX_DISH_NAME_LENGTH,
   MAX_DISH_PRICE,
   MAX_DISH_WEIGHT,
   MIN_DISH_PRICE,
   MIN_DISH_WEIGHT,
-} from "donut-shared/src/constants";
+} from "donut-shared";
+import {
+  createDishAction,
+  updateDishAction,
+} from "donut-shared/src/actions/dishes";
 import { Notify } from "quasar";
 import WysiwygEditor from "src/components/WysiwygEditor.vue";
 import { fractionalToWhole, wholeToFractional } from "src/lib/currency";

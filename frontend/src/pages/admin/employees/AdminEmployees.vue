@@ -105,9 +105,8 @@
 
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
-import { assert } from "donut-shared";
+import { CHANNELS, assert } from "donut-shared";
 import { deleteEmployeeAction } from "donut-shared/src/actions/employees";
-import { CHANNELS } from "donut-shared/src/constants";
 import { Notify } from "quasar";
 import { formatPhoneNumber } from "src/lib/phone";
 import { useStore } from "src/store";

@@ -6,7 +6,6 @@ import {
   params,
 } from "@nanostores/i18n";
 import { useStore as useNanoStore } from "@nanostores/vue";
-import { USER_NOT_FOUND, WRONG_PASSWORD } from "donut-shared";
 import {
   ACCESS_DENIED,
   CATEGORY_NAME_EXISTS,
@@ -15,7 +14,9 @@ import {
   MODIFICATION_NAME_EXISTS,
   PASSWORD_MIN_LENGTH,
   PASSWORD_SPECIAL_CHARS,
-} from "donut-shared/src/constants";
+  USER_NOT_FOUND,
+  WRONG_PASSWORD,
+} from "donut-shared";
 
 export const locale = localeFrom(
   // atom("pl"),

@@ -1,4 +1,4 @@
-import { EMPLOYEE_ROLES_ARR } from "donut-shared/src/constants.js";
+import { EMPLOYEE_ROLES_ARR } from "donut-shared";
 import { logInfo } from "donut-shared/src/lib/log.js";
 import { eq } from "drizzle-orm";
 import { permission, role, roleToPermission } from "../migrations/schema.js";

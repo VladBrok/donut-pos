@@ -1,5 +1,5 @@
 import { Server } from "@logux/server";
-import { IMAGE_UPLOAD_FAIL } from "donut-shared";
+import { CHANNELS, IMAGE_UPLOAD_FAIL } from "donut-shared";
 import {
   createDishAction,
   deleteDishAction,
@@ -9,7 +9,6 @@ import {
   loadDishesAction,
   updateDishAction,
 } from "donut-shared/src/actions/dishes.js";
-import { CHANNELS } from "donut-shared/src/constants.js";
 import { logError } from "donut-shared/src/lib/log.js";
 import { DishModel } from "../db/models.js";
 import * as db from "../db/modules/dishes.js";

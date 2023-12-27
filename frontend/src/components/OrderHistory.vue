@@ -12,8 +12,8 @@
 </template>
 
 <script setup lang="ts">
+import { ORDER_STATUSES, OrderStatus } from "donut-shared";
 import { IOrder } from "donut-shared/src/actions/orders";
-import { ORDER_STATUSES, OrderStatus } from "donut-shared/src/constants";
 import { formatDateTimeReadable, sortByDate } from "src/lib/date";
 import { useI18nStore } from "src/lib/i18n";
 import { computed } from "vue";

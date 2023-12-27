@@ -48,10 +48,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  PASSWORD_MIN_LENGTH,
-  PASSWORD_SPECIAL_CHARS,
-} from "donut-shared/src/constants";
+import { PASSWORD_MIN_LENGTH, PASSWORD_SPECIAL_CHARS } from "donut-shared";
 import { ref } from "vue";
 import { useI18nStore } from "../lib/i18n";
 
