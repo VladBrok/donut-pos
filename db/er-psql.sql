@@ -119,6 +119,13 @@ CREATE TABLE "order" (
   "paid_date" TIMESTAMP
 );
 
+CREATE TABLE "order_payment" (
+  "id" UUID PRIMARY KEY,
+  "order_id" UUID,
+  "method" TEXT,
+  "amount" INT
+);
+
 CREATE TABLE "order_to_dish" (
   "id" UUID PRIMARY KEY,
   "order_id" UUID,
@@ -173,6 +180,8 @@ CREATE INDEX "order_number_idx" ON "order" ("number");
 
 CREATE INDEX "order_status_idx" ON "order" ("status");
 
+CREATE INDEX "order_payment_id_idx" ON "order_payment" ("order_id");
+
 CREATE INDEX "order_to_dish_order_id_idx" ON "order_to_dish" ("order_id");
 
 CREATE INDEX "order_to_dish_dish_id_idx" ON "order_to_dish" ("dish_id");
@@ -206,6 +215,8 @@ ALTER TABLE "order" ADD FOREIGN KEY ("employee_id") REFERENCES "employee" ("id")
 ALTER TABLE "order" ADD FOREIGN KEY ("client_id") REFERENCES "client" ("id") ON DELETE SET NULL;
 
 ALTER TABLE "order" ADD FOREIGN KEY ("sale_point_id") REFERENCES "sale_point" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "order_payment" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id") ON DELETE SET NULL;
 
 ALTER TABLE "order_to_dish" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id") ON DELETE SET NULL;
 
