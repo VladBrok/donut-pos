@@ -158,6 +158,18 @@ export const modification = pgTable("modification", {
 	price: integer("price"),
 });
 
+export const orderPayment = pgTable("order_payment", {
+	id: uuid("id").primaryKey().notNull(),
+	orderId: uuid("order_id").references(() => order.id, { onDelete: "set null" } ),
+	method: text("method"),
+	amount: integer("amount"),
+},
+(table) => {
+	return {
+		idIdx: index("order_payment_id_idx").on(table.orderId),
+	}
+});
+
 export const order = pgTable("order", {
 	id: uuid("id").primaryKey().notNull(),
 	clientId: uuid("client_id").references(() => client.id, { onDelete: "set null" } ),
