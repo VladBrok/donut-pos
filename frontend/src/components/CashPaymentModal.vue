@@ -52,7 +52,12 @@
         </q-card-section>
 
         <q-card-section align="center">
-          <q-btn color="primary" type="submit" class="q-px-lg">
+          <q-btn
+            color="primary"
+            type="submit"
+            class="q-px-lg"
+            :loading="isSubmitting"
+          >
             {{ t.pay }}
           </q-btn>
         </q-card-section>
