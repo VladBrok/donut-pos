@@ -1,5 +1,5 @@
 <template>
-  <q-dialog>
+  <q-dialog v-bind="$attrs">
     <q-card class="dialog-sm q-pb-md q-px-md">
       <q-card-section class="row items-center q-pb-none">
         <q-space />
@@ -14,7 +14,13 @@
 
       <q-card-section>
         <q-list bordered separator class="rounded-borders">
-          <q-item clickable v-ripple class="q-px-lg q-py-md">
+          <q-item
+            clickable
+            v-ripple
+            v-close-popup
+            class="q-px-lg q-py-md"
+            @click="isCashPaymentModalOpen = true"
+          >
             <q-item-section avatar>
               <q-avatar
                 color="primary"
@@ -33,14 +39,24 @@
       </q-card-section>
     </q-card>
   </q-dialog>
+
+  <cash-payment-modal
+    v-model="isCashPaymentModalOpen"
+    :total-cost="totalCost"
+    :order-number="orderNumber"
+  />
 </template>
 
 <script setup lang="ts">
+import CashPaymentModal from "src/components/CashPaymentModal.vue";
 import { useI18nStore } from "src/lib/i18n";
+import { ref } from "vue";
 
 const props = defineProps<{
   totalCost: number;
+  orderNumber: string;
 }>();
 
 const t = useI18nStore();
+const isCashPaymentModalOpen = ref(false);
 </script>

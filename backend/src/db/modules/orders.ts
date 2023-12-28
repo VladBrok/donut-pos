@@ -324,3 +324,7 @@ export async function getCookedDishes(
 
   return cookedDishesAdapter(dishes);
 }
+
+export async function payForOrder(orderNumber: string) {
+  // TODO:
+}

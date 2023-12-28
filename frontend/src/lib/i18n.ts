@@ -138,6 +138,12 @@ export const messages = i18n("messages", {
   delivered: "Delivered",
   selectPaymentMethod: "Select payment method",
   cash: "Cash",
+  payWithCash: "Pay with cash",
+  amount: "Amount, zł",
+  amountHint: "Amount given by customer",
+  totalToPay: "Total",
+  change: "Change",
+  makeSureChangeGiven: "Make sure you give the customer the change",
 
   // Kitchen pages
   viewDetails: "View details",
@@ -190,6 +196,7 @@ export const messages = i18n("messages", {
   // Success
   deleteSuccess: "Deleted successfully",
   createSuccess: "Created successfully",
+  paymentSuccess: "Paid successfully",
   updateSuccess: "Updated successfully",
   copyToClipboardSuccess: "Copied to clipboard",
 
