@@ -54,7 +54,7 @@
       </div>
     </template>
     <template #options>
-      <div class="row justify-center q-gutter-sm">
+      <div v-if="!order.paidDate" class="row justify-center q-gutter-sm">
         <q-btn
           color="primary"
           type="submit"

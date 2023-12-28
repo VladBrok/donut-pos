@@ -231,10 +231,10 @@ export default function ordersModule(server: Server) {
       return await hasWaiterPermission(ctx.userId);
     },
     async process(ctx, action, meta) {
-      await db.payForOrder(action.payload.orderNumber);
+      const order = await db.payForOrder(action.payload.orderNumber);
       await server.process(
         orderPaidSuccessAction({
-          orderNumber: action.payload.orderNumber,
+          order: order,
         })
       );
     },
@@ -244,8 +244,11 @@ export default function ordersModule(server: Server) {
     async access() {
       return false;
     },
-    resend() {
-      return CHANNELS.ORDERS_FOR_KITCHEN;
+    resend(ctx, action) {
+      return [
+        CHANNELS.ORDER_SINGLE(action.payload.order.orderNumber),
+        CHANNELS.ORDERS_OF_EMPLOYEE(action.payload.order.employee?.id),
+      ];
     },
   });
 }

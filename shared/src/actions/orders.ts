@@ -149,5 +149,5 @@ export const payForOrderAction = createAction<{
 }>("orders/payForOrder");
 
 export const orderPaidSuccessAction = createAction<{
-  orderNumber: string;
+  order: IShallowOrder;
 }>("orders/orderPaidSuccess");

@@ -6,6 +6,7 @@ import {
   dishStartedCookingAction,
   orderCreatedAction,
   orderLoadedAction,
+  orderPaidSuccessAction,
   ordersForKitchenLoadedAction,
   ordersPageLoadedAction,
 } from "donut-shared/src/actions/orders";
@@ -152,6 +153,22 @@ const mutation: MutationTree<IOrdersState> = {
     action: ReturnType<typeof cookedDishesLoadedAction>
   ) {
     state.cookedDishes = action.payload.dishes;
+  },
+
+  orderPaidSuccess(
+    state: IOrdersState,
+    action: ReturnType<typeof orderPaidSuccessAction>
+  ) {
+    const orderInPage = state.ordersPage.find(
+      (x) => x.orderNumber === action.payload.order.orderNumber
+    );
+    if (orderInPage) {
+      orderInPage.paidDate = new Date().toISOString();
+    }
+
+    if (state.order) {
+      state.order.paidDate = new Date().toISOString();
+    }
   },
 };
 
