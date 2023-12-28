@@ -52,12 +52,12 @@ a:hover {
 }
 
 .order-view-content-height {
-  height: calc(100vh - 180px);
+  height: calc(100vh - 240px);
 }
 
 @media screen and (min-width: 1023px) {
   .order-view-content-height {
-    height: calc(100vh - 240px);
+    height: calc(100vh - 265px);
   }
 }
 
@@ -67,6 +67,11 @@ a:hover {
 
 .dialog-md {
   width: 900px !important;
+  max-width: 90vw !important;
+}
+
+.dialog-sm {
+  width: 400px !important;
   max-width: 90vw !important;
 }
 

@@ -143,3 +143,11 @@ export const dishDeliveredAction = createAction<{
 export const cookedDishesLoadedAction = createAction<{
   dishes: ICookedDish[];
 }>("orders/cookedDishesLoaded");
+
+export const payForOrderAction = createAction<{
+  orderNumber: string;
+}>("orders/payForOrder");
+
+export const orderPaidSuccessAction = createAction<{
+  order: IShallowOrder;
+}>("orders/orderPaidSuccess");

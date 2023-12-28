@@ -324,3 +324,24 @@ export async function getCookedDishes(
 
   return cookedDishesAdapter(dishes);
 }
+
+export async function payForOrder(orderNumber: string) {
+  /* 
+    Note that we don't set status as "paid" because an order can be, for example, 
+    in status "delivering" and "paid" at the same time
+  */
+  await db
+    .update(order)
+    .set({
+      paidDate: new Date(),
+    })
+    .where(eq(order.number, orderNumber))
+    .returning();
+
+  return (
+    await getOrdersShallow({
+      orderNumber: orderNumber,
+      strictOrderNumberCompare: true,
+    })
+  )[0];
+}

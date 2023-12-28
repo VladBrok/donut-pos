@@ -13,8 +13,10 @@ import {
   finishCookingDishAction,
   loadOrdersPageAction,
   orderLoadedAction,
+  orderPaidSuccessAction,
   ordersForKitchenLoadedAction,
   ordersPageLoadedAction,
+  payForOrderAction,
   startCookingDishAction,
   startDeliveredDishAction,
 } from "donut-shared/src/actions/orders.js";
@@ -221,6 +223,32 @@ export default function ordersModule(server: Server) {
     },
     resend() {
       return CHANNELS.ORDERS_FOR_KITCHEN;
+    },
+  });
+
+  server.type(payForOrderAction, {
+    async access(ctx) {
+      return await hasWaiterPermission(ctx.userId);
+    },
+    async process(ctx, action, meta) {
+      const order = await db.payForOrder(action.payload.orderNumber);
+      await server.process(
+        orderPaidSuccessAction({
+          order: order,
+        })
+      );
+    },
+  });
+
+  server.type(orderPaidSuccessAction, {
+    async access() {
+      return false;
+    },
+    resend(ctx, action) {
+      return [
+        CHANNELS.ORDER_SINGLE(action.payload.order.orderNumber),
+        CHANNELS.ORDERS_OF_EMPLOYEE(action.payload.order.employee?.id),
+      ];
     },
   });
 }

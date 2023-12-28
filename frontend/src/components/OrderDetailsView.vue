@@ -53,15 +53,34 @@
         </div>
       </div>
     </template>
+    <template #options>
+      <div v-if="!order.paidDate" class="row justify-center q-gutter-sm">
+        <q-btn
+          color="primary"
+          type="submit"
+          @click="isPaymentModalOpen = true"
+          class="q-px-xl q-py-sm"
+          size="md"
+        >
+          {{ t.pay }}
+        </q-btn>
+      </div>
+    </template>
   </OrderView>
+  <PaymentModal
+    v-model="isPaymentModalOpen"
+    :total-cost="getOrderTotalCost(order.dishes)"
+    :order-number="order.orderNumber"
+  />
 </template>
 
 <script setup lang="ts">
 import DishInOrder from "src/components/DishInOrder.vue";
 import OrderHistory from "src/components/OrderHistory.vue";
 import OrderView from "src/components/OrderView.vue";
+import PaymentModal from "src/components/PaymentModal.vue";
 import { getOrderDishTotalCost, getOrderTotalCost } from "src/lib/order";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { IOrder } from "../../../shared/src/actions/orders";
 import { useI18nStore } from "../lib/i18n";
 
@@ -73,4 +92,5 @@ const props = defineProps<{
 const order = computed(() => props.order);
 const totalCost = computed(() => getOrderTotalCost(order.value.dishes));
 const t = useI18nStore();
+const isPaymentModalOpen = ref(false);
 </script>
