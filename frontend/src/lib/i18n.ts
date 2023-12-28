@@ -136,6 +136,8 @@ export const messages = i18n("messages", {
     "Some dishes are out of stock. Please remove them from the order before proceeding",
   dishCooked: params(`{dishName} for table {table} is ready`),
   delivered: "Delivered",
+  selectPaymentMethod: "Select payment method",
+  cash: "Cash",
 
   // Kitchen pages
   viewDetails: "View details",
@@ -143,6 +145,8 @@ export const messages = i18n("messages", {
   finishCooking: "Ready",
   done: "Done",
   orderCreated: params(`New order: #{orderNumber}`),
+  pay: "Pay",
+  next: "Next",
 
   // Client pages
   orderDetails: "Order details",

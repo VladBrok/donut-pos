@@ -74,8 +74,6 @@ import DishCard from "./DishCard.vue";
 import ModificationCard from "./ModificationCard.vue";
 import ProductCounter from "./ProductCounter.vue";
 
-// TODO: same problem with booleans
-
 const props = defineProps<{
   dish: {
     id: string;

@@ -112,7 +112,6 @@ import { computed, ref } from "vue";
 import { loadModificationsAction } from "../../../shared";
 import { loadDishesAction } from "../../../shared/src/actions/dishes";
 
-// TODO: split this component, restructure it, because we should not have "dish" and "dishInOrder" at the same time (use slots similar to "actions" slot...)
 const props = defineProps<{
   dish: Pick<
     ReturnType<typeof loadDishesAction>["payload"]["dishes"][number],
