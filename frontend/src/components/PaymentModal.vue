@@ -42,6 +42,7 @@
 
   <cash-payment-modal
     v-model="isCashPaymentModalOpen"
+    @close="isCashPaymentModalOpen = false"
     :total-cost="totalCost"
     :order-number="orderNumber"
   />
