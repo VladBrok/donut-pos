@@ -36,6 +36,30 @@
             </q-item-section>
           </q-item>
         </q-list>
+
+        <q-list bordered separator class="rounded-borders q-mt-md">
+          <q-item
+            clickable
+            v-ripple
+            v-close-popup
+            class="q-px-lg q-py-md"
+            @click="isCreditCardPaymentModalOpen = true"
+          >
+            <q-item-section avatar>
+              <q-avatar
+                color="primary"
+                text-color="white"
+                icon="credit_card"
+                size="md"
+              />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label class="text-weight-bold text-h6">{{
+                t.creditCard
+              }}</q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-list>
       </q-card-section>
     </q-card>
   </q-dialog>
@@ -46,10 +70,17 @@
     :total-cost="totalCost"
     :order-number="orderNumber"
   />
+
+  <credit-card-payment-modal
+    v-model="isCreditCardPaymentModalOpen"
+    :total-cost="totalCost"
+    :order-number="orderNumber"
+  />
 </template>
 
 <script setup lang="ts">
 import CashPaymentModal from "src/components/CashPaymentModal.vue";
+import CreditCardPaymentModal from "src/components/CreditCardPaymentModal.vue";
 import { useI18nStore } from "src/lib/i18n";
 import { ref } from "vue";
 
@@ -60,4 +91,5 @@ const props = defineProps<{
 
 const t = useI18nStore();
 const isCashPaymentModalOpen = ref(false);
+const isCreditCardPaymentModalOpen = ref(false);
 </script>

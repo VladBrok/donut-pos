@@ -1,6 +1,7 @@
 import {
   IOrder,
   cookedDishesLoadedAction,
+  creditCardPaymentLinkReceivedAction,
   dishDeliveredAction,
   dishFinishedCookingAction,
   dishStartedCookingAction,
@@ -169,6 +170,13 @@ const mutation: MutationTree<IOrdersState> = {
     if (state.order) {
       state.order.paidDate = new Date().toISOString();
     }
+  },
+
+  creditCardPaymentLinkReceived(
+    state: IOrdersState,
+    action: ReturnType<typeof creditCardPaymentLinkReceivedAction>
+  ) {
+    state.creditCardPaymentLink = action.payload.link;
   },
 };
 

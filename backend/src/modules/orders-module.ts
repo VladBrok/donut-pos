@@ -7,10 +7,12 @@ import {
 } from "donut-shared";
 import {
   cookedDishesLoadedAction,
+  creditCardPaymentLinkReceivedAction,
   dishDeliveredAction,
   dishFinishedCookingAction,
   dishStartedCookingAction,
   finishCookingDishAction,
+  getCreditCardPaymentLinkAction,
   loadOrdersPageAction,
   orderLoadedAction,
   orderPaidSuccessAction,
@@ -249,6 +251,19 @@ export default function ordersModule(server: Server) {
         CHANNELS.ORDER_SINGLE(action.payload.order.orderNumber),
         CHANNELS.ORDERS_OF_EMPLOYEE(action.payload.order.employee?.id),
       ];
+    },
+  });
+
+  server.type(getCreditCardPaymentLinkAction, {
+    async access(ctx) {
+      return await hasWaiterPermission(ctx.userId);
+    },
+    async process(ctx, action, meta) {
+      await ctx.sendBack(
+        creditCardPaymentLinkReceivedAction({
+          link: "https://example.com/" + Math.random(),
+        })
+      );
     },
   });
 }

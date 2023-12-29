@@ -151,3 +151,11 @@ export const payForOrderAction = createAction<{
 export const orderPaidSuccessAction = createAction<{
   order: IShallowOrder;
 }>("orders/orderPaidSuccess");
+
+export const getCreditCardPaymentLinkAction = createAction<{
+  orderNumber: string;
+}>("orders/getCreditCardPaymentLink");
+
+export const creditCardPaymentLinkReceivedAction = createAction<{
+  link: string;
+}>("orders/creditCardPaymentLinkReceived");
