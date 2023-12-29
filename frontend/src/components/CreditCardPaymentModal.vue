@@ -1,18 +1,22 @@
 <template>
   <q-dialog
+    maximized
     :model-value="modelValue"
     @update:model-value="emit('update:modelValue', $event)"
   >
-    <q-card class="dialog-sm q-pb-sm q-px-md">
+    <q-card class="q-pb-sm q-px-md">
       <q-card-section class="row items-center q-pb-none">
         <q-space />
-        <q-btn icon="close" flat round dense v-close-popup />
+        <q-btn icon="close" flat round dense v-close-popup size="lg" />
       </q-card-section>
 
       <q-card-section>
-        <p class="text-h5 text-center q-mb-md">
+        <p v-if="!isInitializing" class="text-h4 text-center q-mb-md">
           {{ t.scanQrCode }}
         </p>
+      </q-card-section>
+
+      <q-card-section>
         <big-spinner v-if="isInitializing" />
         <div ref="qrCodeContainer" class="w-fit q-mx-auto"></div>
       </q-card-section>
@@ -74,6 +78,7 @@ watch(
       const canvas = await QRCode.toCanvas(paymentLink.value, {
         errorCorrectionLevel: "M",
         version: 3,
+        width: 280,
       });
       assert(
         qrCodeContainer.value,
