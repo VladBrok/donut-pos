@@ -47,3 +47,7 @@ export * from "./src/constants/order-statuses.js";
 export * from "./src/constants/validations.js";
 export { assert } from "./src/lib/assert.js";
 export { delay } from "./src/lib/delay.js";
+export {
+  getOrderDishTotalCost,
+  getOrderTotalCost,
+} from "./src/lib/get-order-total-cost.js";

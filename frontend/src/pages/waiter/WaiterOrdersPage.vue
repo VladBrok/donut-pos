@@ -68,6 +68,7 @@ import {
   CHANNELS,
   ORDER_STATUSES_ARR,
   OrderStatus,
+  getOrderTotalCost,
   openArbitraryOrderAction,
 } from "donut-shared";
 import BigSpinner from "src/components/BigSpinner.vue";
@@ -76,7 +77,6 @@ import NoData from "src/components/NoData.vue";
 import { ROWS_PER_TABLE_PAGE } from "src/lib/constants";
 import { formatCurrency } from "src/lib/currency";
 import { useI18nStore } from "src/lib/i18n";
-import { getOrderTotalCost } from "src/lib/order";
 import { useStore } from "src/store";
 import { IOrdersState } from "src/store/orders/state";
 import { computed, onMounted, onUnmounted, ref, watch } from "vue";

@@ -22,6 +22,7 @@ import {
   startCookingDishAction,
   startDeliveredDishAction,
 } from "donut-shared/src/actions/orders.js";
+import Stripe from "stripe";
 import * as db from "../db/modules/orders.js";
 import { hasCookPermissions, hasWaiterPermission } from "../lib/access.js";
 
@@ -259,9 +260,42 @@ export default function ordersModule(server: Server) {
       return await hasWaiterPermission(ctx.userId);
     },
     async process(ctx, action, meta) {
+      const order = await db.getSingleOrder(action.payload.orderNumber);
+      const stripe = new Stripe(process.env.STRIPE_KEY || "");
+      const session = await stripe.checkout.sessions.create({
+        line_items: order.dishes.flatMap((dish) => {
+          return [
+            {
+              price_data: {
+                currency: "pln",
+                product_data: {
+                  name: dish.name,
+                },
+                unit_amount: dish.price,
+              },
+              quantity: dish.count,
+            },
+            ...dish.modifications.map((modification) => ({
+              price_data: {
+                currency: "pln",
+                product_data: {
+                  name: modification.name,
+                },
+                unit_amount: modification.price,
+              },
+              quantity: modification.count * dish.count,
+            })),
+          ];
+        }),
+        mode: "payment",
+        payment_method_types: ["card"],
+        success_url: `${process.env.CLIENT_URL}/waiter`,
+        cancel_url: `${process.env.CLIENT_URL}/waiter`,
+      });
+
       await ctx.sendBack(
         creditCardPaymentLinkReceivedAction({
-          link: "https://example.com/" + Math.random(),
+          link: session.url || "",
         })
       );
     },

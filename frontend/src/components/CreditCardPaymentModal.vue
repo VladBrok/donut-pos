@@ -4,7 +4,7 @@
     :model-value="modelValue"
     @update:model-value="emit('update:modelValue', $event)"
   >
-    <q-card class="q-pb-sm q-px-md">
+    <q-card class="q-pb-sm">
       <q-card-section class="row items-center q-pb-none">
         <q-space />
         <q-btn icon="close" flat round dense v-close-popup size="lg" />
@@ -77,7 +77,7 @@ watch(
     try {
       const canvas = await QRCode.toCanvas(paymentLink.value, {
         errorCorrectionLevel: "M",
-        version: 3,
+        version: 14,
         width: 280,
       });
       assert(
