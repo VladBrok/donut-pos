@@ -375,7 +375,7 @@ export async function payForOrder(orderNumber: string) {
       })
       .where(eq(order.number, orderNumber));
   } else {
-    logWarn(`Tryed to paid for already paid order ${orderNumber}`);
+    logWarn(`Tried to pay for already paid order ${orderNumber}`);
   }
 
   return (
