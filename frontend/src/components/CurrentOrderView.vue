@@ -142,6 +142,7 @@ import {
   clearCurrentOrderAction,
   createOrderAction,
   decrementDishInCurrentOrderAction,
+  getOrderDishTotalCost,
   removeDishFromCurrentOrderAction,
   updateCurrentOrderCommentAction,
   updateCurrentOrderTableNumberAction,
@@ -152,7 +153,6 @@ import DishInOrder from "src/components/DishInOrder.vue";
 import OrderView from "src/components/OrderView.vue";
 import { SUCCESS_TIMEOUT_MS } from "src/lib/constants";
 import { onFormValidationError } from "src/lib/on-form-validation-error";
-import { getOrderDishTotalCost } from "src/lib/order";
 import { computed, ref } from "vue";
 import { useI18nStore } from "../lib/i18n";
 import { useStore } from "../store";

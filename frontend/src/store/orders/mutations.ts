@@ -9,6 +9,7 @@ import {
   orderPaidSuccessAction,
   ordersForKitchenLoadedAction,
   ordersPageLoadedAction,
+  paymentLinkReceivedAction,
 } from "donut-shared/src/actions/orders";
 import { MutationTree } from "vuex";
 import { IOrdersState } from "./state";
@@ -162,13 +163,20 @@ const mutation: MutationTree<IOrdersState> = {
     const orderInPage = state.ordersPage.find(
       (x) => x.orderNumber === action.payload.order.orderNumber
     );
-    if (orderInPage) {
+    if (orderInPage && !orderInPage.paidDate) {
       orderInPage.paidDate = new Date().toISOString();
     }
 
-    if (state.order) {
+    if (state.order && !state.order.paidDate) {
       state.order.paidDate = new Date().toISOString();
     }
+  },
+
+  paymentLinkReceived(
+    state: IOrdersState,
+    action: ReturnType<typeof paymentLinkReceivedAction>
+  ) {
+    state.paymentLink = action.payload.link;
   },
 };
 

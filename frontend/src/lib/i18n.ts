@@ -14,6 +14,7 @@ import {
   MODIFICATION_NAME_EXISTS,
   PASSWORD_MIN_LENGTH,
   PASSWORD_SPECIAL_CHARS,
+  PAYMENT_LINK_GENERATION_ERROR,
   USER_NOT_FOUND,
   WRONG_PASSWORD,
 } from "donut-shared";
@@ -104,7 +105,7 @@ export const messages = i18n("messages", {
   // Waiter pages
   main: "Main",
   searchDishes: "Search by name, price, category or weight",
-  searchOrders: "Search by order number",
+  searchOrders: "Search by order number, table or comment",
   allMenu: "All menu",
   addToCurrentOrder: "Add to order",
   addToOrderButton: "Add to order",
@@ -138,12 +139,16 @@ export const messages = i18n("messages", {
   delivered: "Delivered",
   selectPaymentMethod: "Select payment method",
   cash: "Cash",
+  creditCard: "Credit card",
+  blik: "Blik",
   payWithCash: "Pay with cash",
+  scanQrCode: "Scan to pay",
   amount: "Amount, zł",
   amountHint: "Amount given by customer",
   totalToPay: "Total",
   change: "Change",
   makeSureChangeGiven: "Make sure you give the customer the change",
+  paid: "Paid",
 
   // Kitchen pages
   viewDetails: "View details",
@@ -216,6 +221,8 @@ export const messages = i18n("messages", {
   imageCorrupted: "The image is corrupted. Try to choose a different one",
   [ACCESS_DENIED]: "Access denied",
   copyToClipboardError: "Failed to copy",
+  [PAYMENT_LINK_GENERATION_ERROR]:
+    "Failed to generate a QR code for payment. Please choose a different payment method",
 });
 
 export function useI18nStore() {

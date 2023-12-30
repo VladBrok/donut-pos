@@ -2,6 +2,7 @@ import { Server } from "@logux/server";
 import {
   CHANNELS,
   ITEMS_PER_PAGE,
+  PAYMENT_LINK_GENERATION_ERROR,
   createOrderAction,
   orderCreatedAction,
 } from "donut-shared";
@@ -11,17 +12,23 @@ import {
   dishFinishedCookingAction,
   dishStartedCookingAction,
   finishCookingDishAction,
+  getPaymentLinkAction,
   loadOrdersPageAction,
   orderLoadedAction,
   orderPaidSuccessAction,
   ordersForKitchenLoadedAction,
   ordersPageLoadedAction,
   payForOrderAction,
+  paymentLinkReceivedAction,
   startCookingDishAction,
   startDeliveredDishAction,
 } from "donut-shared/src/actions/orders.js";
+import { logError } from "donut-shared/src/lib/log.js";
+import Stripe from "stripe";
 import * as db from "../db/modules/orders.js";
 import { hasCookPermissions, hasWaiterPermission } from "../lib/access.js";
+
+// TODO: split this module (here, in db, on client, in actions)
 
 export default function ordersModule(server: Server) {
   server.channel(CHANNELS.ORDERS_FOR_KITCHEN, {
@@ -81,7 +88,7 @@ export default function ordersModule(server: Server) {
         page: 1,
         employeeId: ctx.userId,
         perPage: ITEMS_PER_PAGE,
-        statuses: ["created"],
+        ongoingOnly: true, // For waiter, show only ongoing orders
       });
       return ordersPageLoadedAction({
         ordersPage: ordersPage,
@@ -101,6 +108,8 @@ export default function ordersModule(server: Server) {
         employeeId: ctx.userId,
         statuses: action.payload.status ? [action.payload.status] : undefined,
         orderNumber: action.payload.orderNumber,
+        search: action.payload.search,
+        ongoingOnly: true, // For waiter, show only ongoing orders
       });
       await ctx.sendBack(
         ordersPageLoadedAction({
@@ -250,5 +259,114 @@ export default function ordersModule(server: Server) {
         CHANNELS.ORDERS_OF_EMPLOYEE(action.payload.order.employee?.id),
       ];
     },
+  });
+
+  server.type(getPaymentLinkAction, {
+    async access(ctx) {
+      return await hasWaiterPermission(ctx.userId);
+    },
+    async process(ctx, action, meta) {
+      const order = await db.getSingleOrder(action.payload.orderNumber);
+      let session: Stripe.Response<Stripe.Checkout.Session> | null = null;
+
+      try {
+        const stripe = new Stripe(process.env.STRIPE_KEY || "");
+        session = await stripe.checkout.sessions.create({
+          line_items: order.dishes.flatMap((dish) => {
+            return [
+              {
+                price_data: {
+                  currency: "pln",
+                  product_data: {
+                    name: dish.name,
+                  },
+                  unit_amount: dish.price,
+                },
+                quantity: dish.count,
+              },
+              ...dish.modifications.map((modification) => ({
+                price_data: {
+                  currency: "pln",
+                  product_data: {
+                    name: modification.name,
+                  },
+                  unit_amount: modification.price,
+                },
+                quantity: modification.count * dish.count,
+              })),
+            ];
+          }),
+          mode: "payment",
+          payment_method_types: [action.payload.method],
+          success_url: `${process.env.CLIENT_URL}/payment-success`,
+          cancel_url: `${process.env.CLIENT_URL}/payment-error`,
+          payment_intent_data: {
+            metadata: {
+              orderNumber: action.payload.orderNumber,
+            },
+          },
+        });
+      } catch (err) {
+        logError("Stripe checkout error:", err);
+        await server.undo(action, meta, PAYMENT_LINK_GENERATION_ERROR);
+      }
+
+      await ctx.sendBack(
+        paymentLinkReceivedAction({
+          link: session?.url || "",
+        })
+      );
+    },
+  });
+
+  server.http(async (req, res) => {
+    const isStripeWebhook = req.url === "/webhook" && req.method === "POST";
+    if (!isStripeWebhook) {
+      res.end("not found");
+      return;
+    }
+
+    const end = (code = 200) => {
+      res.writeHead(code, { "Content-Type": "application/json" });
+      if (code === 200) {
+        res.end(JSON.stringify({ received: true }));
+      } else {
+        res.end(JSON.stringify({ error: "Webhook error" }));
+      }
+    };
+
+    let body = "";
+    req.on("data", (chunk) => {
+      body += chunk;
+    });
+    req.on("error", () => {
+      end(400);
+    });
+    req.on("end", async () => {
+      const stripe = new Stripe(process.env.STRIPE_KEY || "");
+
+      const endpointSecret = process.env.STRIPE_ENDPOINT_SECRET || "";
+      const sig = req.headers["stripe-signature"] || "";
+      let event: Stripe.Event;
+
+      try {
+        event = stripe.webhooks.constructEvent(body, sig, endpointSecret);
+      } catch (err) {
+        end(400);
+        return;
+      }
+
+      switch (event.type) {
+        case "payment_intent.succeeded":
+          server.process(
+            payForOrderAction({
+              orderNumber: event.data.object.metadata.orderNumber,
+            })
+          );
+          break;
+      }
+
+      end();
+    });
   });
 }

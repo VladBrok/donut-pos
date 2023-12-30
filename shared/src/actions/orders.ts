@@ -85,6 +85,7 @@ export const loadOrdersPageAction = createAction<{
   page: number;
   status?: OrderStatus;
   orderNumber?: string;
+  search?: string;
 }>("orders/loadPage");
 
 export const ordersPageLoadedAction = createAction<{
@@ -151,3 +152,12 @@ export const payForOrderAction = createAction<{
 export const orderPaidSuccessAction = createAction<{
   order: IShallowOrder;
 }>("orders/orderPaidSuccess");
+
+export const getPaymentLinkAction = createAction<{
+  orderNumber: string;
+  method: "card" | "blik";
+}>("orders/getPaymentLink");
+
+export const paymentLinkReceivedAction = createAction<{
+  link: string;
+}>("orders/paymentLinkReceived");

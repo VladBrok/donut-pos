@@ -58,7 +58,6 @@ const emit = defineEmits<{
 const t = useI18nStore();
 const router = useRouter();
 
-console.log();
 const phone = ref(
   router.currentRoute.value.path.includes("admin")
     ? "+48000000000"

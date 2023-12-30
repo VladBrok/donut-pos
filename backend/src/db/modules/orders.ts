@@ -5,7 +5,19 @@ import {
   OrderStatus,
 } from "donut-shared";
 import { IOrder } from "donut-shared/src/actions/orders.js";
-import { and, asc, desc, eq, ilike, or, sql } from "drizzle-orm";
+import { logWarn } from "donut-shared/src/lib/log.js";
+import {
+  and,
+  asc,
+  desc,
+  eq,
+  ilike,
+  isNotNull,
+  isNull,
+  not,
+  or,
+  sql,
+} from "drizzle-orm";
 import { PgColumn } from "drizzle-orm/pg-core";
 import {
   client,
@@ -31,6 +43,8 @@ export interface IGetOrder {
   orderNumber?: string;
   strictOrderNumberCompare?: boolean;
   orderBy?: "desc" | "asc";
+  search?: string;
+  ongoingOnly?: boolean;
 }
 
 export interface IGetOrdersPage extends IGetOrder {
@@ -116,8 +130,27 @@ function makeWhereFilter(params: IGetOrder) {
             : `%${params.orderNumber.trim()}%`
         )
       : undefined,
+    params.search
+      ? or(
+          ilike(order.number, `%${params.search}%`),
+          ilike(order.comment, `%${params.search}%`),
+          ilike(order.tableNumber, `%${params.search}%`)
+        )
+      : undefined,
+    params.ongoingOnly
+      ? or(
+          not(eq(order.status, ORDER_STATUSES.DELIVERED)),
+          isNull(order.paidDate)
+        )
+      : undefined,
     params.statuses
-      ? or(...params.statuses.map((status) => eq(order.status, status)))
+      ? or(
+          ...params.statuses.map((status) =>
+            status === "paid"
+              ? isNotNull(order.paidDate) // Special case for "paid" status
+              : eq(order.status, status)
+          )
+        )
       : undefined
   );
 }
@@ -330,13 +363,20 @@ export async function payForOrder(orderNumber: string) {
     Note that we don't set status as "paid" because an order can be, for example, 
     in status "delivering" and "paid" at the same time
   */
-  await db
-    .update(order)
-    .set({
-      paidDate: new Date(),
-    })
-    .where(eq(order.number, orderNumber))
-    .returning();
+  const currentOrder = (
+    await db.select().from(order).where(eq(order.number, orderNumber))
+  )[0];
+
+  if (!currentOrder?.paidDate) {
+    await db
+      .update(order)
+      .set({
+        paidDate: new Date(),
+      })
+      .where(eq(order.number, orderNumber));
+  } else {
+    logWarn(`Tried to pay for already paid order ${orderNumber}`);
+  }
 
   return (
     await getOrdersShallow({

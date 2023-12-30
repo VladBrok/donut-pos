@@ -52,6 +52,22 @@
               }}</span>
             </q-td>
           </template>
+          <template v-slot:body-cell-paidDate="props">
+            <q-td :props="props">
+              <q-radio
+                dense
+                class="disabled-cursor-default"
+                :model-value="'true'"
+                checked-icon="task_alt"
+                unchecked-icon="close"
+                :val="Boolean(props.row.paidDate).toString()"
+                label=""
+                disable
+                :color="Boolean(props.row.paidDate) ? 'positive' : 'negative'"
+                keep-color
+              />
+            </q-td>
+          </template>
           <template v-slot:no-data>
             <no-data></no-data>
           </template>
@@ -68,6 +84,7 @@ import {
   CHANNELS,
   ORDER_STATUSES_ARR,
   OrderStatus,
+  getOrderTotalCost,
   openArbitraryOrderAction,
 } from "donut-shared";
 import BigSpinner from "src/components/BigSpinner.vue";
@@ -76,7 +93,6 @@ import NoData from "src/components/NoData.vue";
 import { ROWS_PER_TABLE_PAGE } from "src/lib/constants";
 import { formatCurrency } from "src/lib/currency";
 import { useI18nStore } from "src/lib/i18n";
-import { getOrderTotalCost } from "src/lib/order";
 import { useStore } from "src/store";
 import { IOrdersState } from "src/store/orders/state";
 import { computed, onMounted, onUnmounted, ref, watch } from "vue";
@@ -103,7 +119,7 @@ const statusFilters = computed<OrderStatusFilter[]>(() => [
 ]);
 const searchInput = ref<string | null>(null);
 const isUpdatingPage = ref(false);
-const selectedOrderStatus = ref<OrderStatusFilter>("created");
+const selectedOrderStatus = ref<OrderStatusFilter>("all");
 const tableFilter = computed(
   () => selectedOrderStatus.value + searchInput.value
 );
@@ -144,6 +160,12 @@ const columns: any[] = [
     label: t.value.orderStatus,
     align: "left",
   },
+  {
+    name: "paidDate",
+    label: t.value.paid,
+    align: "left",
+    field: "paidDate",
+  },
 ];
 
 const stopWatchingSubscribing = watch(isSubscribing, () => {
@@ -177,7 +199,7 @@ const updatePage = ({ pagination: { page } }: any) => {
           selectedOrderStatus.value === "all" || searchInput.value
             ? undefined
             : selectedOrderStatus.value,
-        orderNumber: searchInput.value || undefined,
+        search: searchInput.value?.trim() || undefined,
       })
     )
     .then(() => {

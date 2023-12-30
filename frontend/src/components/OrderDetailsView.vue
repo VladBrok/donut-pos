@@ -75,11 +75,11 @@
 </template>
 
 <script setup lang="ts">
+import { getOrderDishTotalCost, getOrderTotalCost } from "donut-shared";
 import DishInOrder from "src/components/DishInOrder.vue";
 import OrderHistory from "src/components/OrderHistory.vue";
 import OrderView from "src/components/OrderView.vue";
 import PaymentModal from "src/components/PaymentModal.vue";
-import { getOrderDishTotalCost, getOrderTotalCost } from "src/lib/order";
 import { computed, ref } from "vue";
 import { IOrder } from "../../../shared/src/actions/orders";
 import { useI18nStore } from "../lib/i18n";
