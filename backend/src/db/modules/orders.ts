@@ -6,7 +6,7 @@ import {
 } from "donut-shared";
 import { IOrder } from "donut-shared/src/actions/orders.js";
 import { logWarn } from "donut-shared/src/lib/log.js";
-import { and, asc, desc, eq, ilike, or, sql } from "drizzle-orm";
+import { and, asc, desc, eq, ilike, isNotNull, or, sql } from "drizzle-orm";
 import { PgColumn } from "drizzle-orm/pg-core";
 import {
   client,
@@ -118,7 +118,13 @@ function makeWhereFilter(params: IGetOrder) {
         )
       : undefined,
     params.statuses
-      ? or(...params.statuses.map((status) => eq(order.status, status)))
+      ? or(
+          ...params.statuses.map((status) =>
+            status === "paid"
+              ? isNotNull(order.paidDate) // Special case for "paid" status
+              : eq(order.status, status)
+          )
+        )
       : undefined
   );
 }
