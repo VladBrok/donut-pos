@@ -2,6 +2,7 @@ import { Server } from "@logux/server";
 import {
   CHANNELS,
   ITEMS_PER_PAGE,
+  PAYMENT_LINK_GENERATION_ERROR,
   createOrderAction,
   orderCreatedAction,
 } from "donut-shared";
@@ -22,6 +23,7 @@ import {
   startCookingDishAction,
   startDeliveredDishAction,
 } from "donut-shared/src/actions/orders.js";
+import { logError } from "donut-shared/src/lib/log.js";
 import Stripe from "stripe";
 import * as db from "../db/modules/orders.js";
 import { hasCookPermissions, hasWaiterPermission } from "../lib/access.js";
@@ -263,46 +265,53 @@ export default function ordersModule(server: Server) {
     },
     async process(ctx, action, meta) {
       const order = await db.getSingleOrder(action.payload.orderNumber);
-      const stripe = new Stripe(process.env.STRIPE_KEY || "");
-      const session = await stripe.checkout.sessions.create({
-        line_items: order.dishes.flatMap((dish) => {
-          return [
-            {
-              price_data: {
-                currency: "pln",
-                product_data: {
-                  name: dish.name,
+      let session: Stripe.Response<Stripe.Checkout.Session> | null = null;
+
+      try {
+        const stripe = new Stripe(process.env.STRIPE_KEY || "");
+        session = await stripe.checkout.sessions.create({
+          line_items: order.dishes.flatMap((dish) => {
+            return [
+              {
+                price_data: {
+                  currency: "pln",
+                  product_data: {
+                    name: dish.name,
+                  },
+                  unit_amount: dish.price,
                 },
-                unit_amount: dish.price,
+                quantity: dish.count,
               },
-              quantity: dish.count,
+              ...dish.modifications.map((modification) => ({
+                price_data: {
+                  currency: "pln",
+                  product_data: {
+                    name: modification.name,
+                  },
+                  unit_amount: modification.price,
+                },
+                quantity: modification.count * dish.count,
+              })),
+            ];
+          }),
+          mode: "payment",
+          payment_method_types: [action.payload.method],
+          success_url: `${process.env.CLIENT_URL}/payment-success`,
+          cancel_url: `${process.env.CLIENT_URL}/payment-error`,
+          payment_intent_data: {
+            metadata: {
+              orderNumber: action.payload.orderNumber,
             },
-            ...dish.modifications.map((modification) => ({
-              price_data: {
-                currency: "pln",
-                product_data: {
-                  name: modification.name,
-                },
-                unit_amount: modification.price,
-              },
-              quantity: modification.count * dish.count,
-            })),
-          ];
-        }),
-        mode: "payment",
-        payment_method_types: [action.payload.method],
-        success_url: `${process.env.CLIENT_URL}/payment-success`,
-        cancel_url: `${process.env.CLIENT_URL}/payment-error`,
-        payment_intent_data: {
-          metadata: {
-            orderNumber: action.payload.orderNumber,
           },
-        },
-      });
+        });
+      } catch (err) {
+        logError("Stripe checkout error:", err);
+        await server.undo(action, meta, PAYMENT_LINK_GENERATION_ERROR);
+      }
 
       await ctx.sendBack(
         paymentLinkReceivedAction({
-          link: session.url || "",
+          link: session?.url || "",
         })
       );
     },

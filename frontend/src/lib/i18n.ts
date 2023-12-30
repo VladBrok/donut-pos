@@ -14,6 +14,7 @@ import {
   MODIFICATION_NAME_EXISTS,
   PASSWORD_MIN_LENGTH,
   PASSWORD_SPECIAL_CHARS,
+  PAYMENT_LINK_GENERATION_ERROR,
   USER_NOT_FOUND,
   WRONG_PASSWORD,
 } from "donut-shared";
@@ -219,6 +220,8 @@ export const messages = i18n("messages", {
   imageCorrupted: "The image is corrupted. Try to choose a different one",
   [ACCESS_DENIED]: "Access denied",
   copyToClipboardError: "Failed to copy",
+  [PAYMENT_LINK_GENERATION_ERROR]:
+    "Failed to generate a QR code for payment. Please choose a different payment method",
 });
 
 export function useI18nStore() {
