@@ -3,10 +3,6 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat.js";
 import timezone from "dayjs/plugin/timezone.js";
 import utc from "dayjs/plugin/utc.js";
-import {
-  IOrder,
-  orderPaidSuccessAction,
-} from "donut-shared/src/actions/orders.js";
 import ordersModule from "src/modules/orders-module.js";
 import * as db from "./db/index.js";
 import authModule from "./modules/auth-module.js";
@@ -36,19 +32,5 @@ modificationsModule(server);
 employeesModule(server);
 rolesModule(server);
 ordersModule(server);
-
-// TODO:
-server.http(async (req, res) => {
-  if (req.url === "/endpoint") {
-    await server.process(
-      orderPaidSuccessAction({
-        order: {} as IOrder,
-      })
-    );
-    res.end("wow");
-    return;
-  }
-  res.end("not found");
-});
 
 server.listen();

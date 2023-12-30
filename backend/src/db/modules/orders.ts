@@ -5,6 +5,7 @@ import {
   OrderStatus,
 } from "donut-shared";
 import { IOrder } from "donut-shared/src/actions/orders.js";
+import { logWarn } from "donut-shared/src/lib/log.js";
 import { and, asc, desc, eq, ilike, or, sql } from "drizzle-orm";
 import { PgColumn } from "drizzle-orm/pg-core";
 import {
@@ -330,13 +331,21 @@ export async function payForOrder(orderNumber: string) {
     Note that we don't set status as "paid" because an order can be, for example, 
     in status "delivering" and "paid" at the same time
   */
-  await db
-    .update(order)
-    .set({
-      paidDate: new Date(),
-    })
-    .where(eq(order.number, orderNumber))
-    .returning();
+  const currentOrder = (
+    await db.select().from(order).where(eq(order.number, orderNumber))
+  )[0];
+
+  if (!currentOrder?.paidDate) {
+    await db
+      .update(order)
+      .set({
+        paidDate: new Date(),
+      })
+      .where(eq(order.number, orderNumber))
+      .returning();
+  } else {
+    logWarn(`Tryed to paid for already paid order ${orderNumber}`);
+  }
 
   return (
     await getOrdersShallow({

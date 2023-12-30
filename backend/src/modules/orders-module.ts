@@ -26,6 +26,8 @@ import Stripe from "stripe";
 import * as db from "../db/modules/orders.js";
 import { hasCookPermissions, hasWaiterPermission } from "../lib/access.js";
 
+// TODO: split this module (here, in db, on client, in actions)
+
 export default function ordersModule(server: Server) {
   server.channel(CHANNELS.ORDERS_FOR_KITCHEN, {
     access(ctx) {
@@ -291,6 +293,9 @@ export default function ordersModule(server: Server) {
         payment_method_types: ["card"],
         success_url: `${process.env.CLIENT_URL}/waiter`,
         cancel_url: `${process.env.CLIENT_URL}/waiter`,
+        metadata: {
+          orderNumber: action.payload.orderNumber,
+        },
       });
 
       await ctx.sendBack(
@@ -299,5 +304,56 @@ export default function ordersModule(server: Server) {
         })
       );
     },
+  });
+
+  server.http(async (req, res) => {
+    const isStripeWebhook = req.url === "/webhook" && req.method === "POST";
+    if (!isStripeWebhook) {
+      res.end("not found");
+      return;
+    }
+
+    const end = (code = 200) => {
+      res.writeHead(code, { "Content-Type": "application/json" });
+      if (code === 200) {
+        res.end(JSON.stringify({ received: true }));
+      } else {
+        res.end(JSON.stringify({ error: "Webhook error" }));
+      }
+    };
+
+    let body = "";
+    req.on("data", (chunk) => {
+      body += chunk;
+    });
+    req.on("error", () => {
+      end(400);
+    });
+    req.on("end", async () => {
+      const stripe = new Stripe(process.env.STRIPE_KEY || "");
+
+      const endpointSecret = process.env.STRIPE_ENDPOINT_SECRET || "";
+      const sig = req.headers["stripe-signature"] || "";
+      let event: Stripe.Event;
+
+      try {
+        event = stripe.webhooks.constructEvent(body, sig, endpointSecret);
+      } catch (err) {
+        end(400);
+        return;
+      }
+
+      switch (event.type) {
+        case "payment_intent.succeeded":
+          server.process(
+            payForOrderAction({
+              orderNumber: event.data.object.metadata.orderNumber,
+            })
+          );
+          break;
+      }
+
+      end();
+    });
   });
 }
