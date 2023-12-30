@@ -26,8 +26,8 @@
 
 <script setup lang="ts">
 import { assert } from "donut-shared";
-import { getCreditCardPaymentLinkAction } from "donut-shared/src/actions/orders";
-import { logError } from "donut-shared/src/lib/log";
+import { getPaymentLinkAction } from "donut-shared/src/actions/orders";
+import { logError, logInfo } from "donut-shared/src/lib/log";
 import QRCode from "qrcode";
 import BigSpinner from "src/components/BigSpinner.vue";
 import { useI18nStore } from "src/lib/i18n";
@@ -35,9 +35,9 @@ import { useStore } from "src/store";
 import { computed, ref, watch } from "vue";
 
 const props = defineProps<{
-  totalCost: number;
   orderNumber: string;
   modelValue: boolean;
+  method: "blik" | "card";
 }>();
 const emit = defineEmits(["close", "update:modelValue"]);
 
@@ -45,7 +45,7 @@ const t = useI18nStore();
 const isInitializing = ref(false);
 const store = useStore();
 const modelValue = computed(() => props.modelValue);
-const paymentLink = computed(() => store.state.orders.creditCardPaymentLink);
+const paymentLink = computed(() => store.state.orders.paymentLink);
 const qrCodeContainer = ref<HTMLDivElement>();
 
 watch(
@@ -69,7 +69,8 @@ watch(
 watch(
   paymentLink,
   async () => {
-    console.log("watch payment link", paymentLink.value);
+    logInfo("paymentLink:", paymentLink.value);
+
     if (!paymentLink.value) {
       return;
     }
@@ -96,8 +97,9 @@ watch(
 
 async function getPaymentLink() {
   store.commit.sync(
-    getCreditCardPaymentLinkAction({
+    getPaymentLinkAction({
       orderNumber: props.orderNumber,
+      method: props.method,
     })
   );
 }

@@ -1,7 +1,6 @@
 import {
   IOrder,
   cookedDishesLoadedAction,
-  creditCardPaymentLinkReceivedAction,
   dishDeliveredAction,
   dishFinishedCookingAction,
   dishStartedCookingAction,
@@ -10,6 +9,7 @@ import {
   orderPaidSuccessAction,
   ordersForKitchenLoadedAction,
   ordersPageLoadedAction,
+  paymentLinkReceivedAction,
 } from "donut-shared/src/actions/orders";
 import { MutationTree } from "vuex";
 import { IOrdersState } from "./state";
@@ -172,11 +172,11 @@ const mutation: MutationTree<IOrdersState> = {
     }
   },
 
-  creditCardPaymentLinkReceived(
+  paymentLinkReceived(
     state: IOrdersState,
-    action: ReturnType<typeof creditCardPaymentLinkReceivedAction>
+    action: ReturnType<typeof paymentLinkReceivedAction>
   ) {
-    state.creditCardPaymentLink = action.payload.link;
+    state.paymentLink = action.payload.link;
   },
 };
 

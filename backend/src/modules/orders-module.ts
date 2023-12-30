@@ -7,18 +7,18 @@ import {
 } from "donut-shared";
 import {
   cookedDishesLoadedAction,
-  creditCardPaymentLinkReceivedAction,
   dishDeliveredAction,
   dishFinishedCookingAction,
   dishStartedCookingAction,
   finishCookingDishAction,
-  getCreditCardPaymentLinkAction,
+  getPaymentLinkAction,
   loadOrdersPageAction,
   orderLoadedAction,
   orderPaidSuccessAction,
   ordersForKitchenLoadedAction,
   ordersPageLoadedAction,
   payForOrderAction,
+  paymentLinkReceivedAction,
   startCookingDishAction,
   startDeliveredDishAction,
 } from "donut-shared/src/actions/orders.js";
@@ -257,7 +257,7 @@ export default function ordersModule(server: Server) {
     },
   });
 
-  server.type(getCreditCardPaymentLinkAction, {
+  server.type(getPaymentLinkAction, {
     async access(ctx) {
       return await hasWaiterPermission(ctx.userId);
     },
@@ -290,16 +290,18 @@ export default function ordersModule(server: Server) {
           ];
         }),
         mode: "payment",
-        payment_method_types: ["card"],
-        success_url: `${process.env.CLIENT_URL}/waiter`,
-        cancel_url: `${process.env.CLIENT_URL}/waiter`,
-        metadata: {
-          orderNumber: action.payload.orderNumber,
+        payment_method_types: [action.payload.method],
+        success_url: `${process.env.CLIENT_URL}/payment-success`,
+        cancel_url: `${process.env.CLIENT_URL}/payment-error`,
+        payment_intent_data: {
+          metadata: {
+            orderNumber: action.payload.orderNumber,
+          },
         },
       });
 
       await ctx.sendBack(
-        creditCardPaymentLinkReceivedAction({
+        paymentLinkReceivedAction({
           link: session.url || "",
         })
       );

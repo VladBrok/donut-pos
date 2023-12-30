@@ -6,7 +6,7 @@ export interface IOrdersState {
   ordersForKitchen: IOrder[];
   cookedDishes: ICookedDish[];
   order: IOrder | null;
-  creditCardPaymentLink?: string;
+  paymentLink?: string;
 }
 
 const state: IOrdersState = {
