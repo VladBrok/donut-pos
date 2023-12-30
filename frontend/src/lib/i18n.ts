@@ -148,6 +148,7 @@ export const messages = i18n("messages", {
   totalToPay: "Total",
   change: "Change",
   makeSureChangeGiven: "Make sure you give the customer the change",
+  paid: "Paid",
 
   // Kitchen pages
   viewDetails: "View details",

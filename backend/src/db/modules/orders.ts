@@ -6,7 +6,18 @@ import {
 } from "donut-shared";
 import { IOrder } from "donut-shared/src/actions/orders.js";
 import { logWarn } from "donut-shared/src/lib/log.js";
-import { and, asc, desc, eq, ilike, isNotNull, or, sql } from "drizzle-orm";
+import {
+  and,
+  asc,
+  desc,
+  eq,
+  ilike,
+  isNotNull,
+  isNull,
+  not,
+  or,
+  sql,
+} from "drizzle-orm";
 import { PgColumn } from "drizzle-orm/pg-core";
 import {
   client,
@@ -33,6 +44,7 @@ export interface IGetOrder {
   strictOrderNumberCompare?: boolean;
   orderBy?: "desc" | "asc";
   search?: string;
+  ongoingOnly?: boolean;
 }
 
 export interface IGetOrdersPage extends IGetOrder {
@@ -123,6 +135,12 @@ function makeWhereFilter(params: IGetOrder) {
           ilike(order.number, `%${params.search}%`),
           ilike(order.comment, `%${params.search}%`),
           ilike(order.tableNumber, `%${params.search}%`)
+        )
+      : undefined,
+    params.ongoingOnly
+      ? or(
+          not(eq(order.status, ORDER_STATUSES.DELIVERED)),
+          isNull(order.paidDate)
         )
       : undefined,
     params.statuses

@@ -52,6 +52,22 @@
               }}</span>
             </q-td>
           </template>
+          <template v-slot:body-cell-paidDate="props">
+            <q-td :props="props">
+              <q-radio
+                dense
+                class="disabled-cursor-default"
+                :model-value="'true'"
+                checked-icon="task_alt"
+                unchecked-icon="close"
+                :val="Boolean(props.row.paidDate).toString()"
+                label=""
+                disable
+                :color="Boolean(props.row.paidDate) ? 'positive' : 'negative'"
+                keep-color
+              />
+            </q-td>
+          </template>
           <template v-slot:no-data>
             <no-data></no-data>
           </template>
@@ -103,7 +119,7 @@ const statusFilters = computed<OrderStatusFilter[]>(() => [
 ]);
 const searchInput = ref<string | null>(null);
 const isUpdatingPage = ref(false);
-const selectedOrderStatus = ref<OrderStatusFilter>("created");
+const selectedOrderStatus = ref<OrderStatusFilter>("all");
 const tableFilter = computed(
   () => selectedOrderStatus.value + searchInput.value
 );
@@ -143,6 +159,12 @@ const columns: any[] = [
     name: "status",
     label: t.value.orderStatus,
     align: "left",
+  },
+  {
+    name: "paidDate",
+    label: t.value.paid,
+    align: "left",
+    field: "paidDate",
   },
 ];
 
