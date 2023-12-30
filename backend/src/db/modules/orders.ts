@@ -373,8 +373,7 @@ export async function payForOrder(orderNumber: string) {
       .set({
         paidDate: new Date(),
       })
-      .where(eq(order.number, orderNumber))
-      .returning();
+      .where(eq(order.number, orderNumber));
   } else {
     logWarn(`Tryed to paid for already paid order ${orderNumber}`);
   }
