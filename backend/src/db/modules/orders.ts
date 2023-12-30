@@ -32,6 +32,7 @@ export interface IGetOrder {
   orderNumber?: string;
   strictOrderNumberCompare?: boolean;
   orderBy?: "desc" | "asc";
+  search?: string;
 }
 
 export interface IGetOrdersPage extends IGetOrder {
@@ -115,6 +116,13 @@ function makeWhereFilter(params: IGetOrder) {
           params.strictOrderNumberCompare
             ? params.orderNumber?.trim()
             : `%${params.orderNumber.trim()}%`
+        )
+      : undefined,
+    params.search
+      ? or(
+          ilike(order.number, `%${params.search}%`),
+          ilike(order.comment, `%${params.search}%`),
+          ilike(order.tableNumber, `%${params.search}%`)
         )
       : undefined,
     params.statuses

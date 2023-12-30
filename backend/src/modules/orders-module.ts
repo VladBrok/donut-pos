@@ -108,6 +108,7 @@ export default function ordersModule(server: Server) {
         employeeId: ctx.userId,
         statuses: action.payload.status ? [action.payload.status] : undefined,
         orderNumber: action.payload.orderNumber,
+        search: action.payload.search,
       });
       await ctx.sendBack(
         ordersPageLoadedAction({

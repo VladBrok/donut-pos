@@ -105,7 +105,7 @@ export const messages = i18n("messages", {
   // Waiter pages
   main: "Main",
   searchDishes: "Search by name, price, category or weight",
-  searchOrders: "Search by order number",
+  searchOrders: "Search by order number, table or comment",
   allMenu: "All menu",
   addToCurrentOrder: "Add to order",
   addToOrderButton: "Add to order",

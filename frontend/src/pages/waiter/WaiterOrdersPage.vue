@@ -177,7 +177,7 @@ const updatePage = ({ pagination: { page } }: any) => {
           selectedOrderStatus.value === "all" || searchInput.value
             ? undefined
             : selectedOrderStatus.value,
-        orderNumber: searchInput.value || undefined,
+        search: searchInput.value?.trim() || undefined,
       })
     )
     .then(() => {
