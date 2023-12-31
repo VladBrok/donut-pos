@@ -25,7 +25,7 @@ export default function authModule(server: Server) {
       return ctx.userId === ANONYMOUS.userId;
     },
     async process(ctx, action, meta) {
-      const user = await db.findEmployeeByPhone(action.payload.phone);
+      const user = await db.findEmployeeByEmail(action.payload.email);
       if (!user) {
         await server.undo(action, meta, USER_NOT_FOUND);
         return;

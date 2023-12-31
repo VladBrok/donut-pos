@@ -1,6 +1,7 @@
 import { LoguxVuexStore } from "@logux/vuex";
 import {
   CATEGORY_NAME_EXISTS,
+  EMPLOYEE_WITH_EMAIL_EXISTS,
   EMPLOYEE_WITH_PHONE_EXISTS,
   MODIFICATION_NAME_EXISTS,
   USER_NOT_FOUND,
@@ -30,7 +31,7 @@ export function setUndoHandler(Store: LoguxVuexStore) {
       message =
         reason === USER_NOT_FOUND
           ? t.value.userNotFound({
-              phone: formatPhoneNumber(undone.action.payload.phone),
+              email: formatPhoneNumber(undone.action.payload.email),
             })
           : reason === CATEGORY_NAME_EXISTS
           ? t.value.categoryNameExists({
@@ -43,6 +44,10 @@ export function setUndoHandler(Store: LoguxVuexStore) {
           : reason === EMPLOYEE_WITH_PHONE_EXISTS
           ? t.value.employeeWithPhoneExists({
               phone: undone.action.payload.phone,
+            })
+          : reason === EMPLOYEE_WITH_EMAIL_EXISTS
+          ? t.value.employeeWithEmailExists({
+              email: undone.action.payload.email,
             })
           : (t.value as any)[reason];
     }

@@ -52,7 +52,8 @@
               </q-item>
             </template>
           </q-select>
-          <phone-input v-model="phone" shouldValidateFormat> </phone-input>
+          <!-- <phone-input v-model="phone" shouldValidateFormat> </phone-input> -->
+          <email-input v-model="email" />
           <password-input
             v-model="password"
             should-validate-format
@@ -89,6 +90,7 @@ import {
   updateEmployeeAction,
 } from "donut-shared";
 import { Notify } from "quasar";
+import EmailInput from "src/components/EmailInput.vue";
 import { createFuzzySearcher } from "src/lib/fuzzy-search";
 import { onFormValidationError } from "src/lib/on-form-validation-error";
 import { useStore } from "src/store";
@@ -97,7 +99,6 @@ import { useRouter } from "vue-router";
 import BackButton from "../../../components/BackButton.vue";
 import BigSpinner from "../../../components/BigSpinner.vue";
 import PasswordInput from "../../../components/PasswordInput.vue";
-import PhoneInput from "../../../components/PhoneInput.vue";
 import { SUCCESS_TIMEOUT_MS } from "../../../lib/constants";
 import { useI18nStore } from "../../../lib/i18n";
 
@@ -109,7 +110,7 @@ const isSubmitting = ref(false);
 const roleName = ref("");
 const firstName = ref("");
 const lastName = ref("");
-const phone = ref("");
+const email = ref("");
 const password = ref("");
 
 const id = computed(() => router.currentRoute.value.params.id);
@@ -138,7 +139,8 @@ const unsubscribe = watchEffect(
       roleName.value = originalEmployee.value.role?.codeName || "";
       firstName.value = originalEmployee.value.firstName;
       lastName.value = originalEmployee.value.lastName;
-      phone.value = originalEmployee.value.phone;
+      // phone.value = originalEmployee.value.phone;
+      email.value = originalEmployee.value.email;
       unsubscribe();
     } else if (id.value && store.state.employees.employees.length) {
       router.push("/404");
@@ -165,7 +167,7 @@ const onSubmit = async () => {
             firstName: firstName.value,
             lastName: lastName.value,
             password: password.value,
-            phone: phone.value,
+            email: email.value,
             role: store.state.roles.roles.find(
               (x) => x.codeName === roleName.value
             )!,
@@ -174,7 +176,7 @@ const onSubmit = async () => {
             firstName: firstName.value,
             lastName: lastName.value,
             password: password.value,
-            phone: phone.value,
+            email: email.value,
             role: store.state.roles.roles.find(
               (x) => x.codeName === roleName.value
             )!,

@@ -8,6 +8,8 @@ export interface EmployeeModel {
   id: string;
   phone: string;
   isPhoneVerified: boolean;
+  email: string;
+  isEmailVerified: boolean;
   registeredAt: string;
   firstName: string;
   lastName: string;

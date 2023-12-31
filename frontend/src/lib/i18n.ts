@@ -9,6 +9,7 @@ import { useStore as useNanoStore } from "@nanostores/vue";
 import {
   ACCESS_DENIED,
   CATEGORY_NAME_EXISTS,
+  EMPLOYEE_WITH_EMAIL_EXISTS,
   EMPLOYEE_WITH_PHONE_EXISTS,
   IMAGE_UPLOAD_FAIL,
   MODIFICATION_NAME_EXISTS,
@@ -51,6 +52,8 @@ export const messages = i18n("messages", {
   category: "Category",
   phone: "Phone",
   isPhoneVerified: "Phone verified",
+  email: "Email",
+  isEmailVerified: "Email verified",
   role: "Role",
   firstName: "First name",
   lastName: "Last name",
@@ -184,7 +187,9 @@ export const messages = i18n("messages", {
   kitchenLoginPageTitle: "Login to kitchen",
   passwordRequired: "Please enter a password",
   phoneRequired: "Please enter a phone number",
+  emailRequired: "Please enter your email",
   phoneLabel: "Phone",
+  emailLabel: "Email",
   passwordLabel: "Password",
   logIn: "Log in",
   showPassword: "Show password",
@@ -213,7 +218,7 @@ export const messages = i18n("messages", {
   copyToClipboardSuccess: "Copied to clipboard",
 
   // Errors
-  [USER_NOT_FOUND]: params("User with phone {phone} was not found"),
+  [USER_NOT_FOUND]: params("User with email {email} was not found"),
   [WRONG_PASSWORD]: "Wrong password",
   [IMAGE_UPLOAD_FAIL]: "Failed to upload the image",
   [CATEGORY_NAME_EXISTS]: params(
@@ -224,6 +229,9 @@ export const messages = i18n("messages", {
   ),
   [EMPLOYEE_WITH_PHONE_EXISTS]: params(
     'Employee with phone "{phone}" already exists'
+  ),
+  [EMPLOYEE_WITH_EMAIL_EXISTS]: params(
+    'Employee with email "{email}" already exists'
   ),
   imageCorrupted: "The image is corrupted. Try to choose a different one",
   [ACCESS_DENIED]: "Access denied",

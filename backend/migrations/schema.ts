@@ -109,11 +109,14 @@ export const client = pgTable("client", {
 	isPhoneVerified: boolean("is_phone_verified"),
 	passwordHash: text("password_hash"),
 	registeredAt: timestamp("registered_at", { mode: 'date' }),
+	email: text("email"),
+	isEmailVerified: boolean("is_email_verified"),
 },
 (table) => {
 	return {
 		addressIdIdx: index("client_address_id_idx").on(table.addressId),
 		phoneIdx: index("client_phone_idx").on(table.phone),
+		emailIdx: index("client_email_idx").on(table.email),
 	}
 });
 
@@ -126,11 +129,14 @@ export const employee = pgTable("employee", {
 	isPhoneVerified: boolean("is_phone_verified"),
 	passwordHash: text("password_hash"),
 	registeredAt: timestamp("registered_at", { mode: 'date' }),
+	email: text("email"),
+	isEmailVerified: boolean("is_email_verified"),
 },
 (table) => {
 	return {
 		roleIdIdx: index("employee_role_id_idx").on(table.roleId),
 		phoneIdx: index("employee_phone_idx").on(table.phone),
+		emailIdx: index("employee_email_idx").on(table.email),
 	}
 });
 

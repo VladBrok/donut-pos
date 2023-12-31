@@ -36,6 +36,8 @@ export const employeeAdapter = (
     passwordHash: data[0].employee.passwordHash || "",
     phone: data[0].employee.phone || "",
     isPhoneVerified: data[0].employee.isPhoneVerified || false,
+    email: data[0].employee.email || "",
+    isEmailVerified: data[0].employee.isEmailVerified || false,
     registeredAt: data[0].employee.registeredAt?.toISOString() || "",
     role: {
       id: data[0].role?.id || "",

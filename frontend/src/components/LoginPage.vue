@@ -16,8 +16,9 @@
       >
         <q-card class="q-pa-md">
           <q-card-section class="q-gutter-lg">
-            <phone-input v-model="phone" :shouldValidateFormat="false">
-            </phone-input>
+            <!-- <phone-input v-model="phone" :shouldValidateFormat="false">
+            </phone-input> -->
+            <email-input v-model="email" />
             <password-input
               v-model="password"
               :should-validate-format="false"
@@ -41,29 +42,36 @@
 </template>
 
 <script setup lang="ts">
+import EmailInput from "src/components/EmailInput.vue";
 import { onFormValidationError } from "src/lib/on-form-validation-error";
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import PasswordInput from "../components/PasswordInput.vue";
-import PhoneInput from "../components/PhoneInput.vue";
 import { useI18nStore } from "../lib/i18n";
 
 const props = defineProps<{ isLoggingIn: boolean; iconName: string }>();
 const isLoggingIn = computed(() => props.isLoggingIn);
 
 const emit = defineEmits<{
-  submit: [data: { password: string; phone: string }];
+  submit: [data: { password: string; email: string }];
 }>();
 
 const t = useI18nStore();
 const router = useRouter();
 
-const phone = ref(
+// const phone = ref(
+//   router.currentRoute.value.path.includes("admin")
+//     ? "+48000000000"
+//     : router.currentRoute.value.path.includes("waiter")
+//     ? "+48100000001"
+//     : "+48300020009"
+// );
+const email = ref(
   router.currentRoute.value.path.includes("admin")
-    ? "+48000000000"
+    ? "admin@donut.com"
     : router.currentRoute.value.path.includes("waiter")
-    ? "+48100000001"
-    : "+48300020009"
+    ? "waiter@donut.com"
+    : "kitchen@donut.com"
 ); // TODO: remove
 const password = ref(
   router.currentRoute.value.path.includes("admin") ? "1234" : "1234Db_3333>"
@@ -72,7 +80,7 @@ const password = ref(
 const onSubmit = async () => {
   emit("submit", {
     password: password.value,
-    phone: phone.value,
+    email: email.value,
   });
 };
 </script>

@@ -23,12 +23,12 @@ const store = useStore();
 const router = useRouter();
 const isLoggingIn = ref(false);
 
-const onSubmit = async (data: { password: string; phone: string }) => {
+const onSubmit = async (data: { password: string; email: string }) => {
   isLoggingIn.value = true;
   store.commit
     .sync(
       loginAction({
-        phone: data.phone,
+        email: data.email,
         password: data.password,
         permissions: {
           cook: true,

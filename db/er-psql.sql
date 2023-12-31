@@ -16,6 +16,8 @@ CREATE TABLE "client" (
   "last_name" TEXT,
   "phone" TEXT,
   "is_phone_verified" BOOLEAN,
+  "email" TEXT,
+  "is_email_verified" BOOLEAN,
   "password_hash" TEXT,
   "registered_at" TIMESTAMP
 );
@@ -53,6 +55,8 @@ CREATE TABLE "employee" (
   "last_name" TEXT,
   "phone" TEXT,
   "is_phone_verified" BOOLEAN,
+  "email" TEXT,
+  "is_email_verified" BOOLEAN,
   "password_hash" TEXT,
   "registered_at" TIMESTAMP
 );
@@ -141,6 +145,8 @@ CREATE INDEX "client_address_id_idx" ON "client" ("address_id");
 
 CREATE INDEX "client_phone_idx" ON "client" ("phone");
 
+CREATE INDEX "client_email_idx" ON "client" ("email");
+
 CREATE INDEX "work_schedule_sale_point_id_idx" ON "work_schedule" ("sale_point_id");
 
 CREATE INDEX "role_to_permission_role_id_idx" ON "role_to_permission" ("role_id");
@@ -150,6 +156,8 @@ CREATE INDEX "role_to_permission_permission_id_idx" ON "role_to_permission" ("pe
 CREATE INDEX "employee_role_id_idx" ON "employee" ("role_id");
 
 CREATE INDEX "employee_phone_idx" ON "employee" ("phone");
+
+CREATE INDEX "employee_email_idx" ON "employee" ("email");
 
 CREATE INDEX "dish_category_id_idx" ON "dish" ("category_id");
 
