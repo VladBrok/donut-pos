@@ -200,8 +200,18 @@ const routes: RouteRecordRaw[] = [
     ],
   },
 
+  // Payment
+  {
+    path: "/payment-success/:orderNumber",
+    component: () => import("src/pages/PaymentSuccess.vue"),
+    meta: {
+      title: t.value.paymentSuccessPageTitle,
+    },
+  },
+
   // Client
   // TODO: same as for other roles - if not authed, redirect to ClientLogin + client layout
+  // TODO: wrap this page in layout (clients layout or waiters layout or admins depending on who opens a page?)
   {
     path: "/orders/:orderNumber",
     component: () => import("src/pages/client/ClientSingleOrder.vue"),

@@ -6,8 +6,8 @@ export const loadEmployeesAction = createAction<{
     id: string;
     firstName: string;
     lastName: string;
-    phone: string;
-    isPhoneVerified: boolean;
+    email: string;
+    isEmailVerified: boolean;
     registeredAt: string;
     role: ReturnType<typeof loadRolesAction>["payload"]["roles"][number];
   }[];
@@ -20,7 +20,7 @@ export const deleteEmployeeAction = createAction<{
 export const createEmployeeAction = createAction<{
   firstName: string;
   lastName: string;
-  phone: string;
+  email: string;
   password: string;
   role: ReturnType<typeof loadRolesAction>["payload"]["roles"][number];
 }>("employees/create");
@@ -34,7 +34,7 @@ export const updateEmployeeAction = createAction<{
   id: string;
   firstName: string;
   lastName: string;
-  phone: string;
+  email: string;
   password: string;
   role: ReturnType<typeof loadRolesAction>["payload"]["roles"][number];
 }>("employees/update");

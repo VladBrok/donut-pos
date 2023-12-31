@@ -1,6 +1,7 @@
 <template>
   <div class="q-pa-md bg-gray-lightest min-height-window">
     <div class="q-mx-auto max-w-lg">
+      <back-button />
       <big-spinner v-if="isSubscribing" />
       <div v-else-if="order">
         <h1 class="text-h4">
@@ -15,6 +16,7 @@
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
 import { CHANNELS } from "donut-shared";
+import BackButton from "src/components/BackButton.vue";
 import BigSpinner from "src/components/BigSpinner.vue";
 import OrderDetailsView from "src/components/OrderDetailsView.vue";
 import OrderNumberTitle from "src/components/OrderNumberTitle.vue";

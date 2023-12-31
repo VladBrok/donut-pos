@@ -4,5 +4,6 @@ export const IMAGE_UPLOAD_FAIL = "imageUploadFail";
 export const CATEGORY_NAME_EXISTS = "categoryNameExists";
 export const MODIFICATION_NAME_EXISTS = "modificationNameExists";
 export const EMPLOYEE_WITH_PHONE_EXISTS = "employeeWithPhoneExists";
+export const EMPLOYEE_WITH_EMAIL_EXISTS = "employeeWithEmailExists";
 export const ACCESS_DENIED = "accessDenied";
 export const PAYMENT_LINK_GENERATION_ERROR = "paymentLinkGenerationError";

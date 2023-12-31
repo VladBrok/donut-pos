@@ -37,17 +37,17 @@
           {{ props.rowIndex + 1 }}
         </q-td>
       </template>
-      <template v-slot:body-cell-isPhoneVerified="props">
+      <template v-slot:body-cell-isEmailVerified="props">
         <q-td :props="props">
           <q-radio
             class="disabled-cursor-default"
             :model-value="'true'"
             checked-icon="task_alt"
             unchecked-icon="close"
-            :val="props.row.isPhoneVerified.toString()"
+            :val="props.row.isEmailVerified.toString()"
             label=""
             disable
-            :color="props.row.isPhoneVerified ? 'positive' : 'negative'"
+            :color="props.row.isEmailVerified ? 'positive' : 'negative'"
             keep-color
           />
         </q-td>
@@ -108,7 +108,6 @@ import { useSubscription } from "@logux/vuex";
 import { CHANNELS, assert } from "donut-shared";
 import { deleteEmployeeAction } from "donut-shared/src/actions/employees";
 import { Notify } from "quasar";
-import { formatPhoneNumber } from "src/lib/phone";
 import { useStore } from "src/store";
 import { computed, ref } from "vue";
 import BigSpinner from "../../../components/BigSpinner.vue";
@@ -130,7 +129,7 @@ const fuzzySearch = computed(() =>
   createFuzzySearcher(employees.value, [
     "firstName",
     "lastName",
-    "phone",
+    "email",
     "registeredAt",
     "role.codeName",
   ])
@@ -186,18 +185,17 @@ const columns: any[] = [
     format: (val: string) => formatDateTime(val),
   },
   {
-    name: "phone",
-    label: t.value.phone,
+    name: "email",
+    label: t.value.email,
     align: "center",
-    field: "phone",
+    field: "email",
     sortable: true,
-    format: formatPhoneNumber,
   },
   {
-    name: "isPhoneVerified",
-    label: t.value.isPhoneVerified,
+    name: "isEmailVerified",
+    label: t.value.isEmailVerified,
     align: "center",
-    field: "isPhoneVerified",
+    field: "isEmailVerified",
     sortable: true,
   },
   { name: "actions", label: "", align: "right" },

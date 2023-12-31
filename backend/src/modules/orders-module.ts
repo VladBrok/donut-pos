@@ -167,6 +167,10 @@ export default function ordersModule(server: Server) {
     async access() {
       return false;
     },
+    async process(ctx, action) {
+      // TODO: send notifications
+      // await sendEmailNotification("@gmail.com", `dish was cooked`);
+    },
     resend(ctx, action) {
       return [
         CHANNELS.ORDERS_FOR_KITCHEN,
@@ -298,8 +302,8 @@ export default function ordersModule(server: Server) {
           }),
           mode: "payment",
           payment_method_types: [action.payload.method],
-          success_url: `${process.env.CLIENT_URL}/payment-success`,
-          cancel_url: `${process.env.CLIENT_URL}/payment-error`,
+          success_url: `${process.env.CLIENT_URL}/payment-success/${action.payload.orderNumber}`,
+          cancel_url: `${process.env.CLIENT_URL}/menu`,
           payment_intent_data: {
             metadata: {
               orderNumber: action.payload.orderNumber,

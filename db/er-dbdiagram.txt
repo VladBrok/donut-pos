@@ -16,11 +16,14 @@ Table client {
   last_name TEXT
   phone TEXT
   is_phone_verified BOOLEAN
+  email TEXT
+  is_email_verified BOOLEAN
   password_hash TEXT
   registered_at TIMESTAMP
   Indexes {
     address_id [name: 'client_address_id_idx']
     phone [name: 'client_phone_idx']
+    email [name: 'client_email_idx']
   }
 }
 
@@ -64,11 +67,14 @@ Table employee {
   last_name TEXT
   phone TEXT
   is_phone_verified BOOLEAN
+  email TEXT
+  is_email_verified BOOLEAN
   password_hash TEXT
   registered_at TIMESTAMP
   Indexes {
     role_id [name: 'employee_role_id_idx']
     phone [name: 'employee_phone_idx']
+    email [name: 'employee_email_idx']
   }
 }
 

@@ -51,6 +51,18 @@ export async function updateEmployee(
   return data;
 }
 
+export async function findEmployeeByEmail(email: string) {
+  const data = await db
+    .select()
+    .from(employee)
+    .where(eq(employee.email, email))
+    .leftJoin(role, eq(employee.roleId, role.id))
+    .leftJoin(roleToPermission, eq(employee.roleId, roleToPermission.roleId))
+    .leftJoin(permission, eq(roleToPermission.permissionId, permission.id));
+
+  return employeeAdapter(data);
+}
+
 export async function findEmployeeByPhone(phone: string) {
   const data = await db
     .select()

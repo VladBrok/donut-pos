@@ -1,5 +1,5 @@
 import { Action, Server, ServerMeta } from "@logux/server";
-import { CHANNELS, EMPLOYEE_WITH_PHONE_EXISTS } from "donut-shared";
+import { CHANNELS, EMPLOYEE_WITH_EMAIL_EXISTS } from "donut-shared";
 import {
   createEmployeeAction,
   deleteEmployeeAction,
@@ -43,11 +43,11 @@ export default function employeesModule(server: Server) {
       }
 
       if (
-        !(await validateEmployeePhone(
+        !(await validateEmployeeEmail(
           server,
           action,
           meta,
-          action.payload.phone
+          action.payload.email
         ))
       ) {
         return;
@@ -58,6 +58,8 @@ export default function employeesModule(server: Server) {
         passwordHash: await hash(action.payload.password),
         registeredAt: new Date().toISOString(),
         isPhoneVerified: false,
+        isEmailVerified: false,
+        phone: "",
       });
       await server.process(employeeCreatedAction(created));
     },
@@ -88,11 +90,11 @@ export default function employeesModule(server: Server) {
       }
 
       if (
-        !(await validateEmployeePhone(
+        !(await validateEmployeeEmail(
           server,
           action,
           meta,
-          action.payload.phone,
+          action.payload.email,
           action.payload.id
         ))
       ) {
@@ -157,21 +159,21 @@ export default function employeesModule(server: Server) {
   });
 }
 
-async function validateEmployeePhone(
+async function validateEmployeeEmail(
   server: Server,
   action: Action,
   meta: ServerMeta,
-  phone?: string,
+  email?: string,
   id?: string
 ) {
-  if (!phone) {
+  if (!email) {
     return true;
   }
 
-  const existing = await db.findEmployeeByPhone(phone);
+  const existing = await db.findEmployeeByEmail(email);
 
   if (existing && existing.id !== id) {
-    server.undo(action, meta, EMPLOYEE_WITH_PHONE_EXISTS);
+    server.undo(action, meta, EMPLOYEE_WITH_EMAIL_EXISTS);
     return false;
   }
 

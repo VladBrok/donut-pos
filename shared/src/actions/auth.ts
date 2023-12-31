@@ -3,7 +3,7 @@ import { createAction } from "./index.js";
 import { loadRolesAction } from "./roles.js";
 
 export const loginAction = createAction<{
-  phone: string;
+  email: string;
   password: string;
   permissions: {
     [EMPLOYEE_PERMISSIONS.ADMIN]?: boolean;
