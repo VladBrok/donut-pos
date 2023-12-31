@@ -162,6 +162,13 @@ export const messages = i18n("messages", {
   // Client pages
   orderDetails: "Order details",
 
+  // Payment pages
+  paymentSuccessPageTitle: "Payment success",
+  paymentErrorPageTitle: "Payment error",
+  paymentForOrder: "Payment for",
+  isSuccessfull: "is successfull",
+  goToMenu: "go to menu",
+
   // Order statuses
   orderStatus_all: "All",
   orderStatus_created: "Created",

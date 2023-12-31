@@ -298,8 +298,8 @@ export default function ordersModule(server: Server) {
           }),
           mode: "payment",
           payment_method_types: [action.payload.method],
-          success_url: `${process.env.CLIENT_URL}/payment-success`,
-          cancel_url: `${process.env.CLIENT_URL}/payment-error`,
+          success_url: `${process.env.CLIENT_URL}/payment-success/${action.payload.orderNumber}`,
+          cancel_url: `${process.env.CLIENT_URL}/payment-error/${action.payload.orderNumber}`,
           payment_intent_data: {
             metadata: {
               orderNumber: action.payload.orderNumber,

@@ -8,7 +8,7 @@
           link: isLink,
         }"
         :to="`/orders/${orderNumber}`"
-        >{{ `#${orderNumber}` }}</component
+        >{{ `${orderNumber}` }}</component
       >
     </span>
     <copy-button
