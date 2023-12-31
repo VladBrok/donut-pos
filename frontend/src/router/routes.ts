@@ -208,13 +208,6 @@ const routes: RouteRecordRaw[] = [
       title: t.value.paymentSuccessPageTitle,
     },
   },
-  {
-    path: "/payment-error/:orderNumber",
-    component: () => import("src/pages/PaymentError.vue"),
-    meta: {
-      title: t.value.paymentSuccessPageTitle,
-    },
-  },
 
   // Client
   // TODO: same as for other roles - if not authed, redirect to ClientLogin + client layout
