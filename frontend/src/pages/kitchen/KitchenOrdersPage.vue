@@ -24,7 +24,7 @@
             </order-number-title>
             <div>
               <q-input
-                :model-value="order.tableNumber || '-'"
+                :model-value="order.table.number || '-'"
                 readonly
                 stack-label
                 :label="`${t.tableNumberLabel}`"

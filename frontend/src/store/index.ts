@@ -10,6 +10,7 @@ import { Router } from "vue-router";
 import { Store as VuexStore } from "vuex";
 
 import { assert } from "donut-shared";
+import { IDiningTablesState } from "src/store/dining-tables/state";
 import { IOrderDrawerState } from "src/store/order-drawer/state";
 import { IOrdersState } from "src/store/orders/state";
 import { createClient } from "../lib/logux/create-client";
@@ -20,6 +21,7 @@ import auth from "./auth";
 import { IAuthState } from "./auth/state";
 import currentOrder from "./current-order";
 import { ICurrentOrderState } from "./current-order/state";
+import diningTables from "./dining-tables";
 import dishCategories from "./dish-categories";
 import { IDishCategoriesState } from "./dish-categories/state";
 import dishes from "./dishes";
@@ -44,6 +46,7 @@ export interface StateInterface {
   currentOrder: ICurrentOrderState;
   orders: IOrdersState;
   orderDrawer: IOrderDrawerState;
+  diningTables: IDiningTablesState;
 }
 
 // provide typings for `this.$store`
@@ -81,6 +84,7 @@ export default store(function (/* { ssrContext } */) {
     currentOrder,
     orders,
     orderDrawer,
+    diningTables,
   };
 
   for (const module of Object.values(modules)) {

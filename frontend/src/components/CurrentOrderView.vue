@@ -10,26 +10,41 @@
         <div v-else>
           <div>
             <!-- TODO: add client autotomplete field -->
-            <q-input
-              :model-value="store.state.currentOrder.order?.tableNumber"
+            <q-select
+              :model-value="store.state.currentOrder.order?.table?.number"
               @update:model-value="
                 store.commit.crossTab(
                   updateCurrentOrderTableNumberAction({
-                    tableNumber: $event?.toString()?.trim() || '',
+                    table:
+                      diningTables.find((x) => x.number === $event?.trim()) ||
+                      null,
                   })
                 )
               "
+              use-input
+              fill-input
               stack-label
+              clearable
+              hide-selected
+              input-debounce="0"
+              :options="filteredTableNames"
+              @filter="filterTables"
               :label="`${t.tableNumberLabel} *`"
-              lazy-rules
-              type="text"
               :rules="[
                 (val) => (!!val && val.length > 0) || t.fieldRequired,
                 (val) =>
                   val.length <= TABLE_NUMBER_MAX_LENGTH ||
                   t.maxLength({ max: TABLE_NUMBER_MAX_LENGTH }),
               ]"
-            />
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section>
+                    {{ t.noResults }}
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
             <q-input
               :model-value="store.state.currentOrder.order?.comment"
               @update:model-value="
@@ -152,6 +167,7 @@ import BigSpinner from "src/components/BigSpinner.vue";
 import DishInOrder from "src/components/DishInOrder.vue";
 import OrderView from "src/components/OrderView.vue";
 import { SUCCESS_TIMEOUT_MS } from "src/lib/constants";
+import { createFuzzySearcher } from "src/lib/fuzzy-search";
 import { onFormValidationError } from "src/lib/on-form-validation-error";
 import { computed, ref } from "vue";
 import { useI18nStore } from "../lib/i18n";
@@ -163,8 +179,22 @@ const order = computed(() => store.state.currentOrder.order);
 const t = useI18nStore();
 const isConfirmClearOpen = ref(false);
 const isSubmitting = ref(false);
-const channels = computed(() => [CHANNELS.DISHES, CHANNELS.MODIFICATIONS]);
+const channels = computed(() => [
+  CHANNELS.DISHES,
+  CHANNELS.MODIFICATIONS,
+  CHANNELS.DINING_TABLES,
+]);
+const tableNumberSearchInput = ref("");
+const tableNumberFuzzySearch = computed(() =>
+  createFuzzySearcher(store.state.diningTables.tables, ["number"])
+);
+const filteredTableNames = computed(() =>
+  tableNumberFuzzySearch.value
+    .search(tableNumberSearchInput.value)
+    .map((x) => x.number)
+);
 const isSubscribing = useSubscription(channels, { store: store as any });
+const diningTables = computed(() => store.state.diningTables.tables);
 const dishes = computed(() => store.state.dishes.dishes);
 const modifications = computed(() => store.state.modifications.modifications);
 const dishesInOrder = computed(() =>
@@ -199,6 +229,11 @@ const hasDishOutOfStock = computed(
 const totalCost = computed(
   () => dishesInOrder.value?.reduce((sum, cur) => sum + cur.totalCost, 0) || 0
 );
+const filterTables = (val: string, update: any) => {
+  update(() => {
+    tableNumberSearchInput.value = val;
+  });
+};
 
 function clear() {
   store.commit.crossTab(clearCurrentOrderAction());

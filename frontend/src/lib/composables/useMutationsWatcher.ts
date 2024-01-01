@@ -96,7 +96,7 @@ export const useMutationsWatcher = () => {
             timeout: INFO_TIMEOUT_MS,
             message: t.value.dishCooked({
               dishName: cooked.dish.name,
-              table: cooked.order.tableNumber,
+              table: cooked.order.table.number,
             }),
             multiLine: true,
             group: false,

@@ -2,6 +2,7 @@ export const USER_NOT_FOUND = "userNotFound";
 export const WRONG_PASSWORD = "wrongPassword";
 export const IMAGE_UPLOAD_FAIL = "imageUploadFail";
 export const CATEGORY_NAME_EXISTS = "categoryNameExists";
+export const DINING_TABLE_EXISTS = "diningTableExists";
 export const MODIFICATION_NAME_EXISTS = "modificationNameExists";
 export const EMPLOYEE_WITH_PHONE_EXISTS = "employeeWithPhoneExists";
 export const EMPLOYEE_WITH_EMAIL_EXISTS = "employeeWithEmailExists";

@@ -5,9 +5,9 @@ export interface ICurrentOrderState {
   order: ICurrentOrder | null;
 }
 
-export const makeEmptyOrder = () => ({
+export const makeEmptyOrder = (): ICurrentOrder => ({
   comment: "",
-  tableNumber: "",
+  table: null,
   clientId: "",
   dishes: [],
 });

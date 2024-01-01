@@ -21,6 +21,7 @@ import {
 import { PgColumn } from "drizzle-orm/pg-core";
 import {
   client,
+  diningTable,
   dish,
   employee,
   modification,
@@ -80,6 +81,7 @@ export async function getOrdersPage(params: IGetOrdersPage) {
     )
     .leftJoin(employee, eq(employee.id, order.employeeId))
     .leftJoin(client, eq(client.id, order.clientId))
+    .leftJoin(diningTable, eq(diningTable.id, order.diningTableId))
     .orderBy(makeOrderByFilter(params, orders.createdDate));
 
   const total = await db
@@ -134,7 +136,7 @@ function makeWhereFilter(params: IGetOrder) {
       ? or(
           ilike(order.number, `%${params.search}%`),
           ilike(order.comment, `%${params.search}%`),
-          ilike(order.tableNumber, `%${params.search}%`)
+          ilike(diningTable.number, `%${params.search}%`)
         )
       : undefined,
     params.ongoingOnly
@@ -176,9 +178,9 @@ export async function createOrder(
     await tx.insert(order).values({
       id: orderToCreate.id,
       comment: data.comment,
-      tableNumber: data.tableNumber,
       employeeId: employeeId,
       number: orderNumber,
+      diningTableId: data.table?.id || null,
       createdDate: new Date(),
       status: ORDER_STATUSES.CREATED,
     });
@@ -328,6 +330,7 @@ export async function getOrdersShallow(params: IGetOrder, dbOrTx = db) {
     .from(order)
     .where(makeWhereFilter(params))
     .leftJoin(employee, eq(employee.id, order.employeeId))
+    .leftJoin(diningTable, eq(diningTable.id, order.diningTableId))
     .leftJoin(client, eq(client.id, order.clientId));
 
   return shallowOrdersAdapter(data);
@@ -353,6 +356,7 @@ export async function getCookedDishes(
     )
     .where(dishIdInOrder ? eq(orderToDish.id, dishIdInOrder) : undefined)
     .leftJoin(dish, eq(dish.id, orderToDish.dishId))
+    .leftJoin(diningTable, eq(diningTable.id, order.diningTableId))
     .orderBy(asc(order.createdDate));
 
   return cookedDishesAdapter(dishes);

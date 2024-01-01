@@ -32,7 +32,7 @@
                   <div class="text-body2">
                     <div>
                       {{ t.tableNumber }}
-                      {{ item.order.tableNumber }},
+                      {{ item.order.table.number || "-" }},
                     </div>
                     <OrderNumberTitle
                       :order-number="item.order.orderNumber"

@@ -89,10 +89,10 @@ const mutation: MutationTree<ICurrentOrderState> = {
   ) {
     assert(
       state.order,
-      "Cannot update current order tableNumber when order is empty"
+      "Cannot update current order table when current order is empty"
     );
 
-    state.order.tableNumber = action.payload.tableNumber;
+    state.order.table = action.payload.table;
   },
 };
 

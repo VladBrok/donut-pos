@@ -14,6 +14,15 @@ export type {
   ICurrentOrderDishModification,
 } from "./src/actions/current-order.js";
 export {
+  createDiningTableAction,
+  deleteDiningTableAction,
+  diningTableCreatedAction,
+  diningTableDeletedAction,
+  diningTableUpdatedAction,
+  loadDiningTablesAction,
+  updateDiningTableAction,
+} from "./src/actions/dining-tables.js";
+export {
   createEmployeeAction,
   deleteEmployeeAction,
   employeeCreatedAction,

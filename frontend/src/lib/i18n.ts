@@ -9,6 +9,7 @@ import { useStore as useNanoStore } from "@nanostores/vue";
 import {
   ACCESS_DENIED,
   CATEGORY_NAME_EXISTS,
+  DINING_TABLE_EXISTS,
   EMPLOYEE_WITH_EMAIL_EXISTS,
   EMPLOYEE_WITH_PHONE_EXISTS,
   IMAGE_UPLOAD_FAIL,
@@ -223,6 +224,9 @@ export const messages = i18n("messages", {
   [IMAGE_UPLOAD_FAIL]: "Failed to upload the image",
   [CATEGORY_NAME_EXISTS]: params(
     'Category with name "{name}" already exists. Please choose another name'
+  ),
+  [DINING_TABLE_EXISTS]: params(
+    'Table with number "{tableNumber}" already exists. Please specify another number'
   ),
   [MODIFICATION_NAME_EXISTS]: params(
     'Modification with name "{name}" already exists. Please choose another name'

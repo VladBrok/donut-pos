@@ -18,9 +18,15 @@ export interface ICurrentOrderDish {
   modifications: ICurrentOrderDishModification[];
 }
 
+export interface IDiningTable {
+  id: string;
+  employeeId: string;
+  number: string;
+}
+
 export interface ICurrentOrder {
   comment: string;
-  tableNumber: string;
+  table: IDiningTable | null;
   clientId: string;
   dishes: ICurrentOrderDish[];
 }
@@ -40,7 +46,7 @@ export const updateCurrentOrderCommentAction = createAction<{
 }>("currentOrder/updateComment");
 
 export const updateCurrentOrderTableNumberAction = createAction<{
-  tableNumber: string;
+  table: IDiningTable | null;
 }>("currentOrder/updateTableNumber");
 
 export const removeDishFromCurrentOrderAction = createAction<{

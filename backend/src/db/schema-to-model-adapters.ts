@@ -6,6 +6,7 @@ import {
 import { ICookedDish, IShallowOrder } from "donut-shared/src/actions/orders.js";
 import { onlyUnique } from "src/lib/only-unique.js";
 import {
+  DiningTableModel,
   DishCategoryModel,
   DishModel,
   EmployeeModel,
@@ -14,6 +15,7 @@ import {
   RoleModel,
 } from "./models.js";
 import {
+  DiningTableSchema,
   DishCategorySchema,
   DishInOrderSchema,
   DishSchema,
@@ -144,7 +146,6 @@ export const ordersAdapter = (data: OrderSchema[]): OrderModel[] => {
     .map((uniqueOrder) => ({
       id: uniqueOrder.order.id,
       orderNumber: uniqueOrder.order.number || "",
-      tableNumber: uniqueOrder.order.tableNumber || "",
       comment: uniqueOrder.order.comment || "",
       status: (uniqueOrder.order.status || "") as OrderStatus,
       createdDate: uniqueOrder.order.createdDate?.toISOString() || "",
@@ -153,6 +154,11 @@ export const ordersAdapter = (data: OrderSchema[]): OrderModel[] => {
       deliveringDate: uniqueOrder.order.deliveringDate?.toISOString() || "",
       deliveredDate: uniqueOrder.order.deliveredDate?.toISOString() || "",
       paidDate: uniqueOrder.order.paidDate?.toISOString() || "",
+      table: {
+        id: uniqueOrder.dining_table?.id || "",
+        number: uniqueOrder.dining_table?.number || "",
+        employeeId: uniqueOrder.dining_table?.employeeId || "",
+      },
       client: uniqueOrder.client
         ? {
             id: uniqueOrder.client.id,
@@ -215,7 +221,6 @@ export const shallowOrdersAdapter = (
     .map((uniqueOrder) => ({
       id: uniqueOrder.order.id,
       orderNumber: uniqueOrder.order.number || "",
-      tableNumber: uniqueOrder.order.tableNumber || "",
       comment: uniqueOrder.order.comment || "",
       status: (uniqueOrder.order.status || "") as OrderStatus,
       createdDate: uniqueOrder.order.createdDate?.toISOString() || "",
@@ -224,6 +229,11 @@ export const shallowOrdersAdapter = (
       deliveringDate: uniqueOrder.order.deliveringDate?.toISOString() || "",
       deliveredDate: uniqueOrder.order.deliveredDate?.toISOString() || "",
       paidDate: uniqueOrder.order.paidDate?.toISOString() || "",
+      table: {
+        id: uniqueOrder.dining_table?.id || "",
+        number: uniqueOrder.dining_table?.number || "",
+        employeeId: uniqueOrder.dining_table?.employeeId || "",
+      },
       client: uniqueOrder.client
         ? {
             id: uniqueOrder.client.id,
@@ -263,4 +273,14 @@ export const cookedDishesAdapter = (
         isActive: item.dish?.isActive || false,
       },
     }));
+};
+
+export const diningTableAdapter = (
+  data: DiningTableSchema[]
+): DiningTableModel[] => {
+  return data.map((x) => ({
+    id: x.id || "",
+    employeeId: x.employeeId || "",
+    number: x.number || "",
+  }));
 };

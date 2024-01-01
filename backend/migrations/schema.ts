@@ -182,7 +182,6 @@ export const order = pgTable("order", {
 	employeeId: uuid("employee_id").references(() => employee.id, { onDelete: "set null" } ),
 	salePointId: uuid("sale_point_id").references(() => salePoint.id, { onDelete: "set null" } ),
 	number: text("number"),
-	tableNumber: text("table_number"),
 	comment: text("comment"),
 	status: text("status"),
 	createdDate: timestamp("created_date", { mode: 'date' }),

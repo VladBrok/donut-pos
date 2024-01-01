@@ -140,7 +140,7 @@ const columns: any[] = [
     name: "tableNumber",
     label: t.value.tableNumber,
     align: "left",
-    field: "tableNumber",
+    field: (row: IOrdersState["ordersPage"][number]) => row.table.number || "-",
   },
   {
     name: "dishCount",
