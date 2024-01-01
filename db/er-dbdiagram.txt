@@ -9,6 +9,16 @@ Table address {
   room TEXT
 }
 
+Table dining_table {
+  id UUID [pk]
+  employee_id UUID
+  number TEXT
+  Indexes {
+    employee_id [name: 'dining_table_employee_id_idx']
+    number [name: 'dining_table_number_idx']
+  }
+}
+
 Table client {
   id UUID [pk]
   address_id UUID
@@ -142,8 +152,8 @@ Table order {
   client_id UUID
   employee_id UUID
   sale_point_id UUID
+  dining_table_id UUID
   number TEXT
-  table_number TEXT
   comment TEXT
   status TEXT
   created_date TIMESTAMP
@@ -154,6 +164,7 @@ Table order {
   paid_date TIMESTAMP
   Indexes {
     client_id [name: 'order_client_id_idx']
+    dining_table_id [name: 'order_dining_table_id_idx']
     employee_id [name: 'order_employee_id_idx']
     sale_point_id [name: 'order_sale_point_id_idx']
     number [name: 'order_number_idx']
@@ -188,6 +199,7 @@ Table order_to_dish_to_modification {
   }
 }
 
+Ref: dining_table.employee_id > employee.id [delete: set null]
 Ref: client.address_id > address.id [delete: set null]
 Ref: dish.category_id > dish_category.id [delete: set null]
 Ref: work_schedule.sale_point_id > sale_point.id [delete: set null]
@@ -199,6 +211,7 @@ Ref: dish_to_sale_point.dish_id > dish.id [delete: set null]
 Ref: dish_to_sale_point.sale_point_id > sale_point.id [delete: set null]
 Ref: order.employee_id > employee.id [delete: set null]
 Ref: order.client_id > client.id [delete: set null]
+Ref: order.dining_table_id > dining_table.id [delete: set null]
 Ref: order.sale_point_id > sale_point.id [delete: set null]
 Ref: order_to_dish.order_id > order.id [delete: set null]
 Ref: order_to_dish.dish_id > dish.id [delete: set null]
