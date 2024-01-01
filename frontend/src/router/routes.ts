@@ -138,6 +138,36 @@ const routes: RouteRecordRaw[] = [
           title: t.value.updateEmployee,
         },
       },
+
+      // Tables
+      {
+        path: "dining-tables",
+        component: () =>
+          import("src/pages/admin/dining-tables/AdminDiningTables.vue"),
+        meta: {
+          title: t.value.diningTables,
+        },
+      },
+      {
+        path: "dining-tables/create",
+        component: () =>
+          import(
+            "src/pages/admin/dining-tables/AdminCreateUpdateDiningTable.vue"
+          ),
+        meta: {
+          title: t.value.createDiningTable,
+        },
+      },
+      {
+        path: "dining-tables/update/:id",
+        component: () =>
+          import(
+            "src/pages/admin/dining-tables/AdminCreateUpdateDiningTable.vue"
+          ),
+        meta: {
+          title: t.value.updateDiningTable,
+        },
+      },
     ],
   },
 
