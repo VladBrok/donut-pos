@@ -4,7 +4,7 @@
     <q-table
       v-else
       class="q-mx-auto max-w-lg sticky-last-column-table"
-      :rows="categoriesFiltered"
+      :rows="filtered"
       :columns="columns"
       row-key="id"
       :rows-per-page-label="t.perPage"
@@ -14,9 +14,6 @@
         rowsPerPage: ROWS_PER_TABLE_PAGE,
       }"
     >
-      <!-- @row-click="
-        (_, row) => $router.push(`/admin/dish-categories/update/${row.id}`)
-      " -->
       <template v-slot:top-right>
         <q-input
           dense
@@ -31,8 +28,8 @@
         <q-btn
           color="primary"
           icon="add"
-          :label="t.addDishCategory"
-          to="/admin/dish-categories/create"
+          :label="t.addTable"
+          to="/admin/dining-tables/create"
         />
       </template>
       <template v-slot:body-cell-index="props">
@@ -59,7 +56,7 @@
             dense
             class="q-mr-sm"
             @click.stop
-            :to="`/admin/dish-categories/update/${props.row.id}`"
+            :to="`/admin/dining-tables/update/${props.row.id}`"
           >
           </q-btn>
           <q-btn
@@ -83,8 +80,9 @@
       @update:model-value="confirmDelete = null"
     >
       <template #body>
-        {{ t.confirmDishCategoryDelete }}
-        <span class="text-weight-bold">"{{ confirmDelete?.name || "" }}"</span>?
+        {{ t.confirmTableDelete }}
+        <span class="text-weight-bold">"{{ confirmDelete?.number || "" }}"</span
+        >?
       </template>
       <template #confirmButton>
         <q-btn
@@ -100,8 +98,8 @@
 
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
-import { CHANNELS, assert } from "donut-shared";
-import { deleteDishCategoryAction } from "donut-shared/src/actions/dish-categories";
+import { CHANNELS, assert, deleteDiningTableAction } from "donut-shared";
+import { IDiningTable } from "donut-shared/src/actions/current-order";
 import { Notify } from "quasar";
 import { useStore } from "src/store";
 import { computed, ref } from "vue";
@@ -114,24 +112,23 @@ import {
 } from "../../../lib/constants";
 import { createFuzzySearcher } from "../../../lib/fuzzy-search";
 import { useI18nStore } from "../../../lib/i18n";
-import { IDishCategoriesState } from "../../../store/dish-categories/state";
 
 const store = useStore();
-const categories = computed(() => store.state.dishCategories.categories);
+const tables = computed(() => store.state.diningTables.tables);
 const fuzzySearch = computed(() =>
-  createFuzzySearcher(categories.value, ["name"])
+  createFuzzySearcher(tables.value, [
+    "number",
+    "employee.firstName",
+    "employee.lastName",
+  ])
 );
-const categoriesFiltered = computed(() =>
-  fuzzySearch.value.search(searchInput.value)
-);
+const filtered = computed(() => fuzzySearch.value.search(searchInput.value));
 const channels = computed(() => {
-  return [CHANNELS.DISH_CATEGORIES];
+  return [CHANNELS.DINING_TABLES];
 });
 let isSubscribing = useSubscription(channels, { store: store as any });
 const t = useI18nStore();
-const confirmDelete = ref<null | IDishCategoriesState["categories"][number]>(
-  null
-);
+const confirmDelete = ref<null | IDiningTable>(null);
 const isDeleting = ref(false);
 const searchInput = ref("");
 
@@ -143,22 +140,22 @@ const columns: any[] = [
     align: "center",
   },
   {
-    name: "image",
-    label: t.value.image,
+    name: "number",
+    label: t.value.table,
     align: "center",
-    field: "imageUrl",
+    field: (row: IDiningTable) => row.number,
   },
   {
-    name: "name",
-    label: t.value.name,
+    name: "waiter",
+    label: t.value.waiter,
     align: "center",
-    field: "name",
-    sortable: true,
+    field: (row: IDiningTable) =>
+      row.employee?.lastName + " " + row.employee?.firstName, // TODO: extract func for formatting (dup)
   },
   { name: "actions", label: "", align: "right" },
 ];
 
-const onDeleteAttempt = (row: IDishCategoriesState["categories"][number]) => {
+const onDeleteAttempt = (row: IDiningTable) => {
   confirmDelete.value = row;
 };
 
@@ -169,7 +166,7 @@ const onDeleteConfirmed = () => {
   isDeleting.value = true;
   store.commit
     .sync(
-      deleteDishCategoryAction({
+      deleteDiningTableAction({
         id: toDelete,
       })
     )

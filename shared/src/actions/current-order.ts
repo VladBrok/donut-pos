@@ -20,8 +20,12 @@ export interface ICurrentOrderDish {
 
 export interface IDiningTable {
   id: string;
-  employeeId: string;
   number: string;
+  employee: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  };
 }
 
 export interface ICurrentOrder {

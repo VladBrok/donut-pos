@@ -157,7 +157,11 @@ export const ordersAdapter = (data: OrderSchema[]): OrderModel[] => {
       table: {
         id: uniqueOrder.dining_table?.id || "",
         number: uniqueOrder.dining_table?.number || "",
-        employeeId: uniqueOrder.dining_table?.employeeId || "",
+        employee: {
+          id: uniqueOrder.diningTableEmployee?.id || "",
+          firstName: uniqueOrder.diningTableEmployee?.firstName || "",
+          lastName: uniqueOrder.diningTableEmployee?.lastName || "",
+        },
       },
       client: uniqueOrder.client
         ? {
@@ -232,7 +236,11 @@ export const shallowOrdersAdapter = (
       table: {
         id: uniqueOrder.dining_table?.id || "",
         number: uniqueOrder.dining_table?.number || "",
-        employeeId: uniqueOrder.dining_table?.employeeId || "",
+        employee: {
+          id: uniqueOrder.diningTableEmployee?.id || "",
+          firstName: uniqueOrder.diningTableEmployee?.firstName || "",
+          lastName: uniqueOrder.diningTableEmployee?.lastName || "",
+        },
       },
       client: uniqueOrder.client
         ? {
@@ -279,8 +287,12 @@ export const diningTableAdapter = (
   data: DiningTableSchema[]
 ): DiningTableModel[] => {
   return data.map((x) => ({
-    id: x.id || "",
-    employeeId: x.employeeId || "",
-    number: x.number || "",
+    id: x.dining_table.id || "",
+    employee: {
+      id: x.employee?.id || "",
+      firstName: x.employee?.firstName || "",
+      lastName: x.employee?.lastName || "",
+    },
+    number: x.dining_table.number || "",
   }));
 };

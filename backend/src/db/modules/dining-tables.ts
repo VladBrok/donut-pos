@@ -1,12 +1,15 @@
 import { eq, ilike } from "drizzle-orm";
-import { diningTable } from "../../../migrations/schema.js";
+import { diningTable, employee } from "../../../migrations/schema.js";
 import { generateUuid } from "../../lib/uuid.js";
 import { db } from "../index.js";
 import { DiningTableModel } from "../models.js";
 import { diningTableAdapter } from "../schema-to-model-adapters.js";
 
 export async function getAllDiningTables(): Promise<DiningTableModel[]> {
-  const data = await db.select().from(diningTable);
+  const data = await db
+    .select()
+    .from(diningTable)
+    .leftJoin(employee, eq(employee.id, diningTable.employeeId));
 
   return diningTableAdapter(data);
 }
@@ -16,6 +19,7 @@ export async function getDiningTableByNumber(tableNumber: string) {
     await db
       .select()
       .from(diningTable)
+      .leftJoin(employee, eq(employee.id, diningTable.employeeId))
       .where(ilike(diningTable.number, tableNumber.trim()))
   )[0];
 
@@ -32,14 +36,25 @@ export async function deleteDiningTable(id: string) {
 
 export async function createDiningTable(data: Omit<DiningTableModel, "id">) {
   const toCreate = { id: generateUuid(), ...data };
-  await db.insert(diningTable).values(toCreate);
-  return toCreate;
+  const clone = structuredClone(toCreate);
+  // @ts-ignore
+  delete toCreate.employee;
+  await db.insert(diningTable).values({
+    ...toCreate,
+    employeeId: clone.employee.id,
+  });
+  return clone;
 }
 
 export async function updateDiningTable(data: Partial<DiningTableModel>) {
+  const employeeId = data.employee?.id || "";
+  delete data.employee;
   await db
     .update(diningTable)
-    .set(data)
+    .set({
+      ...data,
+      employeeId: employeeId,
+    })
     .where(eq(diningTable.id, data?.id || ""));
   return data;
 }

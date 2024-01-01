@@ -66,6 +66,11 @@ export async function getOrdersPage(params: IGetOrdersPage) {
     .limit(params.perPage)
     .as("order");
 
+  const diningTableEmployee = db
+    .select()
+    .from(employee)
+    .as("diningTableEmployee");
+
   const data = await db
     .select()
     .from(orders)
@@ -82,6 +87,10 @@ export async function getOrdersPage(params: IGetOrdersPage) {
     .leftJoin(employee, eq(employee.id, order.employeeId))
     .leftJoin(client, eq(client.id, order.clientId))
     .leftJoin(diningTable, eq(diningTable.id, order.diningTableId))
+    .leftJoin(
+      diningTableEmployee,
+      eq(diningTableEmployee.id, diningTable.employeeId)
+    )
     .orderBy(makeOrderByFilter(params, orders.createdDate));
 
   const total = await db
@@ -325,12 +334,21 @@ export async function deliverDish(orderId: string, dishIdInOrder: string) {
 }
 
 export async function getOrdersShallow(params: IGetOrder, dbOrTx = db) {
+  const diningTableEmployee = db
+    .select()
+    .from(employee)
+    .as("diningTableEmployee");
+
   const data = await dbOrTx
     .select()
     .from(order)
     .where(makeWhereFilter(params))
     .leftJoin(employee, eq(employee.id, order.employeeId))
     .leftJoin(diningTable, eq(diningTable.id, order.diningTableId))
+    .leftJoin(
+      diningTableEmployee,
+      eq(diningTableEmployee.id, diningTable.employeeId)
+    )
     .leftJoin(client, eq(client.id, order.clientId));
 
   return shallowOrdersAdapter(data);
@@ -341,6 +359,11 @@ export async function getCookedDishes(
   dishIdInOrder?: string,
   dbOrTx = db
 ) {
+  const diningTableEmployee = db
+    .select()
+    .from(employee)
+    .as("diningTableEmployee");
+
   const dishes = await dbOrTx
     .select()
     .from(order)
@@ -357,6 +380,10 @@ export async function getCookedDishes(
     .where(dishIdInOrder ? eq(orderToDish.id, dishIdInOrder) : undefined)
     .leftJoin(dish, eq(dish.id, orderToDish.dishId))
     .leftJoin(diningTable, eq(diningTable.id, order.diningTableId))
+    .leftJoin(
+      diningTableEmployee,
+      eq(diningTableEmployee.id, diningTable.employeeId)
+    )
     .orderBy(asc(order.createdDate));
 
   return cookedDishesAdapter(dishes);

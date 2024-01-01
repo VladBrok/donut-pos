@@ -67,6 +67,7 @@ export const messages = i18n("messages", {
   active: "Active",
   perPage: "Records per page",
   addDishCategory: "Add category",
+  addTable: "Add table",
   addDish: "Add dish",
   addEmployee: "Add employee",
   addModification: "Add modification",
@@ -135,6 +136,8 @@ export const messages = i18n("messages", {
   menu: "Menu",
   orderNumber: "Order number",
   tableNumber: "Table",
+  table: "Number",
+  waiter: "Waiter",
   orderStatus: "Status",
   dishCount: "Dishes",
   total: "Total, zł",
@@ -205,6 +208,7 @@ export const messages = i18n("messages", {
   confirmModificationDelete: "Are you sure you want to delete modification",
   confirmEmployeeDelete: "Are you sure you want to delete employee",
   confirmCurrentOrderClear: "Are you sure you want to clear the current order",
+  confirmTableDelete: "Are you sure you want to delete table with number",
 
   // Logux statuses
   disconnectedMessage: "Cannot connect to the server",
