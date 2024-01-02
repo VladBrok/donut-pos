@@ -1,6 +1,7 @@
 import { LoguxVuexStore } from "@logux/vuex";
 import {
   CATEGORY_NAME_EXISTS,
+  DINING_TABLE_EXISTS,
   EMPLOYEE_WITH_EMAIL_EXISTS,
   EMPLOYEE_WITH_PHONE_EXISTS,
   MODIFICATION_NAME_EXISTS,
@@ -36,6 +37,10 @@ export function setUndoHandler(Store: LoguxVuexStore) {
           : reason === CATEGORY_NAME_EXISTS
           ? t.value.categoryNameExists({
               name: undone.action.payload.name,
+            })
+          : reason === DINING_TABLE_EXISTS
+          ? t.value.diningTableExists({
+              tableNumber: undone.action.payload.table.number,
             })
           : reason === MODIFICATION_NAME_EXISTS
           ? t.value.modificationNameExists({

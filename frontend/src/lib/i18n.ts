@@ -53,6 +53,7 @@ export const messages = i18n("messages", {
   image: "Image",
   name: "Name",
   category: "Category",
+  waiter: "Waiter",
   phone: "Phone",
   isPhoneVerified: "Phone verified",
   email: "Email",

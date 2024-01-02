@@ -30,12 +30,7 @@
               :options="filteredTableNames"
               @filter="filterTables"
               :label="`${t.tableNumberLabel} *`"
-              :rules="[
-                (val) => (!!val && val.length > 0) || t.fieldRequired,
-                (val) =>
-                  val.length <= TABLE_NUMBER_MAX_LENGTH ||
-                  t.maxLength({ max: TABLE_NUMBER_MAX_LENGTH }),
-              ]"
+              :rules="[(val) => (!!val && val.length > 0) || t.fieldRequired]"
             >
               <template v-slot:no-option>
                 <q-item>
@@ -152,7 +147,6 @@ import { useSubscription } from "@logux/vuex";
 import {
   CHANNELS,
   COMMENT_MAX_LENGTH,
-  TABLE_NUMBER_MAX_LENGTH,
   addDishToCurrentOrderAction,
   clearCurrentOrderAction,
   createOrderAction,

@@ -19,7 +19,6 @@ export async function getDiningTableByNumber(tableNumber: string) {
     await db
       .select()
       .from(diningTable)
-      .leftJoin(employee, eq(employee.id, diningTable.employeeId))
       .where(ilike(diningTable.number, tableNumber.trim()))
   )[0];
 

@@ -5,23 +5,64 @@
     <q-form v-else @submit="onSubmit" @validation-error="onFormValidationError">
       <q-card class="q-pa-md">
         <q-card-section class="q-gutter-lg">
-          <photo-upload
-            v-model:url="imageUrl"
-            v-model:file="imageFile"
-          ></photo-upload>
           <q-input
-            v-model.trim="name"
+            v-model.trim="tableNumber"
             stack-label
-            :label="`${t.categoryNameLabel} *`"
+            :label="`${t.tableNumberLabel} *`"
             lazy-rules
             type="text"
             :rules="[
               (val) => (!!val && val.length > 0) || t.fieldRequired,
               (val) =>
-                val.length <= MAX_DISH_CATEGORY_NAME_LENGTH ||
-                t.maxLength({ max: MAX_DISH_CATEGORY_NAME_LENGTH }),
+                val.length <= TABLE_NUMBER_MAX_LENGTH ||
+                t.maxLength({ max: TABLE_NUMBER_MAX_LENGTH }),
             ]"
           />
+          <q-select
+            v-model="waiter"
+            use-input
+            fill-input
+            stack-label
+            clearable
+            hide-selected
+            input-debounce="0"
+            :options="filteredWaiters"
+            @filter="filterWaiters"
+            :label="`${t.waiter} *`"
+            :rules="[(val) => !!val || t.fieldRequired]"
+          >
+            <template v-slot:selected>
+              <q-item v-if="waiter">
+                <q-item-section>
+                  <q-item-label
+                    >{{ waiter?.lastName }}
+                    {{ waiter?.firstName }}</q-item-label
+                  >
+                  <!-- TODO: render email -->
+                  <q-item-label caption>email</q-item-label>
+                </q-item-section>
+              </q-item>
+            </template>
+            <template v-slot:option="scope">
+              <q-item v-bind="scope.itemProps">
+                <q-item-section>
+                  <q-item-label
+                    >{{ scope.opt.lastName }}
+                    {{ scope.opt.firstName }}</q-item-label
+                  >
+                  <!-- TODO: render email -->
+                  <q-item-label caption>email</q-item-label>
+                </q-item-section>
+              </q-item>
+            </template>
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section>
+                  {{ t.noResults }}
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
         </q-card-section>
       </q-card>
       <div class="row justify-end q-gutter-sm q-mt-md">
@@ -44,86 +85,111 @@
 
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
-import { CHANNELS, MAX_DISH_CATEGORY_NAME_LENGTH } from "donut-shared";
 import {
-  createDishCategoryAction,
-  updateDishCategoryAction,
-} from "donut-shared/src/actions/dish-categories";
+  CHANNELS,
+  TABLE_NUMBER_MAX_LENGTH,
+  createDiningTableAction,
+  updateDiningTableAction,
+} from "donut-shared";
 import { Notify } from "quasar";
+import { createFuzzySearcher } from "src/lib/fuzzy-search";
 import { onFormValidationError } from "src/lib/on-form-validation-error";
 import { useStore } from "src/store";
 import { computed, ref, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 import BackButton from "../../../components/BackButton.vue";
 import BigSpinner from "../../../components/BigSpinner.vue";
-import PhotoUpload from "../../../components/PhotoUpload.vue";
-import { blobToBase64 } from "../../../lib/blob-to-base64";
-import { ERROR_TIMEOUT_MS, SUCCESS_TIMEOUT_MS } from "../../../lib/constants";
+import { SUCCESS_TIMEOUT_MS } from "../../../lib/constants";
 import { useI18nStore } from "../../../lib/i18n";
 
 const t = useI18nStore();
 const store = useStore();
 const router = useRouter();
 const isSubmitting = ref(false);
-
-const name = ref("");
-const imageUrl = ref("");
-const imageFile = ref<File>();
+const tableNumber = ref("");
 
 const id = computed(() => router.currentRoute.value.params.id);
-const originalCategory = computed(() => {
+const originalTable = computed(() => {
   return id.value
-    ? store.state.dishCategories.categories.find((x) => x.id === id.value)
+    ? store.state.diningTables.tables.find((x) => x.id === id.value)
     : undefined;
 });
-const channels = computed(() =>
-  id.value && !originalCategory.value ? [CHANNELS.DISH_CATEGORIES] : []
+const channels = computed(() => [CHANNELS.EMPLOYEES, CHANNELS.DINING_TABLES]);
+const waiterSearchInput = ref("");
+// TODO: add also email and some other data
+const waiter = ref<{
+  id: string;
+  firstName: string;
+  lastName: string;
+  label: string;
+}>();
+const waiters = computed(() =>
+  store.state.employees.employees.filter((x) => x.role.codeName === "waiter")
+);
+const waiterFuzzySearch = computed(() =>
+  createFuzzySearcher(store.state.employees.employees, [
+    "firstName",
+    "lastName",
+    "email",
+  ])
+);
+const filteredWaiters = computed(() =>
+  waiterFuzzySearch.value
+    .search(waiterSearchInput.value)
+    .map((x) => ({ ...x, label: x.lastName + " " + x.firstName }))
 );
 let isSubscribing = useSubscription(channels, { store: store as any });
 
 const unsubscribe = watchEffect(
   () => {
-    if (originalCategory.value) {
-      name.value = originalCategory.value.name;
-      imageUrl.value = originalCategory.value.imageUrl;
+    if (originalTable.value) {
+      tableNumber.value = originalTable.value.number;
+      waiter.value = {
+        ...originalTable.value.employee,
+        label:
+          originalTable.value.employee.lastName +
+          " " +
+          originalTable.value.employee.firstName,
+      };
       unsubscribe();
-    } else if (id.value && store.state.dishCategories.categories.length) {
+    } else if (id.value && store.state.diningTables.tables.length) {
       router.push("/404");
     }
   },
   { flush: "post" }
 );
 
-const onSubmit = async () => {
-  let imageBase64 = "";
-  try {
-    if (imageUrl.value && imageFile.value) {
-      imageBase64 = await blobToBase64(imageFile.value);
-    }
-  } catch {
-    Notify.create({
-      type: "negative",
-      position: "top",
-      timeout: ERROR_TIMEOUT_MS,
-      message: t.value.imageCorrupted,
-      multiLine: true,
-      group: false,
-    });
-    return;
-  }
+const filterWaiters = (val: string, update: any) => {
+  update(() => {
+    waiterSearchInput.value = val;
+  });
+};
 
+const onSubmit = async () => {
   isSubmitting.value = true;
   store.commit
     .sync(
-      originalCategory.value
-        ? updateDishCategoryAction({
-            id: originalCategory.value.id,
-            name: name.value,
-            imageBase64: imageBase64,
+      originalTable.value
+        ? updateDiningTableAction({
+            table: {
+              id: originalTable.value.id,
+              number: tableNumber.value,
+              employee: {
+                id: waiter.value?.id,
+                firstName: waiter.value?.firstName,
+                lastName: waiter.value?.lastName,
+              },
+            },
           })
-        : createDishCategoryAction({
-            name: name.value,
-            imageBase64: imageBase64,
+        : createDiningTableAction({
+            table: {
+              number: tableNumber.value,
+              employee: {
+                id: waiter.value?.id,
+                firstName: waiter.value?.firstName,
+                lastName: waiter.value?.lastName,
+              },
+            },
           })
     )
     .then(() => {
@@ -131,13 +197,13 @@ const onSubmit = async () => {
         type: "positive",
         position: "top",
         timeout: SUCCESS_TIMEOUT_MS,
-        message: originalCategory.value
+        message: originalTable.value
           ? t.value.updateSuccess
           : t.value.createSuccess,
         multiLine: true,
         group: false,
       });
-      router.push("/admin/dish-categories");
+      router.push("/admin/dining-tables");
     })
     .finally(() => {
       isSubmitting.value = false;
