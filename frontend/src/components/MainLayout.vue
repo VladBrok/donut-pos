@@ -10,6 +10,9 @@
         <q-btn v-if="isLoggedIn" flat round icon="logout" @click="logout">
           <q-tooltip> {{ t.logout }} </q-tooltip>
         </q-btn>
+        <q-btn v-if="!isLoggedIn" flat round icon="login" to="/login">
+          <q-tooltip> {{ t.logIn }} </q-tooltip>
+        </q-btn>
       </q-toolbar>
     </q-header>
 
