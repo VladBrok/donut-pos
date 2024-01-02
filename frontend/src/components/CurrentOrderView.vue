@@ -27,6 +27,10 @@
               clearable
               hide-selected
               input-debounce="0"
+              :disable="
+                !!route.query.table &&
+                !!store.state.currentOrder.order?.table?.number
+              "
               :options="filteredTableNames"
               @filter="filterTables"
               :label="`${t.tableNumberLabel} *`"
@@ -163,7 +167,8 @@ import OrderView from "src/components/OrderView.vue";
 import { SUCCESS_TIMEOUT_MS } from "src/lib/constants";
 import { createFuzzySearcher } from "src/lib/fuzzy-search";
 import { onFormValidationError } from "src/lib/on-form-validation-error";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
+import { useRoute } from "vue-router";
 import { useI18nStore } from "../lib/i18n";
 import { useStore } from "../store";
 import ConfirmDialog from "./ConfirmDialog.vue";
@@ -224,6 +229,31 @@ const hasDishOutOfStock = computed(
 const totalCost = computed(
   () => dishesInOrder.value?.reduce((sum, cur) => sum + cur.totalCost, 0) || 0
 );
+const route = useRoute();
+
+const unsubscribe = watch(
+  isSubscribing,
+  () => {
+    if (isSubscribing.value) {
+      return;
+    }
+
+    if (route.query.table) {
+      store.commit.crossTab(
+        updateCurrentOrderTableNumberAction({
+          table:
+            diningTables.value.find(
+              (x) => x.number === route.query.table?.toString()?.trim()
+            ) || null,
+        })
+      );
+    }
+
+    unsubscribe();
+  },
+  { immediate: true }
+);
+
 const filterTables = (val: string, update: any) => {
   update(() => {
     tableNumberSearchInput.value = val;
