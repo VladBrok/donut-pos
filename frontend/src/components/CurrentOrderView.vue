@@ -190,6 +190,7 @@ const filteredTableNames = computed(() =>
 const isSubscribing = useSubscription(channels, { store: store as any });
 const diningTables = computed(() => store.state.diningTables.tables);
 const dishes = computed(() => store.state.dishes.dishes);
+const user = computed(() => store.state.auth.user);
 const modifications = computed(() => store.state.modifications.modifications);
 const dishesInOrder = computed(() =>
   isSubscribing.value
@@ -240,6 +241,7 @@ async function onSubmit() {
     .sync(
       createOrderAction({
         order: order.value!,
+        isClient: user.value.permissions?.client || false,
       })
     )
     .then(() => {

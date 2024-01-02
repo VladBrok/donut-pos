@@ -96,20 +96,41 @@ export default function ordersModule(server: Server) {
       });
     },
   });
+  
+  server.channel<{
+    clientId: string;
+  }>(CHANNELS.ORDERS_OF_CLIENT(), {
+    async access(ctx, action, meta) {
+      return (
+        ctx.userId === ctx.params.clientId
+      );
+    },
+    async load(ctx, action, meta) {
+      const { ordersPage, total } = await db.getOrdersPage({
+        page: 1,
+        clientId: ctx.userId,
+        perPage: ITEMS_PER_PAGE,
+      });
+      return ordersPageLoadedAction({
+        ordersPage: ordersPage,
+        totalOrders: total,
+      });
+    },
+  })
 
   server.type(loadOrdersPageAction, {
     async access(ctx) {
-      return await hasWaiterPermission(ctx.userId);
+      return true;
     },
     async process(ctx, action, meta) {
       const { ordersPage, total } = await db.getOrdersPage({
         page: action.payload.page,
         perPage: ITEMS_PER_PAGE,
-        employeeId: ctx.userId,
+        employeeId: action.payload.isClient ? undefined : ctx.userId,
+        clientId: !action.payload.isClient ? undefined : ctx.userId,
         statuses: action.payload.status ? [action.payload.status] : undefined,
         orderNumber: action.payload.orderNumber,
         search: action.payload.search,
-        ongoingOnly: true, // For waiter, show only ongoing orders
       });
       await ctx.sendBack(
         ordersPageLoadedAction({
@@ -218,10 +239,10 @@ export default function ordersModule(server: Server) {
 
   server.type(createOrderAction, {
     async access(ctx) {
-      return await hasWaiterPermission(ctx.userId);
+      return true;
     },
     async process(ctx, action, meta) {
-      const created = await db.createOrder(action.payload.order, ctx.userId);
+      const created = await db.createOrder(action.payload.order, ctx.userId, action.payload.isClient);
       await server.process(
         orderCreatedAction({
           order: created,
@@ -261,6 +282,7 @@ export default function ordersModule(server: Server) {
       return [
         CHANNELS.ORDER_SINGLE(action.payload.order.orderNumber),
         CHANNELS.ORDERS_OF_EMPLOYEE(action.payload.order.employee?.id),
+        CHANNELS.ORDERS_OF_CLIENT(action.payload.order.client?.id)
       ];
     },
   });

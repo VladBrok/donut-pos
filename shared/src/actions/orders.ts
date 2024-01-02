@@ -86,6 +86,7 @@ export const loadOrdersPageAction = createAction<{
   status?: OrderStatus;
   orderNumber?: string;
   search?: string;
+  isClient?: boolean;
 }>("orders/loadPage");
 
 export const ordersPageLoadedAction = createAction<{
@@ -99,6 +100,7 @@ export const ordersForKitchenLoadedAction = createAction<{
 
 export const createOrderAction = createAction<{
   order: ICurrentOrder;
+  isClient?: boolean;
 }>("orders/create");
 
 export const orderCreatedAction = createAction<{

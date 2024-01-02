@@ -171,6 +171,7 @@ export const messages = i18n("messages", {
 
   // Client pages
   orderDetails: "Order details",
+  viewYourOrders: "view your orders",
 
   // Payment pages
   paymentSuccessPageTitle: "Payment success",

@@ -40,6 +40,7 @@ import { db } from "../index.js";
 
 export interface IGetOrder {
   employeeId?: string;
+  clientId?: string;
   statuses?: OrderStatus[];
   orderNumber?: string;
   strictOrderNumberCompare?: boolean;
@@ -58,9 +59,25 @@ export async function getOrdersPage(params: IGetOrdersPage) {
   console.time("get_orders");
 
   const orders = db
-    .select()
+    .select({
+      id: order.id,
+      clientId: order.clientId,
+      employeeId: order.employeeId,
+      salePointId: order.salePointId,
+      number: order.number,
+      comment: order.comment,
+      status: order.status,
+      createdDate: order.createdDate,
+      cookingDate: order.cookingDate,
+      cookedDate: order.cookedDate,
+      deliveringDate: order.deliveringDate,
+      deliveredDate: order.deliveredDate,
+      paidDate: order.paidDate,
+      diningTableId: order.diningTableId,
+    })
     .from(order)
     .orderBy(makeOrderByFilter(params, order.createdDate))
+    .leftJoin(diningTable, eq(diningTable.id, order.diningTableId))
     .where(makeWhereFilter(params))
     .offset((params.page - 1) * params.perPage)
     .limit(params.perPage)
@@ -98,6 +115,7 @@ export async function getOrdersPage(params: IGetOrdersPage) {
       value: sql`count('*')`.mapWith(Number),
     })
     .from(order)
+    .leftJoin(diningTable, eq(diningTable.id, order.diningTableId))
     .where(makeWhereFilter(params));
 
   console.timeEnd("get_orders");
@@ -106,8 +124,15 @@ export async function getOrdersPage(params: IGetOrdersPage) {
 }
 
 export async function getSingleOrder(orderNumber: string, userId?: string) {
+  const isClient = (
+    await db
+      .select()
+      .from(client)
+      .where(eq(client.id, userId || ""))
+  )?.[0];
   const result = await getOrdersPage({
-    employeeId: userId, // TODO: this may aslo be a client id...
+    employeeId: isClient ? undefined : userId,
+    clientId: !isClient ? undefined : userId,
     page: 1,
     perPage: 1,
     orderNumber: orderNumber,
@@ -133,6 +158,7 @@ export function makeOrderByFilter(params: IGetOrder, createdDateCol: PgColumn) {
 function makeWhereFilter(params: IGetOrder) {
   return and(
     params.employeeId ? eq(order.employeeId, params.employeeId) : undefined,
+    params.clientId ? eq(order.clientId, params.clientId) : undefined,
     params.orderNumber
       ? ilike(
           order.number,
@@ -169,7 +195,8 @@ function makeWhereFilter(params: IGetOrder) {
 // TODO: find a way to make it faster (store jsons?)
 export async function createOrder(
   data: ICurrentOrder,
-  employeeId: string
+  userId: string,
+  isClient?: boolean
 ): Promise<IOrder> {
   const orderNumber = generateOrderNumber();
   const existing = await db
@@ -187,7 +214,8 @@ export async function createOrder(
     await tx.insert(order).values({
       id: orderToCreate.id,
       comment: data.comment,
-      employeeId: employeeId,
+      employeeId: isClient ? null : userId,
+      clientId: !isClient ? null : userId,
       number: orderNumber,
       diningTableId: data.table?.id || null,
       createdDate: new Date(),
