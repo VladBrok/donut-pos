@@ -128,7 +128,7 @@ export async function getSingleOrder(orderNumber: string, userId?: string) {
     await db
       .select()
       .from(client)
-      .where(eq(client.id, userId || ""))
+      .where(userId ? eq(client.id, userId) : undefined)
   )?.[0];
   const result = await getOrdersPage({
     employeeId: isClient ? undefined : userId,
@@ -214,7 +214,7 @@ export async function createOrder(
     await tx.insert(order).values({
       id: orderToCreate.id,
       comment: data.comment,
-      employeeId: isClient ? null : userId,
+      employeeId: isClient ? data.table?.employee.id : userId,
       clientId: !isClient ? null : userId,
       number: orderNumber,
       diningTableId: data.table?.id || null,
