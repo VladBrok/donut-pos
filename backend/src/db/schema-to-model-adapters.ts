@@ -1,6 +1,7 @@
 import {
   DishInOrderStatus,
   EMPLOYEE_PERMISSIONS,
+  IClient,
   OrderStatus,
 } from "donut-shared";
 import { ICookedDish, IShallowOrder } from "donut-shared/src/actions/orders.js";
@@ -15,6 +16,7 @@ import {
   RoleModel,
 } from "./models.js";
 import {
+  ClientSchema,
   DiningTableSchema,
   DishCategorySchema,
   DishInOrderSchema,
@@ -60,6 +62,7 @@ export const employeeAdapter = (
       courier: data.some(
         (x) => x.permission?.codeName === EMPLOYEE_PERMISSIONS.COURIER
       ),
+      client: false,
     },
   };
 };
@@ -294,5 +297,17 @@ export const diningTableAdapter = (
       lastName: x.employee?.lastName || "",
     },
     number: x.dining_table.number || "",
+  }));
+};
+
+export const clientAdapter = (data: ClientSchema[]): IClient[] => {
+  return data.map((x) => ({
+    id: x.client.id || "",
+    email: x.client.email || "",
+    firstName: x.client.firstName || "",
+    lastName: x.client.lastName || "",
+    isEmailVerified: x.client.isEmailVerified || false,
+    registeredAt: x.client.registeredAt?.toISOString() || "",
+    passwordHash: x.client.passwordHash || ''
   }));
 };

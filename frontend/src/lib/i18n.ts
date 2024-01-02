@@ -138,7 +138,6 @@ export const messages = i18n("messages", {
   orderNumber: "Order number",
   tableNumber: "Table",
   table: "Number",
-  waiter: "Waiter",
   orderStatus: "Status",
   dishCount: "Dishes",
   total: "Total, zł",
@@ -192,6 +191,7 @@ export const messages = i18n("messages", {
   // Login page
   adminLoginPageTitle: "Admin login",
   waiterLoginPageTitle: "Waiter login",
+  clientLoginPageTitle: "Log in",
   kitchenLoginPageTitle: "Login to kitchen",
   passwordRequired: "Please enter a password",
   phoneRequired: "Please enter a phone number",
@@ -200,6 +200,7 @@ export const messages = i18n("messages", {
   emailLabel: "Email",
   passwordLabel: "Password",
   logIn: "Log in",
+  signUp: "Sign up",
   showPassword: "Show password",
   hidePassword: "Hide password",
 

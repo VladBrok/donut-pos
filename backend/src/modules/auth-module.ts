@@ -6,6 +6,7 @@ import {
   WRONG_PASSWORD,
 } from "donut-shared";
 import { loggedInAction, loginAction } from "donut-shared/src/actions/auth.js";
+import * as clientDb from "../db/modules/client.js";
 import * as db from "../db/modules/employees.js";
 import { compareWithHash } from "../lib/crypt.js";
 import { decodeJwt, encodeJwt } from "../lib/jwt.js";
@@ -25,7 +26,9 @@ export default function authModule(server: Server) {
       return ctx.userId === ANONYMOUS.userId;
     },
     async process(ctx, action, meta) {
-      const user = await db.findEmployeeByEmail(action.payload.email);
+      const isClient = action.payload.permissions.client
+      
+      const user = isClient ? (await clientDb.findClientByEmail(action.payload.email)) : (await db.findEmployeeByEmail(action.payload.email));
       if (!user) {
         await server.undo(action, meta, USER_NOT_FOUND);
         return;
@@ -40,10 +43,10 @@ export default function authModule(server: Server) {
         return;
       }
 
-      const hasExpectedPermission = Object.keys(
+      const hasExpectedPermission = isClient || Object.keys(
         action.payload.permissions
       ).every(
-        (key) => user.permissions[key as keyof typeof user.permissions] === true
+        (key) => (user as any).permissions[key] === true
       );
       if (!hasExpectedPermission) {
         await server.undo(action, meta, ACCESS_DENIED);
@@ -55,9 +58,9 @@ export default function authModule(server: Server) {
       await ctx.sendBack(
         loggedInAction({
           userId: user.id,
-          permissions: user.permissions,
+          permissions: isClient ? { client: true } : (user as any).permissions,
           accessToken,
-          role: user.role,
+          role: isClient ? undefined : (user as any).role,
         })
       );
     },

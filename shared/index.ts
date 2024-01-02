@@ -1,5 +1,5 @@
-export { createOrderAction, orderCreatedAction } from "./src/actions/orders.js";
-
+export type { IPermissions } from "./src/actions/auth.js";
+export type { IClient } from "./src/actions/client.js";
 export {
   addDishToCurrentOrderAction,
   clearCurrentOrderAction,
@@ -46,6 +46,7 @@ export {
   openArbitraryOrderAction,
   openCurrentOrderAction,
 } from "./src/actions/order-drawer.js";
+export { createOrderAction, orderCreatedAction } from "./src/actions/orders.js";
 export { loadRolesAction } from "./src/actions/roles.js";
 export * from "./src/constants/channels.js";
 export * from "./src/constants/dish-in-order-statuses.js";

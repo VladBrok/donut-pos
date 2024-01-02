@@ -4,11 +4,6 @@ import { useI18nStore } from "../lib/i18n";
 const t = useI18nStore();
 
 const routes: RouteRecordRaw[] = [
-  {
-    path: "/",
-    redirect: "/admin/login",
-  },
-
   // Admin
   {
     path: "/admin/login",
@@ -240,7 +235,6 @@ const routes: RouteRecordRaw[] = [
   },
 
   // Client
-  // TODO: same as for other roles - if not authed, redirect to ClientLogin + client layout
   // TODO: wrap this page in layout (clients layout or waiters layout or admins depending on who opens a page?)
   {
     path: "/orders/:orderNumber",
@@ -248,6 +242,44 @@ const routes: RouteRecordRaw[] = [
     meta: {
       title: t.value.orderDetails,
     },
+  },
+  {
+    path: "/login",
+    component: () => import("pages/client/ClientLogin.vue"),
+    meta: {
+      title: t.value.logIn,
+    },
+  },
+  {
+    path: "/sign-up",
+    component: () => import("pages/client/ClientSignUp.vue"),
+    meta: {
+      title: t.value.signUp,
+    },
+  },
+  {
+    path: "/",
+    component: () => import("layouts/ClientLayout.vue"),
+    children: [
+      {
+        path: "",
+        redirect: "/menu",
+      },
+      {
+        path: "menu",
+        component: () => import("src/pages/client/ClientMenuPage.vue"),
+        meta: {
+          title: t.value.menu,
+        },
+      },
+      {
+        path: "orders",
+        component: () => import("pages/client/ClientOrdersPage.vue"),
+        meta: {
+          title: t.value.orders,
+        },
+      },
+    ],
   },
 
   // Always leave this as last one,

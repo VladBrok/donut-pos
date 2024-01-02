@@ -1,4 +1,5 @@
 import {
+  address,
   client,
   diningTable,
   dish,
@@ -69,4 +70,9 @@ export type DishInOrderSchema = {
   [orderToDish._.name]: typeof orderToDish.$inferSelect | null;
   [employee._.name]: typeof employee.$inferSelect | null;
   [client._.name]: typeof client.$inferSelect | null;
+};
+
+export type ClientSchema = {
+  [client._.name]: typeof client.$inferSelect;
+  [address._.name]: typeof address.$inferSelect | null;
 };

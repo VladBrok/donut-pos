@@ -1,5 +1,9 @@
-import { loadModificationsAction, loadRolesAction } from "donut-shared";
-import { loginAction } from "donut-shared/src/actions/auth.js";
+import {
+  IClient,
+  loadModificationsAction,
+  loadRolesAction,
+} from "donut-shared";
+import { IPermissions } from "donut-shared/src/actions/auth.js";
 import { IDiningTable } from "donut-shared/src/actions/current-order.js";
 import { loadDishCategoriesAction } from "donut-shared/src/actions/dish-categories.js";
 import { loadDishesAction } from "donut-shared/src/actions/dishes.js";
@@ -16,7 +20,7 @@ export interface EmployeeModel {
   lastName: string;
   passwordHash?: string;
   role: ReturnType<typeof loadRolesAction>["payload"]["roles"][number];
-  permissions: ReturnType<typeof loginAction>["payload"]["permissions"];
+  permissions: IPermissions;
 }
 
 export type DishCategoryModel = ReturnType<
@@ -40,3 +44,5 @@ export type OrderModel = ReturnType<
 >["payload"]["ordersPage"][number];
 
 export type DiningTableModel = IDiningTable;
+
+export type ClientModel = IClient;
