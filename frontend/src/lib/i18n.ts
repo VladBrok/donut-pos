@@ -17,6 +17,7 @@ import {
   PASSWORD_MIN_LENGTH,
   PASSWORD_SPECIAL_CHARS,
   PAYMENT_LINK_GENERATION_ERROR,
+  USER_EXISTS,
   USER_NOT_FOUND,
   WRONG_PASSWORD,
 } from "donut-shared";
@@ -252,6 +253,8 @@ export const messages = i18n("messages", {
   copyToClipboardError: "Failed to copy",
   [PAYMENT_LINK_GENERATION_ERROR]:
     "Failed to generate a QR code for payment. Please choose a different payment method",
+  [USER_EXISTS]:
+    "User with the same email already exists. Please choose another email",
 });
 
 export function useI18nStore() {

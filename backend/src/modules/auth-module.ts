@@ -2,13 +2,18 @@ import { Server } from "@logux/server";
 import {
   ACCESS_DENIED,
   ANONYMOUS,
+  USER_EXISTS,
   USER_NOT_FOUND,
   WRONG_PASSWORD,
 } from "donut-shared";
-import { loggedInAction, loginAction } from "donut-shared/src/actions/auth.js";
+import {
+  loggedInAction,
+  loginAction,
+  signUpAction,
+} from "donut-shared/src/actions/auth.js";
 import * as clientDb from "../db/modules/client.js";
 import * as db from "../db/modules/employees.js";
-import { compareWithHash } from "../lib/crypt.js";
+import { compareWithHash, hash } from "../lib/crypt.js";
 import { decodeJwt, encodeJwt } from "../lib/jwt.js";
 
 export default function authModule(server: Server) {
@@ -26,9 +31,11 @@ export default function authModule(server: Server) {
       return ctx.userId === ANONYMOUS.userId;
     },
     async process(ctx, action, meta) {
-      const isClient = action.payload.permissions.client
-      
-      const user = isClient ? (await clientDb.findClientByEmail(action.payload.email)) : (await db.findEmployeeByEmail(action.payload.email));
+      const isClient = action.payload.permissions.client;
+
+      const user = isClient
+        ? await clientDb.findClientByEmail(action.payload.email)
+        : await db.findEmployeeByEmail(action.payload.email);
       if (!user) {
         await server.undo(action, meta, USER_NOT_FOUND);
         return;
@@ -43,11 +50,11 @@ export default function authModule(server: Server) {
         return;
       }
 
-      const hasExpectedPermission = isClient || Object.keys(
-        action.payload.permissions
-      ).every(
-        (key) => (user as any).permissions[key] === true
-      );
+      const hasExpectedPermission =
+        isClient ||
+        Object.keys(action.payload.permissions).every(
+          (key) => (user as any).permissions[key] === true
+        );
       if (!hasExpectedPermission) {
         await server.undo(action, meta, ACCESS_DENIED);
         return;
@@ -61,6 +68,36 @@ export default function authModule(server: Server) {
           permissions: isClient ? { client: true } : (user as any).permissions,
           accessToken,
           role: isClient ? undefined : (user as any).role,
+        })
+      );
+    },
+  });
+
+  server.type(signUpAction, {
+    access(ctx) {
+      return ctx.userId === ANONYMOUS.userId;
+    },
+    async process(ctx, action, meta) {
+      const user = await clientDb.findClientByEmail(action.payload.email);
+      if (user) {
+        await server.undo(action, meta, USER_EXISTS);
+        return;
+      }
+
+      const created = await clientDb.createClient({
+        ...action.payload,
+        passwordHash: await hash(action.payload.password),
+        registeredAt: new Date().toISOString(),
+        isEmailVerified: false,
+      });
+
+      const accessToken = encodeJwt({ userId: created.id });
+
+      await ctx.sendBack(
+        loggedInAction({
+          userId: created.id,
+          permissions: { client: true },
+          accessToken,
         })
       );
     },

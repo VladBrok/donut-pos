@@ -8,3 +8,4 @@ export const EMPLOYEE_WITH_PHONE_EXISTS = "employeeWithPhoneExists";
 export const EMPLOYEE_WITH_EMAIL_EXISTS = "employeeWithEmailExists";
 export const ACCESS_DENIED = "accessDenied";
 export const PAYMENT_LINK_GENERATION_ERROR = "paymentLinkGenerationError";
+export const USER_EXISTS = "userWithSameEmailExists";

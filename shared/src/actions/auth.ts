@@ -16,6 +16,13 @@ export const loginAction = createAction<{
   permissions: IPermissions;
 }>("auth/login");
 
+export const signUpAction = createAction<{
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+}>("auth/signUp");
+
 export const loggedInAction = createAction<{
   userId: string;
   accessToken: string;
