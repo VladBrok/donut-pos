@@ -119,6 +119,7 @@ const isCurrentOrderOpen = computed(
   () => store.state.orderDrawer.isCurrentOrderOpen
 );
 const userId = ref(store.state.auth.user.userId);
+
 // const channels = computed(() => {
 //   return userId.value === ANONYMOUS.userId
 //     ? []
