@@ -102,7 +102,7 @@
     :order-number="orderNumber"
   />
 
-  <credit-card-payment-modal
+  <CreditCardOrBlikPaymentModal
     v-model="isCreditOrBlikPaymentModalOpen"
     :total-cost="totalCost"
     :order-number="orderNumber"
@@ -112,11 +112,11 @@
 
 <script setup lang="ts">
 import CashPaymentModal from "src/components/CashPaymentModal.vue";
-import CreditCardPaymentModal from "src/components/CreditCardOrBlikPaymentModal.vue";
+import CreditCardOrBlikPaymentModal from "src/components/CreditCardOrBlikPaymentModal.vue";
 import { useI18nStore } from "src/lib/i18n";
 import { ref } from "vue";
 
-const props = defineProps<{
+defineProps<{
   totalCost: number;
   orderNumber: string;
 }>();

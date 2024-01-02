@@ -96,14 +96,12 @@ export default function ordersModule(server: Server) {
       });
     },
   });
-  
+
   server.channel<{
     clientId: string;
   }>(CHANNELS.ORDERS_OF_CLIENT(), {
     async access(ctx, action, meta) {
-      return (
-        ctx.userId === ctx.params.clientId
-      );
+      return ctx.userId === ctx.params.clientId;
     },
     async load(ctx, action, meta) {
       const { ordersPage, total } = await db.getOrdersPage({
@@ -116,7 +114,7 @@ export default function ordersModule(server: Server) {
         totalOrders: total,
       });
     },
-  })
+  });
 
   server.type(loadOrdersPageAction, {
     async access(ctx) {
@@ -242,7 +240,11 @@ export default function ordersModule(server: Server) {
       return true;
     },
     async process(ctx, action, meta) {
-      const created = await db.createOrder(action.payload.order, ctx.userId, action.payload.isClient);
+      const created = await db.createOrder(
+        action.payload.order,
+        ctx.userId,
+        action.payload.isClient
+      );
       await server.process(
         orderCreatedAction({
           order: created,
@@ -282,17 +284,21 @@ export default function ordersModule(server: Server) {
       return [
         CHANNELS.ORDER_SINGLE(action.payload.order.orderNumber),
         CHANNELS.ORDERS_OF_EMPLOYEE(action.payload.order.employee?.id),
-        CHANNELS.ORDERS_OF_CLIENT(action.payload.order.client?.id)
+        CHANNELS.ORDERS_OF_CLIENT(action.payload.order.client?.id),
       ];
     },
   });
 
   server.type(getPaymentLinkAction, {
     async access(ctx) {
-      return await hasWaiterPermission(ctx.userId);
+      return true;
     },
     async process(ctx, action, meta) {
-      const order = await db.getSingleOrder(action.payload.orderNumber);
+      const order = await db.getSingleOrder(
+        action.payload.orderNumber,
+        ctx.userId
+      );
+
       let session: Stripe.Response<Stripe.Checkout.Session> | null = null;
 
       try {
