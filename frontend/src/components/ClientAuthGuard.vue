@@ -13,14 +13,9 @@
 
 <script setup lang="ts">
 // TODO: after login or signup, redirect to needed page
-import { ANONYMOUS } from "donut-shared";
+import { useIsLoggedIn } from "src/lib/composables/useIsLoggedIn";
 import { useI18nStore } from "src/lib/i18n";
-import { useStore } from "src/store";
-import { computed } from "vue";
 
 const t = useI18nStore();
-const store = useStore();
-const isLoggedIn = computed(
-  () => store.state.auth.user.userId !== ANONYMOUS.userId
-);
+const isLoggedIn = useIsLoggedIn();
 </script>

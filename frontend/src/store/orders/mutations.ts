@@ -10,6 +10,7 @@ import {
   ordersForKitchenLoadedAction,
   ordersPageLoadedAction,
   paymentLinkReceivedAction,
+  updateCreateOrderAfterAuthAction,
 } from "donut-shared/src/actions/orders";
 import { MutationTree } from "vuex";
 import { IOrdersState } from "./state";
@@ -177,6 +178,13 @@ const mutation: MutationTree<IOrdersState> = {
     action: ReturnType<typeof paymentLinkReceivedAction>
   ) {
     state.paymentLink = action.payload.link;
+  },
+
+  updateCreateOrderAfterAuth(
+    state: IOrdersState,
+    action: ReturnType<typeof updateCreateOrderAfterAuthAction>
+  ) {
+    state.createOrderAfterAuth = action.payload.value;
   },
 };
 

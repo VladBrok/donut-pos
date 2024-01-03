@@ -21,6 +21,7 @@ import {
   USER_NOT_FOUND,
   WRONG_PASSWORD,
 } from "donut-shared";
+import { AUTH_BEFORE_ORDER_CREATE } from "src/lib/constants";
 
 export const locale = localeFrom(
   // atom("pl"),
@@ -258,6 +259,7 @@ export const messages = i18n("messages", {
     "Failed to generate a QR code for payment. Please choose a different payment method",
   [USER_EXISTS]:
     "User with the same email already exists. Please choose another email",
+  [AUTH_BEFORE_ORDER_CREATE]: "Plase Sign Up or Login to create an order",
 });
 
 export function useI18nStore() {

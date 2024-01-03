@@ -163,3 +163,7 @@ export const getPaymentLinkAction = createAction<{
 export const paymentLinkReceivedAction = createAction<{
   link: string;
 }>("orders/paymentLinkReceived");
+
+export const updateCreateOrderAfterAuthAction = createAction<{
+  value: boolean;
+}>("orders/updateCreateOrderAfterAuth");

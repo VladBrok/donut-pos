@@ -18,6 +18,7 @@
 
 <script setup lang="ts">
 import { loginAction } from "donut-shared/src/actions/auth";
+import { createOrderAfterAuth } from "src/lib/create-order";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import LoginPage from "../../components/LoginPage.vue";
@@ -46,6 +47,11 @@ const onSubmit = async (data: { password: string; email: string }) => {
         store.state.auth.user.userId || "",
         store.state.auth.user.accessToken || ""
       );
+
+      if (store.state.orders.createOrderAfterAuth) {
+        return createOrderAfterAuth(store, t, router);
+      }
+
       return router.push("/");
     })
     .finally(() => {

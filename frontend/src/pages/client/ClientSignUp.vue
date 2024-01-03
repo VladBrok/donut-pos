@@ -8,6 +8,9 @@
         <h1 class="text-h3">
           {{ t.signUp }}
         </h1>
+        <p v-if="text" class="text-h6">
+          {{ text }}
+        </p>
       </div>
       <q-form
         @submit="onSubmit"
@@ -74,9 +77,10 @@ import { FIRST_NAME_MAX_LENGTH, LAST_NAME_MAX_LENGTH } from "donut-shared";
 import { signUpAction } from "donut-shared/src/actions/auth";
 import EmailInput from "src/components/EmailInput.vue";
 import PasswordInput from "src/components/PasswordInput.vue";
+import { createOrderAfterAuth } from "src/lib/create-order";
 import { onFormValidationError } from "src/lib/on-form-validation-error";
-import { ref } from "vue";
-import { RouterLink, useRouter } from "vue-router";
+import { computed, ref } from "vue";
+import { RouterLink, useRoute, useRouter } from "vue-router";
 import { useI18nStore } from "../../lib/i18n";
 import { useStore } from "../../store";
 
@@ -88,6 +92,10 @@ const email = ref("");
 const password = ref("");
 const firstName = ref("");
 const lastName = ref("");
+const route = useRoute();
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const text = computed(() => t.value[route.query?.text?.toString()] || "");
 
 const onSubmit = async () => {
   isSigningUp.value = true;
@@ -105,6 +113,11 @@ const onSubmit = async () => {
         store.state.auth.user.userId || "",
         store.state.auth.user.accessToken || ""
       );
+
+      if (store.state.orders.createOrderAfterAuth) {
+        return createOrderAfterAuth(store, t, router);
+      }
+
       return router.push("/");
     })
     .finally(() => {

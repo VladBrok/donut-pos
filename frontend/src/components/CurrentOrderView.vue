@@ -159,14 +159,17 @@ import {
   updateCurrentOrderCommentAction,
   updateCurrentOrderTableNumberAction,
 } from "donut-shared";
+import { updateCreateOrderAfterAuthAction } from "donut-shared/src/actions/orders";
 import BigSpinner from "src/components/BigSpinner.vue";
 import DishInOrder from "src/components/DishInOrder.vue";
 import OrderView from "src/components/OrderView.vue";
+import { useIsLoggedIn } from "src/lib/composables/useIsLoggedIn";
+import { AUTH_BEFORE_ORDER_CREATE } from "src/lib/constants";
 import { createOrder } from "src/lib/create-order";
 import { createFuzzySearcher } from "src/lib/fuzzy-search";
 import { onFormValidationError } from "src/lib/on-form-validation-error";
 import { computed, ref, watch } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useI18nStore } from "../lib/i18n";
 import { useStore } from "../store";
 import ConfirmDialog from "./ConfirmDialog.vue";
@@ -227,6 +230,8 @@ const totalCost = computed(
   () => dishesInOrder.value?.reduce((sum, cur) => sum + cur.totalCost, 0) || 0
 );
 const route = useRoute();
+const router = useRouter();
+const isLoggedIn = useIsLoggedIn();
 
 const unsubscribe = watch(
   isSubscribing,
@@ -263,8 +268,18 @@ function clear() {
 }
 
 async function onSubmit() {
+  if (!isLoggedIn.value) {
+    store.commit.crossTab(
+      updateCreateOrderAfterAuthAction({
+        value: true,
+      })
+    );
+    router.push(`/sign-up?text=${AUTH_BEFORE_ORDER_CREATE}`);
+    return;
+  }
+
   isSubmitting.value = true;
-  createOrder(store, order.value!, t).finally(() => {
+  createOrder(store, t).finally(() => {
     isSubmitting.value = false;
   });
 }
