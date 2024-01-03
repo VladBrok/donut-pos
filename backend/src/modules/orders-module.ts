@@ -161,6 +161,7 @@ export default function ordersModule(server: Server) {
         CHANNELS.ORDERS_FOR_KITCHEN,
         CHANNELS.ORDER_SINGLE(action.payload.orderNumber),
         CHANNELS.ORDERS_OF_EMPLOYEE(action.payload.employeeId),
+        CHANNELS.ORDERS_OF_CLIENT(action.payload.clientId),
       ];
     },
   });
@@ -200,6 +201,7 @@ export default function ordersModule(server: Server) {
         CHANNELS.ORDERS_OF_EMPLOYEE(
           action.payload.cookedDish.order.employee?.id
         ),
+        CHANNELS.ORDERS_OF_CLIENT(action.payload.cookedDish.order.client?.id),
       ];
     },
   });
@@ -231,6 +233,7 @@ export default function ordersModule(server: Server) {
         CHANNELS.COOKED_DISHES_OF_EMPLOYEE(action.payload.order.employee?.id),
         CHANNELS.ORDER_SINGLE(action.payload.order.orderNumber),
         CHANNELS.ORDERS_OF_EMPLOYEE(action.payload.order.employee?.id),
+        CHANNELS.ORDERS_OF_CLIENT(action.payload.order.client?.id),
       ];
     },
   });

@@ -109,6 +109,7 @@ export const orderCreatedAction = createAction<{
 
 export const startCookingDishAction = createAction<{
   employeeId: string;
+  clientId: string;
   orderId: string;
   orderNumber: string;
   dishIdInOrder: string;
@@ -116,6 +117,7 @@ export const startCookingDishAction = createAction<{
 
 export const dishStartedCookingAction = createAction<{
   employeeId: string;
+  clientId: string;
   orderId: string;
   orderNumber: string;
   dishIdInOrder: string;
