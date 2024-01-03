@@ -209,6 +209,11 @@ export const messages = i18n("messages", {
   alreadyHaveAccount: "Already have an account?",
   dontHaveAccount: "Don't have an account?",
 
+  // Misc
+  scanToOrder: "Scan to order",
+  cafe: "Cafe",
+  cafeName: "Pinczow",
+
   // Confirmations
   confirmDishCategoryDelete: "Are you sure you want to delete category",
   confirmDishDelete: "Are you sure you want to delete dish",

@@ -235,10 +235,16 @@ const routes: RouteRecordRaw[] = [
   },
 
   // Client
-  // TODO: wrap this page in layout (clients layout or waiters layout or admins depending on who opens a page?)
   {
     path: "/orders/:orderNumber",
     component: () => import("src/pages/client/ClientSingleOrder.vue"),
+    meta: {
+      title: t.value.orderDetails,
+    },
+  },
+  {
+    path: "/order-via-qr", // TODO: remove this page
+    component: () => import("src/pages/OrderViaQR.vue"),
     meta: {
       title: t.value.orderDetails,
     },
