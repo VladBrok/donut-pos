@@ -1,11 +1,11 @@
+import { IDiningTable } from "donut-shared/src/actions/current-order.js";
 import { eq, ilike } from "drizzle-orm";
 import { diningTable, employee } from "../../../migrations/schema.js";
 import { generateUuid } from "../../lib/uuid.js";
 import { db } from "../index.js";
-import { DiningTableModel } from "../models.js";
 import { diningTableAdapter } from "../schema-to-model-adapters.js";
 
-export async function getAllDiningTables(): Promise<DiningTableModel[]> {
+export async function getAllDiningTables(): Promise<IDiningTable[]> {
   const data = await db
     .select()
     .from(diningTable)
@@ -33,7 +33,7 @@ export async function deleteDiningTable(id: string) {
   return await db.delete(diningTable).where(eq(diningTable.id, id));
 }
 
-export async function createDiningTable(data: Omit<DiningTableModel, "id">) {
+export async function createDiningTable(data: Omit<IDiningTable, "id">) {
   const toCreate = { id: generateUuid(), ...data };
   const clone = structuredClone(toCreate);
   // @ts-ignore
@@ -45,7 +45,7 @@ export async function createDiningTable(data: Omit<DiningTableModel, "id">) {
   return clone;
 }
 
-export async function updateDiningTable(data: Partial<DiningTableModel>) {
+export async function updateDiningTable(data: Partial<IDiningTable>) {
   const employeeId = data.employee?.id || "";
   delete data.employee;
   await db

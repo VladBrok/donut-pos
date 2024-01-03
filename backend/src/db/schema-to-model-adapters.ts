@@ -4,10 +4,10 @@ import {
   IClient,
   OrderStatus,
 } from "donut-shared";
+import { IDiningTable } from "donut-shared/src/actions/current-order.js";
 import { ICookedDish, IShallowOrder } from "donut-shared/src/actions/orders.js";
 import { onlyUnique } from "src/lib/only-unique.js";
 import {
-  DiningTableModel,
   DishCategoryModel,
   DishModel,
   EmployeeModel,
@@ -288,7 +288,7 @@ export const cookedDishesAdapter = (
 
 export const diningTableAdapter = (
   data: DiningTableSchema[]
-): DiningTableModel[] => {
+): IDiningTable[] => {
   return data.map((x) => ({
     id: x.dining_table.id || "",
     employee: {
@@ -308,6 +308,6 @@ export const clientAdapter = (data: ClientSchema[]): IClient[] => {
     lastName: x.client.lastName || "",
     isEmailVerified: x.client.isEmailVerified || false,
     registeredAt: x.client.registeredAt?.toISOString() || "",
-    passwordHash: x.client.passwordHash || ''
+    passwordHash: x.client.passwordHash || "",
   }));
 };
