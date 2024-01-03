@@ -227,6 +227,7 @@ export const messages = i18n("messages", {
   // Success
   deleteSuccess: "Deleted successfully",
   createSuccess: "Created successfully",
+  orderCreateSuccess: "Order created successfully",
   paymentSuccess: "Paid successfully",
   updateSuccess: "Updated successfully",
   copyToClipboardSuccess: "Copied to clipboard",

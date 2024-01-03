@@ -153,18 +153,16 @@ import {
   COMMENT_MAX_LENGTH,
   addDishToCurrentOrderAction,
   clearCurrentOrderAction,
-  createOrderAction,
   decrementDishInCurrentOrderAction,
   getOrderDishTotalCost,
   removeDishFromCurrentOrderAction,
   updateCurrentOrderCommentAction,
   updateCurrentOrderTableNumberAction,
 } from "donut-shared";
-import { Notify } from "quasar";
 import BigSpinner from "src/components/BigSpinner.vue";
 import DishInOrder from "src/components/DishInOrder.vue";
 import OrderView from "src/components/OrderView.vue";
-import { SUCCESS_TIMEOUT_MS } from "src/lib/constants";
+import { createOrder } from "src/lib/create-order";
 import { createFuzzySearcher } from "src/lib/fuzzy-search";
 import { onFormValidationError } from "src/lib/on-form-validation-error";
 import { computed, ref, watch } from "vue";
@@ -195,7 +193,6 @@ const filteredTableNames = computed(() =>
 const isSubscribing = useSubscription(channels, { store: store as any });
 const diningTables = computed(() => store.state.diningTables.tables);
 const dishes = computed(() => store.state.dishes.dishes);
-const user = computed(() => store.state.auth.user);
 const modifications = computed(() => store.state.modifications.modifications);
 const dishesInOrder = computed(() =>
   isSubscribing.value
@@ -267,27 +264,8 @@ function clear() {
 
 async function onSubmit() {
   isSubmitting.value = true;
-  store.commit
-    .sync(
-      createOrderAction({
-        order: order.value!,
-        isClient: user.value.permissions?.client || false,
-      })
-    )
-    .then(() => {
-      Notify.create({
-        type: "positive",
-        position: "top",
-        timeout: SUCCESS_TIMEOUT_MS,
-        message: t.value.createSuccess,
-        multiLine: true,
-        group: false,
-      });
-
-      store.commit.crossTab(clearCurrentOrderAction());
-    })
-    .finally(() => {
-      isSubmitting.value = false;
-    });
+  createOrder(store, order.value!, t).finally(() => {
+    isSubmitting.value = false;
+  });
 }
 </script>
