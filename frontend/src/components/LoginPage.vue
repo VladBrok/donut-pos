@@ -38,6 +38,7 @@
         </q-card>
       </q-form>
     </div>
+    <slot name="bottom" />
   </div>
 </template>
 

@@ -190,7 +190,7 @@ export const messages = i18n("messages", {
   orderStatus_delivering: "Delivering",
   orderStatus_delivered: "Delivered",
 
-  // Login page
+  // Login & signup pages
   adminLoginPageTitle: "Admin login",
   waiterLoginPageTitle: "Waiter login",
   clientLoginPageTitle: "Log in",
@@ -205,6 +205,8 @@ export const messages = i18n("messages", {
   signUp: "Sign up",
   showPassword: "Show password",
   hidePassword: "Hide password",
+  alreadyHaveAccount: "Already have an account?",
+  dontHaveAccount: "Don't have an account?",
 
   // Confirmations
   confirmDishCategoryDelete: "Are you sure you want to delete category",

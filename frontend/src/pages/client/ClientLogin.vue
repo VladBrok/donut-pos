@@ -7,6 +7,12 @@
     <template v-slot:title>
       {{ t.clientLoginPageTitle }}
     </template>
+    <template v-slot:bottom>
+      <div class="text-center text-h6 q-mt-xl text-weight-regular">
+        <p>{{ t.dontHaveAccount }}</p>
+        <router-link class="link" :to="'/sign-up'"> {{ t.signUp }}</router-link>
+      </div>
+    </template>
   </login-page>
 </template>
 

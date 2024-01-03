@@ -62,6 +62,10 @@
         </q-card>
       </q-form>
     </div>
+    <div class="text-center text-h6 q-mt-xl text-weight-regular">
+      <p>{{ t.alreadyHaveAccount }}</p>
+      <router-link class="link" :to="'/login'"> {{ t.logIn }}</router-link>
+    </div>
   </div>
 </template>
 
@@ -72,7 +76,7 @@ import EmailInput from "src/components/EmailInput.vue";
 import PasswordInput from "src/components/PasswordInput.vue";
 import { onFormValidationError } from "src/lib/on-form-validation-error";
 import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { RouterLink, useRouter } from "vue-router";
 import { useI18nStore } from "../../lib/i18n";
 import { useStore } from "../../store";
 
