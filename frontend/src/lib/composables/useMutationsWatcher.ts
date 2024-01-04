@@ -46,7 +46,6 @@ export const useMutationsWatcher = () => {
       switch (mutation.type) {
         case loggedInAction.type: {
           saveUserToStorage(state.auth.user);
-          console.log(mutation.payload.payload);
           if (mutation.payload.payload.isNewUser) {
             setTimeout(() => {
               store.commit.crossTab(openWelcomeBannerAction());

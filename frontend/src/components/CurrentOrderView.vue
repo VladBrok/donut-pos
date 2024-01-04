@@ -280,7 +280,6 @@ const unsubscribe = watch(
 watch(
   order,
   (newOrder, oldOrder) => {
-    console.log(newOrder, oldOrder);
     if (newOrder && !oldOrder) {
       store.commit.crossTab(
         updatePreviousOrderAction({
