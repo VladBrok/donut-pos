@@ -4,6 +4,7 @@ import {
   assert,
   clearCurrentOrderAction,
   decrementDishInCurrentOrderAction,
+  openWelcomeBannerAction,
   orderCreatedAction,
   removeDishFromCurrentOrderAction,
   updateCurrentOrderCommentAction,
@@ -44,6 +45,12 @@ export const useMutationsWatcher = () => {
       switch (mutation.type) {
         case loggedInAction.type: {
           saveUserToStorage(state.auth.user);
+          console.log(mutation.payload.payload);
+          if (mutation.payload.payload.isNewUser) {
+            setTimeout(() => {
+              store.commit.crossTab(openWelcomeBannerAction());
+            }, 100);
+          }
           break;
         }
 

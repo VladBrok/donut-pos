@@ -28,6 +28,7 @@ export const loggedInAction = createAction<{
   accessToken: string;
   permissions: IPermissions;
   role?: ReturnType<typeof loadRolesAction>["payload"]["roles"][number];
+  isNewUser?: boolean;
 }>("auth/loggedIn");
 
 export const logoutAction = createAction<{

@@ -98,6 +98,7 @@ export default function authModule(server: Server) {
           userId: created.id,
           permissions: { client: true },
           accessToken,
+          isNewUser: true,
         })
       );
     },

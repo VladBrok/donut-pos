@@ -48,6 +48,10 @@ export {
 } from "./src/actions/order-drawer.js";
 export { createOrderAction, orderCreatedAction } from "./src/actions/orders.js";
 export { loadRolesAction } from "./src/actions/roles.js";
+export {
+  closeWelcomeBannerAction,
+  openWelcomeBannerAction,
+} from "./src/actions/welcome-banner.js";
 export * from "./src/constants/channels.js";
 export * from "./src/constants/dish-in-order-statuses.js";
 export * from "./src/constants/employee.js";

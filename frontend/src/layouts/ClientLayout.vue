@@ -80,11 +80,48 @@
           <current-order-view> </current-order-view>
         </template>
       </order-drawer>
+
+      <q-page-sticky position="top" expand style="z-index: 12">
+        <Transition tag="div" name="fade-single">
+          <q-banner
+            v-if="isWelcomeBannerOpen"
+            class="bg-white banner-border shadow-4"
+            rounded
+          >
+            <div class="text-body1">
+              <p class="text-center text-h6 q-mb-sm">
+                {{ t.welcome }}
+              </p>
+              <p>
+                {{ t.chooseDishesInstruction }}
+              </p>
+              <p>
+                {{ t.viewOrdersInstruction }}
+                <router-link
+                  to="/orders"
+                  class="link"
+                  @click="closeWelcomeBanner"
+                  >{{ t.ordersPage }}</router-link
+                >
+              </p>
+            </div>
+            <template v-slot:action>
+              <q-btn
+                flat
+                color="primary"
+                :label="t.close"
+                @click="closeWelcomeBanner"
+              />
+            </template>
+          </q-banner>
+        </Transition>
+      </q-page-sticky>
     </template>
   </main-layout>
 </template>
 
 <script setup lang="ts">
+import { closeWelcomeBannerAction } from "donut-shared";
 import {
   closeCurrentOrderAction,
   openCurrentOrderAction,
@@ -93,6 +130,7 @@ import CurrentOrderView from "src/components/CurrentOrderView.vue";
 import OrderDrawer from "src/components/OrderDrawer.vue";
 import { useStore } from "src/store";
 import { computed, onMounted, onUnmounted, ref } from "vue";
+import { RouterLink } from "vue-router";
 import MainLayout from "../components/MainLayout.vue";
 import { useI18nStore } from "../lib/i18n";
 
@@ -119,6 +157,7 @@ const isCurrentOrderOpen = computed(
   () => store.state.orderDrawer.isCurrentOrderOpen
 );
 const userId = ref(store.state.auth.user.userId);
+const isWelcomeBannerOpen = computed(() => store.state.welcomeBanner.isOpen);
 
 // const channels = computed(() => {
 //   return userId.value === ANONYMOUS.userId
@@ -147,5 +186,9 @@ function toggleCurrentOrderDrawer() {
   } else {
     store.commit.local(openCurrentOrderAction());
   }
+}
+
+function closeWelcomeBanner() {
+  store.commit.crossTab(closeWelcomeBannerAction());
 }
 </script>

@@ -174,6 +174,12 @@ export const messages = i18n("messages", {
   // Client pages
   orderDetails: "Order details",
   viewYourOrders: "view your orders",
+  welcome: "Welcome!",
+  chooseDishesInstruction:
+    "Choose dishes that you want to order from the menu.",
+  viewOrdersInstruction: "You can view your orders on the",
+  close: "Close",
+  ordersPage: "orders page",
 
   // Payment pages
   paymentSuccessPageTitle: "Payment success",
