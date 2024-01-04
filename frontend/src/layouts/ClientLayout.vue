@@ -129,7 +129,7 @@ import {
 import CurrentOrderView from "src/components/CurrentOrderView.vue";
 import OrderDrawer from "src/components/OrderDrawer.vue";
 import { useStore } from "src/store";
-import { computed, onMounted, onUnmounted, ref } from "vue";
+import { computed } from "vue";
 import { RouterLink } from "vue-router";
 import MainLayout from "../components/MainLayout.vue";
 import { useI18nStore } from "../lib/i18n";
@@ -156,29 +156,7 @@ const currentOrder = computed(() => store.state.currentOrder.order);
 const isCurrentOrderOpen = computed(
   () => store.state.orderDrawer.isCurrentOrderOpen
 );
-const userId = ref(store.state.auth.user.userId);
 const isWelcomeBannerOpen = computed(() => store.state.welcomeBanner.isOpen);
-
-// const channels = computed(() => {
-//   return userId.value === ANONYMOUS.userId
-//     ? []
-//     : [CHANNELS.COOKED_DISHES_OF_EMPLOYEE(userId.value)];
-// });
-// let isSubscribing = useSubscription(channels, { store: store as any });
-// const cookedDishes = computed(() => store.state.orders.cookedDishes);
-const unsubscribe = ref(() => {
-  /* */
-});
-
-onMounted(() => {
-  unsubscribe.value = store.client.on("user", (newId) => {
-    userId.value = newId;
-  });
-});
-
-onUnmounted(() => {
-  unsubscribe.value();
-});
 
 function toggleCurrentOrderDrawer() {
   if (isCurrentOrderOpen.value) {

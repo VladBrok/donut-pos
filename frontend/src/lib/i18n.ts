@@ -161,13 +161,16 @@ export const messages = i18n("messages", {
   change: "Change",
   makeSureChangeGiven: "Make sure you give the customer the change",
   paid: "Paid",
+  cashPaymentRequested: params(
+    "Cash payment requested: table {table}, order {orderNumber}"
+  ),
 
   // Kitchen pages
   viewDetails: "View details",
   startCooking: "Start",
   finishCooking: "Ready",
   done: "Done",
-  orderCreated: params(`New order: #{orderNumber}`),
+  orderCreated: params(`New order: {orderNumber}`),
   pay: "Pay",
   next: "Next",
 
