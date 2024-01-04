@@ -11,6 +11,7 @@ import {
   updateCurrentOrderTableNumberAction,
 } from "donut-shared";
 import { loggedInAction, logoutAction } from "donut-shared/src/actions/auth";
+import { updatePreviousOrderAction } from "donut-shared/src/actions/current-order";
 import {
   ICookedDish,
   dishFinishedCookingAction,
@@ -80,6 +81,15 @@ export const useMutationsWatcher = () => {
         }
 
         case orderCreatedAction.type: {
+          if (store.state.auth.user?.permissions?.client) {
+            store.commit.crossTab(
+              updatePreviousOrderAction({
+                order: mutation.payload.payload.order,
+              })
+            );
+            break;
+          }
+
           Notify.create({
             type: "info",
             position: "top",

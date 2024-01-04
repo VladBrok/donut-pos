@@ -4,6 +4,7 @@
       :has-content="Boolean(order)"
       :dish-count="order?.dishes.length"
       :total-cost="totalCost"
+      custom-empty
     >
       <template #content>
         <big-spinner v-if="isSubscribing" />
@@ -11,7 +12,7 @@
           <div>
             <!-- TODO: add client autotomplete field -->
             <q-select
-              :model-value="store.state.currentOrder.order?.table?.number"
+              :model-value="order?.table?.number"
               @update:model-value="
                 store.commit.crossTab(
                   updateCurrentOrderTableNumberAction({
@@ -27,10 +28,7 @@
               clearable
               hide-selected
               input-debounce="0"
-              :disable="
-                !!route.query.table &&
-                !!store.state.currentOrder.order?.table?.number
-              "
+              :disable="!!route.query.table && !!order?.table?.number"
               :options="filteredTableNames"
               @filter="filterTables"
               :label="`${t.tableNumberLabel} *`"
@@ -45,7 +43,7 @@
               </template>
             </q-select>
             <q-input
-              :model-value="store.state.currentOrder.order?.comment"
+              :model-value="order?.comment"
               @update:model-value="
                 store.commit.crossTab(
                   updateCurrentOrderCommentAction({
@@ -135,6 +133,26 @@
           </q-btn>
         </div>
       </template>
+      <template #empty>
+        <div class="q-mt-xl">
+          <div v-if="previousOrder" class="column justify-center items-center">
+            <q-img
+              src="src/assets/cart.svg"
+              alt=""
+              fit="cover"
+              class="image-md"
+            />
+            <p class="text-h6">{{ t.orderWasCreated }}!</p>
+            <RouterLink
+              class="text-body1 q-mt-sm"
+              :to="`/orders/${previousOrder.orderNumber}`"
+            >
+              {{ t.viewOrder }}
+            </RouterLink>
+          </div>
+          <no-data v-else :text="t.emptyOrder" />
+        </div>
+      </template>
     </OrderView>
   </q-form>
 
@@ -159,6 +177,7 @@ import {
   updateCurrentOrderCommentAction,
   updateCurrentOrderTableNumberAction,
 } from "donut-shared";
+import { updatePreviousOrderAction } from "donut-shared/src/actions/current-order";
 import { updateCreateOrderAfterAuthAction } from "donut-shared/src/actions/orders";
 import BigSpinner from "src/components/BigSpinner.vue";
 import DishInOrder from "src/components/DishInOrder.vue";
@@ -173,6 +192,7 @@ import { useRoute, useRouter } from "vue-router";
 import { useI18nStore } from "../lib/i18n";
 import { useStore } from "../store";
 import ConfirmDialog from "./ConfirmDialog.vue";
+import NoData from "./NoData.vue";
 
 const store = useStore();
 const order = computed(() => store.state.currentOrder.order);
@@ -197,6 +217,7 @@ const isSubscribing = useSubscription(channels, { store: store as any });
 const diningTables = computed(() => store.state.diningTables.tables);
 const dishes = computed(() => store.state.dishes.dishes);
 const modifications = computed(() => store.state.modifications.modifications);
+const previousOrder = computed(() => store.state.currentOrder.previous);
 const dishesInOrder = computed(() =>
   isSubscribing.value
     ? []
@@ -252,6 +273,21 @@ const unsubscribe = watch(
     }
 
     unsubscribe();
+  },
+  { immediate: true }
+);
+
+watch(
+  order,
+  (newOrder, oldOrder) => {
+    console.log(newOrder, oldOrder);
+    if (newOrder && !oldOrder) {
+      store.commit.crossTab(
+        updatePreviousOrderAction({
+          order: undefined,
+        })
+      );
+    }
   },
   { immediate: true }
 );

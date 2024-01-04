@@ -1,3 +1,4 @@
+import { IOrder } from "src/actions/orders.js";
 import { createAction } from "./index.js";
 
 export interface ICurrentOrderDishModification {
@@ -56,3 +57,7 @@ export const updateCurrentOrderTableNumberAction = createAction<{
 export const removeDishFromCurrentOrderAction = createAction<{
   uniqueId: string;
 }>("currentOrder/removeDish");
+
+export const updatePreviousOrderAction = createAction<{
+  order?: IOrder;
+}>("currentOrder/updatePrevious");

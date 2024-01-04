@@ -6,6 +6,7 @@ import {
   updateCurrentOrderCommentAction,
   updateCurrentOrderTableNumberAction,
 } from "donut-shared";
+import { updatePreviousOrderAction } from "donut-shared/src/actions/current-order";
 import { getUniqueDishId } from "src/lib/get-unique-dish-id";
 import { MutationTree } from "vuex";
 import { ICurrentOrderState, makeEmptyOrder } from "./state";
@@ -93,6 +94,13 @@ const mutation: MutationTree<ICurrentOrderState> = {
     );
 
     state.order.table = action.payload.table;
+  },
+
+  updatePrevious(
+    state: ICurrentOrderState,
+    action: ReturnType<typeof updatePreviousOrderAction>
+  ) {
+    state.previous = action.payload.order;
   },
 };
 

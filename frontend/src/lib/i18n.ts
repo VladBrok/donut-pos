@@ -180,6 +180,8 @@ export const messages = i18n("messages", {
   viewOrdersInstruction: "You can view your orders on the",
   close: "Close",
   ordersPage: "orders page",
+  orderWasCreated: "Your order was created",
+  viewOrder: "View order",
 
   // Payment pages
   paymentSuccessPageTitle: "Payment success",

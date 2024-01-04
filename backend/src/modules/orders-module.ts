@@ -248,11 +248,18 @@ export default function ordersModule(server: Server) {
         ctx.userId,
         action.payload.isClient
       );
-      await server.process(
-        orderCreatedAction({
-          order: created,
-        })
-      );
+      await Promise.all([
+        server.process(
+          orderCreatedAction({
+            order: created,
+          })
+        ),
+        ctx.sendBack(
+          orderCreatedAction({
+            order: created,
+          })
+        ),
+      ]);
     },
   });
 
@@ -260,8 +267,8 @@ export default function ordersModule(server: Server) {
     async access() {
       return false;
     },
-    resend() {
-      return CHANNELS.ORDERS_FOR_KITCHEN;
+    resend(ctx, action) {
+      return [CHANNELS.ORDERS_FOR_KITCHEN];
     },
   });
 
