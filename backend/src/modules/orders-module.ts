@@ -7,6 +7,7 @@ import {
   orderCreatedAction,
 } from "donut-shared";
 import {
+  cashPaymentRequestedAction,
   cookedDishesLoadedAction,
   dishDeliveredAction,
   dishFinishedCookingAction,
@@ -20,6 +21,7 @@ import {
   ordersPageLoadedAction,
   payForOrderAction,
   paymentLinkReceivedAction,
+  requestCashPaymentAction,
   startCookingDishAction,
   startDeliveredDishAction,
 } from "donut-shared/src/actions/orders.js";
@@ -149,6 +151,23 @@ export default function ordersModule(server: Server) {
         action.payload.dishIdInOrder
       );
       await server.process(dishStartedCookingAction(action.payload));
+    },
+  });
+
+  server.type(requestCashPaymentAction, {
+    async access(ctx) {
+      return true;
+    },
+    async process(ctx, action, meta) {
+      const order = await db.getSingleOrder(
+        action.payload.orderNumber,
+        ctx.userId
+      );
+      await server.process(
+        cashPaymentRequestedAction({
+          order: order,
+        })
+      );
     },
   });
 

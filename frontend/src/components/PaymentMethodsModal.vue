@@ -95,7 +95,16 @@
     </q-card>
   </q-dialog>
 
-  <cash-payment-modal
+  <waiter-cash-payment-modal
+    v-if="!isClient"
+    v-model="isCashPaymentModalOpen"
+    @close="isCashPaymentModalOpen = false"
+    :total-cost="totalCost"
+    :order-number="orderNumber"
+  />
+
+  <client-cash-payment-modal
+    v-if="isClient"
     v-model="isCashPaymentModalOpen"
     @close="isCashPaymentModalOpen = false"
     :total-cost="totalCost"
@@ -111,10 +120,12 @@
 </template>
 
 <script setup lang="ts">
-import CashPaymentModal from "src/components/CashPaymentModal.vue";
+import ClientCashPaymentModal from "src/components/ClientCashPaymentModal.vue";
 import CreditCardOrBlikPaymentModal from "src/components/CreditCardOrBlikPaymentModal.vue";
+import WaiterCashPaymentModal from "src/components/WaiterCashPaymentModal.vue";
 import { useI18nStore } from "src/lib/i18n";
-import { ref } from "vue";
+import { useStore } from "src/store";
+import { computed, ref } from "vue";
 
 defineProps<{
   totalCost: number;
@@ -125,4 +136,6 @@ const t = useI18nStore();
 const isCashPaymentModalOpen = ref(false);
 const isCreditOrBlikPaymentModalOpen = ref(false);
 const method = ref<"card" | "blik">("card");
+const store = useStore();
+const isClient = computed(() => store.state.auth.user.permissions?.client);
 </script>

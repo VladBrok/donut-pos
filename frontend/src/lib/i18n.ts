@@ -182,6 +182,10 @@ export const messages = i18n("messages", {
   ordersPage: "orders page",
   orderWasCreated: "Your order was created",
   viewOrder: "View order",
+  waiterWasCalled: "We called a waiter!",
+  waiterWillAcceptPayment:
+    "Waiter will come to your table and accept the payment",
+  ok: "OK",
 
   // Payment pages
   paymentSuccessPageTitle: "Payment success",

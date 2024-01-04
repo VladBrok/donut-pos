@@ -153,6 +153,14 @@ export const payForOrderAction = createAction<{
   orderNumber: string;
 }>("orders/payForOrder");
 
+export const requestCashPaymentAction = createAction<{
+  orderNumber: string;
+}>("orders/requestCashPayment");
+
+export const cashPaymentRequestedAction = createAction<{
+  order: IOrder;
+}>("orders/cashPaymentRequested");
+
 export const orderPaidSuccessAction = createAction<{
   order: IShallowOrder;
 }>("orders/orderPaidSuccess");
