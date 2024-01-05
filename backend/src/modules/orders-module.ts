@@ -7,7 +7,6 @@ import {
   orderCreatedAction,
 } from "donut-shared";
 import {
-  cashPaymentRequestedAction,
   cookedDishesLoadedAction,
   dishDeliveredAction,
   dishFinishedCookingAction,
@@ -21,7 +20,6 @@ import {
   ordersPageLoadedAction,
   payForOrderAction,
   paymentLinkReceivedAction,
-  requestCashPaymentAction,
   startCookingDishAction,
   startDeliveredDishAction,
 } from "donut-shared/src/actions/orders.js";
@@ -30,12 +28,12 @@ import Stripe from "stripe";
 import * as db from "../db/modules/orders.js";
 import { hasCookPermissions, hasWaiterPermission } from "../lib/access.js";
 
-// TODO: split this module (here, in db, on client, in actions)
+// TODO: split this module up (here, in db, on client, in actions)
 
 export default function ordersModule(server: Server) {
   server.channel(CHANNELS.ORDERS_FOR_KITCHEN, {
-    access(ctx) {
-      return hasCookPermissions(ctx.userId);
+    async access(ctx) {
+      return await hasCookPermissions(ctx.userId);
     },
     async load() {
       const orders = await db.getOrdersForKitchen();
@@ -151,23 +149,6 @@ export default function ordersModule(server: Server) {
         action.payload.dishIdInOrder
       );
       await server.process(dishStartedCookingAction(action.payload));
-    },
-  });
-
-  server.type(requestCashPaymentAction, {
-    async access(ctx) {
-      return true;
-    },
-    async process(ctx, action, meta) {
-      const order = await db.getSingleOrder(
-        action.payload.orderNumber,
-        ctx.userId
-      );
-      await server.process(
-        cashPaymentRequestedAction({
-          order: order,
-        })
-      );
     },
   });
 

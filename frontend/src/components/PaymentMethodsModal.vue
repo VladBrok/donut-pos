@@ -108,7 +108,7 @@
     v-model="isCashPaymentModalOpen"
     @close="isCashPaymentModalOpen = false"
     :total-cost="totalCost"
-    :order-number="orderNumber"
+    :order-id="orderId"
   />
 
   <CreditCardOrBlikPaymentModal
@@ -130,6 +130,7 @@ import { computed, ref } from "vue";
 defineProps<{
   totalCost: number;
   orderNumber: string;
+  orderId: string;
 }>();
 
 const t = useI18nStore();

@@ -47,6 +47,7 @@ export interface IGetOrder {
   orderBy?: "desc" | "asc";
   search?: string;
   ongoingOnly?: boolean;
+  orderId?: string;
 }
 
 export interface IGetOrdersPage extends IGetOrder {
@@ -123,7 +124,11 @@ export async function getOrdersPage(params: IGetOrdersPage) {
   return { ordersPage: ordersAdapter(data), total: total?.[0].value || 0 };
 }
 
-export async function getSingleOrder(orderNumber: string, userId?: string) {
+export async function getSingleOrder(
+  orderNumber?: string,
+  userId?: string,
+  orderId?: string
+) {
   const isClient = (
     await db
       .select()
@@ -137,6 +142,7 @@ export async function getSingleOrder(orderNumber: string, userId?: string) {
     perPage: 1,
     orderNumber: orderNumber,
     strictOrderNumberCompare: true,
+    orderId: orderId,
   });
   return result.ordersPage?.[0] || null;
 }
@@ -167,6 +173,7 @@ function makeWhereFilter(params: IGetOrder) {
             : `%${params.orderNumber.trim()}%`
         )
       : undefined,
+    params.orderId ? eq(order.id, params.orderId) : undefined,
     params.search
       ? or(
           ilike(order.number, `%${params.search}%`),

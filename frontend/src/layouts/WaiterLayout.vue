@@ -10,11 +10,11 @@
           class="absolute-top-right-offset"
         />
         <q-badge
-          v-if="cookedDishes.length"
+          v-if="notificationCount"
           rounded
           floating
           color="red"
-          :label="cookedDishes.length || ''"
+          :label="notificationCount || ''"
         />
         <q-menu fit style="overflow-x: hidden">
           <div style="min-width: 320px" class="q-px-xs">
@@ -127,10 +127,19 @@ const userId = ref(store.state.auth.user.userId);
 const channels = computed(() => {
   return userId.value === ANONYMOUS.userId
     ? []
-    : [CHANNELS.COOKED_DISHES_OF_EMPLOYEE(userId.value)];
+    : [
+        CHANNELS.COOKED_DISHES_OF_EMPLOYEE(userId.value),
+        CHANNELS.CASH_PAYMENT_REQUESTS_OF_EMPLOYEE(userId.value),
+      ];
 });
 let isSubscribing = useSubscription(channels, { store: store as any });
 const cookedDishes = computed(() => store.state.orders.cookedDishes);
+const cashPaymentRequests = computed(
+  () => store.state.cashPaymentRequests.requests
+);
+const notificationCount = computed(
+  () => cookedDishes.value.length + cashPaymentRequests.value.length
+);
 const unsubscribe = ref(() => {
   /* */
 });

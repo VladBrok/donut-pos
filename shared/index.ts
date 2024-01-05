@@ -1,4 +1,11 @@
 export type { IPermissions } from "./src/actions/auth.js";
+export {
+  cashPaymentRequestedAction,
+  cashPaymentRequestsLoadedAction,
+  loadCashPaymentRequestsAction,
+  requestCashPaymentAction,
+} from "./src/actions/cash-payment-requests.js";
+export type { ICashPaymentRequest } from "./src/actions/cash-payment-requests.js";
 export type { IClient } from "./src/actions/client.js";
 export {
   addDishToCurrentOrderAction,

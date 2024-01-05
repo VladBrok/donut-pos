@@ -1,6 +1,7 @@
 import {
   DishInOrderStatus,
   EMPLOYEE_PERMISSIONS,
+  ICashPaymentRequest,
   IClient,
   OrderStatus,
 } from "donut-shared";
@@ -16,6 +17,7 @@ import {
   RoleModel,
 } from "./models.js";
 import {
+  CashPaymentRequestSchema,
   ClientSchema,
   DiningTableSchema,
   DishCategorySchema,
@@ -309,5 +311,29 @@ export const clientAdapter = (data: ClientSchema[]): IClient[] => {
     isEmailVerified: x.client.isEmailVerified || false,
     registeredAt: x.client.registeredAt?.toISOString() || "",
     passwordHash: x.client.passwordHash || "",
+  }));
+};
+
+export const cashPaymentRequestsAdapter = (
+  data: CashPaymentRequestSchema[]
+): ICashPaymentRequest[] => {
+  return data.filter(onlyUnique((x) => x.cash_payment_request.id)).map((x) => ({
+    id: x.cash_payment_request?.id || "",
+    totalCost: x.cash_payment_request.totalCost || 0,
+    comment: x.order?.comment || "",
+    table: {
+      id: x.dining_table?.id || "",
+      number: x.dining_table?.number || "",
+    },
+    orderNumber: x.order?.number || "",
+    status: x.order?.status || "",
+    createdDate: x.order?.createdDate?.toISOString() || "",
+    cookingDate: x.order?.cookingDate?.toISOString() || "",
+    cookedDate: x.order?.cookedDate?.toISOString() || "",
+    deliveringDate: x.order?.deliveringDate?.toISOString() || "",
+    deliveredDate: x.order?.deliveredDate?.toISOString() || "",
+    paidDate: x.order?.paidDate?.toISOString() || "",
+    employeeId: x.order?.employeeId || "",
+    clientId: x.order?.clientId || "",
   }));
 };

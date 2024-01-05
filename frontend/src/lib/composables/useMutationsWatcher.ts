@@ -2,6 +2,7 @@ import {
   ANONYMOUS,
   addDishToCurrentOrderAction,
   assert,
+  cashPaymentRequestedAction,
   clearCurrentOrderAction,
   decrementDishInCurrentOrderAction,
   openWelcomeBannerAction,
@@ -76,6 +77,21 @@ export const useMutationsWatcher = () => {
 
         case clearCurrentOrderAction.type: {
           saveCurrentOrderToStorage(null);
+          break;
+        }
+
+        case cashPaymentRequestedAction.type: {
+          Notify.create({
+            type: "info",
+            position: "top",
+            timeout: INFO_TIMEOUT_MS,
+            message: t.value.cashPaymentRequested({
+              orderNumber: mutation.payload.payload.request.orderNumber,
+              table: mutation.payload.payload.request.table.number,
+            }),
+            multiLine: true,
+            group: false,
+          });
           break;
         }
 

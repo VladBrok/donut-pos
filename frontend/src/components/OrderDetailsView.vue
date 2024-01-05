@@ -71,6 +71,7 @@
     v-model="isPaymentModalOpen"
     :total-cost="getOrderTotalCost(order.dishes)"
     :order-number="order.orderNumber"
+    :order-id="order.id"
   />
 </template>
 

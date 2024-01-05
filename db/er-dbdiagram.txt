@@ -40,6 +40,7 @@ Table client {
 Table cash_payment_request {
   id UUID [pk]
   order_id UUID
+  total_cost INT
   Indexes {
     order_id [name: 'cash_payment_request_order_id_idx']
   }

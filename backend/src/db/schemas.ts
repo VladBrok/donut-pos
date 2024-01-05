@@ -1,5 +1,6 @@
 import {
   address,
+  cashPaymentRequest,
   client,
   diningTable,
   dish,
@@ -75,4 +76,10 @@ export type DishInOrderSchema = {
 export type ClientSchema = {
   [client._.name]: typeof client.$inferSelect;
   [address._.name]: typeof address.$inferSelect | null;
+};
+
+export type CashPaymentRequestSchema = {
+  [cashPaymentRequest._.name]: typeof cashPaymentRequest.$inferSelect;
+  [order._.name]: typeof order.$inferSelect | null;
+  [diningTable._.name]: typeof diningTable.$inferSelect | null;
 };

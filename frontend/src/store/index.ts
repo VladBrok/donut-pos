@@ -10,6 +10,7 @@ import { Router } from "vue-router";
 import { Store as VuexStore } from "vuex";
 
 import { assert } from "donut-shared";
+import { ICashPaymentRequestsState } from "src/store/cash-payment-requests/state";
 import { IDiningTablesState } from "src/store/dining-tables/state";
 import { IOrderDrawerState } from "src/store/order-drawer/state";
 import { IOrdersState } from "src/store/orders/state";
@@ -20,6 +21,7 @@ import { setUndoHandler } from "../lib/logux/set-undo-handler";
 import { watchSyncStatus } from "../lib/logux/watch-sync-status";
 import auth from "./auth";
 import { IAuthState } from "./auth/state";
+import cashPaymentRequests from "./cash-payment-requests";
 import currentOrder from "./current-order";
 import { ICurrentOrderState } from "./current-order/state";
 import diningTables from "./dining-tables";
@@ -50,6 +52,7 @@ export interface StateInterface {
   orderDrawer: IOrderDrawerState;
   diningTables: IDiningTablesState;
   welcomeBanner: IWelcomeBannerState;
+  cashPaymentRequests: ICashPaymentRequestsState;
 }
 
 // provide typings for `this.$store`
@@ -89,6 +92,7 @@ export default store(function (/* { ssrContext } */) {
     orderDrawer,
     diningTables,
     welcomeBanner,
+    cashPaymentRequests,
   };
 
   for (const module of Object.values(modules)) {

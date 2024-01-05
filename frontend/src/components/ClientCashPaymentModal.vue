@@ -32,14 +32,14 @@
 </template>
 
 <script setup lang="ts">
-import { requestCashPaymentAction } from "donut-shared/src/actions/orders";
+import { requestCashPaymentAction } from "donut-shared";
 import BigSpinner from "src/components/BigSpinner.vue";
 import { useI18nStore } from "src/lib/i18n";
 import { useStore } from "src/store";
 import { computed, ref, watch } from "vue";
 
 const props = defineProps<{
-  orderNumber: string;
+  orderId: string;
   modelValue: boolean;
 }>();
 const modelValue = computed(() => props.modelValue);
@@ -60,7 +60,7 @@ watch(
     store.commit
       .sync(
         requestCashPaymentAction({
-          orderNumber: props.orderNumber,
+          orderId: props.orderId,
         })
       )
       .then(() => {

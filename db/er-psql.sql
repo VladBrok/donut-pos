@@ -30,7 +30,8 @@ CREATE TABLE "client" (
 
 CREATE TABLE "cash_payment_request" (
   "id" UUID PRIMARY KEY,
-  "order_id" UUID
+  "order_id" UUID,
+  "total_cost" INT
 );
 
 CREATE TABLE "work_schedule" (
