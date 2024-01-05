@@ -152,7 +152,7 @@ export const messages = i18n("messages", {
   delivered: "Delivered",
   selectPaymentMethod: "Select payment method",
   cash: "Cash",
-  creditCard: "Credit card",
+  creditCard: "Card",
   blik: "Blik",
   payWithCash: "Pay with cash",
   scanQrCode: "Scan to pay",

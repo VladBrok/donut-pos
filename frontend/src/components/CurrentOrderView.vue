@@ -137,7 +137,7 @@
         <div class="q-mt-xl">
           <div v-if="previousOrder" class="column justify-center items-center">
             <q-img
-              src="src/assets/cart.svg"
+              src="/src/assets/cart.svg"
               alt=""
               fit="cover"
               class="image-md"
