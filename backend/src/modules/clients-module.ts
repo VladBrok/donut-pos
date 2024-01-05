@@ -38,7 +38,7 @@ export default function clientsModule(server: Server) {
       await ctx.sendBack(
         clientsPageLoadedAction({
           clientsPage: clientsPage,
-          totalOrders: total,
+          totalClients: total,
         })
       );
     },

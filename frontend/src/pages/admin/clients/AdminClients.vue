@@ -1,136 +1,85 @@
 <template>
   <div>
     <big-spinner v-if="isSubscribing" />
+
     <q-table
       v-else
       class="q-mx-auto max-w-lg sticky-last-column-table"
-      :rows="filtered"
+      :rows="clientsPage"
       :columns="columns"
       row-key="id"
       :rows-per-page-label="t.perPage"
-      :loading="isDeleting"
-      binary-state-sort
-      :pagination="{
-        rowsPerPage: ROWS_PER_TABLE_PAGE,
-      }"
+      :loading="isUpdatingPage"
+      :rows-per-page-options="[]"
+      :filter="searchInput"
+      v-model:pagination="pagination"
+      @request="updatePage"
     >
       <template v-slot:top-right>
         <q-input
           dense
           v-model="searchInput"
           :placeholder="t.search"
+          debounce="500"
           class="q-mr-lg q-my-sm"
         >
           <template v-slot:append>
             <q-icon name="search" />
           </template>
         </q-input>
-        <q-btn
-          color="primary"
-          icon="add"
-          :label="t.addTable"
-          to="/admin/dining-tables/create"
-        />
       </template>
       <template v-slot:body-cell-index="props">
         <q-td :props="props">
           {{ props.rowIndex + 1 }}
         </q-td>
       </template>
-      <template v-slot:body-cell-image="props">
+      <template v-slot:body-cell-isEmailVerified="props">
         <q-td :props="props">
-          <q-img
-            :src="props.row.imageUrl"
-            fit="cover"
-            class="rounded-borders image-sm"
+          <q-radio
+            class="disabled-cursor-default"
+            :model-value="'true'"
+            checked-icon="task_alt"
+            unchecked-icon="close"
+            :val="props.row.isEmailVerified.toString()"
+            label=""
+            disable
+            :color="props.row.isEmailVerified ? 'positive' : 'negative'"
+            keep-color
           />
-        </q-td>
-      </template>
-      <template v-slot:body-cell-actions="props">
-        <q-td :props="props" auto-width>
-          <q-btn
-            flat
-            size="md"
-            icon="mode_edit"
-            color="primary"
-            dense
-            class="q-mr-sm"
-            @click.stop
-            :to="`/admin/dining-tables/update/${props.row.id}`"
-          >
-          </q-btn>
-          <q-btn
-            flat
-            size="md"
-            icon="o_delete"
-            color="negative"
-            dense
-            @click.stop="onDeleteAttempt(props.row)"
-          >
-          </q-btn>
         </q-td>
       </template>
       <template v-slot:no-data>
         <no-data></no-data>
       </template>
     </q-table>
-
-    <confirm-dialog
-      :model-value="!!confirmDelete"
-      @update:model-value="confirmDelete = null"
-    >
-      <template #body>
-        {{ t.confirmTableDelete }}
-        <span class="text-weight-bold">"{{ confirmDelete?.number || "" }}"</span
-        >?
-      </template>
-      <template #confirmButton>
-        <q-btn
-          flat
-          :label="t.deleteButton"
-          color="negative"
-          @click="onDeleteConfirmed"
-        />
-      </template>
-    </confirm-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
-import { CHANNELS, assert, deleteDiningTableAction } from "donut-shared";
-import { IDiningTable } from "donut-shared/src/actions/current-order";
-import { Notify } from "quasar";
+import { CHANNELS, loadClientsPageAction } from "donut-shared";
+import { ROWS_PER_TABLE_PAGE } from "src/lib/constants";
+import { formatDateTime } from "src/lib/date";
 import { useStore } from "src/store";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import BigSpinner from "../../../components/BigSpinner.vue";
-import ConfirmDialog from "../../../components/ConfirmDialog.vue";
 import NoData from "../../../components/NoData.vue";
-import {
-  ROWS_PER_TABLE_PAGE,
-  SUCCESS_TIMEOUT_MS,
-} from "../../../lib/constants";
-import { createFuzzySearcher } from "../../../lib/fuzzy-search";
 import { useI18nStore } from "../../../lib/i18n";
 
 const store = useStore();
-const tables = computed(() => store.state.diningTables.tables);
-const fuzzySearch = computed(() =>
-  createFuzzySearcher(tables.value, [
-    "number",
-    "employee.firstName",
-    "employee.lastName",
-  ])
-);
-const filtered = computed(() => fuzzySearch.value.search(searchInput.value));
+const clientsPage = computed(() => store.state.clients.clientsPage);
 const channels = computed(() => {
-  return [CHANNELS.DINING_TABLES];
+  return [CHANNELS.CLIENTS];
 });
 let isSubscribing = useSubscription(channels, { store: store as any });
 const t = useI18nStore();
-const confirmDelete = ref<null | IDiningTable>(null);
-const isDeleting = ref(false);
 const searchInput = ref("");
+const pagination = ref({
+  page: 1,
+  rowsPerPage: ROWS_PER_TABLE_PAGE,
+  rowsNumber: ROWS_PER_TABLE_PAGE,
+});
+const isUpdatingPage = ref(false);
 
 const columns: any[] = [
   {
@@ -140,48 +89,61 @@ const columns: any[] = [
     align: "center",
   },
   {
-    name: "number",
-    label: t.value.table,
+    name: "firstName",
+    label: t.value.firstName,
     align: "center",
-    field: (row: IDiningTable) => row.number,
+    field: "firstName",
   },
   {
-    name: "waiter",
-    label: t.value.waiter,
+    name: "lastName",
+    label: t.value.lastName,
     align: "center",
-    field: (row: IDiningTable) =>
-      row.employee?.lastName + " " + row.employee?.firstName, // TODO: extract func for formatting (dup)
+    field: "lastName",
   },
-  { name: "actions", label: "", align: "right" },
+  {
+    name: "registeredAt",
+    label: t.value.registeredAt,
+    align: "center",
+    field: "registeredAt",
+    format: (val: string) => formatDateTime(val),
+  },
+  {
+    name: "email",
+    label: t.value.email,
+    align: "center",
+    field: "email",
+  },
+  {
+    name: "isEmailVerified",
+    label: t.value.isEmailVerified,
+    align: "center",
+    field: "isEmailVerified",
+  },
 ];
 
-const onDeleteAttempt = (row: IDiningTable) => {
-  confirmDelete.value = row;
-};
+const stopWatchingSubscribing = watch(isSubscribing, () => {
+  if (!isSubscribing.value) {
+    pagination.value.rowsNumber = store.state.clients.totalClients;
+    stopWatchingSubscribing();
+  }
+});
 
-const onDeleteConfirmed = () => {
-  assert(confirmDelete.value, "");
-  const toDelete = confirmDelete.value.id;
-  confirmDelete.value = null;
-  isDeleting.value = true;
+const updatePage = ({ pagination: { page } }: any) => {
+  console.log("update");
+  isUpdatingPage.value = true;
   store.commit
     .sync(
-      deleteDiningTableAction({
-        id: toDelete,
+      loadClientsPageAction({
+        page: page,
+        search: searchInput.value?.trim() || undefined,
       })
     )
     .then(() => {
-      Notify.create({
-        type: "positive",
-        position: "top",
-        timeout: SUCCESS_TIMEOUT_MS,
-        message: t.value.deleteSuccess,
-        multiLine: true,
-        group: false,
-      });
+      pagination.value.page = page;
+      pagination.value.rowsNumber = store.state.clients.totalClients;
     })
     .finally(() => {
-      isDeleting.value = false;
+      isUpdatingPage.value = false;
     });
 };
 </script>
