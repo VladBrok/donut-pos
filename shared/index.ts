@@ -1,7 +1,9 @@
 export type { IPermissions } from "./src/actions/auth.js";
 export {
+  cashPaymentRequestDeletedAction,
   cashPaymentRequestedAction,
   cashPaymentRequestsLoadedAction,
+  deleteCashPaymentRequestAction,
   loadCashPaymentRequestsAction,
   requestCashPaymentAction,
 } from "./src/actions/cash-payment-requests.js";

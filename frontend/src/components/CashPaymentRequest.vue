@@ -13,7 +13,11 @@
       </div>
       <div>
         <div class="q-mt-md row gap-sm justify-between">
-          <q-btn color="primary" @click="isModalOpen = true">
+          <q-btn
+            color="primary"
+            @click="isModalOpen = true"
+            :loading="isDeleting"
+          >
             {{ t.acceptPayment }}
           </q-btn>
           <div class="text-primary text-h5 q-pr-sm">
@@ -27,23 +31,42 @@
       @close="isModalOpen = false"
       :total-cost="request.totalCost"
       :order-number="request.orderNumber"
+      @paid="handlePaid"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ICashPaymentRequest } from "donut-shared";
+import {
+  ICashPaymentRequest,
+  deleteCashPaymentRequestAction,
+} from "donut-shared";
 import OrderNumberTitle from "src/components/OrderNumberTitle.vue";
 import WaiterCashPaymentModal from "src/components/WaiterCashPaymentModal.vue";
 import { formatCurrency } from "src/lib/currency";
 import { useI18nStore } from "src/lib/i18n";
+import { useStore } from "src/store";
 import { ref } from "vue";
 
 const props = defineProps<{
   request: ICashPaymentRequest;
 }>();
 
-const emit = defineEmits([]);
 const t = useI18nStore();
+const store = useStore();
 const isModalOpen = ref(false);
+const isDeleting = ref(false);
+
+const handlePaid = () => {
+  isDeleting.value = true;
+  store.commit
+    .sync(
+      deleteCashPaymentRequestAction({
+        id: props.request.id,
+      })
+    )
+    .finally(() => {
+      isDeleting.value = false;
+    });
+};
 </script>
