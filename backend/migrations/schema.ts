@@ -176,6 +176,16 @@ export const diningTable = pgTable("dining_table", {
 	}
 });
 
+export const cashPaymentRequest = pgTable("cash_payment_request", {
+	id: uuid("id").primaryKey().notNull(),
+	orderId: uuid("order_id").references(() => order.id, { onDelete: "set null" } ),
+},
+(table) => {
+	return {
+		orderIdIdx: index("cash_payment_request_order_id_idx").on(table.orderId),
+	}
+});
+
 export const order = pgTable("order", {
 	id: uuid("id").primaryKey().notNull(),
 	clientId: uuid("client_id").references(() => client.id, { onDelete: "set null" } ),
