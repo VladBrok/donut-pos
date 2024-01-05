@@ -38,8 +38,7 @@
                     >{{ waiter?.lastName }}
                     {{ waiter?.firstName }}</q-item-label
                   >
-                  <!-- TODO: render email -->
-                  <q-item-label caption>email</q-item-label>
+                  <q-item-label caption>{{ waiter?.email }}</q-item-label>
                 </q-item-section>
               </q-item>
             </template>
@@ -50,8 +49,7 @@
                     >{{ scope.opt.lastName }}
                     {{ scope.opt.firstName }}</q-item-label
                   >
-                  <!-- TODO: render email -->
-                  <q-item-label caption>email</q-item-label>
+                  <q-item-label caption>{{ scope.opt.email }}</q-item-label>
                 </q-item-section>
               </q-item>
             </template>
@@ -91,6 +89,7 @@ import {
   createDiningTableAction,
   updateDiningTableAction,
 } from "donut-shared";
+import { IDiningTable } from "donut-shared/src/actions/current-order";
 import { Notify } from "quasar";
 import { createFuzzySearcher } from "src/lib/fuzzy-search";
 import { onFormValidationError } from "src/lib/on-form-validation-error";
@@ -117,15 +116,7 @@ const originalTable = computed(() => {
 const channels = computed(() => [CHANNELS.EMPLOYEES, CHANNELS.DINING_TABLES]);
 const waiterSearchInput = ref("");
 // TODO: add also email and some other data
-const waiter = ref<{
-  id: string;
-  firstName: string;
-  lastName: string;
-  label: string;
-}>();
-const waiters = computed(() =>
-  store.state.employees.employees.filter((x) => x.role.codeName === "waiter")
-);
+const waiter = ref<IDiningTable["employee"] & { label: string }>();
 const waiterFuzzySearch = computed(() =>
   createFuzzySearcher(store.state.employees.employees, [
     "firstName",

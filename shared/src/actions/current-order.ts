@@ -26,6 +26,7 @@ export interface IDiningTable {
     id: string;
     firstName: string;
     lastName: string;
+    email: string;
   };
 }
 

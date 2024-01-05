@@ -166,6 +166,7 @@ export const ordersAdapter = (data: OrderSchema[]): OrderModel[] => {
           id: uniqueOrder.diningTableEmployee?.id || "",
           firstName: uniqueOrder.diningTableEmployee?.firstName || "",
           lastName: uniqueOrder.diningTableEmployee?.lastName || "",
+          email: uniqueOrder.diningTableEmployee?.email || "",
         },
       },
       client: uniqueOrder.client
@@ -245,6 +246,7 @@ export const shallowOrdersAdapter = (
           id: uniqueOrder.diningTableEmployee?.id || "",
           firstName: uniqueOrder.diningTableEmployee?.firstName || "",
           lastName: uniqueOrder.diningTableEmployee?.lastName || "",
+          email: uniqueOrder.diningTableEmployee?.email || "",
         },
       },
       client: uniqueOrder.client
@@ -297,6 +299,7 @@ export const diningTableAdapter = (
       id: x.employee?.id || "",
       firstName: x.employee?.firstName || "",
       lastName: x.employee?.lastName || "",
+      email: x.employee?.email || "",
     },
     number: x.dining_table.number || "",
   }));
