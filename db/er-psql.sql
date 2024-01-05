@@ -28,6 +28,11 @@ CREATE TABLE "client" (
   "registered_at" TIMESTAMP
 );
 
+CREATE TABLE "cash_payment_request" (
+  "id" UUID PRIMARY KEY,
+  "order_id" UUID
+);
+
 CREATE TABLE "work_schedule" (
   "id" UUID PRIMARY KEY,
   "sale_point_id" UUID,
@@ -157,6 +162,8 @@ CREATE INDEX "client_phone_idx" ON "client" ("phone");
 
 CREATE INDEX "client_email_idx" ON "client" ("email");
 
+CREATE INDEX "cash_payment_request_order_id_idx" ON "cash_payment_request" ("order_id");
+
 CREATE INDEX "work_schedule_sale_point_id_idx" ON "work_schedule" ("sale_point_id");
 
 CREATE INDEX "role_to_permission_role_id_idx" ON "role_to_permission" ("role_id");
@@ -204,6 +211,8 @@ CREATE INDEX "order_to_dish_to_modification_order_to_dish_id_idx" ON "order_to_d
 CREATE INDEX "order_to_dish_to_modification_modification_id_idx" ON "order_to_dish_to_modification" ("modification_id");
 
 ALTER TABLE "dining_table" ADD FOREIGN KEY ("employee_id") REFERENCES "employee" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "cash_payment_request" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id") ON DELETE SET NULL;
 
 ALTER TABLE "client" ADD FOREIGN KEY ("address_id") REFERENCES "address" ("id") ON DELETE SET NULL;
 

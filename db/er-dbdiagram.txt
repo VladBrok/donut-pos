@@ -37,6 +37,14 @@ Table client {
   }
 }
 
+Table cash_payment_request {
+  id UUID [pk]
+  order_id UUID
+  Indexes {
+    order_id [name: 'cash_payment_request_order_id_idx']
+  }
+}
+
 Table work_schedule {
   id UUID [pk]
   sale_point_id UUID
@@ -200,6 +208,7 @@ Table order_to_dish_to_modification {
 }
 
 Ref: dining_table.employee_id > employee.id [delete: set null]
+Ref: cash_payment_request.order_id > order.id [delete: set null]
 Ref: client.address_id > address.id [delete: set null]
 Ref: dish.category_id > dish_category.id [delete: set null]
 Ref: work_schedule.sale_point_id > sale_point.id [delete: set null]
