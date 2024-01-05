@@ -10,15 +10,20 @@
           class="absolute-top-right-offset"
         />
         <q-badge
-          v-if="cookedDishes.length"
+          v-if="notificationCount"
           rounded
           floating
           color="red"
-          :label="cookedDishes.length || ''"
+          :label="notificationCount || ''"
         />
         <q-menu fit style="overflow-x: hidden">
           <div style="min-width: 320px" class="q-px-xs">
             <TransitionGroup tag="div" name="fade">
+              <CashPaymentRequest
+                v-for="request in cashPaymentRequests"
+                :key="request.id"
+                :request="request"
+              />
               <dish-in-order
                 v-for="item of cookedDishes"
                 :key="item.dish.dishIdInOrder"
@@ -32,7 +37,7 @@
                   <div class="text-body2">
                     <div>
                       {{ t.tableNumber }}
-                      {{ item.order.tableNumber }},
+                      {{ item.order.table.number || "-" }},
                     </div>
                     <OrderNumberTitle
                       :order-number="item.order.orderNumber"
@@ -91,6 +96,7 @@ import {
   closeCurrentOrderAction,
   openCurrentOrderAction,
 } from "donut-shared/src/actions/order-drawer";
+import CashPaymentRequest from "src/components/CashPaymentRequest.vue";
 import CookedDishStatusButton from "src/components/CookedDishStatusButton.vue";
 import CurrentOrderView from "src/components/CurrentOrderView.vue";
 import DishInOrder from "src/components/DishInOrder.vue";
@@ -127,10 +133,19 @@ const userId = ref(store.state.auth.user.userId);
 const channels = computed(() => {
   return userId.value === ANONYMOUS.userId
     ? []
-    : [CHANNELS.COOKED_DISHES_OF_EMPLOYEE(userId.value)];
+    : [
+        CHANNELS.COOKED_DISHES_OF_EMPLOYEE(userId.value),
+        CHANNELS.CASH_PAYMENT_REQUESTS_OF_EMPLOYEE(userId.value),
+      ];
 });
 let isSubscribing = useSubscription(channels, { store: store as any });
 const cookedDishes = computed(() => store.state.orders.cookedDishes);
+const cashPaymentRequests = computed(
+  () => store.state.cashPaymentRequests.requests
+);
+const notificationCount = computed(
+  () => cookedDishes.value.length + cashPaymentRequests.value.length
+);
 const unsubscribe = ref(() => {
   /* */
 });

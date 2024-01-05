@@ -7,8 +7,25 @@
           {{ $route.meta.title || "" }}
         </q-toolbar-title>
         <slot name="actions" />
-        <q-btn flat round icon="logout" @click="logout">
+        <q-btn
+          v-if="isLoggedIn"
+          flat
+          round
+          icon="logout"
+          color="negative"
+          @click="logout"
+        >
           <q-tooltip> {{ t.logout }} </q-tooltip>
+        </q-btn>
+        <q-btn
+          v-if="!isLoggedIn"
+          color="positive"
+          flat
+          round
+          icon="login"
+          to="/login"
+        >
+          <q-tooltip> {{ t.logIn }} </q-tooltip>
         </q-btn>
       </q-toolbar>
     </q-header>
@@ -88,6 +105,7 @@ import { logoutAction } from "donut-shared/src/actions/auth";
 import OrderDetailsView from "src/components/OrderDetailsView.vue";
 import OrderDrawer from "src/components/OrderDrawer.vue";
 import OrderNumberTitle from "src/components/OrderNumberTitle.vue";
+import { useIsLoggedIn } from "src/lib/composables/useIsLoggedIn";
 import { computed, ref } from "vue";
 import { closeArbitraryOrderAction } from "../../../shared";
 import { useI18nStore } from "../lib/i18n";
@@ -106,6 +124,7 @@ const isMenuDrawerOpen = ref(false);
 const t = useI18nStore();
 const store = useStore();
 const selectedOrder = computed(() => store.state.orderDrawer.order);
+const isLoggedIn = useIsLoggedIn();
 
 function toggleMenuDrawer() {
   isMenuDrawerOpen.value = !isMenuDrawerOpen.value;

@@ -28,12 +28,12 @@ import Stripe from "stripe";
 import * as db from "../db/modules/orders.js";
 import { hasCookPermissions, hasWaiterPermission } from "../lib/access.js";
 
-// TODO: split this module (here, in db, on client, in actions)
+// TODO: split this module up (here, in db, on client, in actions)
 
 export default function ordersModule(server: Server) {
   server.channel(CHANNELS.ORDERS_FOR_KITCHEN, {
-    access(ctx) {
-      return hasCookPermissions(ctx.userId);
+    async access(ctx) {
+      return await hasCookPermissions(ctx.userId);
     },
     async load() {
       const orders = await db.getOrdersForKitchen();
@@ -88,7 +88,26 @@ export default function ordersModule(server: Server) {
         page: 1,
         employeeId: ctx.userId,
         perPage: ITEMS_PER_PAGE,
-        ongoingOnly: true, // For waiter, show only ongoing orders
+        ongoingOnly: true, // TODO: maybe change this: For waiter, show only ongoing orders
+      });
+      return ordersPageLoadedAction({
+        ordersPage: ordersPage,
+        totalOrders: total,
+      });
+    },
+  });
+
+  server.channel<{
+    clientId: string;
+  }>(CHANNELS.ORDERS_OF_CLIENT(), {
+    async access(ctx, action, meta) {
+      return ctx.userId === ctx.params.clientId;
+    },
+    async load(ctx, action, meta) {
+      const { ordersPage, total } = await db.getOrdersPage({
+        page: 1,
+        clientId: ctx.userId,
+        perPage: ITEMS_PER_PAGE,
       });
       return ordersPageLoadedAction({
         ordersPage: ordersPage,
@@ -99,17 +118,18 @@ export default function ordersModule(server: Server) {
 
   server.type(loadOrdersPageAction, {
     async access(ctx) {
-      return await hasWaiterPermission(ctx.userId);
+      return true;
     },
     async process(ctx, action, meta) {
       const { ordersPage, total } = await db.getOrdersPage({
         page: action.payload.page,
         perPage: ITEMS_PER_PAGE,
-        employeeId: ctx.userId,
+        employeeId: action.payload.isClient ? undefined : ctx.userId,
+        clientId: !action.payload.isClient ? undefined : ctx.userId,
         statuses: action.payload.status ? [action.payload.status] : undefined,
         orderNumber: action.payload.orderNumber,
         search: action.payload.search,
-        ongoingOnly: true, // For waiter, show only ongoing orders
+        ongoingOnly: !action.payload.isClient, // TODO: maybe change this: For waiter, show only ongoing orders
       });
       await ctx.sendBack(
         ordersPageLoadedAction({
@@ -142,6 +162,7 @@ export default function ordersModule(server: Server) {
         CHANNELS.ORDERS_FOR_KITCHEN,
         CHANNELS.ORDER_SINGLE(action.payload.orderNumber),
         CHANNELS.ORDERS_OF_EMPLOYEE(action.payload.employeeId),
+        CHANNELS.ORDERS_OF_CLIENT(action.payload.clientId),
       ];
     },
   });
@@ -167,10 +188,6 @@ export default function ordersModule(server: Server) {
     async access() {
       return false;
     },
-    async process(ctx, action) {
-      // TODO: send notifications
-      // await sendEmailNotification("@gmail.com", `dish was cooked`);
-    },
     resend(ctx, action) {
       return [
         CHANNELS.ORDERS_FOR_KITCHEN,
@@ -181,6 +198,7 @@ export default function ordersModule(server: Server) {
         CHANNELS.ORDERS_OF_EMPLOYEE(
           action.payload.cookedDish.order.employee?.id
         ),
+        CHANNELS.ORDERS_OF_CLIENT(action.payload.cookedDish.order.client?.id),
       ];
     },
   });
@@ -212,21 +230,33 @@ export default function ordersModule(server: Server) {
         CHANNELS.COOKED_DISHES_OF_EMPLOYEE(action.payload.order.employee?.id),
         CHANNELS.ORDER_SINGLE(action.payload.order.orderNumber),
         CHANNELS.ORDERS_OF_EMPLOYEE(action.payload.order.employee?.id),
+        CHANNELS.ORDERS_OF_CLIENT(action.payload.order.client?.id),
       ];
     },
   });
 
   server.type(createOrderAction, {
     async access(ctx) {
-      return await hasWaiterPermission(ctx.userId);
+      return true;
     },
     async process(ctx, action, meta) {
-      const created = await db.createOrder(action.payload.order, ctx.userId);
-      await server.process(
-        orderCreatedAction({
-          order: created,
-        })
+      const created = await db.createOrder(
+        action.payload.order,
+        ctx.userId,
+        action.payload.isClient
       );
+      await Promise.all([
+        server.process(
+          orderCreatedAction({
+            order: created,
+          })
+        ),
+        ctx.sendBack(
+          orderCreatedAction({
+            order: created,
+          })
+        ),
+      ]);
     },
   });
 
@@ -234,8 +264,8 @@ export default function ordersModule(server: Server) {
     async access() {
       return false;
     },
-    resend() {
-      return CHANNELS.ORDERS_FOR_KITCHEN;
+    resend(ctx, action) {
+      return [CHANNELS.ORDERS_FOR_KITCHEN];
     },
   });
 
@@ -261,16 +291,21 @@ export default function ordersModule(server: Server) {
       return [
         CHANNELS.ORDER_SINGLE(action.payload.order.orderNumber),
         CHANNELS.ORDERS_OF_EMPLOYEE(action.payload.order.employee?.id),
+        CHANNELS.ORDERS_OF_CLIENT(action.payload.order.client?.id),
       ];
     },
   });
 
   server.type(getPaymentLinkAction, {
     async access(ctx) {
-      return await hasWaiterPermission(ctx.userId);
+      return true;
     },
     async process(ctx, action, meta) {
-      const order = await db.getSingleOrder(action.payload.orderNumber);
+      const order = await db.getSingleOrder(
+        action.payload.orderNumber,
+        ctx.userId
+      );
+
       let session: Stripe.Response<Stripe.Checkout.Session> | null = null;
 
       try {

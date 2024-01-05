@@ -2,14 +2,17 @@ import {
   ANONYMOUS,
   addDishToCurrentOrderAction,
   assert,
+  cashPaymentRequestedAction,
   clearCurrentOrderAction,
   decrementDishInCurrentOrderAction,
+  openWelcomeBannerAction,
   orderCreatedAction,
   removeDishFromCurrentOrderAction,
   updateCurrentOrderCommentAction,
   updateCurrentOrderTableNumberAction,
 } from "donut-shared";
 import { loggedInAction, logoutAction } from "donut-shared/src/actions/auth";
+import { updatePreviousOrderAction } from "donut-shared/src/actions/current-order";
 import {
   ICookedDish,
   dishFinishedCookingAction,
@@ -44,12 +47,19 @@ export const useMutationsWatcher = () => {
       switch (mutation.type) {
         case loggedInAction.type: {
           saveUserToStorage(state.auth.user);
+          if (mutation.payload.payload.isNewUser) {
+            setTimeout(() => {
+              store.commit.crossTab(openWelcomeBannerAction());
+            }, 100);
+          }
           break;
         }
 
         case logoutAction.type: {
-          const role = getUserFromStorage()?.role.codeName;
-          const redirectTo = `/${role === "cook" ? "kitchen" : role}/login`;
+          const role = getUserFromStorage()?.role?.codeName;
+          const redirectTo = `${
+            !role ? "" : role === "/cook" ? "/kitchen" : role
+          }/login`;
           removeItem(Keys.User);
           store.client.changeUser(ANONYMOUS.userId);
           router.push(redirectTo);
@@ -70,7 +80,31 @@ export const useMutationsWatcher = () => {
           break;
         }
 
+        case cashPaymentRequestedAction.type: {
+          Notify.create({
+            type: "info",
+            position: "top",
+            timeout: INFO_TIMEOUT_MS,
+            message: t.value.cashPaymentRequested({
+              orderNumber: mutation.payload.payload.request.orderNumber,
+              table: mutation.payload.payload.request.table.number,
+            }),
+            multiLine: true,
+            group: false,
+          });
+          break;
+        }
+
         case orderCreatedAction.type: {
+          if (store.state.auth.user?.permissions?.client) {
+            store.commit.crossTab(
+              updatePreviousOrderAction({
+                order: mutation.payload.payload.order,
+              })
+            );
+            break;
+          }
+
           Notify.create({
             type: "info",
             position: "top",
@@ -96,7 +130,7 @@ export const useMutationsWatcher = () => {
             timeout: INFO_TIMEOUT_MS,
             message: t.value.dishCooked({
               dishName: cooked.dish.name,
-              table: cooked.order.tableNumber,
+              table: cooked.order.table.number,
             }),
             multiLine: true,
             group: false,

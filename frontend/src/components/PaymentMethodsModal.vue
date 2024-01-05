@@ -13,96 +13,57 @@
       </q-card-section>
 
       <q-card-section>
-        <q-list bordered separator class="rounded-borders">
-          <!-- TODO: extract list item component and add good svg icons -->
-          <q-item
-            clickable
-            v-ripple
-            v-close-popup
-            class="q-px-lg q-py-md"
-            @click="isCashPaymentModalOpen = true"
-          >
-            <q-item-section avatar>
-              <q-avatar
-                color="primary"
-                text-color="white"
-                icon="monetization_on"
-                size="md"
-              />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label class="text-weight-bold text-h6">{{
-                t.cash
-              }}</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-list>
+        <PaymentMethodCard
+          image-src="/src/assets/cash.svg"
+          @click="isCashPaymentModalOpen = true"
+        >
+          <template #text>
+            {{ t.cash }}
+          </template>
+        </PaymentMethodCard>
 
-        <q-list bordered separator class="rounded-borders q-mt-md">
-          <q-item
-            clickable
-            v-ripple
-            v-close-popup
-            class="q-px-lg q-py-md"
-            @click="
-              method = 'card';
-              isCreditOrBlikPaymentModalOpen = true;
-            "
-          >
-            <q-item-section avatar>
-              <q-avatar
-                color="primary"
-                text-color="white"
-                icon="credit_card"
-                size="md"
-              />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label class="text-weight-bold text-h6">{{
-                t.creditCard
-              }}</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-list>
+        <PaymentMethodCard
+          class="q-mt-lg"
+          image-src="/src/assets/credit-card.svg"
+          @click="
+            method = 'card';
+            isCreditOrBlikPaymentModalOpen = true;
+          "
+        >
+          <template #text> {{ t.creditCard }} </template>
+        </PaymentMethodCard>
 
-        <q-list bordered separator class="rounded-borders q-mt-md">
-          <q-item
-            clickable
-            v-ripple
-            v-close-popup
-            class="q-px-lg q-py-md"
-            @click="
-              method = 'blik';
-              isCreditOrBlikPaymentModalOpen = true;
-            "
-          >
-            <q-item-section avatar>
-              <q-avatar
-                color="primary"
-                text-color="white"
-                icon="subtitles"
-                size="md"
-              />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label class="text-weight-bold text-h6">{{
-                t.blik
-              }}</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-list>
+        <PaymentMethodCard
+          class="q-mt-lg"
+          image-src="/src/assets/blik.png"
+          @click="
+            method = 'blik';
+            isCreditOrBlikPaymentModalOpen = true;
+          "
+        >
+          <template #text> {{ t.blik }} </template>
+        </PaymentMethodCard>
       </q-card-section>
     </q-card>
   </q-dialog>
 
-  <cash-payment-modal
+  <waiter-cash-payment-modal
+    v-if="!isClient"
     v-model="isCashPaymentModalOpen"
     @close="isCashPaymentModalOpen = false"
     :total-cost="totalCost"
     :order-number="orderNumber"
   />
 
-  <credit-card-payment-modal
+  <client-cash-payment-modal
+    v-if="isClient"
+    v-model="isCashPaymentModalOpen"
+    @close="isCashPaymentModalOpen = false"
+    :total-cost="totalCost"
+    :order-id="orderId"
+  />
+
+  <CreditCardOrBlikPaymentModal
     v-model="isCreditOrBlikPaymentModalOpen"
     :total-cost="totalCost"
     :order-number="orderNumber"
@@ -111,18 +72,24 @@
 </template>
 
 <script setup lang="ts">
-import CashPaymentModal from "src/components/CashPaymentModal.vue";
-import CreditCardPaymentModal from "src/components/CreditCardOrBlikPaymentModal.vue";
+import ClientCashPaymentModal from "src/components/ClientCashPaymentModal.vue";
+import CreditCardOrBlikPaymentModal from "src/components/CreditCardOrBlikPaymentModal.vue";
+import PaymentMethodCard from "src/components/PaymentMethodCard.vue";
+import WaiterCashPaymentModal from "src/components/WaiterCashPaymentModal.vue";
 import { useI18nStore } from "src/lib/i18n";
-import { ref } from "vue";
+import { useStore } from "src/store";
+import { computed, ref } from "vue";
 
-const props = defineProps<{
+defineProps<{
   totalCost: number;
   orderNumber: string;
+  orderId: string;
 }>();
 
 const t = useI18nStore();
 const isCashPaymentModalOpen = ref(false);
 const isCreditOrBlikPaymentModalOpen = ref(false);
 const method = ref<"card" | "blik">("card");
+const store = useStore();
+const isClient = computed(() => store.state.auth.user.permissions?.client);
 </script>

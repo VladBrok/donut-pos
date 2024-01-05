@@ -1,3 +1,4 @@
+import { IOrder } from "src/actions/orders.js";
 import { createAction } from "./index.js";
 
 export interface ICurrentOrderDishModification {
@@ -18,9 +19,20 @@ export interface ICurrentOrderDish {
   modifications: ICurrentOrderDishModification[];
 }
 
+export interface IDiningTable {
+  id: string;
+  number: string;
+  employee: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+  };
+}
+
 export interface ICurrentOrder {
   comment: string;
-  tableNumber: string;
+  table: IDiningTable | null;
   clientId: string;
   dishes: ICurrentOrderDish[];
 }
@@ -40,9 +52,13 @@ export const updateCurrentOrderCommentAction = createAction<{
 }>("currentOrder/updateComment");
 
 export const updateCurrentOrderTableNumberAction = createAction<{
-  tableNumber: string;
+  table: IDiningTable | null;
 }>("currentOrder/updateTableNumber");
 
 export const removeDishFromCurrentOrderAction = createAction<{
   uniqueId: string;
 }>("currentOrder/removeDish");
+
+export const updatePreviousOrderAction = createAction<{
+  order?: IOrder;
+}>("currentOrder/updatePrevious");

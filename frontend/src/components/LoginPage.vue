@@ -38,6 +38,7 @@
         </q-card>
       </q-form>
     </div>
+    <slot name="bottom" />
   </div>
 </template>
 
@@ -71,7 +72,9 @@ const email = ref(
     ? "admin@donut.com"
     : router.currentRoute.value.path.includes("waiter")
     ? "waiter@donut.com"
-    : "kitchen@donut.com"
+    : router.currentRoute.value.path.includes("kitchen")
+    ? "kitchen@donut.com"
+    : "client@donut.com"
 ); // TODO: remove
 const password = ref(
   router.currentRoute.value.path.includes("admin") ? "1234" : "1234Db_3333>"

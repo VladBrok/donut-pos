@@ -80,7 +80,7 @@ const props = defineProps<{
   totalCost: number;
   orderNumber: string;
 }>();
-const emit = defineEmits(["close"]);
+const emit = defineEmits(["close", "paid"]);
 
 const t = useI18nStore();
 const givenAmount = ref<number | string>("");
@@ -108,6 +108,7 @@ async function onSubmit() {
         group: false,
       });
       emit("close");
+      emit("paid");
     })
     .finally(() => {
       isSubmitting.value = false;

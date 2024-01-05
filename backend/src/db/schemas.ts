@@ -1,5 +1,8 @@
 import {
+  address,
+  cashPaymentRequest,
   client,
+  diningTable,
   dish,
   dishCategory,
   dishToModification,
@@ -22,6 +25,11 @@ export type EmployeeSchema = {
 
 export type DishCategorySchema = typeof dishCategory.$inferSelect;
 
+export type DiningTableSchema = {
+  [diningTable._.name]: typeof diningTable.$inferSelect;
+  [employee._.name]: typeof employee.$inferSelect | null;
+};
+
 export type DishSchema = {
   [dish._.name]: typeof dish.$inferSelect;
   [dishCategory._.name]: typeof dishCategory.$inferSelect | null;
@@ -35,6 +43,8 @@ export type RoleSchema = typeof role.$inferSelect;
 
 export type OrderSchema = {
   [order._.name]: typeof order.$inferSelect;
+  [diningTable._.name]: typeof diningTable.$inferSelect | null;
+  diningTableEmployee: typeof employee.$inferSelect | null;
   [employee._.name]: typeof employee.$inferSelect | null;
   [client._.name]: typeof client.$inferSelect | null;
   [dish._.name]: typeof dish.$inferSelect | null;
@@ -47,14 +57,29 @@ export type OrderSchema = {
 
 export type ShallowOrderSchema = {
   [order._.name]: typeof order.$inferSelect;
+  [diningTable._.name]: typeof diningTable.$inferSelect | null;
+  diningTableEmployee: typeof employee.$inferSelect | null;
   [employee._.name]: typeof employee.$inferSelect | null;
   [client._.name]: typeof client.$inferSelect | null;
 };
 
 export type DishInOrderSchema = {
   [order._.name]: typeof order.$inferSelect;
+  [diningTable._.name]: typeof diningTable.$inferSelect | null;
+  diningTableEmployee: typeof employee.$inferSelect | null;
   [dish._.name]: typeof dish.$inferSelect | null;
   [orderToDish._.name]: typeof orderToDish.$inferSelect | null;
   [employee._.name]: typeof employee.$inferSelect | null;
   [client._.name]: typeof client.$inferSelect | null;
+};
+
+export type ClientSchema = {
+  [client._.name]: typeof client.$inferSelect;
+  [address._.name]: typeof address.$inferSelect | null;
+};
+
+export type CashPaymentRequestSchema = {
+  [cashPaymentRequest._.name]: typeof cashPaymentRequest.$inferSelect;
+  [order._.name]: typeof order.$inferSelect | null;
+  [diningTable._.name]: typeof diningTable.$inferSelect | null;
 };

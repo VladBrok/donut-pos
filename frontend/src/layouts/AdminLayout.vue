@@ -28,10 +28,16 @@ const menuList = [
     meta: t.value.modifications,
   },
   {
+    icon: "o_table_restaurant",
+    label: t.value.diningTables,
+    to: "/admin/dining-tables",
+    meta: t.value.diningTables,
+  },
+  {
     icon: "o_person",
-    label: t.value.employees,
-    to: "/admin/employees",
-    meta: t.value.employees,
+    label: t.value.clients,
+    to: "/admin/clients",
+    meta: t.value.clients,
   },
 ];
 </script>

@@ -9,6 +9,7 @@ import { useStore as useNanoStore } from "@nanostores/vue";
 import {
   ACCESS_DENIED,
   CATEGORY_NAME_EXISTS,
+  DINING_TABLE_EXISTS,
   EMPLOYEE_WITH_EMAIL_EXISTS,
   EMPLOYEE_WITH_PHONE_EXISTS,
   IMAGE_UPLOAD_FAIL,
@@ -16,9 +17,11 @@ import {
   PASSWORD_MIN_LENGTH,
   PASSWORD_SPECIAL_CHARS,
   PAYMENT_LINK_GENERATION_ERROR,
+  USER_EXISTS,
   USER_NOT_FOUND,
   WRONG_PASSWORD,
 } from "donut-shared";
+import { AUTH_BEFORE_ORDER_CREATE } from "src/lib/constants";
 
 export const locale = localeFrom(
   // atom("pl"),
@@ -44,12 +47,15 @@ export const messages = i18n("messages", {
   dishCategories: "Categories",
   createDishCategory: "Create dish category",
   updateDishCategory: "Update dish category",
+  createDiningTable: "Create dining table",
+  updateDiningTable: "Update dining table",
   dishes: "Dishes",
   createDish: "Create dish",
   updateDish: "Update dish",
   image: "Image",
   name: "Name",
   category: "Category",
+  waiter: "Waiter",
   phone: "Phone",
   isPhoneVerified: "Phone verified",
   email: "Email",
@@ -64,6 +70,7 @@ export const messages = i18n("messages", {
   active: "Active",
   perPage: "Records per page",
   addDishCategory: "Add category",
+  addTable: "Add table",
   addDish: "Add dish",
   addEmployee: "Add employee",
   addModification: "Add modification",
@@ -89,6 +96,8 @@ export const messages = i18n("messages", {
   search: "Search",
   modifications: "Modifications",
   employees: "Employees",
+  diningTables: "Dining tables",
+  clients: "Clients",
   createModification: "Create modification",
   updateModification: "Update modification",
   createEmployee: "Create employee",
@@ -131,6 +140,7 @@ export const messages = i18n("messages", {
   menu: "Menu",
   orderNumber: "Order number",
   tableNumber: "Table",
+  table: "Number",
   orderStatus: "Status",
   dishCount: "Dishes",
   total: "Total, zł",
@@ -142,7 +152,7 @@ export const messages = i18n("messages", {
   delivered: "Delivered",
   selectPaymentMethod: "Select payment method",
   cash: "Cash",
-  creditCard: "Credit card",
+  creditCard: "Card",
   blik: "Blik",
   payWithCash: "Pay with cash",
   scanQrCode: "Scan to pay",
@@ -152,18 +162,35 @@ export const messages = i18n("messages", {
   change: "Change",
   makeSureChangeGiven: "Make sure you give the customer the change",
   paid: "Paid",
+  cashPaymentRequest: "Cash payment request",
+  cashPaymentRequested: params(
+    "Cash payment requested: table {table}, order {orderNumber}"
+  ),
 
   // Kitchen pages
   viewDetails: "View details",
   startCooking: "Start",
   finishCooking: "Ready",
   done: "Done",
-  orderCreated: params(`New order: #{orderNumber}`),
+  orderCreated: params(`New order: {orderNumber}`),
   pay: "Pay",
   next: "Next",
 
   // Client pages
   orderDetails: "Order details",
+  viewYourOrders: "view your orders",
+  welcome: "Welcome!",
+  chooseDishesInstruction:
+    "Choose dishes that you want to order from the menu.",
+  viewOrdersInstruction: "You can view your orders on the",
+  close: "Close",
+  ordersPage: "orders page",
+  orderWasCreated: "Your order was created",
+  viewOrder: "View order",
+  waiterWasCalled: "We called a waiter!",
+  waiterWillAcceptPayment:
+    "Waiter will come to your table and accept the payment",
+  ok: "OK",
 
   // Payment pages
   paymentSuccessPageTitle: "Payment success",
@@ -171,6 +198,7 @@ export const messages = i18n("messages", {
   paymentForOrder: "Payment for",
   isSuccessfull: "is successfull",
   goToMenu: "go to menu",
+  acceptPayment: "Accept payment",
 
   // Order statuses
   orderStatus_all: "All",
@@ -181,9 +209,10 @@ export const messages = i18n("messages", {
   orderStatus_delivering: "Delivering",
   orderStatus_delivered: "Delivered",
 
-  // Login page
+  // Login & signup pages
   adminLoginPageTitle: "Admin login",
   waiterLoginPageTitle: "Waiter login",
+  clientLoginPageTitle: "Log in",
   kitchenLoginPageTitle: "Login to kitchen",
   passwordRequired: "Please enter a password",
   phoneRequired: "Please enter a phone number",
@@ -192,8 +221,16 @@ export const messages = i18n("messages", {
   emailLabel: "Email",
   passwordLabel: "Password",
   logIn: "Log in",
+  signUp: "Sign up",
   showPassword: "Show password",
   hidePassword: "Hide password",
+  alreadyHaveAccount: "Already have an account?",
+  dontHaveAccount: "Don't have an account?",
+
+  // Misc
+  scanToOrder: "Scan to order",
+  cafe: "Cafe",
+  cafeName: "Pinczow",
 
   // Confirmations
   confirmDishCategoryDelete: "Are you sure you want to delete category",
@@ -201,6 +238,7 @@ export const messages = i18n("messages", {
   confirmModificationDelete: "Are you sure you want to delete modification",
   confirmEmployeeDelete: "Are you sure you want to delete employee",
   confirmCurrentOrderClear: "Are you sure you want to clear the current order",
+  confirmTableDelete: "Are you sure you want to delete table with number",
 
   // Logux statuses
   disconnectedMessage: "Cannot connect to the server",
@@ -213,6 +251,7 @@ export const messages = i18n("messages", {
   // Success
   deleteSuccess: "Deleted successfully",
   createSuccess: "Created successfully",
+  orderCreateSuccess: "Order created successfully",
   paymentSuccess: "Paid successfully",
   updateSuccess: "Updated successfully",
   copyToClipboardSuccess: "Copied to clipboard",
@@ -223,6 +262,9 @@ export const messages = i18n("messages", {
   [IMAGE_UPLOAD_FAIL]: "Failed to upload the image",
   [CATEGORY_NAME_EXISTS]: params(
     'Category with name "{name}" already exists. Please choose another name'
+  ),
+  [DINING_TABLE_EXISTS]: params(
+    'Table with number "{tableNumber}" already exists. Please specify another number'
   ),
   [MODIFICATION_NAME_EXISTS]: params(
     'Modification with name "{name}" already exists. Please choose another name'
@@ -238,6 +280,9 @@ export const messages = i18n("messages", {
   copyToClipboardError: "Failed to copy",
   [PAYMENT_LINK_GENERATION_ERROR]:
     "Failed to generate a QR code for payment. Please choose a different payment method",
+  [USER_EXISTS]:
+    "User with the same email already exists. Please choose another email",
+  [AUTH_BEFORE_ORDER_CREATE]: "Plase Sign Up or Login to create an order",
 });
 
 export function useI18nStore() {

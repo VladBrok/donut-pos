@@ -10,16 +10,23 @@ import { Router } from "vue-router";
 import { Store as VuexStore } from "vuex";
 
 import { assert } from "donut-shared";
+import { ICashPaymentRequestsState } from "src/store/cash-payment-requests/state";
+import { IClientsState } from "src/store/clients/state";
+import { IDiningTablesState } from "src/store/dining-tables/state";
 import { IOrderDrawerState } from "src/store/order-drawer/state";
 import { IOrdersState } from "src/store/orders/state";
+import { IWelcomeBannerState } from "src/store/welcome-banner/state";
 import { createClient } from "../lib/logux/create-client";
 import { setErrorHandler } from "../lib/logux/set-error-handler";
 import { setUndoHandler } from "../lib/logux/set-undo-handler";
 import { watchSyncStatus } from "../lib/logux/watch-sync-status";
 import auth from "./auth";
 import { IAuthState } from "./auth/state";
+import cashPaymentRequests from "./cash-payment-requests";
+import clients from "./clients";
 import currentOrder from "./current-order";
 import { ICurrentOrderState } from "./current-order/state";
+import diningTables from "./dining-tables";
 import dishCategories from "./dish-categories";
 import { IDishCategoriesState } from "./dish-categories/state";
 import dishes from "./dishes";
@@ -32,6 +39,7 @@ import orderDrawer from "./order-drawer";
 import orders from "./orders";
 import roles from "./roles";
 import { IRolesState } from "./roles/state";
+import welcomeBanner from "./welcome-banner";
 
 export interface StateInterface {
   // Define your own store structure, using submodules if needed
@@ -44,6 +52,10 @@ export interface StateInterface {
   currentOrder: ICurrentOrderState;
   orders: IOrdersState;
   orderDrawer: IOrderDrawerState;
+  diningTables: IDiningTablesState;
+  welcomeBanner: IWelcomeBannerState;
+  cashPaymentRequests: ICashPaymentRequestsState;
+  clients: IClientsState;
 }
 
 // provide typings for `this.$store`
@@ -81,6 +93,10 @@ export default store(function (/* { ssrContext } */) {
     currentOrder,
     orders,
     orderDrawer,
+    diningTables,
+    welcomeBanner,
+    cashPaymentRequests,
+    clients,
   };
 
   for (const module of Object.values(modules)) {

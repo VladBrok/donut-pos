@@ -9,6 +9,12 @@ CREATE TABLE "address" (
   "room" TEXT
 );
 
+CREATE TABLE "dining_table" (
+  "id" UUID PRIMARY KEY,
+  "employee_id" UUID,
+  "number" TEXT
+);
+
 CREATE TABLE "client" (
   "id" UUID PRIMARY KEY,
   "address_id" UUID,
@@ -20,6 +26,12 @@ CREATE TABLE "client" (
   "is_email_verified" BOOLEAN,
   "password_hash" TEXT,
   "registered_at" TIMESTAMP
+);
+
+CREATE TABLE "cash_payment_request" (
+  "id" UUID PRIMARY KEY,
+  "order_id" UUID,
+  "total_cost" INT
 );
 
 CREATE TABLE "work_schedule" (
@@ -111,8 +123,8 @@ CREATE TABLE "order" (
   "client_id" UUID,
   "employee_id" UUID,
   "sale_point_id" UUID,
+  "dining_table_id" UUID,
   "number" TEXT,
-  "table_number" TEXT,
   "comment" TEXT,
   "status" TEXT,
   "created_date" TIMESTAMP,
@@ -141,11 +153,17 @@ CREATE TABLE "order_to_dish_to_modification" (
   "modification_count" INT
 );
 
+CREATE INDEX "dining_table_employee_id_idx" ON "dining_table" ("employee_id");
+
+CREATE INDEX "dining_table_number_idx" ON "dining_table" ("number");
+
 CREATE INDEX "client_address_id_idx" ON "client" ("address_id");
 
 CREATE INDEX "client_phone_idx" ON "client" ("phone");
 
 CREATE INDEX "client_email_idx" ON "client" ("email");
+
+CREATE INDEX "cash_payment_request_order_id_idx" ON "cash_payment_request" ("order_id");
 
 CREATE INDEX "work_schedule_sale_point_id_idx" ON "work_schedule" ("sale_point_id");
 
@@ -173,6 +191,8 @@ CREATE INDEX "dish_to_modification_modification_id_idx" ON "dish_to_modification
 
 CREATE INDEX "order_client_id_idx" ON "order" ("client_id");
 
+CREATE INDEX "order_dining_table_id_idx" ON "order" ("dining_table_id");
+
 CREATE INDEX "order_employee_id_idx" ON "order" ("employee_id");
 
 CREATE INDEX "order_sale_point_id_idx" ON "order" ("sale_point_id");
@@ -190,6 +210,10 @@ CREATE INDEX "order_to_dish_status_idx" ON "order_to_dish" ("status");
 CREATE INDEX "order_to_dish_to_modification_order_to_dish_id_idx" ON "order_to_dish_to_modification" ("order_to_dish_id");
 
 CREATE INDEX "order_to_dish_to_modification_modification_id_idx" ON "order_to_dish_to_modification" ("modification_id");
+
+ALTER TABLE "dining_table" ADD FOREIGN KEY ("employee_id") REFERENCES "employee" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "cash_payment_request" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id") ON DELETE SET NULL;
 
 ALTER TABLE "client" ADD FOREIGN KEY ("address_id") REFERENCES "address" ("id") ON DELETE SET NULL;
 
@@ -212,6 +236,8 @@ ALTER TABLE "dish_to_sale_point" ADD FOREIGN KEY ("sale_point_id") REFERENCES "s
 ALTER TABLE "order" ADD FOREIGN KEY ("employee_id") REFERENCES "employee" ("id") ON DELETE SET NULL;
 
 ALTER TABLE "order" ADD FOREIGN KEY ("client_id") REFERENCES "client" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "order" ADD FOREIGN KEY ("dining_table_id") REFERENCES "dining_table" ("id") ON DELETE SET NULL;
 
 ALTER TABLE "order" ADD FOREIGN KEY ("sale_point_id") REFERENCES "sale_point" ("id") ON DELETE SET NULL;
 

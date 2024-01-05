@@ -4,34 +4,46 @@
       :has-content="Boolean(order)"
       :dish-count="order?.dishes.length"
       :total-cost="totalCost"
+      custom-empty
     >
       <template #content>
         <big-spinner v-if="isSubscribing" />
         <div v-else>
           <div>
             <!-- TODO: add client autotomplete field -->
-            <q-input
-              :model-value="store.state.currentOrder.order?.tableNumber"
+            <q-select
+              :model-value="order?.table?.number"
               @update:model-value="
                 store.commit.crossTab(
                   updateCurrentOrderTableNumberAction({
-                    tableNumber: $event?.toString()?.trim() || '',
+                    table:
+                      diningTables.find((x) => x.number === $event?.trim()) ||
+                      null,
                   })
                 )
               "
+              use-input
+              fill-input
               stack-label
+              clearable
+              hide-selected
+              input-debounce="0"
+              :disable="!!route.query.table && !!order?.table?.number"
+              :options="filteredTableNames"
+              @filter="filterTables"
               :label="`${t.tableNumberLabel} *`"
-              lazy-rules
-              type="text"
-              :rules="[
-                (val) => (!!val && val.length > 0) || t.fieldRequired,
-                (val) =>
-                  val.length <= TABLE_NUMBER_MAX_LENGTH ||
-                  t.maxLength({ max: TABLE_NUMBER_MAX_LENGTH }),
-              ]"
-            />
+              :rules="[(val) => (!!val && val.length > 0) || t.fieldRequired]"
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section>
+                    {{ t.noResults }}
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
             <q-input
-              :model-value="store.state.currentOrder.order?.comment"
+              :model-value="order?.comment"
               @update:model-value="
                 store.commit.crossTab(
                   updateCurrentOrderCommentAction({
@@ -121,6 +133,26 @@
           </q-btn>
         </div>
       </template>
+      <template #empty>
+        <div class="q-mt-xl">
+          <div v-if="previousOrder" class="column justify-center items-center">
+            <q-img
+              src="/src/assets/cart.svg"
+              alt=""
+              fit="cover"
+              class="image-md"
+            />
+            <p class="text-h6">{{ t.orderWasCreated }}!</p>
+            <RouterLink
+              class="text-body1 q-mt-sm"
+              :to="`/orders/${previousOrder.orderNumber}`"
+            >
+              {{ t.viewOrder }}
+            </RouterLink>
+          </div>
+          <no-data v-else :text="t.emptyOrder" />
+        </div>
+      </template>
     </OrderView>
   </q-form>
 
@@ -137,36 +169,55 @@ import { useSubscription } from "@logux/vuex";
 import {
   CHANNELS,
   COMMENT_MAX_LENGTH,
-  TABLE_NUMBER_MAX_LENGTH,
   addDishToCurrentOrderAction,
   clearCurrentOrderAction,
-  createOrderAction,
   decrementDishInCurrentOrderAction,
   getOrderDishTotalCost,
   removeDishFromCurrentOrderAction,
   updateCurrentOrderCommentAction,
   updateCurrentOrderTableNumberAction,
 } from "donut-shared";
-import { Notify } from "quasar";
+import { updatePreviousOrderAction } from "donut-shared/src/actions/current-order";
+import { updateCreateOrderAfterAuthAction } from "donut-shared/src/actions/orders";
 import BigSpinner from "src/components/BigSpinner.vue";
 import DishInOrder from "src/components/DishInOrder.vue";
 import OrderView from "src/components/OrderView.vue";
-import { SUCCESS_TIMEOUT_MS } from "src/lib/constants";
+import { useIsLoggedIn } from "src/lib/composables/useIsLoggedIn";
+import { AUTH_BEFORE_ORDER_CREATE } from "src/lib/constants";
+import { createOrder } from "src/lib/create-order";
+import { createFuzzySearcher } from "src/lib/fuzzy-search";
 import { onFormValidationError } from "src/lib/on-form-validation-error";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { useI18nStore } from "../lib/i18n";
 import { useStore } from "../store";
 import ConfirmDialog from "./ConfirmDialog.vue";
+import NoData from "./NoData.vue";
 
 const store = useStore();
 const order = computed(() => store.state.currentOrder.order);
 const t = useI18nStore();
 const isConfirmClearOpen = ref(false);
 const isSubmitting = ref(false);
-const channels = computed(() => [CHANNELS.DISHES, CHANNELS.MODIFICATIONS]);
+const channels = computed(() => [
+  CHANNELS.DISHES,
+  CHANNELS.MODIFICATIONS,
+  CHANNELS.DINING_TABLES,
+]);
+const tableNumberSearchInput = ref("");
+const tableNumberFuzzySearch = computed(() =>
+  createFuzzySearcher(store.state.diningTables.tables, ["number"])
+);
+const filteredTableNames = computed(() =>
+  tableNumberFuzzySearch.value
+    .search(tableNumberSearchInput.value)
+    .map((x) => x.number)
+);
 const isSubscribing = useSubscription(channels, { store: store as any });
+const diningTables = computed(() => store.state.diningTables.tables);
 const dishes = computed(() => store.state.dishes.dishes);
 const modifications = computed(() => store.state.modifications.modifications);
+const previousOrder = computed(() => store.state.currentOrder.previous);
 const dishesInOrder = computed(() =>
   isSubscribing.value
     ? []
@@ -199,6 +250,52 @@ const hasDishOutOfStock = computed(
 const totalCost = computed(
   () => dishesInOrder.value?.reduce((sum, cur) => sum + cur.totalCost, 0) || 0
 );
+const route = useRoute();
+const router = useRouter();
+const isLoggedIn = useIsLoggedIn();
+
+const unsubscribe = watch(
+  isSubscribing,
+  () => {
+    if (isSubscribing.value) {
+      return;
+    }
+
+    if (route.query.table) {
+      store.commit.crossTab(
+        updateCurrentOrderTableNumberAction({
+          table:
+            diningTables.value.find(
+              (x) => x.number === route.query.table?.toString()?.trim()
+            ) || null,
+        })
+      );
+    }
+
+    unsubscribe();
+  },
+  { immediate: true }
+);
+
+watch(
+  order,
+  (newOrder, oldOrder) => {
+    if (newOrder && !oldOrder) {
+      store.commit.crossTab(
+        updatePreviousOrderAction({
+          order: undefined,
+        })
+      );
+    }
+  },
+  { immediate: true }
+);
+
+const filterTables = (val: string, update: any) => {
+  update(() => {
+    tableNumberSearchInput.value = val;
+  });
+};
 
 function clear() {
   store.commit.crossTab(clearCurrentOrderAction());
@@ -206,27 +303,19 @@ function clear() {
 }
 
 async function onSubmit() {
-  isSubmitting.value = true;
-  store.commit
-    .sync(
-      createOrderAction({
-        order: order.value!,
+  if (!isLoggedIn.value) {
+    store.commit.crossTab(
+      updateCreateOrderAfterAuthAction({
+        value: true,
       })
-    )
-    .then(() => {
-      Notify.create({
-        type: "positive",
-        position: "top",
-        timeout: SUCCESS_TIMEOUT_MS,
-        message: t.value.createSuccess,
-        multiLine: true,
-        group: false,
-      });
+    );
+    router.push(`/sign-up?text=${AUTH_BEFORE_ORDER_CREATE}`);
+    return;
+  }
 
-      store.commit.crossTab(clearCurrentOrderAction());
-    })
-    .finally(() => {
-      isSubmitting.value = false;
-    });
+  isSubmitting.value = true;
+  createOrder(store, t).finally(() => {
+    isSubmitting.value = false;
+  });
 }
 </script>

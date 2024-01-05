@@ -21,6 +21,7 @@ import {
 import { PgColumn } from "drizzle-orm/pg-core";
 import {
   client,
+  diningTable,
   dish,
   employee,
   modification,
@@ -39,12 +40,14 @@ import { db } from "../index.js";
 
 export interface IGetOrder {
   employeeId?: string;
+  clientId?: string;
   statuses?: OrderStatus[];
   orderNumber?: string;
   strictOrderNumberCompare?: boolean;
   orderBy?: "desc" | "asc";
   search?: string;
   ongoingOnly?: boolean;
+  orderId?: string;
 }
 
 export interface IGetOrdersPage extends IGetOrder {
@@ -57,13 +60,34 @@ export async function getOrdersPage(params: IGetOrdersPage) {
   console.time("get_orders");
 
   const orders = db
-    .select()
+    .select({
+      id: order.id,
+      clientId: order.clientId,
+      employeeId: order.employeeId,
+      salePointId: order.salePointId,
+      number: order.number,
+      comment: order.comment,
+      status: order.status,
+      createdDate: order.createdDate,
+      cookingDate: order.cookingDate,
+      cookedDate: order.cookedDate,
+      deliveringDate: order.deliveringDate,
+      deliveredDate: order.deliveredDate,
+      paidDate: order.paidDate,
+      diningTableId: order.diningTableId,
+    })
     .from(order)
     .orderBy(makeOrderByFilter(params, order.createdDate))
+    .leftJoin(diningTable, eq(diningTable.id, order.diningTableId))
     .where(makeWhereFilter(params))
     .offset((params.page - 1) * params.perPage)
     .limit(params.perPage)
     .as("order");
+
+  const diningTableEmployee = db
+    .select()
+    .from(employee)
+    .as("diningTableEmployee");
 
   const data = await db
     .select()
@@ -80,6 +104,11 @@ export async function getOrdersPage(params: IGetOrdersPage) {
     )
     .leftJoin(employee, eq(employee.id, order.employeeId))
     .leftJoin(client, eq(client.id, order.clientId))
+    .leftJoin(diningTable, eq(diningTable.id, order.diningTableId))
+    .leftJoin(
+      diningTableEmployee,
+      eq(diningTableEmployee.id, diningTable.employeeId)
+    )
     .orderBy(makeOrderByFilter(params, orders.createdDate));
 
   const total = await db
@@ -87,6 +116,7 @@ export async function getOrdersPage(params: IGetOrdersPage) {
       value: sql`count('*')`.mapWith(Number),
     })
     .from(order)
+    .leftJoin(diningTable, eq(diningTable.id, order.diningTableId))
     .where(makeWhereFilter(params));
 
   console.timeEnd("get_orders");
@@ -94,13 +124,25 @@ export async function getOrdersPage(params: IGetOrdersPage) {
   return { ordersPage: ordersAdapter(data), total: total?.[0].value || 0 };
 }
 
-export async function getSingleOrder(orderNumber: string, userId?: string) {
+export async function getSingleOrder(
+  orderNumber?: string,
+  userId?: string,
+  orderId?: string
+) {
+  const isClient = (
+    await db
+      .select()
+      .from(client)
+      .where(userId ? eq(client.id, userId) : undefined)
+  )?.[0];
   const result = await getOrdersPage({
-    employeeId: userId, // TODO: this may aslo be a client id...
+    employeeId: isClient ? undefined : userId,
+    clientId: !isClient ? undefined : userId,
     page: 1,
     perPage: 1,
     orderNumber: orderNumber,
     strictOrderNumberCompare: true,
+    orderId: orderId,
   });
   return result.ordersPage?.[0] || null;
 }
@@ -122,6 +164,7 @@ export function makeOrderByFilter(params: IGetOrder, createdDateCol: PgColumn) {
 function makeWhereFilter(params: IGetOrder) {
   return and(
     params.employeeId ? eq(order.employeeId, params.employeeId) : undefined,
+    params.clientId ? eq(order.clientId, params.clientId) : undefined,
     params.orderNumber
       ? ilike(
           order.number,
@@ -130,11 +173,12 @@ function makeWhereFilter(params: IGetOrder) {
             : `%${params.orderNumber.trim()}%`
         )
       : undefined,
+    params.orderId ? eq(order.id, params.orderId) : undefined,
     params.search
       ? or(
           ilike(order.number, `%${params.search}%`),
           ilike(order.comment, `%${params.search}%`),
-          ilike(order.tableNumber, `%${params.search}%`)
+          ilike(diningTable.number, `%${params.search}%`)
         )
       : undefined,
     params.ongoingOnly
@@ -158,7 +202,8 @@ function makeWhereFilter(params: IGetOrder) {
 // TODO: find a way to make it faster (store jsons?)
 export async function createOrder(
   data: ICurrentOrder,
-  employeeId: string
+  userId: string,
+  isClient?: boolean
 ): Promise<IOrder> {
   const orderNumber = generateOrderNumber();
   const existing = await db
@@ -176,9 +221,10 @@ export async function createOrder(
     await tx.insert(order).values({
       id: orderToCreate.id,
       comment: data.comment,
-      tableNumber: data.tableNumber,
-      employeeId: employeeId,
+      employeeId: isClient ? data.table?.employee.id : userId,
+      clientId: !isClient ? null : userId,
       number: orderNumber,
+      diningTableId: data.table?.id || null,
       createdDate: new Date(),
       status: ORDER_STATUSES.CREATED,
     });
@@ -323,11 +369,21 @@ export async function deliverDish(orderId: string, dishIdInOrder: string) {
 }
 
 export async function getOrdersShallow(params: IGetOrder, dbOrTx = db) {
+  const diningTableEmployee = db
+    .select()
+    .from(employee)
+    .as("diningTableEmployee");
+
   const data = await dbOrTx
     .select()
     .from(order)
     .where(makeWhereFilter(params))
     .leftJoin(employee, eq(employee.id, order.employeeId))
+    .leftJoin(diningTable, eq(diningTable.id, order.diningTableId))
+    .leftJoin(
+      diningTableEmployee,
+      eq(diningTableEmployee.id, diningTable.employeeId)
+    )
     .leftJoin(client, eq(client.id, order.clientId));
 
   return shallowOrdersAdapter(data);
@@ -338,6 +394,11 @@ export async function getCookedDishes(
   dishIdInOrder?: string,
   dbOrTx = db
 ) {
+  const diningTableEmployee = db
+    .select()
+    .from(employee)
+    .as("diningTableEmployee");
+
   const dishes = await dbOrTx
     .select()
     .from(order)
@@ -353,6 +414,11 @@ export async function getCookedDishes(
     )
     .where(dishIdInOrder ? eq(orderToDish.id, dishIdInOrder) : undefined)
     .leftJoin(dish, eq(dish.id, orderToDish.dishId))
+    .leftJoin(diningTable, eq(diningTable.id, order.diningTableId))
+    .leftJoin(
+      diningTableEmployee,
+      eq(diningTableEmployee.id, diningTable.employeeId)
+    )
     .orderBy(asc(order.createdDate));
 
   return cookedDishesAdapter(dishes);

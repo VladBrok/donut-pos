@@ -7,6 +7,7 @@ export interface IOrdersState {
   cookedDishes: ICookedDish[];
   order: IOrder | null;
   paymentLink?: string;
+  createOrderAfterAuth?: boolean;
 }
 
 const state: IOrdersState = {

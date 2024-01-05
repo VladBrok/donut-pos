@@ -1,6 +1,7 @@
 import { LoguxVuexStore } from "@logux/vuex";
 import {
   CATEGORY_NAME_EXISTS,
+  DINING_TABLE_EXISTS,
   EMPLOYEE_WITH_EMAIL_EXISTS,
   EMPLOYEE_WITH_PHONE_EXISTS,
   MODIFICATION_NAME_EXISTS,
@@ -8,7 +9,6 @@ import {
 } from "donut-shared";
 import { logError, logInfo, logWarn } from "donut-shared/src/lib/log";
 import { Notify } from "quasar";
-import { formatPhoneNumber } from "src/lib/phone";
 import { ERROR_TIMEOUT_MS, NO_TIMEOUT } from "../constants";
 import { useI18nStore } from "../i18n";
 
@@ -31,11 +31,15 @@ export function setUndoHandler(Store: LoguxVuexStore) {
       message =
         reason === USER_NOT_FOUND
           ? t.value.userNotFound({
-              email: formatPhoneNumber(undone.action.payload.email),
+              email: undone.action.payload.email,
             })
           : reason === CATEGORY_NAME_EXISTS
           ? t.value.categoryNameExists({
               name: undone.action.payload.name,
+            })
+          : reason === DINING_TABLE_EXISTS
+          ? t.value.diningTableExists({
+              tableNumber: undone.action.payload.table.number,
             })
           : reason === MODIFICATION_NAME_EXISTS
           ? t.value.modificationNameExists({

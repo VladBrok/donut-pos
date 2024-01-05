@@ -164,13 +164,35 @@ export const modification = pgTable("modification", {
 	price: integer("price"),
 });
 
+export const diningTable = pgTable("dining_table", {
+	id: uuid("id").primaryKey().notNull(),
+	employeeId: uuid("employee_id").references(() => employee.id, { onDelete: "set null" } ),
+	number: text("number"),
+},
+(table) => {
+	return {
+		employeeIdIdx: index("dining_table_employee_id_idx").on(table.employeeId),
+		numberIdx: index("dining_table_number_idx").on(table.number),
+	}
+});
+
+export const cashPaymentRequest = pgTable("cash_payment_request", {
+	id: uuid("id").primaryKey().notNull(),
+	orderId: uuid("order_id").references(() => order.id, { onDelete: "set null" } ),
+	totalCost: integer("total_cost"),
+},
+(table) => {
+	return {
+		orderIdIdx: index("cash_payment_request_order_id_idx").on(table.orderId),
+	}
+});
+
 export const order = pgTable("order", {
 	id: uuid("id").primaryKey().notNull(),
 	clientId: uuid("client_id").references(() => client.id, { onDelete: "set null" } ),
 	employeeId: uuid("employee_id").references(() => employee.id, { onDelete: "set null" } ),
 	salePointId: uuid("sale_point_id").references(() => salePoint.id, { onDelete: "set null" } ),
 	number: text("number"),
-	tableNumber: text("table_number"),
 	comment: text("comment"),
 	status: text("status"),
 	createdDate: timestamp("created_date", { mode: 'date' }),
@@ -179,9 +201,11 @@ export const order = pgTable("order", {
 	deliveringDate: timestamp("delivering_date", { mode: 'date' }),
 	deliveredDate: timestamp("delivered_date", { mode: 'date' }),
 	paidDate: timestamp("paid_date", { mode: 'date' }),
+	diningTableId: uuid("dining_table_id").references(() => diningTable.id, { onDelete: "set null" } ),
 },
 (table) => {
 	return {
+		diningTableIdIdx: index("order_dining_table_id_idx").on(table.diningTableId),
 		statusIdx: index("order_status_idx").on(table.status),
 		clientIdIdx: index("order_client_id_idx").on(table.clientId),
 		employeeIdIdx: index("order_employee_id_idx").on(table.employeeId),

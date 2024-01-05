@@ -1,6 +1,6 @@
 import { DishInOrderStatus } from "src/constants/dish-in-order-statuses.js";
 import { OrderStatus } from "src/constants/order-statuses.js";
-import { ICurrentOrder } from "../actions/current-order.js";
+import { ICurrentOrder, IDiningTable } from "../actions/current-order.js";
 import { createAction } from "./index.js";
 
 export interface ICookedDish {
@@ -35,7 +35,7 @@ export interface IDishInOrder {
 export interface IOrder {
   id: string;
   comment: string;
-  tableNumber: string;
+  table: IDiningTable;
   orderNumber: string;
   status: OrderStatus;
   createdDate: string;
@@ -58,7 +58,7 @@ export interface IOrder {
 export interface IShallowOrder {
   id: string;
   comment: string;
-  tableNumber: string;
+  table: IDiningTable;
   orderNumber: string;
   status: OrderStatus;
   createdDate: string;
@@ -86,6 +86,7 @@ export const loadOrdersPageAction = createAction<{
   status?: OrderStatus;
   orderNumber?: string;
   search?: string;
+  isClient?: boolean;
 }>("orders/loadPage");
 
 export const ordersPageLoadedAction = createAction<{
@@ -99,6 +100,7 @@ export const ordersForKitchenLoadedAction = createAction<{
 
 export const createOrderAction = createAction<{
   order: ICurrentOrder;
+  isClient?: boolean;
 }>("orders/create");
 
 export const orderCreatedAction = createAction<{
@@ -107,6 +109,7 @@ export const orderCreatedAction = createAction<{
 
 export const startCookingDishAction = createAction<{
   employeeId: string;
+  clientId: string;
   orderId: string;
   orderNumber: string;
   dishIdInOrder: string;
@@ -114,6 +117,7 @@ export const startCookingDishAction = createAction<{
 
 export const dishStartedCookingAction = createAction<{
   employeeId: string;
+  clientId: string;
   orderId: string;
   orderNumber: string;
   dishIdInOrder: string;
@@ -161,3 +165,7 @@ export const getPaymentLinkAction = createAction<{
 export const paymentLinkReceivedAction = createAction<{
   link: string;
 }>("orders/paymentLinkReceived");
+
+export const updateCreateOrderAfterAuthAction = createAction<{
+  value: boolean;
+}>("orders/updateCreateOrderAfterAuth");

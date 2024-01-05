@@ -35,7 +35,8 @@
         </template>
       </div>
     </q-card>
-    <no-data v-else class="q-mt-xl" :text="t.emptyOrder"> </no-data>
+    <slot v-else-if="customEmpty" name="empty" />
+    <no-data v-else-if="!customEmpty" class="q-mt-xl" :text="t.emptyOrder" />
   </div>
 </template>
 
@@ -51,6 +52,7 @@ defineProps<{
   applyShadow?: boolean;
   fullContentHeight?: boolean;
   dishCount?: number;
+  customEmpty?: boolean;
 }>();
 
 const t = useI18nStore();

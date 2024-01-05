@@ -27,6 +27,10 @@ a:hover {
   overflow-x: hidden;
 }
 
+.banner-border {
+  border: 2px solid $primary;
+}
+
 .d-block {
   display: block;
 }
@@ -108,9 +112,20 @@ a:hover {
   height: 45px;
 }
 
+.image-xs-sm {
+  width: 40px;
+  height: 40px;
+}
+
 .image-xs {
   width: 30px;
   height: 30px;
+}
+
+.knife-fork-image {
+  width: 50px;
+  height: 320px;
+  margin-bottom: 1rem;
 }
 
 .fit-cover {
@@ -163,6 +178,11 @@ a:hover {
 
 .max-w-xsm {
   max-width: 280px;
+  min-width: 0;
+}
+
+.max-w-micro {
+  max-width: 240px;
   min-width: 0;
 }
 
@@ -293,4 +313,16 @@ p {
 
 .fade-leave-active {
   position: absolute;
+}
+
+.fade-single-move,
+.fade-single-enter-active,
+.fade-single-leave-active {
+  transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+}
+
+.fade-single-enter-from,
+.fade-single-leave-to {
+  opacity: 0;
+  transform: scaleY(0.01) translate(30px, 0);
 }

@@ -4,11 +4,6 @@ import { useI18nStore } from "../lib/i18n";
 const t = useI18nStore();
 
 const routes: RouteRecordRaw[] = [
-  {
-    path: "/",
-    redirect: "/admin/login",
-  },
-
   // Admin
   {
     path: "/admin/login",
@@ -138,6 +133,45 @@ const routes: RouteRecordRaw[] = [
           title: t.value.updateEmployee,
         },
       },
+
+      // Tables
+      {
+        path: "dining-tables",
+        component: () =>
+          import("src/pages/admin/dining-tables/AdminDiningTables.vue"),
+        meta: {
+          title: t.value.diningTables,
+        },
+      },
+      {
+        path: "dining-tables/create",
+        component: () =>
+          import(
+            "src/pages/admin/dining-tables/AdminCreateUpdateDiningTable.vue"
+          ),
+        meta: {
+          title: t.value.createDiningTable,
+        },
+      },
+      {
+        path: "dining-tables/update/:id",
+        component: () =>
+          import(
+            "src/pages/admin/dining-tables/AdminCreateUpdateDiningTable.vue"
+          ),
+        meta: {
+          title: t.value.updateDiningTable,
+        },
+      },
+
+      // Clients
+      {
+        path: "clients",
+        component: () => import("src/pages/admin/clients/AdminClients.vue"),
+        meta: {
+          title: t.value.clients,
+        },
+      },
     ],
   },
 
@@ -210,14 +244,57 @@ const routes: RouteRecordRaw[] = [
   },
 
   // Client
-  // TODO: same as for other roles - if not authed, redirect to ClientLogin + client layout
-  // TODO: wrap this page in layout (clients layout or waiters layout or admins depending on who opens a page?)
   {
     path: "/orders/:orderNumber",
     component: () => import("src/pages/client/ClientSingleOrder.vue"),
     meta: {
       title: t.value.orderDetails,
     },
+  },
+  {
+    path: "/order-via-qr", // TODO: remove this page later
+    component: () => import("src/pages/OrderViaQR.vue"),
+    meta: {
+      title: t.value.orderDetails,
+    },
+  },
+  {
+    path: "/login",
+    component: () => import("pages/client/ClientLogin.vue"),
+    meta: {
+      title: t.value.logIn,
+    },
+  },
+  {
+    path: "/sign-up",
+    component: () => import("pages/client/ClientSignUp.vue"),
+    meta: {
+      title: t.value.signUp,
+    },
+  },
+  {
+    path: "/",
+    component: () => import("layouts/ClientLayout.vue"),
+    children: [
+      {
+        path: "",
+        redirect: "/menu",
+      },
+      {
+        path: "menu",
+        component: () => import("src/pages/client/ClientMenuPage.vue"),
+        meta: {
+          title: t.value.menu,
+        },
+      },
+      {
+        path: "orders",
+        component: () => import("pages/client/ClientOrdersPage.vue"),
+        meta: {
+          title: t.value.orders,
+        },
+      },
+    ],
   },
 
   // Always leave this as last one,

@@ -1,5 +1,18 @@
-export { createOrderAction, orderCreatedAction } from "./src/actions/orders.js";
-
+export type { IPermissions } from "./src/actions/auth.js";
+export {
+  cashPaymentRequestDeletedAction,
+  cashPaymentRequestedAction,
+  cashPaymentRequestsLoadedAction,
+  deleteCashPaymentRequestAction,
+  loadCashPaymentRequestsAction,
+  requestCashPaymentAction,
+} from "./src/actions/cash-payment-requests.js";
+export type { ICashPaymentRequest } from "./src/actions/cash-payment-requests.js";
+export {
+  clientsPageLoadedAction,
+  loadClientsPageAction,
+} from "./src/actions/client.js";
+export type { IClient } from "./src/actions/client.js";
 export {
   addDishToCurrentOrderAction,
   clearCurrentOrderAction,
@@ -13,6 +26,15 @@ export type {
   ICurrentOrderDish,
   ICurrentOrderDishModification,
 } from "./src/actions/current-order.js";
+export {
+  createDiningTableAction,
+  deleteDiningTableAction,
+  diningTableCreatedAction,
+  diningTableDeletedAction,
+  diningTableUpdatedAction,
+  loadDiningTablesAction,
+  updateDiningTableAction,
+} from "./src/actions/dining-tables.js";
 export {
   createEmployeeAction,
   deleteEmployeeAction,
@@ -37,7 +59,12 @@ export {
   openArbitraryOrderAction,
   openCurrentOrderAction,
 } from "./src/actions/order-drawer.js";
+export { createOrderAction, orderCreatedAction } from "./src/actions/orders.js";
 export { loadRolesAction } from "./src/actions/roles.js";
+export {
+  closeWelcomeBannerAction,
+  openWelcomeBannerAction,
+} from "./src/actions/welcome-banner.js";
 export * from "./src/constants/channels.js";
 export * from "./src/constants/dish-in-order-statuses.js";
 export * from "./src/constants/employee.js";
