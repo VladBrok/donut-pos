@@ -115,7 +115,6 @@ const originalTable = computed(() => {
 });
 const channels = computed(() => [CHANNELS.EMPLOYEES, CHANNELS.DINING_TABLES]);
 const waiterSearchInput = ref("");
-// TODO: add also email and some other data
 const waiter = ref<IDiningTable["employee"] & { label: string }>();
 const waiterFuzzySearch = computed(() =>
   createFuzzySearcher(store.state.employees.employees, [
