@@ -161,6 +161,7 @@ export const messages = i18n("messages", {
   change: "Change",
   makeSureChangeGiven: "Make sure you give the customer the change",
   paid: "Paid",
+  cashPaymentRequest: "Cash payment request",
   cashPaymentRequested: params(
     "Cash payment requested: table {table}, order {orderNumber}"
   ),
@@ -196,6 +197,7 @@ export const messages = i18n("messages", {
   paymentForOrder: "Payment for",
   isSuccessfull: "is successfull",
   goToMenu: "go to menu",
+  acceptPayment: "Accept payment",
 
   // Order statuses
   orderStatus_all: "All",

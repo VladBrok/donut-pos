@@ -19,6 +19,11 @@
         <q-menu fit style="overflow-x: hidden">
           <div style="min-width: 320px" class="q-px-xs">
             <TransitionGroup tag="div" name="fade">
+              <CashPaymentRequest
+                v-for="request in cashPaymentRequests"
+                :key="request.id"
+                :request="request"
+              />
               <dish-in-order
                 v-for="item of cookedDishes"
                 :key="item.dish.dishIdInOrder"
@@ -91,6 +96,7 @@ import {
   closeCurrentOrderAction,
   openCurrentOrderAction,
 } from "donut-shared/src/actions/order-drawer";
+import CashPaymentRequest from "src/components/CashPaymentRequest.vue";
 import CookedDishStatusButton from "src/components/CookedDishStatusButton.vue";
 import CurrentOrderView from "src/components/CurrentOrderView.vue";
 import DishInOrder from "src/components/DishInOrder.vue";
