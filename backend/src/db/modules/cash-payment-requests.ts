@@ -38,3 +38,19 @@ export async function requestCashPayment(
 
   return (await getCashPaymentRequests(undefined, id))[0];
 }
+
+export async function deleteCashPaymentRequest(id: string) {
+  const data = (
+    await db
+      .select()
+      .from(cashPaymentRequest)
+      .where(eq(cashPaymentRequest.id, id))
+      .leftJoin(order, eq(order.id, cashPaymentRequest.orderId))
+  )[0];
+
+  await db.delete(cashPaymentRequest).where(eq(cashPaymentRequest.id, id));
+
+  return {
+    employeeId: data?.order?.employeeId || "",
+  };
+}

@@ -36,3 +36,12 @@ export const requestCashPaymentAction = createAction<{
 export const cashPaymentRequestedAction = createAction<{
   request: ICashPaymentRequest;
 }>("cashPaymentRequests/requested");
+
+export const deleteCashPaymentRequestAction = createAction<{
+  id: string;
+}>("cashPaymentRequests/deleteRequest");
+
+export const cashPaymentRequestDeletedAction = createAction<{
+  id: string;
+  employeeId: string;
+}>("cashPaymentRequests/requestDeleted");

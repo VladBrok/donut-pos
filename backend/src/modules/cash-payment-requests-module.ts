@@ -5,6 +5,10 @@ import {
   cashPaymentRequestsLoadedAction,
   requestCashPaymentAction,
 } from "donut-shared";
+import {
+  cashPaymentRequestDeletedAction,
+  deleteCashPaymentRequestAction,
+} from "donut-shared/src/actions/cash-payment-requests.js";
 import * as db from "../db/modules/cash-payment-requests.js";
 import { hasWaiterPermission } from "../lib/access.js";
 
@@ -51,6 +55,33 @@ export default function cashPaymentRequestsModule(server: Server) {
         CHANNELS.CASH_PAYMENT_REQUESTS_OF_EMPLOYEE(
           action.payload.request.employeeId
         ),
+      ];
+    },
+  });
+
+  server.type(deleteCashPaymentRequestAction, {
+    async access(ctx) {
+      return true;
+    },
+    async process(ctx, action, meta) {
+      const result = await db.deleteCashPaymentRequest(action.payload.id);
+      await server.process(
+        cashPaymentRequestDeletedAction({
+          id: action.payload.id,
+          employeeId: result.employeeId,
+        })
+      );
+    },
+  });
+
+  server.type(cashPaymentRequestDeletedAction, {
+    async access() {
+      return false;
+    },
+    async process(ctx, action) {},
+    resend(ctx, action) {
+      return [
+        CHANNELS.CASH_PAYMENT_REQUESTS_OF_EMPLOYEE(action.payload.employeeId),
       ];
     },
   });
