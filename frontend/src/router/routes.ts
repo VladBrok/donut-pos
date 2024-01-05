@@ -163,6 +163,15 @@ const routes: RouteRecordRaw[] = [
           title: t.value.updateDiningTable,
         },
       },
+
+      // Clients
+      {
+        path: "clients",
+        component: () => import("src/pages/admin/clients/AdminClients.vue"),
+        meta: {
+          title: t.value.clients,
+        },
+      },
     ],
   },
 

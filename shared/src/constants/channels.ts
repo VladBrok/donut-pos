@@ -4,6 +4,7 @@ export const CHANNELS = {
   MODIFICATIONS: "modifications",
   EMPLOYEES: "employees",
   ROLES: "roles",
+  CLIENTS: "clients",
   ORDERS_OF_EMPLOYEE: (id = ":employeeId") => `orders/${id}`,
   ORDERS_OF_CLIENT: (id = ":clientId") => `ordersClient/${id}`,
   COOKED_DISHES_OF_EMPLOYEE: (id = ":employeeId") => `cookedDishes/${id}`,

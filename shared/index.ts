@@ -8,6 +8,10 @@ export {
   requestCashPaymentAction,
 } from "./src/actions/cash-payment-requests.js";
 export type { ICashPaymentRequest } from "./src/actions/cash-payment-requests.js";
+export {
+  clientsPageLoadedAction,
+  loadClientsPageAction,
+} from "./src/actions/client.js";
 export type { IClient } from "./src/actions/client.js";
 export {
   addDishToCurrentOrderAction,

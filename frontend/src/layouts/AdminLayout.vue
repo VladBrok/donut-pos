@@ -33,5 +33,11 @@ const menuList = [
     to: "/admin/dining-tables",
     meta: t.value.diningTables,
   },
+  {
+    icon: "o_person",
+    label: t.value.clients,
+    to: "/admin/clients",
+    meta: t.value.clients,
+  },
 ];
 </script>

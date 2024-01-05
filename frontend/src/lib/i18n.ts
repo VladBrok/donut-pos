@@ -97,6 +97,7 @@ export const messages = i18n("messages", {
   modifications: "Modifications",
   employees: "Employees",
   diningTables: "Dining tables",
+  clients: "Clients",
   createModification: "Create modification",
   updateModification: "Update modification",
   createEmployee: "Create employee",

@@ -11,7 +11,7 @@ import {
   loginAction,
   signUpAction,
 } from "donut-shared/src/actions/auth.js";
-import * as clientDb from "../db/modules/client.js";
+import * as clientDb from "../db/modules/clients.js";
 import * as db from "../db/modules/employees.js";
 import { compareWithHash, hash } from "../lib/crypt.js";
 import { decodeJwt, encodeJwt } from "../lib/jwt.js";
