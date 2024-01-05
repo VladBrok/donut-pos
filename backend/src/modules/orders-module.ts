@@ -187,10 +187,6 @@ export default function ordersModule(server: Server) {
     async access() {
       return false;
     },
-    async process(ctx, action) {
-      // TODO: send notifications
-      // await sendEmailNotification("@gmail.com", `dish was cooked`);
-    },
     resend(ctx, action) {
       return [
         CHANNELS.ORDERS_FOR_KITCHEN,

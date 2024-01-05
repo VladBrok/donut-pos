@@ -12,7 +12,6 @@
 </template>
 
 <script setup lang="ts">
-// TODO: after login or signup, redirect to needed page
 import { useIsLoggedIn } from "src/lib/composables/useIsLoggedIn";
 import { useI18nStore } from "src/lib/i18n";
 

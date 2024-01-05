@@ -252,7 +252,7 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
-    path: "/order-via-qr", // TODO: remove this page
+    path: "/order-via-qr", // TODO: remove this page later
     component: () => import("src/pages/OrderViaQR.vue"),
     meta: {
       title: t.value.orderDetails,

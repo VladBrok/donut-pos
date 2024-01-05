@@ -150,7 +150,7 @@ const columns: any[] = [
     label: t.value.waiter,
     align: "center",
     field: (row: IDiningTable) =>
-      row.employee?.lastName + " " + row.employee?.firstName, // TODO: extract func for formatting (dup)
+      row.employee?.lastName + " " + row.employee?.firstName,
   },
   { name: "actions", label: "", align: "right" },
 ];
