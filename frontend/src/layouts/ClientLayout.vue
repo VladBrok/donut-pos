@@ -56,13 +56,7 @@
         @click="toggleCurrentOrderDrawer"
       >
         <q-tooltip> {{ t.openCurrentOrder }} </q-tooltip>
-        <q-badge
-          v-if="currentOrder"
-          rounded
-          floating
-          color="red"
-          :label="currentOrder.dishes.length || ''"
-        />
+        <CurrentOrderDishesBadge />
       </q-btn>
     </template>
     <template #drawers>
@@ -126,6 +120,7 @@ import {
   closeCurrentOrderAction,
   openCurrentOrderAction,
 } from "donut-shared/src/actions/order-drawer";
+import CurrentOrderDishesBadge from "src/components/CurrentOrderDishesBadge.vue";
 import CurrentOrderView from "src/components/CurrentOrderView.vue";
 import OrderDrawer from "src/components/OrderDrawer.vue";
 import { useStore } from "src/store";
@@ -152,7 +147,6 @@ const menuList = [
 ];
 
 const store = useStore();
-const currentOrder = computed(() => store.state.currentOrder.order);
 const isCurrentOrderOpen = computed(
   () => store.state.orderDrawer.isCurrentOrderOpen
 );
