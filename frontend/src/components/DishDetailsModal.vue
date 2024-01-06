@@ -1,5 +1,5 @@
 <template>
-  <q-dialog>
+  <q-dialog :transition-hide="transitionHide">
     <q-card class="dialog-md">
       <q-card-section class="row items-center q-pb-none">
         <q-space />
@@ -96,6 +96,7 @@ const t = useI18nStore();
 const store = useStore();
 const modificationCounts = ref(new Map<string, number>());
 const dishContainerRef = ref<HTMLElement>();
+const transitionHide = ref<"fade">();
 
 watch(
   dish,
@@ -119,7 +120,10 @@ function incrementModification(id: string) {
 
 function addToOrder() {
   assert(dish.value, "Expected to have a dish at this point");
-
+  transitionHide.value = "fade";
+  setTimeout(() => {
+    transitionHide.value = undefined;
+  }, 300);
   addDishToCurrentOrder(
     store,
     dish.value.id,
