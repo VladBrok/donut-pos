@@ -49,7 +49,7 @@
         </q-menu>
       </q-btn> -->
       <q-btn
-        class="q-mr-md"
+        class="q-mr-md shopping-basket"
         flat
         round
         icon="o_shopping_basket"

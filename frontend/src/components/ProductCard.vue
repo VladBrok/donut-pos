@@ -6,7 +6,7 @@
           :src="imageUrl"
           alt=""
           fit="cover"
-          class="image-card shadow-3 rounded-borders"
+          class="image-card shadow-3 rounded-borders product-card-image"
         >
           <div v-if="caption" class="absolute-full text-h6 flex flex-center">
             {{ caption }}

@@ -34,8 +34,12 @@
           v-for="dish in dishesFiltered"
           :dish="dish"
           :key="dish.id"
+          ref="dishRefs"
           @open-details-click="selectedDish = dish"
-          @add-click="addDishToCurrentOrder(store, dish.id)"
+          @add-click="
+            (containerRef) =>
+              addDishToCurrentOrder(store, dish.id, undefined, containerRef)
+          "
         />
       </div>
       <div v-else>
@@ -104,6 +108,7 @@ const searchInput = ref<string | null>(null);
 const selectedDish = ref<
   ReturnType<typeof loadDishesAction>["payload"]["dishes"][number] | null
 >(null);
+const dishRefs = ref<HTMLElement[]>();
 
 const handleCategoryFilterClick = (id: string) => {
   selectedCategoryId.value = id;
