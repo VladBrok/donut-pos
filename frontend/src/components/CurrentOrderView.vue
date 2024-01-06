@@ -220,10 +220,11 @@ const dishes = computed(() => store.state.dishes.dishes);
 const modifications = computed(() => store.state.modifications.modifications);
 const previousOrder = computed(() => store.state.currentOrder.previous);
 const dishesInOrder = computed(() =>
+  // TODO: what if the dish or modification will be deleted during processing? We might have nulls in this case below...
+  // TODO: to avoid connecting to Dishes and DishModifications channels here, we should save the whole JSON instead of IDs + mapping. We won't have dynamic updates of dishes (out of stock, etc.). Add json, but check the prices on the server (maybe server will just use ID and fetch real dish and then save it as json.
   isSubscribing.value
     ? []
-    : // TODO: what if the dish or modification will be deleted during processing? We might have nulls in this case below...
-      order.value?.dishes.map((dish) => {
+    : order.value?.dishes.map((dish) => {
         const foundDish = dishes.value.find((x) => x.id === dish.dishId)!;
         const foundModifications = dish.modifications.map((x) => ({
           modification: modifications.value.find((y) => y.id === x.id)!,
