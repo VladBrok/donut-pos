@@ -39,8 +39,8 @@ export function addDishToCurrentOrder(
         startTop;
       const startWidth = originalImg.getBoundingClientRect().width;
       const startHeight = originalImg.getBoundingClientRect().height;
-      const widthDiff = startWidth / 3 - startWidth;
-      const heightDiff = startHeight / 3 - startHeight;
+      const widthDiff = startWidth / 4 - startWidth;
+      const heightDiff = startHeight / 4 - startHeight;
 
       clonedImg.style.left = `${startLeft}px`;
       clonedImg.style.top = `${startTop}px`;

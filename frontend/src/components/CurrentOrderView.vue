@@ -2,7 +2,7 @@
   <q-form @submit="onSubmit" @validation-error="onFormValidationError">
     <OrderView
       :has-content="Boolean(order)"
-      :dish-count="order?.dishes.length"
+      :dish-count="getDishesInOrderCount(order)"
       :total-cost="totalCost"
       custom-empty
     >
@@ -172,6 +172,7 @@ import {
   addDishToCurrentOrderAction,
   clearCurrentOrderAction,
   decrementDishInCurrentOrderAction,
+  getDishesInOrderCount,
   getOrderDishTotalCost,
   removeDishFromCurrentOrderAction,
   updateCurrentOrderCommentAction,
