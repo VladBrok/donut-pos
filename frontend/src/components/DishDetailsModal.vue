@@ -6,7 +6,11 @@
         <q-btn icon="close" flat round dense v-close-popup />
       </q-card-section>
 
-      <div v-if="dish" class="row scroll restricted-height-modal">
+      <div
+        v-if="dish"
+        class="row scroll restricted-height-modal"
+        ref="dishContainerRef"
+      >
         <div
           class="col-12 col-sm-6"
           :class="{ 'q-mx-auto': !dish.modifications.length }"
@@ -88,10 +92,10 @@ const props = defineProps<{
   count?: number;
 }>();
 const dish = computed(() => props.dish);
-
 const t = useI18nStore();
 const store = useStore();
 const modificationCounts = ref(new Map<string, number>());
+const dishContainerRef = ref<HTMLElement>();
 
 watch(
   dish,
@@ -116,6 +120,11 @@ function incrementModification(id: string) {
 function addToOrder() {
   assert(dish.value, "Expected to have a dish at this point");
 
-  addDishToCurrentOrder(store, dish.value.id, modificationCounts.value);
+  addDishToCurrentOrder(
+    store,
+    dish.value.id,
+    modificationCounts.value,
+    dishContainerRef.value
+  );
 }
 </script>
