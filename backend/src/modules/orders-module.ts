@@ -88,7 +88,7 @@ export default function ordersModule(server: Server) {
         page: 1,
         employeeId: ctx.userId,
         perPage: ITEMS_PER_PAGE,
-        ongoingOnly: true, // TODO: maybe change this: For waiter, show only ongoing orders
+        completed: false,
       });
       return ordersPageLoadedAction({
         ordersPage: ordersPage,
@@ -108,6 +108,7 @@ export default function ordersModule(server: Server) {
         page: 1,
         clientId: ctx.userId,
         perPage: ITEMS_PER_PAGE,
+        completed: false,
       });
       return ordersPageLoadedAction({
         ordersPage: ordersPage,
@@ -129,7 +130,7 @@ export default function ordersModule(server: Server) {
         statuses: action.payload.status ? [action.payload.status] : undefined,
         orderNumber: action.payload.orderNumber,
         search: action.payload.search,
-        ongoingOnly: !action.payload.isClient, // TODO: maybe change this: For waiter, show only ongoing orders
+        completed: action.payload.completed,
       });
       await ctx.sendBack(
         ordersPageLoadedAction({
