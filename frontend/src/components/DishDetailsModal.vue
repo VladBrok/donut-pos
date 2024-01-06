@@ -1,12 +1,16 @@
 <template>
-  <q-dialog>
+  <q-dialog :transition-hide="transitionHide">
     <q-card class="dialog-md">
       <q-card-section class="row items-center q-pb-none">
         <q-space />
         <q-btn icon="close" flat round dense v-close-popup />
       </q-card-section>
 
-      <div v-if="dish" class="row scroll restricted-height-modal">
+      <div
+        v-if="dish"
+        class="row scroll restricted-height-modal"
+        ref="dishContainerRef"
+      >
         <div
           class="col-12 col-sm-6"
           :class="{ 'q-mx-auto': !dish.modifications.length }"
@@ -62,11 +66,8 @@
 </template>
 
 <script setup lang="ts">
-import {
-  addDishToCurrentOrderAction,
-  assert,
-  loadModificationsAction,
-} from "donut-shared";
+import { assert, loadModificationsAction } from "donut-shared";
+import { addDishToCurrentOrder } from "src/lib/add-dish-to-current-order";
 import { computed, ref, watch } from "vue";
 import { useI18nStore } from "../lib/i18n";
 import { useStore } from "../store";
@@ -91,10 +92,11 @@ const props = defineProps<{
   count?: number;
 }>();
 const dish = computed(() => props.dish);
-
 const t = useI18nStore();
 const store = useStore();
 const modificationCounts = ref(new Map<string, number>());
+const dishContainerRef = ref<HTMLElement>();
+const transitionHide = ref<"fade">();
 
 watch(
   dish,
@@ -118,19 +120,15 @@ function incrementModification(id: string) {
 
 function addToOrder() {
   assert(dish.value, "Expected to have a dish at this point");
-
-  store.commit.crossTab(
-    addDishToCurrentOrderAction({
-      dish: {
-        id: dish.value.id,
-        modifications: [...modificationCounts.value.entries()]
-          .filter(([, count]) => count > 0)
-          .map(([id, count]) => ({
-            id: id,
-            count: count,
-          })),
-      },
-    })
+  transitionHide.value = "fade";
+  setTimeout(() => {
+    transitionHide.value = undefined;
+  }, 300);
+  addDishToCurrentOrder(
+    store,
+    dish.value.id,
+    modificationCounts.value,
+    dishContainerRef.value
   );
 }
 </script>

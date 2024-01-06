@@ -8,7 +8,7 @@
         class="q-px-md q-py-sm"
         @click="emit('click')"
       >
-        <q-item-section avatar>
+        <q-item-section avatar class="q-mr-xs">
           <q-img :src="imageSrc" alt="" fit="contain" class="image-xs-sm" />
         </q-item-section>
         <q-item-section>

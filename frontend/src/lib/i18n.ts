@@ -120,6 +120,7 @@ export const messages = i18n("messages", {
   searchOrders: "Search by order number, table or comment",
   allMenu: "All menu",
   addToCurrentOrder: "Add to order",
+  openDetails: "Open details",
   addToOrderButton: "Add to order",
   modificationsTitle: "In addition",
   showNotifications: "Show notifications",
@@ -201,7 +202,8 @@ export const messages = i18n("messages", {
   acceptPayment: "Accept payment",
 
   // Order statuses
-  orderStatus_all: "All",
+  orderStatus_active: "All active",
+  orderStatus_completed: "Completed",
   orderStatus_created: "Created",
   orderStatus_cooking: "Cooking",
   orderStatus_cooked: "Cooked",

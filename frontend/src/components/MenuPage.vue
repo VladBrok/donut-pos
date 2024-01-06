@@ -17,7 +17,7 @@
           </q-input>
         </div>
       </q-page-sticky>
-      <div class="q-mb-lg q-mt-lg gap-sm row">
+      <div class="q-mb-lg mt-lg-xl gap-sm row">
         <filter-pill
           v-for="category in categories"
           :key="category.id"
@@ -34,9 +34,13 @@
           v-for="dish in dishesFiltered"
           :dish="dish"
           :key="dish.id"
-          @add-click="selectedDish = dish"
-        >
-        </dish-card>
+          ref="dishRefs"
+          @open-details-click="selectedDish = dish"
+          @add-click="
+            (containerRef) =>
+              addDishToCurrentOrder(store, dish.id, undefined, containerRef)
+          "
+        />
       </div>
       <div v-else>
         <no-data></no-data>
@@ -48,8 +52,7 @@
     :model-value="Boolean(selectedDish)"
     @update:model-value="selectedDish = null"
     :dish="selectedDish"
-  >
-  </dish-details-modal>
+  />
 </template>
 
 <script setup lang="ts">
@@ -63,6 +66,7 @@ import { computed, ref } from "vue";
 
 import { loadDishesAction } from "donut-shared/src/actions/dishes";
 import DishDetailsModal from "src/components/DishDetailsModal.vue";
+import { addDishToCurrentOrder } from "src/lib/add-dish-to-current-order";
 import { createFuzzySearcher } from "../lib/fuzzy-search";
 import { useI18nStore } from "../lib/i18n";
 import { useStore } from "../store";
@@ -104,6 +108,7 @@ const searchInput = ref<string | null>(null);
 const selectedDish = ref<
   ReturnType<typeof loadDishesAction>["payload"]["dishes"][number] | null
 >(null);
+const dishRefs = ref<HTMLElement[]>();
 
 const handleCategoryFilterClick = (id: string) => {
   selectedCategoryId.value = id;

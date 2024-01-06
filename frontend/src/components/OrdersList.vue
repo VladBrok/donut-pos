@@ -22,7 +22,7 @@
           :key="filter"
           :id="filter"
           :name="t[`orderStatus_${filter}`]"
-          :custom-color="filter === 'all' ? undefined : filter"
+          :custom-color="filter === 'active' ? undefined : filter"
           :selected-id="selectedOrderStatus"
           @click="handleStatusFilterChange(filter)"
         >
@@ -115,14 +115,15 @@ const unsubscribe = ref(() => {
   /* */
 });
 
-type OrderStatusFilter = OrderStatus | "all";
+type OrderStatusFilter = OrderStatus | "active" | "completed";
 const statusFilters = computed<OrderStatusFilter[]>(() => [
-  "all",
+  "active",
   ...ORDER_STATUSES_ARR,
+  "completed",
 ]);
 const searchInput = ref<string | null>(null);
 const isUpdatingPage = ref(false);
-const selectedOrderStatus = ref<OrderStatusFilter>("all");
+const selectedOrderStatus = ref<OrderStatusFilter>("active");
 const tableFilter = computed(
   () => selectedOrderStatus.value + searchInput.value
 );
@@ -200,11 +201,14 @@ const updatePage = ({ pagination: { page } }: any) => {
       loadOrdersPageAction({
         page: page,
         status:
-          selectedOrderStatus.value === "all" || searchInput.value
+          selectedOrderStatus.value === "active" ||
+          selectedOrderStatus.value === "completed" ||
+          searchInput.value
             ? undefined
             : selectedOrderStatus.value,
         search: searchInput.value?.trim() || undefined,
         isClient: isClient.value,
+        completed: selectedOrderStatus.value === "completed",
       })
     )
     .then(() => {

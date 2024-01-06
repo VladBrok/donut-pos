@@ -1,7 +1,7 @@
 <template>
   <OrderView
     :has-content="Boolean(order)"
-    :dish-count="order?.dishes.length"
+    :dish-count="getDishesInOrderCount(order)"
     :total-cost="totalCost"
     :full-content-height="fullScreen"
     :card-padding="fullScreen"
@@ -76,7 +76,11 @@
 </template>
 
 <script setup lang="ts">
-import { getOrderDishTotalCost, getOrderTotalCost } from "donut-shared";
+import {
+  getDishesInOrderCount,
+  getOrderDishTotalCost,
+  getOrderTotalCost,
+} from "donut-shared";
 import DishInOrder from "src/components/DishInOrder.vue";
 import OrderHistory from "src/components/OrderHistory.vue";
 import OrderView from "src/components/OrderView.vue";

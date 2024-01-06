@@ -46,7 +46,7 @@ export interface IGetOrder {
   strictOrderNumberCompare?: boolean;
   orderBy?: "desc" | "asc";
   search?: string;
-  ongoingOnly?: boolean;
+  completed?: boolean;
   orderId?: string;
 }
 
@@ -181,12 +181,17 @@ function makeWhereFilter(params: IGetOrder) {
           ilike(diningTable.number, `%${params.search}%`)
         )
       : undefined,
-    params.ongoingOnly
-      ? or(
+    params.completed == null
+      ? undefined
+      : params.completed
+      ? and(
+          eq(order.status, ORDER_STATUSES.DELIVERED),
+          not(isNull(order.paidDate))
+        )
+      : or(
           not(eq(order.status, ORDER_STATUSES.DELIVERED)),
           isNull(order.paidDate)
-        )
-      : undefined,
+        ),
     params.statuses
       ? or(
           ...params.statuses.map((status) =>

@@ -87,6 +87,7 @@ export const loadOrdersPageAction = createAction<{
   orderNumber?: string;
   search?: string;
   isClient?: boolean;
+  completed?: boolean;
 }>("orders/loadPage");
 
 export const ordersPageLoadedAction = createAction<{
