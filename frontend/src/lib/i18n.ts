@@ -202,7 +202,7 @@ export const messages = i18n("messages", {
   acceptPayment: "Accept payment",
 
   // Order statuses
-  orderStatus_active: "Active",
+  orderStatus_active: "All active",
   orderStatus_completed: "Completed",
   orderStatus_created: "Created",
   orderStatus_cooking: "Cooking",
