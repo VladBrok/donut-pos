@@ -1,5 +1,6 @@
 import { addDishToCurrentOrderAction } from "donut-shared";
 import { animate } from "src/lib/animation";
+import { ADD_TO_CART_ANIMATION_DURATION_MS } from "src/lib/constants";
 import { useStore } from "src/store";
 
 export function addDishToCurrentOrder(
@@ -50,7 +51,7 @@ export function addDishToCurrentOrder(
       clonedImg.style.zIndex = "9999";
 
       animate({
-        duration: 800,
+        duration: ADD_TO_CART_ANIMATION_DURATION_MS,
         timing: (time) => time,
         draw: (progress) => {
           clonedImg.style.left = `${startLeft + diffLeft * progress}px`;
