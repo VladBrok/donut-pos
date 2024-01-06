@@ -120,6 +120,7 @@ export const messages = i18n("messages", {
   searchOrders: "Search by order number, table or comment",
   allMenu: "All menu",
   addToCurrentOrder: "Add to order",
+  openDetails: "Open details",
   addToOrderButton: "Add to order",
   modificationsTitle: "In addition",
   showNotifications: "Show notifications",

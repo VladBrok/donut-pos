@@ -62,11 +62,8 @@
 </template>
 
 <script setup lang="ts">
-import {
-  addDishToCurrentOrderAction,
-  assert,
-  loadModificationsAction,
-} from "donut-shared";
+import { assert, loadModificationsAction } from "donut-shared";
+import { addDishToCurrentOrder } from "src/lib/add-dish-to-current-order";
 import { computed, ref, watch } from "vue";
 import { useI18nStore } from "../lib/i18n";
 import { useStore } from "../store";
@@ -119,18 +116,6 @@ function incrementModification(id: string) {
 function addToOrder() {
   assert(dish.value, "Expected to have a dish at this point");
 
-  store.commit.crossTab(
-    addDishToCurrentOrderAction({
-      dish: {
-        id: dish.value.id,
-        modifications: [...modificationCounts.value.entries()]
-          .filter(([, count]) => count > 0)
-          .map(([id, count]) => ({
-            id: id,
-            count: count,
-          })),
-      },
-    })
-  );
+  addDishToCurrentOrder(store, dish.value.id, modificationCounts.value);
 }
 </script>

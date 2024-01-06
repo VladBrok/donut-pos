@@ -13,9 +13,22 @@
         color="primary"
         icon-right="shopping_basket"
         padding="0 sm"
-        @click="emit('addClick')"
+        class="q-mr-md"
+        @click="emit('openDetailsClick')"
       >
         <span class="text-h5 q-pr-sm">+</span>
+        <q-tooltip>
+          {{ t.openDetails }}
+        </q-tooltip>
+      </q-btn>
+      <q-btn
+        v-if="dish.isActive"
+        color="primary"
+        padding="0 sm"
+        outline
+        @click="emit('addClick')"
+      >
+        <span class="text-h5">+</span>
         <q-tooltip>
           {{ t.addToCurrentOrder }}
         </q-tooltip>
@@ -50,7 +63,7 @@ defineProps<{
   count?: number;
 }>();
 
-const emit = defineEmits(["addClick"]);
+const emit = defineEmits(["openDetailsClick", "addClick"]);
 
 const t = useI18nStore();
 </script>

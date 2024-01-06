@@ -34,9 +34,9 @@
           v-for="dish in dishesFiltered"
           :dish="dish"
           :key="dish.id"
-          @add-click="selectedDish = dish"
-        >
-        </dish-card>
+          @open-details-click="selectedDish = dish"
+          @add-click="addDishToCurrentOrder(store, dish.id)"
+        />
       </div>
       <div v-else>
         <no-data></no-data>
@@ -48,8 +48,7 @@
     :model-value="Boolean(selectedDish)"
     @update:model-value="selectedDish = null"
     :dish="selectedDish"
-  >
-  </dish-details-modal>
+  />
 </template>
 
 <script setup lang="ts">
@@ -63,6 +62,7 @@ import { computed, ref } from "vue";
 
 import { loadDishesAction } from "donut-shared/src/actions/dishes";
 import DishDetailsModal from "src/components/DishDetailsModal.vue";
+import { addDishToCurrentOrder } from "src/lib/add-dish-to-current-order";
 import { createFuzzySearcher } from "../lib/fuzzy-search";
 import { useI18nStore } from "../lib/i18n";
 import { useStore } from "../store";
