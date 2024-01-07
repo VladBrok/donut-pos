@@ -9,12 +9,13 @@
   >
     <template #content>
       <div>
-        <div v-if="!fullScreen">
+        <div>
           <!-- TODO: add client field -->
           <q-input
             stack-label
             readonly
-            :model-value="t[`orderType_${order.type}`]"
+            :model-value="t[`orderType_${order.type}`]?.toString()"
+            type="text"
             :label="t.orderTypeLabel"
             class="q-mb-md"
           >
@@ -23,6 +24,7 @@
             </template>
           </q-input>
           <q-input
+            v-if="order.type === 'dine-in'"
             :model-value="order.table.number || '-'"
             readonly
             stack-label
