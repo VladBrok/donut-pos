@@ -12,14 +12,30 @@
           <div>
             <!-- TODO: add client autotomplete field -->
             <q-select
+              :model-value="
+                orderTypes.find((x) => x.value === order?.type) ||
+                orderTypeDefault
+              "
+              @update:model-value="
+                store.commit.crossTab(
+                  updateCurrentOrderTypeAction({
+                    type: $event.value,
+                  })
+                )
+              "
               stack-label
-              v-model="orderType"
               :options="orderTypes"
               :label="t.orderTypeLabel"
               :rules="[(val) => !!val || t.fieldRequired]"
             >
               <template v-slot:before>
-                <q-icon :name="orderType.icon" />
+                <q-icon
+                  :name="
+                    orderTypes.find(
+                      (x) => x.value === (order?.type || orderTypeDefault.value)
+                    )?.icon
+                  "
+                />
               </template>
               <template v-slot:option="scope">
                 <q-item v-bind="scope.itemProps">
@@ -33,7 +49,7 @@
               </template>
             </q-select>
             <q-select
-              v-if="orderType.value === 'dine-in'"
+              v-if="order?.type === 'dine-in'"
               :model-value="order?.table?.number"
               @update:model-value="
                 store.commit.crossTab(
@@ -201,7 +217,10 @@ import {
   updateCurrentOrderCommentAction,
   updateCurrentOrderTableNumberAction,
 } from "donut-shared";
-import { updatePreviousOrderAction } from "donut-shared/src/actions/current-order";
+import {
+  updateCurrentOrderTypeAction,
+  updatePreviousOrderAction,
+} from "donut-shared/src/actions/current-order";
 import { updateCreateOrderAfterAuthAction } from "donut-shared/src/actions/orders";
 import BigSpinner from "src/components/BigSpinner.vue";
 import DishInOrder from "src/components/DishInOrder.vue";
@@ -284,7 +303,7 @@ const orderTypes = computed(() =>
     icon: getOrderTypeIcon(x),
   }))
 );
-const orderType = ref<(typeof orderTypes.value)[number]>(
+const orderTypeDefault = ref<(typeof orderTypes.value)[number]>(
   route.query.table
     ? orderTypes.value.find((x) => x.value === "dine-in")!
     : orderTypes.value.find((x) => x.value === "takeout")!
@@ -352,8 +371,17 @@ async function onSubmit() {
   }
 
   isSubmitting.value = true;
-  createOrder(store, t).finally(() => {
-    isSubmitting.value = false;
+  (order.value?.type
+    ? Promise.resolve()
+    : store.commit.crossTab(
+        updateCurrentOrderTypeAction({
+          type: orderTypeDefault.value.value,
+        })
+      )
+  ).then(() => {
+    createOrder(store, t).finally(() => {
+      isSubmitting.value = false;
+    });
   });
 }
 </script>

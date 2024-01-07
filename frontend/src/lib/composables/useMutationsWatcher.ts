@@ -12,7 +12,10 @@ import {
   updateCurrentOrderTableNumberAction,
 } from "donut-shared";
 import { loggedInAction, logoutAction } from "donut-shared/src/actions/auth";
-import { updatePreviousOrderAction } from "donut-shared/src/actions/current-order";
+import {
+  updateCurrentOrderTypeAction,
+  updatePreviousOrderAction,
+} from "donut-shared/src/actions/current-order";
 import {
   ICookedDish,
   dishFinishedCookingAction,
@@ -70,6 +73,7 @@ export const useMutationsWatcher = () => {
         case updateCurrentOrderCommentAction.type:
         case updateCurrentOrderTableNumberAction.type:
         case removeDishFromCurrentOrderAction.type:
+        case updateCurrentOrderTypeAction.type:
         case decrementDishInCurrentOrderAction.type: {
           saveCurrentOrderToStorage(state.currentOrder.order);
           break;

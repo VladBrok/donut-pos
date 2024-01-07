@@ -20,6 +20,7 @@ export {
   removeDishFromCurrentOrderAction,
   updateCurrentOrderCommentAction,
   updateCurrentOrderTableNumberAction,
+  updateCurrentOrderTypeAction,
 } from "./src/actions/current-order.js";
 export type {
   ICurrentOrder,

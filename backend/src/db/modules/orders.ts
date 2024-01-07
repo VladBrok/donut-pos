@@ -227,6 +227,7 @@ export async function createOrder(
     await tx.insert(order).values({
       id: orderToCreate.id,
       comment: data.comment,
+      type: data.type,
       employeeId: isClient ? data.table?.employee.id : userId,
       clientId: !isClient ? null : userId,
       number: orderNumber,

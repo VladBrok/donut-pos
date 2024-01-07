@@ -46,6 +46,7 @@
                 class="q-mb-md"
               />
               <q-input
+                v-if="order.type === 'dine-in'"
                 :model-value="
                   order.employee?.lastName + ' ' + order.employee?.firstName
                 "

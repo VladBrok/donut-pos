@@ -1,4 +1,5 @@
 import { IOrder } from "src/actions/orders.js";
+import { OrderType } from "src/constants/order-types.js";
 import { createAction } from "./index.js";
 
 export interface ICurrentOrderDishModification {
@@ -33,6 +34,7 @@ export interface IDiningTable {
 export interface ICurrentOrder {
   comment: string;
   table: IDiningTable | null;
+  type: OrderType;
   clientId: string;
   dishes: ICurrentOrderDish[];
 }
@@ -50,6 +52,10 @@ export const clearCurrentOrderAction = createAction("currentOrder/clear");
 export const updateCurrentOrderCommentAction = createAction<{
   comment: string;
 }>("currentOrder/updateComment");
+
+export const updateCurrentOrderTypeAction = createAction<{
+  type: OrderType;
+}>("currentOrder/updateType");
 
 export const updateCurrentOrderTableNumberAction = createAction<{
   table: IDiningTable | null;
