@@ -6,14 +6,17 @@ import {
   OrderStatus,
 } from "donut-shared";
 import { IDiningTable } from "donut-shared/src/actions/current-order.js";
-import { ICookedDish, IShallowOrder } from "donut-shared/src/actions/orders.js";
+import {
+  ICookedDish,
+  IOrder,
+  IShallowOrder,
+} from "donut-shared/src/actions/orders.js";
 import { onlyUnique } from "src/lib/only-unique.js";
 import {
   DishCategoryModel,
   DishModel,
   EmployeeModel,
   ModificationModel,
-  OrderModel,
   RoleModel,
 } from "./models.js";
 import {
@@ -145,7 +148,7 @@ export const roleAdapter = (data: RoleSchema[]): RoleModel[] => {
   }));
 };
 
-export const ordersAdapter = (data: OrderSchema[]): OrderModel[] => {
+export const ordersAdapter = (data: OrderSchema[]): IOrder[] => {
   return data
     .filter(onlyUnique((item) => item.order.id))
     .map((uniqueOrder) => ({
