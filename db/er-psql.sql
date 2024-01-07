@@ -124,6 +124,7 @@ CREATE TABLE "order" (
   "employee_id" UUID,
   "sale_point_id" UUID,
   "dining_table_id" UUID,
+  "type" TEXT,
   "number" TEXT,
   "comment" TEXT,
   "status" TEXT,
@@ -200,6 +201,8 @@ CREATE INDEX "order_sale_point_id_idx" ON "order" ("sale_point_id");
 CREATE INDEX "order_number_idx" ON "order" ("number");
 
 CREATE INDEX "order_status_idx" ON "order" ("status");
+
+CREATE INDEX "order_type_idx" ON "order" ("type");
 
 CREATE INDEX "order_to_dish_order_id_idx" ON "order_to_dish" ("order_id");
 
