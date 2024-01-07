@@ -39,7 +39,7 @@ import OrderNumberTitle from "src/components/OrderNumberTitle.vue";
 import PaymentMethodsModal from "src/components/PaymentMethodsModal.vue";
 import { useI18nStore } from "src/lib/i18n";
 import { useStore } from "src/store";
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 
 const props = defineProps<{
   order: ICookedOrder;
@@ -48,8 +48,4 @@ const props = defineProps<{
 const t = useI18nStore();
 const store = useStore();
 const isPaymentModalOpen = ref(false);
-
-onMounted(() => {
-  console.log(props.order.order);
-});
 </script>

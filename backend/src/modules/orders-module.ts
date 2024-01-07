@@ -15,6 +15,7 @@ import {
   finishCookingDishAction,
   getPaymentLinkAction,
   loadOrdersPageAction,
+  orderCookedAction,
   orderLoadedAction,
   orderPaidSuccessAction,
   ordersForKitchenLoadedAction,
@@ -192,11 +193,22 @@ export default function ordersModule(server: Server) {
         action.payload.orderId,
         action.payload.dishIdInOrder
       );
-      await server.process(
-        dishFinishedCookingAction({
-          cookedDish: result,
-        })
-      );
+      await Promise.all([
+        result.order.status === "cooked"
+          ? server.process(
+              orderCookedAction({
+                order: {
+                  order: result.order,
+                },
+              })
+            )
+          : Promise.resolve(),
+        server.process(
+          dishFinishedCookingAction({
+            cookedDish: result,
+          })
+        ),
+      ]);
     },
   });
 
@@ -215,6 +227,17 @@ export default function ordersModule(server: Server) {
           action.payload.cookedDish.order.employee?.id
         ),
         CHANNELS.ORDERS_OF_CLIENT(action.payload.cookedDish.order.client?.id),
+      ];
+    },
+  });
+
+  server.type(orderCookedAction, {
+    async access() {
+      return false;
+    },
+    resend(ctx, action) {
+      return [
+        CHANNELS.COOKED_ORDERS_OF_CLIENT(action.payload.order.order.client?.id),
       ];
     },
   });
