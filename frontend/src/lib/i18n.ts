@@ -179,6 +179,9 @@ export const messages = i18n("messages", {
   done: "Done",
   orderCreated: params(`New order: {orderNumber}`),
   pay: "Pay",
+  confirmOrderReceived: "Confirm received",
+  orderReceiveInstruction:
+    'Before receiving the order, click "Confirm received"',
   next: "Next",
 
   // Client pages

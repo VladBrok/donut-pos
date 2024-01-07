@@ -9,6 +9,7 @@ import {
 import {
   cookedDishesLoadedAction,
   cookedOrdersLoadedAction,
+  deliverOrderAction,
   dishDeliveredAction,
   dishFinishedCookingAction,
   dishStartedCookingAction,
@@ -16,6 +17,7 @@ import {
   getPaymentLinkAction,
   loadOrdersPageAction,
   orderCookedAction,
+  orderDeliveredAction,
   orderLoadedAction,
   orderPaidSuccessAction,
   ordersForKitchenLoadedAction,
@@ -270,6 +272,36 @@ export default function ordersModule(server: Server) {
         CHANNELS.ORDER_SINGLE(action.payload.order.orderNumber),
         CHANNELS.ORDERS_OF_EMPLOYEE(action.payload.order.employee?.id),
         CHANNELS.ORDERS_OF_CLIENT(action.payload.order.client?.id),
+      ];
+    },
+  });
+
+  server.type(deliverOrderAction, {
+    async access(ctx) {
+      return true;
+    },
+    async process(ctx, action, meta) {
+      const order = await db.deliverOrder(
+        action.payload.order.order.id,
+        ctx.userId
+      );
+      await server.process(
+        orderDeliveredAction({
+          order: {
+            order,
+          },
+        })
+      );
+    },
+  });
+
+  server.type(orderDeliveredAction, {
+    async access() {
+      return false;
+    },
+    resend(ctx, action) {
+      return [
+        CHANNELS.COOKED_ORDERS_OF_CLIENT(action.payload.order.order.client?.id),
       ];
     },
   });

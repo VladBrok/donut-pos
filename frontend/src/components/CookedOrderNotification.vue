@@ -1,6 +1,6 @@
 <template>
-  <!-- TODO: add neat icon -->
   <div class="row no-wrap gap-md q-py-md q-px-xs items-center">
+    <!-- TODO: add neat icon -->
     <div class="flex-grow">
       <div class="text-body2">
         <p class="text-h6 q-mb-xs">
@@ -21,6 +21,14 @@
           >
             {{ t.pay }}
           </q-btn>
+          <div v-else>
+            <p class="text-body2 q-mb-sm">
+              {{ t.orderReceiveInstruction }}
+            </p>
+            <q-btn color="primary" @click="orderDelivered" :loading="isLoading">
+              {{ t.confirmOrderReceived }}
+            </q-btn>
+          </div>
         </div>
       </div>
     </div>
@@ -34,7 +42,10 @@
 </template>
 
 <script setup lang="ts">
-import { ICookedOrder } from "donut-shared/src/actions/orders";
+import {
+  ICookedOrder,
+  deliverOrderAction,
+} from "donut-shared/src/actions/orders";
 import OrderNumberTitle from "src/components/OrderNumberTitle.vue";
 import PaymentMethodsModal from "src/components/PaymentMethodsModal.vue";
 import { useI18nStore } from "src/lib/i18n";
@@ -48,4 +59,18 @@ const props = defineProps<{
 const t = useI18nStore();
 const store = useStore();
 const isPaymentModalOpen = ref(false);
+const isLoading = ref(false);
+
+function orderDelivered() {
+  isLoading.value = true;
+  store.commit
+    .sync(
+      deliverOrderAction({
+        order: props.order,
+      })
+    )
+    .finally(() => {
+      isLoading.value = false;
+    });
+}
 </script>

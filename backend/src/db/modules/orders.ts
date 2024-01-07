@@ -378,6 +378,22 @@ export async function deliverDish(orderId: string, dishIdInOrder: string) {
   });
 }
 
+export async function deliverOrder(orderId: string, clientId: string) {
+  await db
+    .update(order)
+    .set({
+      status: ORDER_STATUSES.DELIVERED,
+      deliveredDate: new Date(),
+    })
+    .where(and(eq(order.id, orderId), eq(order.clientId, clientId)));
+
+  return (
+    await getOrdersShallow({
+      orderId: orderId,
+    })
+  )[0];
+}
+
 export async function getOrdersShallow(params: IGetOrder, dbOrTx = db) {
   const diningTableEmployee = db
     .select()

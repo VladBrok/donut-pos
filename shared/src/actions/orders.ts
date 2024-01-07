@@ -165,6 +165,14 @@ export const orderCookedAction = createAction<{
   order: ICookedOrder;
 }>("orders/orderCooked");
 
+export const deliverOrderAction = createAction<{
+  order: ICookedOrder;
+}>("orders/deliverOrder");
+
+export const orderDeliveredAction = createAction<{
+  order: ICookedOrder;
+}>("orders/orderDelivered");
+
 export const payForOrderAction = createAction<{
   orderNumber: string;
 }>("orders/payForOrder");
