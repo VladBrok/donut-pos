@@ -10,7 +10,7 @@
     >
       <div>
         <div
-          class="scroll"
+          class="scroll overflow-x-hidden"
           :class="{
             'order-view-content-height': !fullContentHeight,
           }"

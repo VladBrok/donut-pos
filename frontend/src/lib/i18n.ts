@@ -14,6 +14,7 @@ import {
   EMPLOYEE_WITH_PHONE_EXISTS,
   IMAGE_UPLOAD_FAIL,
   MODIFICATION_NAME_EXISTS,
+  ORDER_TYPES,
   PASSWORD_MIN_LENGTH,
   PASSWORD_SPECIAL_CHARS,
   PAYMENT_LINK_GENERATION_ERROR,
@@ -167,6 +168,7 @@ export const messages = i18n("messages", {
   cashPaymentRequested: params(
     "Cash payment requested: table {table}, order {orderNumber}"
   ),
+  orderTypeLabel: "Type",
 
   // Kitchen pages
   viewDetails: "View details",
@@ -210,6 +212,11 @@ export const messages = i18n("messages", {
   orderStatus_paid: "Paid",
   orderStatus_delivering: "Delivering",
   orderStatus_delivered: "Delivered",
+
+  // Order types
+  [`orderType_${ORDER_TYPES.DINE_IN}`]: "Dine in",
+  [`orderType_${ORDER_TYPES.DELIVERY}`]: "Delivery",
+  [`orderType_${ORDER_TYPES.TAKEOUT}`]: "Takeout",
 
   // Login & signup pages
   adminLoginPageTitle: "Admin login",

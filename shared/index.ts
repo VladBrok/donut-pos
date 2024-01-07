@@ -71,6 +71,7 @@ export * from "./src/constants/employee.js";
 export * from "./src/constants/errors.js";
 export * from "./src/constants/misc.js";
 export * from "./src/constants/order-statuses.js";
+export * from "./src/constants/order-types.js";
 export * from "./src/constants/validations.js";
 export { assert } from "./src/lib/assert.js";
 export { delay } from "./src/lib/delay.js";

@@ -12,6 +12,27 @@
           <div>
             <!-- TODO: add client autotomplete field -->
             <q-select
+              stack-label
+              v-model="orderType"
+              :options="orderTypes"
+              :label="t.orderTypeLabel"
+              :rules="[(val) => !!val || t.fieldRequired]"
+            >
+              <template v-slot:before>
+                <q-icon :name="orderType.icon" />
+              </template>
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps">
+                  <q-item-section avatar>
+                    <q-icon :name="scope.opt.icon" />
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label>{{ scope.opt.label }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+            <q-select
               :model-value="order?.table?.number"
               @update:model-value="
                 store.commit.crossTab(
@@ -169,6 +190,7 @@ import { useSubscription } from "@logux/vuex";
 import {
   CHANNELS,
   COMMENT_MAX_LENGTH,
+  ORDER_TYPES_ARR,
   addDishToCurrentOrderAction,
   clearCurrentOrderAction,
   decrementDishInCurrentOrderAction,
@@ -253,6 +275,25 @@ const totalCost = computed(
   () => dishesInOrder.value?.reduce((sum, cur) => sum + cur.totalCost, 0) || 0
 );
 const route = useRoute();
+const orderTypes = computed(() =>
+  ORDER_TYPES_ARR.map((x) => ({
+    label: t.value[`orderType_${x}`],
+    value: x,
+    icon:
+      x === "delivery"
+        ? "o_directions_car"
+        : x === "dine-in"
+        ? "o_restaurant"
+        : x === "takeout"
+        ? "o_local_mall"
+        : "",
+  }))
+);
+const orderType = ref<(typeof orderTypes.value)[number]>(
+  route.query.table
+    ? orderTypes.value.find((x) => x.value === "dine-in")!
+    : orderTypes.value.find((x) => x.value === "takeout")!
+);
 const router = useRouter();
 const isLoggedIn = useIsLoggedIn();
 
