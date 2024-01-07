@@ -51,28 +51,34 @@
     v-if="!isClient"
     v-model="isCashPaymentModalOpen"
     @close="isCashPaymentModalOpen = false"
-    :total-cost="totalCost"
+    :total-cost="totalCost!"
     :order-number="orderNumber"
   />
 
-  <client-cash-payment-modal
-    v-if="isClient"
+  <client-dine-in-cash-payment-modal
+    v-if="isClient && orderType === 'dine-in'"
     v-model="isCashPaymentModalOpen"
     @close="isCashPaymentModalOpen = false"
-    :total-cost="totalCost"
     :order-id="orderId"
+  />
+
+  <client-takeout-cash-payment-modal
+    v-if="isClient && orderType === 'takeout'"
+    v-model="isCashPaymentModalOpen"
+    @close="isCashPaymentModalOpen = false"
   />
 
   <CreditCardOrBlikPaymentModal
     v-model="isCreditOrBlikPaymentModalOpen"
-    :total-cost="totalCost"
     :order-number="orderNumber"
     :method="method"
   />
 </template>
 
 <script setup lang="ts">
-import ClientCashPaymentModal from "src/components/ClientCashPaymentModal.vue";
+import { OrderType } from "donut-shared";
+import ClientDineInCashPaymentModal from "src/components/ClientDineInCashPaymentModal.vue";
+import ClientTakeoutCashPaymentModal from "src/components/ClientTakeoutCashPaymentModal.vue";
 import CreditCardOrBlikPaymentModal from "src/components/CreditCardOrBlikPaymentModal.vue";
 import PaymentMethodCard from "src/components/PaymentMethodCard.vue";
 import WaiterCashPaymentModal from "src/components/WaiterCashPaymentModal.vue";
@@ -81,9 +87,10 @@ import { useStore } from "src/store";
 import { computed, ref } from "vue";
 
 defineProps<{
-  totalCost: number;
+  totalCost?: number;
   orderNumber: string;
   orderId: string;
+  orderType: OrderType;
 }>();
 
 const t = useI18nStore();

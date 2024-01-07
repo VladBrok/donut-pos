@@ -8,12 +8,16 @@ import {
 } from "donut-shared";
 import {
   cookedDishesLoadedAction,
+  cookedOrdersLoadedAction,
+  deliverOrderAction,
   dishDeliveredAction,
   dishFinishedCookingAction,
   dishStartedCookingAction,
   finishCookingDishAction,
   getPaymentLinkAction,
   loadOrdersPageAction,
+  orderCookedAction,
+  orderDeliveredAction,
   orderLoadedAction,
   orderPaidSuccessAction,
   ordersForKitchenLoadedAction,
@@ -70,6 +74,20 @@ export default function ordersModule(server: Server) {
       const dishes = await db.getCookedDishes(ctx.userId);
       return cookedDishesLoadedAction({
         dishes: dishes,
+      });
+    },
+  });
+
+  server.channel<{
+    clientId: string;
+  }>(CHANNELS.COOKED_ORDERS_OF_CLIENT(), {
+    async access(ctx, action, meta) {
+      return ctx.userId === ctx.params.clientId;
+    },
+    async load(ctx, action, meta) {
+      const orders = await db.getCookedOrders(ctx.userId, "takeout");
+      return cookedOrdersLoadedAction({
+        orders: orders,
       });
     },
   });
@@ -177,11 +195,22 @@ export default function ordersModule(server: Server) {
         action.payload.orderId,
         action.payload.dishIdInOrder
       );
-      await server.process(
-        dishFinishedCookingAction({
-          cookedDish: result,
-        })
-      );
+      await Promise.all([
+        result.order.status === "cooked"
+          ? server.process(
+              orderCookedAction({
+                order: {
+                  order: result.order,
+                },
+              })
+            )
+          : Promise.resolve(),
+        server.process(
+          dishFinishedCookingAction({
+            cookedDish: result,
+          })
+        ),
+      ]);
     },
   });
 
@@ -200,6 +229,17 @@ export default function ordersModule(server: Server) {
           action.payload.cookedDish.order.employee?.id
         ),
         CHANNELS.ORDERS_OF_CLIENT(action.payload.cookedDish.order.client?.id),
+      ];
+    },
+  });
+
+  server.type(orderCookedAction, {
+    async access() {
+      return false;
+    },
+    resend(ctx, action) {
+      return [
+        CHANNELS.COOKED_ORDERS_OF_CLIENT(action.payload.order.order.client?.id),
       ];
     },
   });
@@ -232,6 +272,37 @@ export default function ordersModule(server: Server) {
         CHANNELS.ORDER_SINGLE(action.payload.order.orderNumber),
         CHANNELS.ORDERS_OF_EMPLOYEE(action.payload.order.employee?.id),
         CHANNELS.ORDERS_OF_CLIENT(action.payload.order.client?.id),
+      ];
+    },
+  });
+
+  server.type(deliverOrderAction, {
+    async access(ctx) {
+      return true;
+    },
+    async process(ctx, action, meta) {
+      const order = await db.deliverOrder(
+        action.payload.order.order.id,
+        ctx.userId
+      );
+      await server.process(
+        orderDeliveredAction({
+          order: {
+            order,
+          },
+        })
+      );
+    },
+  });
+
+  server.type(orderDeliveredAction, {
+    async access() {
+      return false;
+    },
+    resend(ctx, action) {
+      return [
+        CHANNELS.ORDER_SINGLE(action.payload.order.order.orderNumber),
+        CHANNELS.COOKED_ORDERS_OF_CLIENT(action.payload.order.order.client?.id),
       ];
     },
   });
@@ -290,6 +361,7 @@ export default function ordersModule(server: Server) {
     },
     resend(ctx, action) {
       return [
+        CHANNELS.COOKED_ORDERS_OF_CLIENT(action.payload.order.client?.id),
         CHANNELS.ORDER_SINGLE(action.payload.order.orderNumber),
         CHANNELS.ORDERS_OF_EMPLOYEE(action.payload.order.employee?.id),
         CHANNELS.ORDERS_OF_CLIENT(action.payload.order.client?.id),

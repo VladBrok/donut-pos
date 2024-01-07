@@ -12,13 +12,17 @@ import {
   updateCurrentOrderTableNumberAction,
 } from "donut-shared";
 import { loggedInAction, logoutAction } from "donut-shared/src/actions/auth";
-import { updatePreviousOrderAction } from "donut-shared/src/actions/current-order";
+import {
+  updateCurrentOrderTypeAction,
+  updatePreviousOrderAction,
+} from "donut-shared/src/actions/current-order";
 import {
   ICookedDish,
   dishFinishedCookingAction,
+  orderCookedAction,
 } from "donut-shared/src/actions/orders";
 import { Notify } from "quasar";
-import { INFO_TIMEOUT_MS } from "src/lib/constants";
+import { INFO_TIMEOUT_MS, SUCCESS_TIMEOUT_MS } from "src/lib/constants";
 import { useI18nStore } from "src/lib/i18n";
 import { useStore } from "src/store";
 import { onMounted, onUnmounted, ref } from "vue";
@@ -58,7 +62,7 @@ export const useMutationsWatcher = () => {
         case logoutAction.type: {
           const role = getUserFromStorage()?.role?.codeName;
           const redirectTo = `${
-            !role ? "" : role === "/cook" ? "/kitchen" : role
+            !role ? "" : role === "cook" ? "/kitchen" : role
           }/login`;
           removeItem(Keys.User);
           store.client.changeUser(ANONYMOUS.userId);
@@ -70,6 +74,7 @@ export const useMutationsWatcher = () => {
         case updateCurrentOrderCommentAction.type:
         case updateCurrentOrderTableNumberAction.type:
         case removeDishFromCurrentOrderAction.type:
+        case updateCurrentOrderTypeAction.type:
         case decrementDishInCurrentOrderAction.type: {
           saveCurrentOrderToStorage(state.currentOrder.order);
           break;
@@ -77,6 +82,20 @@ export const useMutationsWatcher = () => {
 
         case clearCurrentOrderAction.type: {
           saveCurrentOrderToStorage(null);
+          break;
+        }
+
+        case orderCookedAction.type: {
+          Notify.create({
+            type: "positive",
+            position: "top",
+            timeout: SUCCESS_TIMEOUT_MS,
+            message: t.value.orderIsReady({
+              orderNumber: mutation.payload.payload.order.order.orderNumber,
+            }),
+            multiLine: true,
+            group: false,
+          });
           break;
         }
 

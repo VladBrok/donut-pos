@@ -129,7 +129,6 @@ const stopWatchingSubscribing = watch(isSubscribing, () => {
 });
 
 const updatePage = ({ pagination: { page } }: any) => {
-  console.log("update");
   isUpdatingPage.value = true;
   store.commit
     .sync(

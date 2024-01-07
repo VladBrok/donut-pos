@@ -1,4 +1,5 @@
 import { OrderStatus } from "src/constants/order-statuses.js";
+import { OrderType } from "src/constants/order-types.js";
 import { createAction } from "./index.js";
 
 export interface ICashPaymentRequest {
@@ -15,6 +16,7 @@ export interface ICashPaymentRequest {
   cookingDate: string;
   cookedDate: string;
   deliveringDate: string;
+  orderType: OrderType;
   deliveredDate: string;
   paidDate: string;
   employeeId: string;

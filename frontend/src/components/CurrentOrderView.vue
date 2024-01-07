@@ -12,6 +12,44 @@
           <div>
             <!-- TODO: add client autotomplete field -->
             <q-select
+              :model-value="
+                orderTypes.find((x) => x.value === order?.type) ||
+                orderTypeDefault
+              "
+              @update:model-value="
+                store.commit.crossTab(
+                  updateCurrentOrderTypeAction({
+                    type: $event.value,
+                  })
+                )
+              "
+              stack-label
+              :options="orderTypes"
+              :label="t.orderTypeLabel"
+              :rules="[(val) => !!val || t.fieldRequired]"
+            >
+              <template v-slot:before>
+                <q-icon
+                  :name="
+                    orderTypes.find(
+                      (x) => x.value === (order?.type || orderTypeDefault.value)
+                    )?.icon
+                  "
+                />
+              </template>
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps">
+                  <q-item-section avatar>
+                    <q-icon :name="scope.opt.icon" />
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label>{{ scope.opt.label }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+            <q-select
+              v-if="order?.type === 'dine-in'"
               :model-value="order?.table?.number"
               @update:model-value="
                 store.commit.crossTab(
@@ -169,6 +207,7 @@ import { useSubscription } from "@logux/vuex";
 import {
   CHANNELS,
   COMMENT_MAX_LENGTH,
+  ORDER_TYPES_ARR,
   addDishToCurrentOrderAction,
   clearCurrentOrderAction,
   decrementDishInCurrentOrderAction,
@@ -178,7 +217,10 @@ import {
   updateCurrentOrderCommentAction,
   updateCurrentOrderTableNumberAction,
 } from "donut-shared";
-import { updatePreviousOrderAction } from "donut-shared/src/actions/current-order";
+import {
+  updateCurrentOrderTypeAction,
+  updatePreviousOrderAction,
+} from "donut-shared/src/actions/current-order";
 import { updateCreateOrderAfterAuthAction } from "donut-shared/src/actions/orders";
 import BigSpinner from "src/components/BigSpinner.vue";
 import DishInOrder from "src/components/DishInOrder.vue";
@@ -187,6 +229,7 @@ import { useIsLoggedIn } from "src/lib/composables/useIsLoggedIn";
 import { AUTH_BEFORE_ORDER_CREATE } from "src/lib/constants";
 import { createOrder } from "src/lib/create-order";
 import { createFuzzySearcher } from "src/lib/fuzzy-search";
+import { getOrderTypeIcon } from "src/lib/get-order-type-icon";
 import { onFormValidationError } from "src/lib/on-form-validation-error";
 import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -253,6 +296,18 @@ const totalCost = computed(
   () => dishesInOrder.value?.reduce((sum, cur) => sum + cur.totalCost, 0) || 0
 );
 const route = useRoute();
+const orderTypes = computed(() =>
+  ORDER_TYPES_ARR.map((x) => ({
+    label: t.value[`orderType_${x}`],
+    value: x,
+    icon: getOrderTypeIcon(x),
+  }))
+);
+const orderTypeDefault = ref<(typeof orderTypes.value)[number]>(
+  route.query.table
+    ? orderTypes.value.find((x) => x.value === "dine-in")!
+    : orderTypes.value.find((x) => x.value === "takeout")!
+);
 const router = useRouter();
 const isLoggedIn = useIsLoggedIn();
 
@@ -316,8 +371,17 @@ async function onSubmit() {
   }
 
   isSubmitting.value = true;
-  createOrder(store, t).finally(() => {
-    isSubmitting.value = false;
+  (order.value?.type
+    ? Promise.resolve()
+    : store.commit.crossTab(
+        updateCurrentOrderTypeAction({
+          type: orderTypeDefault.value.value,
+        })
+      )
+  ).then(() => {
+    createOrder(store, t).finally(() => {
+      isSubmitting.value = false;
+    });
   });
 }
 </script>

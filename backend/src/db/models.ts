@@ -2,7 +2,6 @@ import { loadModificationsAction, loadRolesAction } from "donut-shared";
 import { IPermissions } from "donut-shared/src/actions/auth.js";
 import { loadDishCategoriesAction } from "donut-shared/src/actions/dish-categories.js";
 import { loadDishesAction } from "donut-shared/src/actions/dishes.js";
-import { ordersPageLoadedAction } from "donut-shared/src/actions/orders.js";
 
 export interface EmployeeModel {
   id: string;
@@ -33,7 +32,3 @@ export type ModificationModel = ReturnType<
 export type RoleModel = ReturnType<
   typeof loadRolesAction
 >["payload"]["roles"][number];
-
-export type OrderModel = ReturnType<
-  typeof ordersPageLoadedAction
->["payload"]["ordersPage"][number];

@@ -202,10 +202,12 @@ export const order = pgTable("order", {
 	deliveredDate: timestamp("delivered_date", { mode: 'date' }),
 	paidDate: timestamp("paid_date", { mode: 'date' }),
 	diningTableId: uuid("dining_table_id").references(() => diningTable.id, { onDelete: "set null" } ),
+	type: text("type"),
 },
 (table) => {
 	return {
 		diningTableIdIdx: index("order_dining_table_id_idx").on(table.diningTableId),
+		typeIdx: index("order_type_idx").on(table.type),
 		statusIdx: index("order_status_idx").on(table.status),
 		clientIdIdx: index("order_client_id_idx").on(table.clientId),
 		employeeIdIdx: index("order_employee_id_idx").on(table.employeeId),

@@ -9,14 +9,26 @@
   >
     <template #content>
       <div>
-        <div v-if="!fullScreen">
+        <div>
           <!-- TODO: add client field -->
           <q-input
+            stack-label
+            readonly
+            :model-value="t[`orderType_${order.type}`]?.toString()"
+            type="text"
+            :label="t.orderTypeLabel"
+            class="q-mb-md"
+          >
+            <template v-slot:before>
+              <q-icon :name="getOrderTypeIcon(order.type)" />
+            </template>
+          </q-input>
+          <q-input
+            v-if="order.type === 'dine-in'"
             :model-value="order.table.number || '-'"
             readonly
             stack-label
             :label="`${t.tableNumberLabel}`"
-            lazy-rules
             type="text"
             class="q-mb-md"
           />
@@ -24,7 +36,6 @@
             :model-value="order.comment || '-'"
             stack-label
             :label="`${t.commentLabel}`"
-            lazy-rules
             type="textarea"
             readonly
             rows="1"
@@ -67,11 +78,12 @@
       </div>
     </template>
   </OrderView>
-  <PaymentModal
+  <PaymentMethodModal
     v-model="isPaymentModalOpen"
     :total-cost="getOrderTotalCost(order.dishes)"
     :order-number="order.orderNumber"
     :order-id="order.id"
+    :order-type="order.type"
   />
 </template>
 
@@ -84,7 +96,8 @@ import {
 import DishInOrder from "src/components/DishInOrder.vue";
 import OrderHistory from "src/components/OrderHistory.vue";
 import OrderView from "src/components/OrderView.vue";
-import PaymentModal from "src/components/PaymentMethodsModal.vue";
+import PaymentMethodModal from "src/components/PaymentMethodsModal.vue";
+import { getOrderTypeIcon } from "src/lib/get-order-type-icon";
 import { computed, ref } from "vue";
 import { IOrder } from "../../../shared/src/actions/orders";
 import { useI18nStore } from "../lib/i18n";

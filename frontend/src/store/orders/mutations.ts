@@ -1,10 +1,13 @@
 import {
   IOrder,
   cookedDishesLoadedAction,
+  cookedOrdersLoadedAction,
   dishDeliveredAction,
   dishFinishedCookingAction,
   dishStartedCookingAction,
+  orderCookedAction,
   orderCreatedAction,
+  orderDeliveredAction,
   orderLoadedAction,
   orderPaidSuccessAction,
   ordersForKitchenLoadedAction,
@@ -157,6 +160,37 @@ const mutation: MutationTree<IOrdersState> = {
     state.cookedDishes = action.payload.dishes;
   },
 
+  cookedOrdersLoaded(
+    state: IOrdersState,
+    action: ReturnType<typeof cookedOrdersLoadedAction>
+  ) {
+    state.cookedOrders = action.payload.orders;
+  },
+
+  orderCooked(
+    state: IOrdersState,
+    action: ReturnType<typeof orderCookedAction>
+  ) {
+    state.cookedOrders.push(action.payload.order);
+  },
+
+  orderDelivered(
+    state: IOrdersState,
+    action: ReturnType<typeof orderDeliveredAction>
+  ) {
+    const idx = state.cookedOrders.findIndex(
+      (x) => x.order.id === action.payload.order.order.id
+    );
+    if (idx > -1) {
+      state.cookedOrders.splice(idx, 1);
+    }
+
+    if (state.order) {
+      state.order.status = "delivered";
+      state.order.deliveredDate = new Date().toISOString();
+    }
+  },
+
   orderPaidSuccess(
     state: IOrdersState,
     action: ReturnType<typeof orderPaidSuccessAction>
@@ -170,6 +204,13 @@ const mutation: MutationTree<IOrdersState> = {
 
     if (state.order && !state.order.paidDate) {
       state.order.paidDate = new Date().toISOString();
+    }
+
+    const cooked = state.cookedOrders.find(
+      (x) => x.order.id === action.payload.order.id
+    );
+    if (cooked) {
+      cooked.order.paidDate = new Date().toISOString();
     }
   },
 

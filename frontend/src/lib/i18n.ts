@@ -14,6 +14,7 @@ import {
   EMPLOYEE_WITH_PHONE_EXISTS,
   IMAGE_UPLOAD_FAIL,
   MODIFICATION_NAME_EXISTS,
+  ORDER_TYPES,
   PASSWORD_MIN_LENGTH,
   PASSWORD_SPECIAL_CHARS,
   PAYMENT_LINK_GENERATION_ERROR,
@@ -164,9 +165,12 @@ export const messages = i18n("messages", {
   makeSureChangeGiven: "Make sure you give the customer the change",
   paid: "Paid",
   cashPaymentRequest: "Cash payment request",
+  orderReady: "Your order is ready!",
+  pickOrderUp: "Pick it up at our restaurant at",
   cashPaymentRequested: params(
     "Cash payment requested: table {table}, order {orderNumber}"
   ),
+  orderTypeLabel: "Type",
 
   // Kitchen pages
   viewDetails: "View details",
@@ -175,6 +179,9 @@ export const messages = i18n("messages", {
   done: "Done",
   orderCreated: params(`New order: {orderNumber}`),
   pay: "Pay",
+  confirmOrderReceived: "Confirm received",
+  orderReceiveInstruction:
+    'Before receiving the order, click "Confirm received"',
   next: "Next",
 
   // Client pages
@@ -189,9 +196,12 @@ export const messages = i18n("messages", {
   orderWasCreated: "Your order was created",
   viewOrder: "View order",
   waiterWasCalled: "We called a waiter!",
+  payInCashUponReceipt:
+    "You will be able to pay in cash upon receipt of the order",
   waiterWillAcceptPayment:
     "Waiter will come to your table and accept the payment",
   ok: "OK",
+  orderIsReady: params(`Order {orderNumber} is ready!`),
 
   // Payment pages
   paymentSuccessPageTitle: "Payment success",
@@ -210,6 +220,11 @@ export const messages = i18n("messages", {
   orderStatus_paid: "Paid",
   orderStatus_delivering: "Delivering",
   orderStatus_delivered: "Delivered",
+
+  // Order types
+  [`orderType_${ORDER_TYPES.DINE_IN}`]: "Dine in",
+  [`orderType_${ORDER_TYPES.DELIVERY}`]: "Delivery",
+  [`orderType_${ORDER_TYPES.TAKEOUT}`]: "Takeout",
 
   // Login & signup pages
   adminLoginPageTitle: "Admin login",

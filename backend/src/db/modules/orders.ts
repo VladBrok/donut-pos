@@ -3,8 +3,9 @@ import {
   ICurrentOrder,
   ORDER_STATUSES,
   OrderStatus,
+  OrderType,
 } from "donut-shared";
-import { IOrder } from "donut-shared/src/actions/orders.js";
+import { ICookedOrder, IOrder } from "donut-shared/src/actions/orders.js";
 import { logWarn } from "donut-shared/src/lib/log.js";
 import {
   and,
@@ -48,6 +49,7 @@ export interface IGetOrder {
   search?: string;
   completed?: boolean;
   orderId?: string;
+  orderType?: OrderType;
 }
 
 export interface IGetOrdersPage extends IGetOrder {
@@ -75,6 +77,7 @@ export async function getOrdersPage(params: IGetOrdersPage) {
       deliveredDate: order.deliveredDate,
       paidDate: order.paidDate,
       diningTableId: order.diningTableId,
+      type: order.type,
     })
     .from(order)
     .orderBy(makeOrderByFilter(params, order.createdDate))
@@ -136,7 +139,6 @@ export async function getSingleOrder(
       .where(userId ? eq(client.id, userId) : undefined)
   )?.[0];
   const result = await getOrdersPage({
-    employeeId: isClient ? undefined : userId,
     clientId: !isClient ? undefined : userId,
     page: 1,
     perPage: 1,
@@ -163,6 +165,7 @@ export function makeOrderByFilter(params: IGetOrder, createdDateCol: PgColumn) {
 
 function makeWhereFilter(params: IGetOrder) {
   return and(
+    params.orderType ? eq(order.type, params.orderType) : undefined,
     params.employeeId ? eq(order.employeeId, params.employeeId) : undefined,
     params.clientId ? eq(order.clientId, params.clientId) : undefined,
     params.orderNumber
@@ -226,6 +229,7 @@ export async function createOrder(
     await tx.insert(order).values({
       id: orderToCreate.id,
       comment: data.comment,
+      type: data.type,
       employeeId: isClient ? data.table?.employee.id : userId,
       clientId: !isClient ? null : userId,
       number: orderNumber,
@@ -373,6 +377,22 @@ export async function deliverDish(orderId: string, dishIdInOrder: string) {
   });
 }
 
+export async function deliverOrder(orderId: string, clientId: string) {
+  await db
+    .update(order)
+    .set({
+      status: ORDER_STATUSES.DELIVERED,
+      deliveredDate: new Date(),
+    })
+    .where(and(eq(order.id, orderId), eq(order.clientId, clientId)));
+
+  return (
+    await getOrdersShallow({
+      orderId: orderId,
+    })
+  )[0];
+}
+
 export async function getOrdersShallow(params: IGetOrder, dbOrTx = db) {
   const diningTableEmployee = db
     .select()
@@ -392,6 +412,21 @@ export async function getOrdersShallow(params: IGetOrder, dbOrTx = db) {
     .leftJoin(client, eq(client.id, order.clientId));
 
   return shallowOrdersAdapter(data);
+}
+
+export async function getCookedOrders(
+  clientId: string,
+  orderType: OrderType
+): Promise<ICookedOrder[]> {
+  return (
+    await getOrdersShallow({
+      clientId: clientId,
+      statuses: ["cooked"],
+      orderType: orderType,
+    })
+  ).map((x) => ({
+    order: x,
+  }));
 }
 
 export async function getCookedDishes(

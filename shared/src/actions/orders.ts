@@ -1,7 +1,12 @@
 import { DishInOrderStatus } from "src/constants/dish-in-order-statuses.js";
 import { OrderStatus } from "src/constants/order-statuses.js";
+import { OrderType } from "src/constants/order-types.js";
 import { ICurrentOrder, IDiningTable } from "../actions/current-order.js";
 import { createAction } from "./index.js";
+
+export interface ICookedOrder {
+  order: IShallowOrder;
+}
 
 export interface ICookedDish {
   order: IShallowOrder;
@@ -34,6 +39,7 @@ export interface IDishInOrder {
 
 export interface IOrder {
   id: string;
+  type: OrderType;
   comment: string;
   table: IDiningTable;
   orderNumber: string;
@@ -57,6 +63,7 @@ export interface IOrder {
 
 export interface IShallowOrder {
   id: string;
+  type: OrderType;
   comment: string;
   table: IDiningTable;
   orderNumber: string;
@@ -149,6 +156,22 @@ export const dishDeliveredAction = createAction<{
 export const cookedDishesLoadedAction = createAction<{
   dishes: ICookedDish[];
 }>("orders/cookedDishesLoaded");
+
+export const cookedOrdersLoadedAction = createAction<{
+  orders: ICookedOrder[];
+}>("orders/cookedOrdersLoaded");
+
+export const orderCookedAction = createAction<{
+  order: ICookedOrder;
+}>("orders/orderCooked");
+
+export const deliverOrderAction = createAction<{
+  order: ICookedOrder;
+}>("orders/deliverOrder");
+
+export const orderDeliveredAction = createAction<{
+  order: ICookedOrder;
+}>("orders/orderDelivered");
 
 export const payForOrderAction = createAction<{
   orderNumber: string;

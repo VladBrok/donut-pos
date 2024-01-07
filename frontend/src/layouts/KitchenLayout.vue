@@ -10,7 +10,7 @@ const t = useI18nStore();
 
 const menuList = [
   {
-    icon: "o_local_mall",
+    icon: "o_receipt_long",
     label: t.value.orders,
     to: "/kitchen/orders",
     meta: t.value.orders,

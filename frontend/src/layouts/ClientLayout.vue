@@ -1,7 +1,13 @@
 <template>
   <main-layout :menu-list="menuList">
     <template #actions>
-      <!-- <q-btn class="q-mr-md" flat round icon="o_notifications">
+      <q-btn
+        v-if="isLoggedIn"
+        class="q-mr-md"
+        flat
+        round
+        icon="o_notifications"
+      >
         <q-tooltip> {{ t.showNotifications }} </q-tooltip>
         <q-spinner-rings
           v-if="isSubscribing"
@@ -10,44 +16,24 @@
           class="absolute-top-right-offset"
         />
         <q-badge
-          v-if="cookedDishes.length"
+          v-if="notificationCount"
           rounded
           floating
           color="red"
-          :label="cookedDishes.length || ''"
+          :label="notificationCount || ''"
         />
         <q-menu fit style="overflow-x: hidden">
           <div style="min-width: 320px" class="q-px-xs">
             <TransitionGroup tag="div" name="fade">
-              <dish-in-order
-                v-for="item of cookedDishes"
-                :key="item.dish.dishIdInOrder"
-                :dish="item.dish"
-                :count="item.dish.count"
-                :order="item.order"
-                view-only
-                hide-price
-              >
-                <template #additonal-info>
-                  <div class="text-body2">
-                    <div>
-                      {{ t.tableNumber }}
-                      {{ item.order.table.number || "-" }},
-                    </div>
-                    <OrderNumberTitle
-                      :order-number="item.order.orderNumber"
-                      is-link
-                    />
-                  </div>
-                </template>
-                <template #actions>
-                  <cooked-dish-status-button :cooked-dish="item" />
-                </template>
-              </dish-in-order>
+              <CookedOrderNotification
+                v-for="order of cookedOrders"
+                :key="order.order.id"
+                :order="order"
+              />
             </TransitionGroup>
           </div>
         </q-menu>
-      </q-btn> -->
+      </q-btn>
       <q-btn
         class="q-mr-md shopping-basket"
         flat
@@ -115,16 +101,19 @@
 </template>
 
 <script setup lang="ts">
-import { closeWelcomeBannerAction } from "donut-shared";
+import { useSubscription } from "@logux/vuex";
+import { ANONYMOUS, CHANNELS, closeWelcomeBannerAction } from "donut-shared";
 import {
   closeCurrentOrderAction,
   openCurrentOrderAction,
 } from "donut-shared/src/actions/order-drawer";
+import CookedOrderNotification from "src/components/CookedOrderNotification.vue";
 import CurrentOrderDishesBadge from "src/components/CurrentOrderDishesBadge.vue";
 import CurrentOrderView from "src/components/CurrentOrderView.vue";
 import OrderDrawer from "src/components/OrderDrawer.vue";
+import { useIsLoggedIn } from "src/lib/composables/useIsLoggedIn";
 import { useStore } from "src/store";
-import { computed } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 import { RouterLink } from "vue-router";
 import MainLayout from "../components/MainLayout.vue";
 import { useI18nStore } from "../lib/i18n";
@@ -139,7 +128,7 @@ const menuList = [
     meta: t.value.menu,
   },
   {
-    icon: "o_local_mall",
+    icon: "o_receipt_long",
     label: t.value.orders,
     to: "/orders",
     meta: t.value.orders,
@@ -151,6 +140,29 @@ const isCurrentOrderOpen = computed(
   () => store.state.orderDrawer.isCurrentOrderOpen
 );
 const isWelcomeBannerOpen = computed(() => store.state.welcomeBanner.isOpen);
+const isLoggedIn = useIsLoggedIn();
+const userId = ref(store.state.auth.user.userId);
+const channels = computed(() => {
+  return userId.value === ANONYMOUS.userId
+    ? []
+    : [CHANNELS.COOKED_ORDERS_OF_CLIENT(userId.value)];
+});
+let isSubscribing = useSubscription(channels, { store: store as any });
+const cookedOrders = computed(() => store.state.orders.cookedOrders);
+const notificationCount = computed(() => cookedOrders.value.length);
+const unsubscribe = ref(() => {
+  /* */
+});
+
+onMounted(() => {
+  unsubscribe.value = store.client.on("user", (newId) => {
+    userId.value = newId;
+  });
+});
+
+onUnmounted(() => {
+  unsubscribe.value();
+});
 
 function toggleCurrentOrderDrawer() {
   if (isCurrentOrderOpen.value) {

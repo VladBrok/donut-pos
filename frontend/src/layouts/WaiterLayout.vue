@@ -112,7 +112,7 @@ const menuList = [
     meta: t.value.menu,
   },
   {
-    icon: "o_local_mall",
+    icon: "o_receipt_long",
     label: t.value.orders,
     to: "/waiter/orders",
     meta: t.value.orders,

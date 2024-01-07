@@ -162,6 +162,7 @@ Table order {
   employee_id UUID
   sale_point_id UUID
   dining_table_id UUID
+  type TEXT
   number TEXT
   comment TEXT
   status TEXT
@@ -178,6 +179,7 @@ Table order {
     sale_point_id [name: 'order_sale_point_id_idx']
     number [name: 'order_number_idx']
     status [name: 'order_status_idx']
+    type [name: 'order_type_idx']
   }
 }
 

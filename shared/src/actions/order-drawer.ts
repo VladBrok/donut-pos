@@ -1,10 +1,8 @@
-import { ordersPageLoadedAction } from "../actions/orders.js";
+import { IOrder } from "../actions/orders.js";
 import { createAction } from "./index.js";
 
 export const openArbitraryOrderAction = createAction<{
-  order: ReturnType<
-    typeof ordersPageLoadedAction
-  >["payload"]["ordersPage"][number];
+  order: IOrder;
 }>("orderDrawer/openArbitraryOrder");
 
 export const closeArbitraryOrderAction = createAction(

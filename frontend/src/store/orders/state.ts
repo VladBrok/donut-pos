@@ -1,10 +1,15 @@
-import { ICookedDish, IOrder } from "donut-shared/src/actions/orders";
+import {
+  ICookedDish,
+  ICookedOrder,
+  IOrder,
+} from "donut-shared/src/actions/orders";
 
 export interface IOrdersState {
   totalOrders: number;
   ordersPage: IOrder[];
   ordersForKitchen: IOrder[];
   cookedDishes: ICookedDish[];
+  cookedOrders: ICookedOrder[];
   order: IOrder | null;
   paymentLink?: string;
   createOrderAfterAuth?: boolean;
@@ -15,6 +20,7 @@ const state: IOrdersState = {
   ordersPage: [],
   ordersForKitchen: [],
   cookedDishes: [],
+  cookedOrders: [],
   order: null,
 };
 

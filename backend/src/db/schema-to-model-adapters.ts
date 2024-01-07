@@ -4,16 +4,20 @@ import {
   ICashPaymentRequest,
   IClient,
   OrderStatus,
+  OrderType,
 } from "donut-shared";
 import { IDiningTable } from "donut-shared/src/actions/current-order.js";
-import { ICookedDish, IShallowOrder } from "donut-shared/src/actions/orders.js";
+import {
+  ICookedDish,
+  IOrder,
+  IShallowOrder,
+} from "donut-shared/src/actions/orders.js";
 import { onlyUnique } from "src/lib/only-unique.js";
 import {
   DishCategoryModel,
   DishModel,
   EmployeeModel,
   ModificationModel,
-  OrderModel,
   RoleModel,
 } from "./models.js";
 import {
@@ -145,12 +149,13 @@ export const roleAdapter = (data: RoleSchema[]): RoleModel[] => {
   }));
 };
 
-export const ordersAdapter = (data: OrderSchema[]): OrderModel[] => {
+export const ordersAdapter = (data: OrderSchema[]): IOrder[] => {
   return data
     .filter(onlyUnique((item) => item.order.id))
     .map((uniqueOrder) => ({
       id: uniqueOrder.order.id,
       orderNumber: uniqueOrder.order.number || "",
+      type: uniqueOrder.order?.type as OrderType,
       comment: uniqueOrder.order.comment || "",
       status: (uniqueOrder.order.status || "") as OrderStatus,
       createdDate: uniqueOrder.order.createdDate?.toISOString() || "",
@@ -232,6 +237,7 @@ export const shallowOrdersAdapter = (
       id: uniqueOrder.order.id,
       orderNumber: uniqueOrder.order.number || "",
       comment: uniqueOrder.order.comment || "",
+      type: uniqueOrder.order?.type as OrderType,
       status: (uniqueOrder.order.status || "") as OrderStatus,
       createdDate: uniqueOrder.order.createdDate?.toISOString() || "",
       cookingDate: uniqueOrder.order.cookingDate?.toISOString() || "",
@@ -328,6 +334,7 @@ export const cashPaymentRequestsAdapter = (
       id: x.dining_table?.id || "",
       number: x.dining_table?.number || "",
     },
+    orderType: x.order?.type as OrderType,
     orderNumber: x.order?.number || "",
     status: x.order?.status || "",
     createdDate: x.order?.createdDate?.toISOString() || "",
