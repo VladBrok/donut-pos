@@ -184,6 +184,11 @@ const mutation: MutationTree<IOrdersState> = {
     if (idx > -1) {
       state.cookedOrders.splice(idx, 1);
     }
+
+    if (state.order) {
+      state.order.status = "delivered";
+      state.order.deliveredDate = new Date().toISOString();
+    }
   },
 
   orderPaidSuccess(

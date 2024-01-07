@@ -301,6 +301,7 @@ export default function ordersModule(server: Server) {
     },
     resend(ctx, action) {
       return [
+        CHANNELS.ORDER_SINGLE(action.payload.order.order.orderNumber),
         CHANNELS.COOKED_ORDERS_OF_CLIENT(action.payload.order.order.client?.id),
       ];
     },

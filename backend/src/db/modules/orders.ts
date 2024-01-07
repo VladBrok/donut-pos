@@ -139,7 +139,6 @@ export async function getSingleOrder(
       .where(userId ? eq(client.id, userId) : undefined)
   )?.[0];
   const result = await getOrdersPage({
-    employeeId: isClient ? undefined : userId,
     clientId: !isClient ? undefined : userId,
     page: 1,
     perPage: 1,
