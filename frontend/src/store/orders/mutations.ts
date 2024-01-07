@@ -200,6 +200,13 @@ const mutation: MutationTree<IOrdersState> = {
     if (state.order && !state.order.paidDate) {
       state.order.paidDate = new Date().toISOString();
     }
+
+    const cooked = state.cookedOrders.find(
+      (x) => x.order.id === action.payload.order.id
+    );
+    if (cooked) {
+      cooked.order.paidDate = new Date().toISOString();
+    }
   },
 
   paymentLinkReceived(
