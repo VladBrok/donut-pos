@@ -54,7 +54,7 @@ export const updateCurrentOrderCommentAction = createAction<{
 }>("currentOrder/updateComment");
 
 export const updateCurrentOrderTypeAction = createAction<{
-  type: OrderType;
+  type: string;
 }>("currentOrder/updateType");
 
 export const updateCurrentOrderTableNumberAction = createAction<{

@@ -8,6 +8,7 @@ import {
 } from "donut-shared";
 import {
   cookedDishesLoadedAction,
+  cookedOrdersLoadedAction,
   dishDeliveredAction,
   dishFinishedCookingAction,
   dishStartedCookingAction,
@@ -70,6 +71,20 @@ export default function ordersModule(server: Server) {
       const dishes = await db.getCookedDishes(ctx.userId);
       return cookedDishesLoadedAction({
         dishes: dishes,
+      });
+    },
+  });
+
+  server.channel<{
+    clientId: string;
+  }>(CHANNELS.COOKED_ORDERS_OF_CLIENT(), {
+    async access(ctx, action, meta) {
+      return ctx.userId === ctx.params.clientId;
+    },
+    async load(ctx, action, meta) {
+      const orders = await db.getCookedOrders(ctx.userId, "takeout");
+      return cookedOrdersLoadedAction({
+        orders: orders,
       });
     },
   });

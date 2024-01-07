@@ -4,6 +4,10 @@ import { OrderType } from "src/constants/order-types.js";
 import { ICurrentOrder, IDiningTable } from "../actions/current-order.js";
 import { createAction } from "./index.js";
 
+export interface ICookedOrder {
+  order: IShallowOrder;
+}
+
 export interface ICookedDish {
   order: IShallowOrder;
   dish: Omit<IDishInOrder, "modifications">;
@@ -152,6 +156,14 @@ export const dishDeliveredAction = createAction<{
 export const cookedDishesLoadedAction = createAction<{
   dishes: ICookedDish[];
 }>("orders/cookedDishesLoaded");
+
+export const cookedOrdersLoadedAction = createAction<{
+  orders: ICookedOrder[];
+}>("orders/cookedOrdersLoaded");
+
+export const orderCookedAction = createAction<{
+  order: ICookedOrder;
+}>("orders/orderCooked");
 
 export const payForOrderAction = createAction<{
   orderNumber: string;

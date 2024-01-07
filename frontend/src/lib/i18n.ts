@@ -165,6 +165,8 @@ export const messages = i18n("messages", {
   makeSureChangeGiven: "Make sure you give the customer the change",
   paid: "Paid",
   cashPaymentRequest: "Cash payment request",
+  orderReady: "Your order is ready!",
+  pickOrderUp: "Pick it up at our restaurant at",
   cashPaymentRequested: params(
     "Cash payment requested: table {table}, order {orderNumber}"
   ),
@@ -191,6 +193,8 @@ export const messages = i18n("messages", {
   orderWasCreated: "Your order was created",
   viewOrder: "View order",
   waiterWasCalled: "We called a waiter!",
+  payInCashUponReceipt:
+    "You will be able to pay in cash upon receipt of the order",
   waiterWillAcceptPayment:
     "Waiter will come to your table and accept the payment",
   ok: "OK",

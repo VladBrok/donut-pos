@@ -1,9 +1,11 @@
 import {
   IOrder,
   cookedDishesLoadedAction,
+  cookedOrdersLoadedAction,
   dishDeliveredAction,
   dishFinishedCookingAction,
   dishStartedCookingAction,
+  orderCookedAction,
   orderCreatedAction,
   orderLoadedAction,
   orderPaidSuccessAction,
@@ -155,6 +157,20 @@ const mutation: MutationTree<IOrdersState> = {
     action: ReturnType<typeof cookedDishesLoadedAction>
   ) {
     state.cookedDishes = action.payload.dishes;
+  },
+
+  cookedOrdersLoaded(
+    state: IOrdersState,
+    action: ReturnType<typeof cookedOrdersLoadedAction>
+  ) {
+    state.cookedOrders = action.payload.orders;
+  },
+
+  orderCooked(
+    state: IOrdersState,
+    action: ReturnType<typeof orderCookedAction>
+  ) {
+    state.cookedOrders.push(action.payload.order);
   },
 
   orderPaidSuccess(

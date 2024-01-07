@@ -3,8 +3,9 @@ import {
   ICurrentOrder,
   ORDER_STATUSES,
   OrderStatus,
+  OrderType,
 } from "donut-shared";
-import { IOrder } from "donut-shared/src/actions/orders.js";
+import { ICookedOrder, IOrder } from "donut-shared/src/actions/orders.js";
 import { logWarn } from "donut-shared/src/lib/log.js";
 import {
   and,
@@ -48,6 +49,7 @@ export interface IGetOrder {
   search?: string;
   completed?: boolean;
   orderId?: string;
+  orderType?: OrderType;
 }
 
 export interface IGetOrdersPage extends IGetOrder {
@@ -164,6 +166,7 @@ export function makeOrderByFilter(params: IGetOrder, createdDateCol: PgColumn) {
 
 function makeWhereFilter(params: IGetOrder) {
   return and(
+    params.orderType ? eq(order.type, params.orderType) : undefined,
     params.employeeId ? eq(order.employeeId, params.employeeId) : undefined,
     params.clientId ? eq(order.clientId, params.clientId) : undefined,
     params.orderNumber
@@ -394,6 +397,21 @@ export async function getOrdersShallow(params: IGetOrder, dbOrTx = db) {
     .leftJoin(client, eq(client.id, order.clientId));
 
   return shallowOrdersAdapter(data);
+}
+
+export async function getCookedOrders(
+  clientId: string,
+  orderType: OrderType
+): Promise<ICookedOrder[]> {
+  return (
+    await getOrdersShallow({
+      clientId: clientId,
+      statuses: ["cooked"],
+      orderType: orderType,
+    })
+  ).map((x) => ({
+    order: x,
+  }));
 }
 
 export async function getCookedDishes(

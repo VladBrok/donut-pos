@@ -78,11 +78,12 @@
       </div>
     </template>
   </OrderView>
-  <PaymentModal
+  <PaymentMethodModal
     v-model="isPaymentModalOpen"
     :total-cost="getOrderTotalCost(order.dishes)"
     :order-number="order.orderNumber"
     :order-id="order.id"
+    :order-type="order.type"
   />
 </template>
 
@@ -95,7 +96,7 @@ import {
 import DishInOrder from "src/components/DishInOrder.vue";
 import OrderHistory from "src/components/OrderHistory.vue";
 import OrderView from "src/components/OrderView.vue";
-import PaymentModal from "src/components/PaymentMethodsModal.vue";
+import PaymentMethodModal from "src/components/PaymentMethodsModal.vue";
 import { getOrderTypeIcon } from "src/lib/get-order-type-icon";
 import { computed, ref } from "vue";
 import { IOrder } from "../../../shared/src/actions/orders";
