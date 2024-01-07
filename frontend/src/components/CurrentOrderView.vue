@@ -33,6 +33,7 @@
               </template>
             </q-select>
             <q-select
+              v-if="orderType.value === 'dine-in'"
               :model-value="order?.table?.number"
               @update:model-value="
                 store.commit.crossTab(
