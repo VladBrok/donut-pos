@@ -4,6 +4,7 @@ import {
   ICashPaymentRequest,
   IClient,
   OrderStatus,
+  OrderType,
 } from "donut-shared";
 import { IDiningTable } from "donut-shared/src/actions/current-order.js";
 import {
@@ -154,6 +155,7 @@ export const ordersAdapter = (data: OrderSchema[]): IOrder[] => {
     .map((uniqueOrder) => ({
       id: uniqueOrder.order.id,
       orderNumber: uniqueOrder.order.number || "",
+      type: uniqueOrder.order?.type as OrderType,
       comment: uniqueOrder.order.comment || "",
       status: (uniqueOrder.order.status || "") as OrderStatus,
       createdDate: uniqueOrder.order.createdDate?.toISOString() || "",
@@ -235,6 +237,7 @@ export const shallowOrdersAdapter = (
       id: uniqueOrder.order.id,
       orderNumber: uniqueOrder.order.number || "",
       comment: uniqueOrder.order.comment || "",
+      type: uniqueOrder.order?.type as OrderType,
       status: (uniqueOrder.order.status || "") as OrderStatus,
       createdDate: uniqueOrder.order.createdDate?.toISOString() || "",
       cookingDate: uniqueOrder.order.cookingDate?.toISOString() || "",
@@ -331,6 +334,7 @@ export const cashPaymentRequestsAdapter = (
       id: x.dining_table?.id || "",
       number: x.dining_table?.number || "",
     },
+    orderType: x.order?.type as OrderType,
     orderNumber: x.order?.number || "",
     status: x.order?.status || "",
     createdDate: x.order?.createdDate?.toISOString() || "",

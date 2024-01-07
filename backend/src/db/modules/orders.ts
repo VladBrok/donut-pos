@@ -75,6 +75,7 @@ export async function getOrdersPage(params: IGetOrdersPage) {
       deliveredDate: order.deliveredDate,
       paidDate: order.paidDate,
       diningTableId: order.diningTableId,
+      type: order.type,
     })
     .from(order)
     .orderBy(makeOrderByFilter(params, order.createdDate))

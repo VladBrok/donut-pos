@@ -1,5 +1,6 @@
 import { DishInOrderStatus } from "src/constants/dish-in-order-statuses.js";
 import { OrderStatus } from "src/constants/order-statuses.js";
+import { OrderType } from "src/constants/order-types.js";
 import { ICurrentOrder, IDiningTable } from "../actions/current-order.js";
 import { createAction } from "./index.js";
 
@@ -34,6 +35,7 @@ export interface IDishInOrder {
 
 export interface IOrder {
   id: string;
+  type: OrderType;
   comment: string;
   table: IDiningTable;
   orderNumber: string;
@@ -57,6 +59,7 @@ export interface IOrder {
 
 export interface IShallowOrder {
   id: string;
+  type: OrderType;
   comment: string;
   table: IDiningTable;
   orderNumber: string;
