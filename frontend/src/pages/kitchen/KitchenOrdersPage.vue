@@ -24,6 +24,19 @@
             </order-number-title>
             <div>
               <q-input
+                stack-label
+                readonly
+                :model-value="t[`orderType_${order.type}`]?.toString()"
+                type="text"
+                :label="t.orderTypeLabel"
+                class="q-mb-md"
+              >
+                <template v-slot:before>
+                  <q-icon :name="getOrderTypeIcon(order.type)" />
+                </template>
+              </q-input>
+              <q-input
+                v-if="order.type === 'dine-in'"
                 :model-value="order.table.number || '-'"
                 readonly
                 stack-label
@@ -110,6 +123,7 @@ import DishInOrderStatusButton from "src/components/DishInOrderStatusButton.vue"
 import NoData from "src/components/NoData.vue";
 import OrderNumberTitle from "src/components/OrderNumberTitle.vue";
 import OrderView from "src/components/OrderView.vue";
+import { getOrderTypeIcon } from "src/lib/get-order-type-icon";
 import { useI18nStore } from "src/lib/i18n";
 import { useStore } from "src/store";
 import { computed } from "vue";
