@@ -210,6 +210,7 @@ import { useIsLoggedIn } from "src/lib/composables/useIsLoggedIn";
 import { AUTH_BEFORE_ORDER_CREATE } from "src/lib/constants";
 import { createOrder } from "src/lib/create-order";
 import { createFuzzySearcher } from "src/lib/fuzzy-search";
+import { getOrderTypeIcon } from "src/lib/get-order-type-icon";
 import { onFormValidationError } from "src/lib/on-form-validation-error";
 import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -280,14 +281,7 @@ const orderTypes = computed(() =>
   ORDER_TYPES_ARR.map((x) => ({
     label: t.value[`orderType_${x}`],
     value: x,
-    icon:
-      x === "delivery"
-        ? "o_directions_car"
-        : x === "dine-in"
-        ? "o_restaurant"
-        : x === "takeout"
-        ? "o_local_mall"
-        : "",
+    icon: getOrderTypeIcon(x),
   }))
 );
 const orderType = ref<(typeof orderTypes.value)[number]>(
