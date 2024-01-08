@@ -17,7 +17,10 @@
     <q-menu fit style="overflow-x: hidden">
       <div style="min-width: 320px" class="q-px-xs">
         <TransitionGroup tag="div" name="fade">
-          <slot name="notification-list" />
+          <p v-if="!notificationCount">
+            <NoData :key="'empty'" :text="t.noNotifications" class="q-py-lg" />
+          </p>
+          <slot v-else name="notification-list" />
         </TransitionGroup>
       </div>
     </q-menu>
@@ -25,6 +28,7 @@
 </template>
 
 <script setup lang="ts">
+import NoData from "src/components/NoData.vue";
 import { useI18nStore } from "../lib/i18n";
 
 defineProps<{
