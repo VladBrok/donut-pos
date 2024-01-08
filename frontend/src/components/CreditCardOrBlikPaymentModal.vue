@@ -10,97 +10,25 @@
         <q-btn icon="close" flat round dense v-close-popup size="lg" />
       </q-card-section>
 
-      <q-card-section>
-        <p v-if="!isInitializing" class="text-h4 text-center q-mb-md">
-          {{ t.scanQrCode }}
-        </p>
-      </q-card-section>
-
-      <q-card-section>
-        <big-spinner v-if="isInitializing" />
-        <div ref="qrCodeContainer" class="w-fit q-mx-auto"></div>
-      </q-card-section>
+      <payment-qr-code
+        v-if="modelValue"
+        :order-number="orderNumber"
+        :method="method"
+      />
     </q-card>
   </q-dialog>
 </template>
 
 <script setup lang="ts">
-import { assert } from "donut-shared";
-import { getPaymentLinkAction } from "donut-shared/src/actions/orders";
-import { logError, logInfo } from "donut-shared/src/lib/log";
-import QRCode from "qrcode";
-import BigSpinner from "src/components/BigSpinner.vue";
-import { useI18nStore } from "src/lib/i18n";
-import { useStore } from "src/store";
-import { computed, ref, watch } from "vue";
+import PaymentQrCode from "src/components/PaymentQrCode.vue";
+import { computed } from "vue";
 
 const props = defineProps<{
   orderNumber: string;
   modelValue: boolean;
   method: "blik" | "card";
 }>();
-const emit = defineEmits(["close", "update:modelValue"]);
+const emit = defineEmits(["update:modelValue"]);
 
-const t = useI18nStore();
-const isInitializing = ref(false);
-const store = useStore();
 const modelValue = computed(() => props.modelValue);
-const paymentLink = computed(() => store.state.orders.paymentLink);
-const qrCodeContainer = ref<HTMLDivElement>();
-
-watch(
-  modelValue,
-  async () => {
-    if (!modelValue.value) {
-      return;
-    }
-
-    qrCodeContainer.value?.replaceChildren();
-    isInitializing.value = true;
-    try {
-      await getPaymentLink();
-    } catch {
-      isInitializing.value = false;
-    }
-  },
-  { immediate: true }
-);
-
-watch(
-  paymentLink,
-  async () => {
-    logInfo("paymentLink:", paymentLink.value);
-
-    if (!paymentLink.value) {
-      return;
-    }
-
-    try {
-      const canvas = await QRCode.toCanvas(paymentLink.value, {
-        errorCorrectionLevel: "M",
-        version: 14,
-        width: 280,
-      });
-      assert(
-        qrCodeContainer.value,
-        "Expected qr code container html element to be present"
-      );
-      qrCodeContainer.value.appendChild(canvas);
-    } catch (err) {
-      logError("QR code generation error:", err);
-    } finally {
-      isInitializing.value = false;
-    }
-  },
-  { immediate: true }
-);
-
-async function getPaymentLink() {
-  store.commit.sync(
-    getPaymentLinkAction({
-      orderNumber: props.orderNumber,
-      method: props.method,
-    })
-  );
-}
 </script>
