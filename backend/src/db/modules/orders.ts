@@ -378,6 +378,19 @@ export async function deliverDish(orderId: string, dishIdInOrder: string) {
 }
 
 export async function deliverOrder(orderId: string, clientId: string) {
+  const theOrder = (
+    await db.select().from(order).where(eq(order.id, orderId))
+  )?.[0];
+
+  if (theOrder?.deliveredDate) {
+    logWarn("Tried to mark already delivered order as delivered");
+    return;
+  }
+
+  if (!theOrder?.paidDate) {
+    throw new Error("Can mark order as delivered only if it was paid");
+  }
+
   await db
     .update(order)
     .set({
