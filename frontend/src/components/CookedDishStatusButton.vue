@@ -17,6 +17,7 @@ import { computed, ref } from "vue";
 const props = defineProps<{
   cookedDish: ICookedDish;
 }>();
+const emit = defineEmits(["statusUpdated"]);
 
 const t = useI18nStore();
 const store = useStore();
@@ -34,6 +35,9 @@ function updateStatus() {
         dishIdInOrder: props.cookedDish.dish.dishIdInOrder,
       })
     )
+    .then(() => {
+      emit("statusUpdated");
+    })
     .finally(() => {
       isUpdatingStatus.value = false;
     });

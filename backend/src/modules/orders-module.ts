@@ -16,6 +16,7 @@ import {
   finishCookingDishAction,
   getPaymentLinkAction,
   loadOrdersPageAction,
+  markOrderAsCookedAction,
   orderCookedAction,
   orderDeliveredAction,
   orderLoadedAction,
@@ -186,31 +187,51 @@ export default function ordersModule(server: Server) {
     },
   });
 
+  server.type(markOrderAsCookedAction, {
+    async access(ctx) {
+      return await hasCookPermissions(ctx.userId);
+    },
+    async process(ctx, action, meta) {
+      const order = await db.finishCookingOrder(action.payload.orderId);
+      await server.process(
+        orderCookedAction({
+          order: {
+            order: order,
+          },
+        })
+      );
+    },
+  });
+
+  server.type(orderCookedAction, {
+    async access() {
+      return false;
+    },
+    resend(ctx, action) {
+      return [
+        CHANNELS.COOKED_ORDERS_OF_CLIENT(action.payload.order.order.client?.id),
+        CHANNELS.ORDERS_FOR_KITCHEN,
+        CHANNELS.COOKED_DISHES_OF_EMPLOYEE(
+          action.payload.order.order.employee?.id
+        ),
+        CHANNELS.ORDER_SINGLE(action.payload.order.order.orderNumber),
+        CHANNELS.ORDERS_OF_EMPLOYEE(action.payload.order.order.employee?.id),
+        CHANNELS.ORDERS_OF_CLIENT(action.payload.order.order.client?.id),
+      ];
+    },
+  });
+
   server.type(finishCookingDishAction, {
     async access(ctx) {
       return await hasCookPermissions(ctx.userId);
     },
     async process(ctx, action, meta) {
-      const result = await db.finishCookingDish(
-        action.payload.orderId,
-        action.payload.dishIdInOrder
+      const result = await db.finishCookingDish(action.payload.dishIdInOrder);
+      await server.process(
+        dishFinishedCookingAction({
+          cookedDish: result,
+        })
       );
-      await Promise.all([
-        result.order.status === "cooked"
-          ? server.process(
-              orderCookedAction({
-                order: {
-                  order: result.order,
-                },
-              })
-            )
-          : Promise.resolve(),
-        server.process(
-          dishFinishedCookingAction({
-            cookedDish: result,
-          })
-        ),
-      ]);
     },
   });
 
@@ -229,17 +250,6 @@ export default function ordersModule(server: Server) {
           action.payload.cookedDish.order.employee?.id
         ),
         CHANNELS.ORDERS_OF_CLIENT(action.payload.cookedDish.order.client?.id),
-      ];
-    },
-  });
-
-  server.type(orderCookedAction, {
-    async access() {
-      return false;
-    },
-    resend(ctx, action) {
-      return [
-        CHANNELS.COOKED_ORDERS_OF_CLIENT(action.payload.order.order.client?.id),
       ];
     },
   });
@@ -281,14 +291,11 @@ export default function ordersModule(server: Server) {
       return true;
     },
     async process(ctx, action, meta) {
-      const order = await db.deliverOrder(
-        action.payload.order.order.id,
-        ctx.userId
-      );
+      const order = await db.deliverOrder(action.payload.orderId, ctx.userId);
       await server.process(
         orderDeliveredAction({
           order: {
-            order,
+            order: order!,
           },
         })
       );
