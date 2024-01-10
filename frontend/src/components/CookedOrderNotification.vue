@@ -66,7 +66,7 @@ function orderDelivered() {
   store.commit
     .sync(
       deliverOrderAction({
-        order: props.order,
+        orderId: props.order.order.id,
       })
     )
     .finally(() => {

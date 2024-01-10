@@ -113,6 +113,7 @@ export const messages = i18n("messages", {
   phoneExample: "Example",
   passwordHint: `Hint: at least ${PASSWORD_MIN_LENGTH} characters. At least 1 digit, 1 uppercase, 1 lowercase and 1 special`,
   noDataFound: "No data found",
+  noNotifications: "No notifications",
   goBack: "Go back",
 
   // Waiter pages

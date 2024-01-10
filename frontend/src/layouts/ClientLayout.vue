@@ -1,39 +1,19 @@
 <template>
   <main-layout :menu-list="menuList">
     <template #actions>
-      <q-btn
+      <NotificationsBell
         v-if="isLoggedIn"
-        class="q-mr-md"
-        flat
-        round
-        icon="o_notifications"
+        :is-loading="isSubscribing"
+        :notification-count="notificationCount"
       >
-        <q-tooltip> {{ t.showNotifications }} </q-tooltip>
-        <q-spinner-rings
-          v-if="isSubscribing"
-          color="primary"
-          size="40px"
-          class="absolute-top-right-offset"
-        />
-        <q-badge
-          v-if="notificationCount"
-          rounded
-          floating
-          color="red"
-          :label="notificationCount || ''"
-        />
-        <q-menu fit style="overflow-x: hidden">
-          <div style="min-width: 320px" class="q-px-xs">
-            <TransitionGroup tag="div" name="fade">
-              <CookedOrderNotification
-                v-for="order of cookedOrders"
-                :key="order.order.id"
-                :order="order"
-              />
-            </TransitionGroup>
-          </div>
-        </q-menu>
-      </q-btn>
+        <template #notification-list>
+          <CookedOrderNotification
+            v-for="order of cookedOrders"
+            :key="order.order.id"
+            :order="order"
+          />
+        </template>
+      </NotificationsBell>
       <q-btn
         class="q-mr-md shopping-basket"
         flat
@@ -110,6 +90,7 @@ import {
 import CookedOrderNotification from "src/components/CookedOrderNotification.vue";
 import CurrentOrderDishesBadge from "src/components/CurrentOrderDishesBadge.vue";
 import CurrentOrderView from "src/components/CurrentOrderView.vue";
+import NotificationsBell from "src/components/NotificationsBell.vue";
 import OrderDrawer from "src/components/OrderDrawer.vue";
 import { useIsLoggedIn } from "src/lib/composables/useIsLoggedIn";
 import { useStore } from "src/store";
@@ -119,7 +100,6 @@ import MainLayout from "../components/MainLayout.vue";
 import { useI18nStore } from "../lib/i18n";
 
 const t = useI18nStore();
-
 const menuList = [
   {
     icon: "o_restaurant_menu",
@@ -134,7 +114,6 @@ const menuList = [
     meta: t.value.orders,
   },
 ];
-
 const store = useStore();
 const isCurrentOrderOpen = computed(
   () => store.state.orderDrawer.isCurrentOrderOpen

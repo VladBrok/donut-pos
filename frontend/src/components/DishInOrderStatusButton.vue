@@ -24,6 +24,7 @@ const props = defineProps<{
   order: IOrder;
   dishInOrder: IOrder["dishes"][number];
 }>();
+const emit = defineEmits(["statusUpdated"]);
 
 const t = useI18nStore();
 const store = useStore();
@@ -69,6 +70,7 @@ function updateStatus() {
 
   promise.finally(() => {
     isUpdatingStatus.value = false;
+    emit("statusUpdated");
   });
 }
 </script>

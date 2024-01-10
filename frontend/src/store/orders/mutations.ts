@@ -88,6 +88,30 @@ const mutation: MutationTree<IOrdersState> = {
     }
   },
 
+  orderCooked(
+    state: IOrdersState,
+    action: ReturnType<typeof orderCookedAction>
+  ) {
+    state.cookedOrders.push(action.payload.order);
+    const order = state.ordersForKitchen.find(
+      (x) => x.orderNumber === action.payload.order.order.orderNumber
+    );
+    if (order) {
+      state.ordersForKitchen.splice(state.ordersForKitchen.indexOf(order), 1);
+    }
+    if (state.order?.orderNumber === action.payload.order.order.orderNumber) {
+      state.order.status = "cooked";
+      state.order.cookedDate = new Date().toISOString();
+    }
+    const orderInPage = state.ordersPage.find(
+      (x) => x.orderNumber === action.payload.order.order.orderNumber
+    );
+    if (orderInPage) {
+      orderInPage.status = "cooked";
+      orderInPage.cookedDate = new Date().toISOString();
+    }
+  },
+
   dishFinishedCooking(
     state: IOrdersState,
     action: ReturnType<typeof dishFinishedCookingAction>
@@ -104,25 +128,6 @@ const mutation: MutationTree<IOrdersState> = {
     if (dish) {
       dish.status = "cooked";
       dish.cookedDate = new Date().toISOString();
-    }
-
-    if (action.payload.cookedDish.order.status === "cooked") {
-      if (order) {
-        state.ordersForKitchen.splice(state.ordersForKitchen.indexOf(order), 1);
-      }
-      if (
-        state.order?.orderNumber === action.payload.cookedDish.order.orderNumber
-      ) {
-        state.order.status = "cooked";
-        state.order.cookedDate = new Date().toISOString();
-      }
-      const orderInPage = state.ordersPage.find(
-        (x) => x.orderNumber === action.payload.cookedDish.order.orderNumber
-      );
-      if (orderInPage) {
-        orderInPage.status = "cooked";
-        orderInPage.cookedDate = new Date().toISOString();
-      }
     }
 
     state.ordersForKitchen = sortDishesByCookingStatus(state.ordersForKitchen);
@@ -165,13 +170,6 @@ const mutation: MutationTree<IOrdersState> = {
     action: ReturnType<typeof cookedOrdersLoadedAction>
   ) {
     state.cookedOrders = action.payload.orders;
-  },
-
-  orderCooked(
-    state: IOrdersState,
-    action: ReturnType<typeof orderCookedAction>
-  ) {
-    state.cookedOrders.push(action.payload.order);
   },
 
   orderDelivered(

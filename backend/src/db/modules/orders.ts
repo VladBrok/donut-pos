@@ -12,6 +12,7 @@ import {
   asc,
   desc,
   eq,
+  exists,
   ilike,
   isNotNull,
   isNull,
@@ -292,92 +293,90 @@ export async function startCookingDish(orderId: string, dishIdInOrder: string) {
   });
 }
 
-export async function finishCookingDish(
-  orderId: string,
-  dishIdInOrder: string
-) {
-  return await db.transaction(async (tx) => {
-    const theOrder = (
-      await db.select().from(order).where(eq(order.id, orderId))
-    )[0];
+export async function finishCookingOrder(orderId: string) {
+  await db
+    .update(order)
+    .set({
+      status: ORDER_STATUSES.COOKED,
+      cookedDate: new Date(),
+    })
+    .where(eq(order.id, orderId));
+  return (
+    await getOrdersShallow({
+      orderId: orderId,
+      strictOrderNumberCompare: true,
+    })
+  )[0];
+}
 
-    const dishes = await tx
-      .select()
-      .from(orderToDish)
-      .where(eq(orderToDish.orderId, orderId));
+export async function finishCookingDish(dishIdInOrder: string) {
+  await db
+    .update(orderToDish)
+    .set({
+      status: DISH_IN_ORDER_STATUSES.COOKED,
+      cookedDate: new Date(),
+    })
+    .where(eq(orderToDish.id, dishIdInOrder));
 
-    const leftToCook =
-      dishes.length - dishes.filter((x) => x.cookedDate)?.length;
-
-    if (leftToCook - 1 === 0 && !theOrder?.cookedDate) {
-      await tx
-        .update(order)
-        .set({
-          status: ORDER_STATUSES.COOKED,
-          cookedDate: new Date(),
-        })
-        .where(eq(order.id, orderId));
-    }
-
-    await tx
-      .update(orderToDish)
-      .set({
-        status: DISH_IN_ORDER_STATUSES.COOKED,
-        cookedDate: new Date(),
-      })
-      .where(eq(orderToDish.id, dishIdInOrder));
-
-    return (
-      await getCookedDishes(theOrder?.employeeId || "", dishIdInOrder, tx)
-    )[0];
-  });
+  return (await getCookedDishes(undefined, dishIdInOrder))[0];
 }
 
 export async function deliverDish(orderId: string, dishIdInOrder: string) {
-  return await db.transaction(async (tx) => {
-    const theOrder = (
-      await db.select().from(order).where(eq(order.id, orderId))
-    )[0];
+  await db
+    .update(orderToDish)
+    .set({
+      status: DISH_IN_ORDER_STATUSES.DELIVERED,
+      deliveredDate: new Date(),
+    })
+    .where(eq(orderToDish.id, dishIdInOrder));
 
-    const dishes = await tx
-      .select()
-      .from(orderToDish)
-      .where(eq(orderToDish.orderId, orderId));
-
-    const leftToDeliver =
-      dishes.length - dishes.filter((x) => x.deliveredDate)?.length;
-
-    if (leftToDeliver - 1 === 0 && !theOrder?.deliveredDate) {
-      await tx
-        .update(order)
-        .set({
-          status: ORDER_STATUSES.DELIVERED,
-          deliveredDate: new Date(),
-        })
-        .where(eq(order.id, orderId));
-    }
-
-    await tx
-      .update(orderToDish)
-      .set({
-        status: DISH_IN_ORDER_STATUSES.DELIVERED,
-        deliveredDate: new Date(),
-      })
-      .where(eq(orderToDish.id, dishIdInOrder));
-
-    return (
-      await getOrdersShallow(
-        {
-          orderNumber: theOrder?.number || "",
-          strictOrderNumberCompare: true,
-        },
-        tx
+  await db
+    .update(order)
+    .set({
+      status: ORDER_STATUSES.DELIVERED,
+      deliveredDate: new Date(),
+    })
+    .where(
+      and(
+        eq(order.id, orderId),
+        not(
+          exists(
+            db
+              .select()
+              .from(orderToDish)
+              .where(
+                and(
+                  eq(orderToDish.orderId, orderId),
+                  isNull(orderToDish.deliveredDate)
+                )
+              )
+          )
+        )
       )
-    )[0];
-  });
+    );
+
+  return (
+    await getOrdersShallow({
+      orderId: orderId,
+      strictOrderNumberCompare: true,
+    })
+  )[0];
 }
 
 export async function deliverOrder(orderId: string, clientId: string) {
+  const theOrder = (
+    await db.select().from(order).where(eq(order.id, orderId))
+  )?.[0];
+
+  if (theOrder?.deliveredDate) {
+    logWarn("Tried to mark already delivered order as delivered");
+    return;
+  }
+
+  if (!theOrder?.paidDate) {
+    throw new Error("Can mark order as delivered only if it was paid");
+  }
+
   await db
     .update(order)
     .set({
@@ -430,7 +429,7 @@ export async function getCookedOrders(
 }
 
 export async function getCookedDishes(
-  employeeId: string,
+  employeeId?: string,
   dishIdInOrder?: string,
   dbOrTx = db
 ) {
@@ -442,7 +441,7 @@ export async function getCookedDishes(
   const dishes = await dbOrTx
     .select()
     .from(order)
-    .where(eq(order.employeeId, employeeId))
+    .where(employeeId ? eq(order.employeeId, employeeId) : undefined)
     .leftJoin(employee, eq(employee.id, order.employeeId))
     .leftJoin(client, eq(client.id, order.clientId))
     .leftJoin(

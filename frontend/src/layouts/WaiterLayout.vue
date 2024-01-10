@@ -1,58 +1,43 @@
 <template>
   <main-layout :menu-list="menuList">
     <template #actions>
-      <q-btn class="q-mr-md" flat round icon="o_notifications">
-        <q-tooltip> {{ t.showNotifications }} </q-tooltip>
-        <q-spinner-rings
-          v-if="isSubscribing"
-          color="primary"
-          size="40px"
-          class="absolute-top-right-offset"
-        />
-        <q-badge
-          v-if="notificationCount"
-          rounded
-          floating
-          color="red"
-          :label="notificationCount || ''"
-        />
-        <q-menu fit style="overflow-x: hidden">
-          <div style="min-width: 320px" class="q-px-xs">
-            <TransitionGroup tag="div" name="fade">
-              <CashPaymentRequest
-                v-for="request in cashPaymentRequests"
-                :key="request.id"
-                :request="request"
-              />
-              <dish-in-order
-                v-for="item of cookedDishes"
-                :key="item.dish.dishIdInOrder"
-                :dish="item.dish"
-                :count="item.dish.count"
-                :order="item.order"
-                view-only
-                hide-price
-              >
-                <template #additonal-info>
-                  <div class="text-body2">
-                    <div>
-                      {{ t.tableNumber }}
-                      {{ item.order.table.number || "-" }},
-                    </div>
-                    <OrderNumberTitle
-                      :order-number="item.order.orderNumber"
-                      is-link
-                    />
-                  </div>
-                </template>
-                <template #actions>
-                  <cooked-dish-status-button :cooked-dish="item" />
-                </template>
-              </dish-in-order>
-            </TransitionGroup>
-          </div>
-        </q-menu>
-      </q-btn>
+      <NotificationsBell
+        :is-loading="isSubscribing"
+        :notification-count="notificationCount"
+      >
+        <template #notification-list>
+          <CashPaymentRequest
+            v-for="request in cashPaymentRequests"
+            :key="request.id"
+            :request="request"
+          />
+          <dish-in-order
+            v-for="item of cookedDishes"
+            :key="item.dish.dishIdInOrder"
+            :dish="item.dish"
+            :count="item.dish.count"
+            :order="item.order"
+            view-only
+            hide-price
+          >
+            <template #additonal-info>
+              <div class="text-body2">
+                <div>
+                  {{ t.tableNumber }}
+                  {{ item.order.table.number || "-" }},
+                </div>
+                <OrderNumberTitle
+                  :order-number="item.order.orderNumber"
+                  is-link
+                />
+              </div>
+            </template>
+            <template #actions>
+              <cooked-dish-status-button :cooked-dish="item" />
+            </template>
+          </dish-in-order>
+        </template>
+      </NotificationsBell>
       <q-btn
         class="q-mr-md shopping-basket"
         flat
@@ -95,6 +80,7 @@ import CookedDishStatusButton from "src/components/CookedDishStatusButton.vue";
 import CurrentOrderDishesBadge from "src/components/CurrentOrderDishesBadge.vue";
 import CurrentOrderView from "src/components/CurrentOrderView.vue";
 import DishInOrder from "src/components/DishInOrder.vue";
+import NotificationsBell from "src/components/NotificationsBell.vue";
 import OrderDrawer from "src/components/OrderDrawer.vue";
 import OrderNumberTitle from "src/components/OrderNumberTitle.vue";
 import { useStore } from "src/store";
@@ -103,7 +89,6 @@ import MainLayout from "../components/MainLayout.vue";
 import { useI18nStore } from "../lib/i18n";
 
 const t = useI18nStore();
-
 const menuList = [
   {
     icon: "o_restaurant_menu",
@@ -143,6 +128,7 @@ const notificationCount = computed(
 const unsubscribe = ref(() => {
   /* */
 });
+const isInnerLoading = ref(false);
 
 onMounted(() => {
   unsubscribe.value = store.client.on("user", (newId) => {

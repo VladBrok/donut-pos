@@ -161,12 +161,16 @@ export const cookedOrdersLoadedAction = createAction<{
   orders: ICookedOrder[];
 }>("orders/cookedOrdersLoaded");
 
+export const markOrderAsCookedAction = createAction<{
+  orderId: string;
+}>("orders/markAsCooked");
+
 export const orderCookedAction = createAction<{
   order: ICookedOrder;
 }>("orders/orderCooked");
 
 export const deliverOrderAction = createAction<{
-  order: ICookedOrder;
+  orderId: string;
 }>("orders/deliverOrder");
 
 export const orderDeliveredAction = createAction<{
