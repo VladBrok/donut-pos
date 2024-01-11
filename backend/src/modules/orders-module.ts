@@ -144,10 +144,12 @@ export default function ordersModule(server: Server) {
       const { ordersPage, total } = await db.getOrdersPage({
         page: action.payload.page,
         perPage: ITEMS_PER_PAGE,
-        employeeId: action.payload.isClient ? undefined : ctx.userId,
+        employeeId:
+          action.payload.isClient || action.payload.search
+            ? undefined
+            : ctx.userId,
         clientId: !action.payload.isClient ? undefined : ctx.userId,
         statuses: action.payload.status ? [action.payload.status] : undefined,
-        orderNumber: action.payload.orderNumber,
         search: action.payload.search,
         completed: action.payload.completed,
       });
@@ -169,7 +171,10 @@ export default function ordersModule(server: Server) {
         action.payload.orderId,
         action.payload.dishIdInOrder
       );
-      await server.process(dishStartedCookingAction(action.payload));
+      await Promise.all([
+        server.process(dishStartedCookingAction(action.payload)),
+        ctx.sendBack(dishStartedCookingAction(action.payload)),
+      ]);
     },
   });
 
@@ -193,13 +198,22 @@ export default function ordersModule(server: Server) {
     },
     async process(ctx, action, meta) {
       const order = await db.finishCookingOrder(action.payload.orderId);
-      await server.process(
-        orderCookedAction({
-          order: {
-            order: order,
-          },
-        })
-      );
+      await Promise.all([
+        server.process(
+          orderCookedAction({
+            order: {
+              order: order,
+            },
+          })
+        ),
+        ctx.sendBack(
+          orderCookedAction({
+            order: {
+              order: order,
+            },
+          })
+        ),
+      ]);
     },
   });
 
@@ -227,11 +241,18 @@ export default function ordersModule(server: Server) {
     },
     async process(ctx, action, meta) {
       const result = await db.finishCookingDish(action.payload.dishIdInOrder);
-      await server.process(
-        dishFinishedCookingAction({
-          cookedDish: result,
-        })
-      );
+      await Promise.all([
+        server.process(
+          dishFinishedCookingAction({
+            cookedDish: result,
+          })
+        ),
+        ctx.sendBack(
+          dishFinishedCookingAction({
+            cookedDish: result,
+          })
+        ),
+      ]);
     },
   });
 
@@ -263,12 +284,20 @@ export default function ordersModule(server: Server) {
         action.payload.orderId,
         action.payload.dishIdInOrder
       );
-      await server.process(
-        dishDeliveredAction({
-          order: order,
-          dishIdInOrder: action.payload.dishIdInOrder,
-        })
-      );
+      await Promise.all([
+        server.process(
+          dishDeliveredAction({
+            order: order,
+            dishIdInOrder: action.payload.dishIdInOrder,
+          })
+        ),
+        ctx.sendBack(
+          dishDeliveredAction({
+            order: order,
+            dishIdInOrder: action.payload.dishIdInOrder,
+          })
+        ),
+      ]);
     },
   });
 
@@ -292,13 +321,22 @@ export default function ordersModule(server: Server) {
     },
     async process(ctx, action, meta) {
       const order = await db.deliverOrder(action.payload.orderId, ctx.userId);
-      await server.process(
-        orderDeliveredAction({
-          order: {
-            order: order!,
-          },
-        })
-      );
+      await Promise.all([
+        server.process(
+          orderDeliveredAction({
+            order: {
+              order: order!,
+            },
+          })
+        ),
+        ctx.sendBack(
+          orderDeliveredAction({
+            order: {
+              order: order!,
+            },
+          })
+        ),
+      ]);
     },
   });
 
@@ -354,11 +392,18 @@ export default function ordersModule(server: Server) {
     },
     async process(ctx, action, meta) {
       const order = await db.payForOrder(action.payload.orderNumber);
-      await server.process(
-        orderPaidSuccessAction({
-          order: order,
-        })
-      );
+      await Promise.all([
+        server.process(
+          orderPaidSuccessAction({
+            order: order,
+          })
+        ),
+        ctx.sendBack(
+          orderPaidSuccessAction({
+            order: order,
+          })
+        ),
+      ]);
     },
   });
 
