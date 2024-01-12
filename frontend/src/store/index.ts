@@ -12,6 +12,7 @@ import { Store as VuexStore } from "vuex";
 import { assert } from "donut-shared";
 import { ICashPaymentRequestsState } from "src/store/cash-payment-requests/state";
 import { IClientsState } from "src/store/clients/state";
+import { ICurrentOrderState } from "src/store/current-order/state";
 import { IDiningTablesState } from "src/store/dining-tables/state";
 import { IOrderDrawerState } from "src/store/order-drawer/state";
 import { IOrdersState } from "src/store/orders/state";
@@ -25,7 +26,6 @@ import { IAuthState } from "./auth/state";
 import cashPaymentRequests from "./cash-payment-requests";
 import clients from "./clients";
 import currentOrder from "./current-order";
-import { ICurrentOrderState } from "./current-order/state";
 import diningTables from "./dining-tables";
 import dishCategories from "./dish-categories";
 import { IDishCategoriesState } from "./dish-categories/state";
@@ -42,7 +42,6 @@ import { IRolesState } from "./roles/state";
 import welcomeBanner from "./welcome-banner";
 
 export interface StateInterface {
-  // Define your own store structure, using submodules if needed
   auth: IAuthState;
   dishCategories: IDishCategoriesState;
   dishes: IDishesState;

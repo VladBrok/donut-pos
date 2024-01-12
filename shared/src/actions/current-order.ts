@@ -1,24 +1,5 @@
-import { IOrder } from "src/actions/orders.js";
-import { OrderType } from "src/constants/order-types.js";
+import { IDishInOrder, IOrder } from "src/actions/orders.js";
 import { createAction } from "./index.js";
-
-export interface ICurrentOrderDishModification {
-  id: string;
-  count: number;
-}
-
-export interface ICurrentOrderDishPayload {
-  id: string;
-  modifications: ICurrentOrderDishModification[];
-}
-
-export interface ICurrentOrderDish {
-  dishId: string;
-  /** Used to uniquely identify this dish. We can't rely only on `dishId` because of modifications. */
-  uniqueId: string;
-  count: number;
-  modifications: ICurrentOrderDishModification[];
-}
 
 export interface IDiningTable {
   id: string;
@@ -31,20 +12,12 @@ export interface IDiningTable {
   };
 }
 
-export interface ICurrentOrder {
-  comment: string;
-  table: IDiningTable | null;
-  type: OrderType;
-  clientId: string;
-  dishes: ICurrentOrderDish[];
-}
-
 export const addDishToCurrentOrderAction = createAction<{
-  dish: ICurrentOrderDishPayload;
+  dish: IDishInOrder;
 }>("currentOrder/addDish");
 
 export const decrementDishInCurrentOrderAction = createAction<{
-  dish: ICurrentOrderDishPayload;
+  dish: IDishInOrder;
 }>("currentOrder/decrementDish");
 
 export const clearCurrentOrderAction = createAction("currentOrder/clear");
@@ -62,7 +35,7 @@ export const updateCurrentOrderTableNumberAction = createAction<{
 }>("currentOrder/updateTableNumber");
 
 export const removeDishFromCurrentOrderAction = createAction<{
-  uniqueId: string;
+  dishIdInOrder: string;
 }>("currentOrder/removeDish");
 
 export const updatePreviousOrderAction = createAction<{

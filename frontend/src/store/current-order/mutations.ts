@@ -25,17 +25,14 @@ const mutation: MutationTree<ICurrentOrderState> = {
 
     const uniqueId = getUniqueDishId(action.payload.dish);
     const existingIdx = state.order.dishes.findIndex(
-      (x) => x.uniqueId === uniqueId
+      (x) => getUniqueDishId(x) === uniqueId
     );
 
     if (existingIdx > -1) {
       state.order.dishes[existingIdx].count++;
     } else {
       state.order.dishes.push({
-        count: 1,
-        dishId: action.payload.dish.id,
-        modifications: action.payload.dish.modifications,
-        uniqueId: uniqueId,
+        ...action.payload.dish,
       });
     }
   },
@@ -48,7 +45,7 @@ const mutation: MutationTree<ICurrentOrderState> = {
 
     const uniqueId = getUniqueDishId(action.payload.dish);
     const existingIdx = state.order.dishes.findIndex(
-      (x) => x.uniqueId === uniqueId
+      (x) => getUniqueDishId(x) === uniqueId
     );
 
     if (existingIdx > -1) {
@@ -67,7 +64,7 @@ const mutation: MutationTree<ICurrentOrderState> = {
     assert(state.order, "Cannot remove dish from empty order");
 
     state.order.dishes = state.order.dishes.filter(
-      (x) => x.uniqueId !== action.payload.uniqueId
+      (x) => x.dishIdInOrder !== action.payload.dishIdInOrder
     );
   },
 

@@ -105,26 +105,31 @@
           </div>
 
           <div>
-            <div v-for="data of dishesInOrder" :key="data.orderDish.uniqueId">
+            <div
+              v-for="data of dishesInOrder"
+              :key="data.orderDish.dishIdInOrder"
+            >
               <dish-in-order
                 :dish="data.dish"
                 :count="data.count"
                 :total-cost="data.totalCost"
-                :modifications="data.modifications"
+                :modifications="
+                  data.modifications.map((x) => ({
+                    count: x.count,
+                    modification: x,
+                  }))
+                "
                 @delete="
                   store.commit.crossTab(
                     removeDishFromCurrentOrderAction({
-                      uniqueId: data.orderDish.uniqueId,
+                      dishIdInOrder: data.orderDish.dishIdInOrder,
                     })
                   )
                 "
                 @increment="
                   store.commit.crossTab(
                     addDishToCurrentOrderAction({
-                      dish: {
-                        id: data.dish.id,
-                        modifications: data.orderDish.modifications,
-                      },
+                      dish: data.orderDish,
                     })
                   )
                 "
@@ -243,11 +248,7 @@ const order = computed(() => store.state.currentOrder.order);
 const t = useI18nStore();
 const isConfirmClearOpen = ref(false);
 const isSubmitting = ref(false);
-const channels = computed(() => [
-  CHANNELS.DISHES,
-  CHANNELS.MODIFICATIONS,
-  CHANNELS.DINING_TABLES,
-]);
+const channels = computed(() => [CHANNELS.DINING_TABLES]);
 const tableNumberSearchInput = ref("");
 const tableNumberFuzzySearch = computed(() =>
   createFuzzySearcher(store.state.diningTables.tables, ["number"])
@@ -259,31 +260,25 @@ const filteredTableNames = computed(() =>
 );
 const isSubscribing = useSubscription(channels, { store: store as any });
 const diningTables = computed(() => store.state.diningTables.tables);
-const dishes = computed(() => store.state.dishes.dishes);
-const modifications = computed(() => store.state.modifications.modifications);
-const previousOrder = computed(() => store.state.currentOrder.previous);
+const previousOrder = computed(() => store.state.currentOrder.order);
 const dishesInOrder = computed(() =>
   // TODO: what if the dish or modification will be deleted during processing? We might have nulls in this case below...
   // TODO: to avoid connecting to Dishes and DishModifications channels here, we should save the whole JSON instead of IDs + mapping. We won't have dynamic updates of dishes (out of stock, etc.). Add json, but check the prices on the server (maybe server will just use ID and fetch real dish and then save it as json.
   isSubscribing.value
     ? []
     : order.value?.dishes.map((dish) => {
-        const foundDish = dishes.value.find((x) => x.id === dish.dishId)!;
-        const foundModifications = dish.modifications.map((x) => ({
-          modification: modifications.value.find((y) => y.id === x.id)!,
-          count: x.count,
-        }));
+        // TODO: do I need this map?
         return {
           orderDish: dish,
-          dish: foundDish,
+          dish: dish,
           count: dish.count,
-          modifications: foundModifications,
+          modifications: dish.modifications,
           totalCost: getOrderDishTotalCost({
             count: dish.count,
-            price: foundDish.price,
-            modifications: foundModifications.map((x) => ({
+            price: dish.price,
+            modifications: dish.modifications.map((x) => ({
               count: x.count,
-              price: x.modification.price,
+              price: x.price,
             })),
           }),
         };

@@ -1,6 +1,5 @@
 import {
   DISH_IN_ORDER_STATUSES,
-  ICurrentOrder,
   ORDER_STATUSES,
   OrderStatus,
   OrderType,
@@ -30,6 +29,7 @@ import {
   order,
   orderToDish,
   orderToDishToModification,
+  orderToDishes,
 } from "migrations/schema.js";
 import {
   cookedDishesAdapter,
@@ -209,7 +209,7 @@ function makeWhereFilter(params: IGetOrder) {
 }
 
 export async function createOrder(
-  data: ICurrentOrder,
+  data: IOrder,
   userId: string,
   isClient?: boolean
 ): Promise<IOrder> {
@@ -223,7 +223,7 @@ export async function createOrder(
     throw new Error(`Duplicate order number was generated: ${orderNumber}`);
   }
 
-  const orderToCreate = { id: generateUuid(), ...data };
+  const orderToCreate = { ...data, id: generateUuid() };
 
   await db.transaction(async (tx) => {
     await tx.insert(order).values({
@@ -238,29 +238,11 @@ export async function createOrder(
       status: ORDER_STATUSES.CREATED,
     });
 
-    await Promise.all([
-      ...data.dishes.map(async (dish) => {
-        const orderToDishUuid = generateUuid();
-
-        await tx.insert(orderToDish).values({
-          id: orderToDishUuid,
-          dishCount: dish.count,
-          dishId: dish.dishId,
-          orderId: orderToCreate.id,
-        });
-
-        return Promise.all(
-          dish.modifications.map((modification) =>
-            tx.insert(orderToDishToModification).values({
-              id: generateUuid(),
-              modificationCount: modification.count,
-              modificationId: modification.id,
-              orderToDishId: orderToDishUuid,
-            })
-          )
-        );
-      }),
-    ]);
+    await tx.insert(orderToDishes).values({
+      id: generateUuid(),
+      orderId: orderToCreate.id,
+      dishes: data.dishes,
+    });
   });
 
   return await getSingleOrder(orderNumber);

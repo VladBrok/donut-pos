@@ -1,5 +1,5 @@
-import { ICurrentOrder } from "donut-shared";
 import { loggedInAction } from "donut-shared/src/actions/auth";
+import { IOrder } from "donut-shared/src/actions/orders";
 
 export enum Keys {
   User = "user_data",
@@ -35,7 +35,7 @@ export function getUserFromStorage():
   return getItem(Keys.User);
 }
 
-export function saveCurrentOrderToStorage(order: ICurrentOrder | null) {
+export function saveCurrentOrderToStorage(order: IOrder | null) {
   if (order) {
     setItem(Keys.CurrentOrder, order);
   } else {
@@ -43,6 +43,6 @@ export function saveCurrentOrderToStorage(order: ICurrentOrder | null) {
   }
 }
 
-export function getCurrentOrderFromStorage(): ICurrentOrder | null {
+export function getCurrentOrderFromStorage(): IOrder | null {
   return getItem(Keys.CurrentOrder);
 }

@@ -1,12 +1,12 @@
 import { addDishToCurrentOrderAction } from "donut-shared";
+import { IDishInOrder } from "donut-shared/src/actions/orders";
 import { animate } from "src/lib/animation";
 import { ADD_TO_CART_ANIMATION_DURATION_MS } from "src/lib/constants";
 import { useStore } from "src/store";
 
 export function addDishToCurrentOrder(
   store: ReturnType<typeof useStore>,
-  dishId: string,
-  modificationCounts?: Map<string, number>,
+  dishInOrder: IDishInOrder,
   container?: HTMLElement
 ) {
   if (container) {
@@ -70,15 +70,7 @@ export function addDishToCurrentOrder(
 
   store.commit.crossTab(
     addDishToCurrentOrderAction({
-      dish: {
-        id: dishId,
-        modifications: [...(modificationCounts?.entries() || [])]
-          .filter(([, count]) => count > 0)
-          .map(([id, count]) => ({
-            id: id,
-            count: count,
-          })),
-      },
+      dish: dishInOrder,
     })
   );
 }

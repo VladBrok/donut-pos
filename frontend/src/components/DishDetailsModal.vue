@@ -67,7 +67,9 @@
 
 <script setup lang="ts">
 import { assert, loadModificationsAction } from "donut-shared";
+import { IDishInOrder } from "donut-shared/src/actions/orders";
 import { addDishToCurrentOrder } from "src/lib/add-dish-to-current-order";
+import { generateRandomId } from "src/lib/generate-random-id";
 import { computed, ref, watch } from "vue";
 import { useI18nStore } from "../lib/i18n";
 import { useStore } from "../store";
@@ -124,11 +126,21 @@ function addToOrder() {
   setTimeout(() => {
     transitionHide.value = undefined;
   }, 300);
-  addDishToCurrentOrder(
-    store,
-    dish.value.id,
-    modificationCounts.value,
-    dishContainerRef.value
-  );
+  const dishInOrder: IDishInOrder = {
+    cookedDate: "",
+    cookingDate: "",
+    deliveredDate: "",
+    status: "",
+    count: 1,
+    dishIdInOrder: generateRandomId(),
+    ...dish.value,
+    modifications: dish.value.modifications
+      .filter((x) => modificationCounts.value.get(x.id))
+      .map((x) => ({
+        ...x,
+        count: modificationCounts.value.get(x.id) || -1,
+      })),
+  };
+  addDishToCurrentOrder(store, dishInOrder, dishContainerRef.value);
 }
 </script>
