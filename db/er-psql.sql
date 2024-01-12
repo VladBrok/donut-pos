@@ -136,6 +136,12 @@ CREATE TABLE "order" (
   "paid_date" TIMESTAMP
 );
 
+CREATE TABLE "order_to_dishes" (
+  "id" UUID PRIMARY KEY,
+  "order_id" UUID,
+  "dishes" JSONB
+);
+
 CREATE TABLE "order_to_dish" (
   "id" UUID PRIMARY KEY,
   "order_id" UUID,
@@ -204,6 +210,8 @@ CREATE INDEX "order_status_idx" ON "order" ("status");
 
 CREATE INDEX "order_type_idx" ON "order" ("type");
 
+CREATE INDEX "order_to_dishes_order_id" ON "order_to_dishes" ("order_id");
+
 CREATE INDEX "order_to_dish_order_id_idx" ON "order_to_dish" ("order_id");
 
 CREATE INDEX "order_to_dish_dish_id_idx" ON "order_to_dish" ("dish_id");
@@ -215,6 +223,8 @@ CREATE INDEX "order_to_dish_to_modification_order_to_dish_id_idx" ON "order_to_d
 CREATE INDEX "order_to_dish_to_modification_modification_id_idx" ON "order_to_dish_to_modification" ("modification_id");
 
 ALTER TABLE "dining_table" ADD FOREIGN KEY ("employee_id") REFERENCES "employee" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "order_to_dishes" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id") ON DELETE SET NULL;
 
 ALTER TABLE "cash_payment_request" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id") ON DELETE SET NULL;
 
