@@ -208,7 +208,6 @@ function makeWhereFilter(params: IGetOrder) {
   );
 }
 
-// TODO: find a way to make it faster (store jsons?)
 export async function createOrder(
   data: ICurrentOrder,
   userId: string,

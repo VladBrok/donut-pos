@@ -47,7 +47,6 @@ export default function cashPaymentRequestsModule(server: Server) {
     },
     async process(ctx, action) {
       // TODO: send notifications
-      // TODO: abstract away the function (i.e. not necessary send email, maybe send phone or facebook notification)
       // await sendEmailNotification("@gmail.com", `dish was cooked`);
     },
     resend(ctx, action) {

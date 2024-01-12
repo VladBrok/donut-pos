@@ -183,6 +183,15 @@ Table order {
   }
 }
 
+Table order_to_dishes {
+  id UUID [pk]
+  order_id UUID
+  dishes JSONB
+  Indexes {
+    order_id [name: 'order_to_dishes_order_id']
+  }
+}
+
 Table order_to_dish {
   id UUID [pk]
   order_id UUID
@@ -211,6 +220,7 @@ Table order_to_dish_to_modification {
 }
 
 Ref: dining_table.employee_id > employee.id [delete: set null]
+Ref: order_to_dishes.order_id > order.id [delete: set null]
 Ref: cash_payment_request.order_id > order.id [delete: set null]
 Ref: client.address_id > address.id [delete: set null]
 Ref: dish.category_id > dish_category.id [delete: set null]
