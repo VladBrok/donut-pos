@@ -1,4 +1,4 @@
-import { pgTable, pgEnum, uuid, text, integer, index, foreignKey, boolean, time, timestamp } from "drizzle-orm/pg-core"
+import { pgTable, pgEnum, uuid, text, integer, index, foreignKey, boolean, time, timestamp, jsonb } from "drizzle-orm/pg-core"
 
 import { sql } from "drizzle-orm"
 export const keyStatus = pgEnum("key_status", ['default', 'valid', 'invalid', 'expired'])
@@ -162,6 +162,17 @@ export const modification = pgTable("modification", {
 	imageUrl: text("image_url"),
 	weight: integer("weight"),
 	price: integer("price"),
+});
+
+export const orderToDishes = pgTable("order_to_dishes", {
+	id: uuid("id").primaryKey().notNull(),
+	orderId: uuid("order_id").references(() => order.id, { onDelete: "set null" } ),
+	dishes: jsonb("dishes"),
+},
+(table) => {
+	return {
+		orderId: index("order_to_dishes_order_id").on(table.orderId),
+	}
 });
 
 export const diningTable = pgTable("dining_table", {
