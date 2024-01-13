@@ -192,32 +192,6 @@ Table order_to_dishes {
   }
 }
 
-Table order_to_dish {
-  id UUID [pk]
-  order_id UUID
-  dish_id UUID
-  dish_count INT
-  status TEXT
-  cooking_date TIMESTAMP
-  cooked_date TIMESTAMP
-  delivered_date TIMESTAMP
-  Indexes {
-    order_id [name: 'order_to_dish_order_id_idx']
-    dish_id [name: 'order_to_dish_dish_id_idx']
-    status [name: 'order_to_dish_status_idx']
-  }
-}
-
-Table order_to_dish_to_modification {
-  id UUID [pk]
-  order_to_dish_id UUID
-  modification_id UUID
-  modification_count INT
-  Indexes {
-    order_to_dish_id [name: 'order_to_dish_to_modification_order_to_dish_id_idx']
-    modification_id [name: 'order_to_dish_to_modification_modification_id_idx']
-  }
-}
 
 Ref: dining_table.employee_id > employee.id [delete: set null]
 Ref: order_to_dishes.order_id > order.id [delete: set null]
@@ -235,9 +209,5 @@ Ref: order.employee_id > employee.id [delete: set null]
 Ref: order.client_id > client.id [delete: set null]
 Ref: order.dining_table_id > dining_table.id [delete: set null]
 Ref: order.sale_point_id > sale_point.id [delete: set null]
-Ref: order_to_dish.order_id > order.id [delete: set null]
-Ref: order_to_dish.dish_id > dish.id [delete: set null]
 Ref: dish_to_modification.dish_id > dish.id [delete: set null]
 Ref: dish_to_modification.modification_id > modification.id [delete: set null]
-Ref: order_to_dish_to_modification.order_to_dish_id > order_to_dish.id [delete: set null]
-Ref: order_to_dish_to_modification.modification_id > modification.id [delete: set null]

@@ -142,24 +142,6 @@ CREATE TABLE "order_to_dishes" (
   "dishes" JSONB
 );
 
-CREATE TABLE "order_to_dish" (
-  "id" UUID PRIMARY KEY,
-  "order_id" UUID,
-  "dish_id" UUID,
-  "dish_count" INT,
-  "status" TEXT,
-  "cooking_date" TIMESTAMP,
-  "cooked_date" TIMESTAMP,
-  "delivered_date" TIMESTAMP
-);
-
-CREATE TABLE "order_to_dish_to_modification" (
-  "id" UUID PRIMARY KEY,
-  "order_to_dish_id" UUID,
-  "modification_id" UUID,
-  "modification_count" INT
-);
-
 CREATE INDEX "dining_table_employee_id_idx" ON "dining_table" ("employee_id");
 
 CREATE INDEX "dining_table_number_idx" ON "dining_table" ("number");
@@ -212,16 +194,6 @@ CREATE INDEX "order_type_idx" ON "order" ("type");
 
 CREATE INDEX "order_to_dishes_order_id" ON "order_to_dishes" ("order_id");
 
-CREATE INDEX "order_to_dish_order_id_idx" ON "order_to_dish" ("order_id");
-
-CREATE INDEX "order_to_dish_dish_id_idx" ON "order_to_dish" ("dish_id");
-
-CREATE INDEX "order_to_dish_status_idx" ON "order_to_dish" ("status");
-
-CREATE INDEX "order_to_dish_to_modification_order_to_dish_id_idx" ON "order_to_dish_to_modification" ("order_to_dish_id");
-
-CREATE INDEX "order_to_dish_to_modification_modification_id_idx" ON "order_to_dish_to_modification" ("modification_id");
-
 ALTER TABLE "dining_table" ADD FOREIGN KEY ("employee_id") REFERENCES "employee" ("id") ON DELETE SET NULL;
 
 ALTER TABLE "order_to_dishes" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id") ON DELETE SET NULL;
@@ -254,14 +226,6 @@ ALTER TABLE "order" ADD FOREIGN KEY ("dining_table_id") REFERENCES "dining_table
 
 ALTER TABLE "order" ADD FOREIGN KEY ("sale_point_id") REFERENCES "sale_point" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "order_to_dish" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id") ON DELETE SET NULL;
-
-ALTER TABLE "order_to_dish" ADD FOREIGN KEY ("dish_id") REFERENCES "dish" ("id") ON DELETE SET NULL;
-
 ALTER TABLE "dish_to_modification" ADD FOREIGN KEY ("dish_id") REFERENCES "dish" ("id") ON DELETE SET NULL;
 
 ALTER TABLE "dish_to_modification" ADD FOREIGN KEY ("modification_id") REFERENCES "modification" ("id") ON DELETE SET NULL;
-
-ALTER TABLE "order_to_dish_to_modification" ADD FOREIGN KEY ("order_to_dish_id") REFERENCES "order_to_dish" ("id") ON DELETE SET NULL;
-
-ALTER TABLE "order_to_dish_to_modification" ADD FOREIGN KEY ("modification_id") REFERENCES "modification" ("id") ON DELETE SET NULL;
