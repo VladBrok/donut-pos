@@ -105,10 +105,7 @@
           </div>
 
           <div>
-            <div
-              v-for="data of dishesInOrder"
-              :key="data.orderDish.dishIdInOrder"
-            >
+            <div v-for="data of dishesInOrder" :key="data.dish.dishIdInOrder">
               <dish-in-order
                 :dish="data.dish"
                 :count="data.count"
@@ -122,14 +119,14 @@
                 @delete="
                   store.commit.crossTab(
                     removeDishFromCurrentOrderAction({
-                      dishIdInOrder: data.orderDish.dishIdInOrder,
+                      dishIdInOrder: data.dish.dishIdInOrder,
                     })
                   )
                 "
                 @increment="
                   store.commit.crossTab(
                     addDishToCurrentOrderAction({
-                      dish: data.orderDish,
+                      dish: data.dish,
                     })
                   )
                 "
@@ -138,7 +135,7 @@
                     decrementDishInCurrentOrderAction({
                       dish: {
                         id: data.dish.id,
-                        modifications: data.orderDish.modifications,
+                        modifications: data.dish.modifications,
                       },
                     })
                   )
@@ -262,14 +259,10 @@ const isSubscribing = useSubscription(channels, { store: store as any });
 const diningTables = computed(() => store.state.diningTables.tables);
 const previousOrder = computed(() => store.state.currentOrder.order);
 const dishesInOrder = computed(() =>
-  // TODO: what if the dish or modification will be deleted during processing? We might have nulls in this case below...
-  // TODO: to avoid connecting to Dishes and DishModifications channels here, we should save the whole JSON instead of IDs + mapping. We won't have dynamic updates of dishes (out of stock, etc.). Add json, but check the prices on the server (maybe server will just use ID and fetch real dish and then save it as json.
   isSubscribing.value
     ? []
     : order.value?.dishes.map((dish) => {
-        // TODO: do I need this map?
         return {
-          orderDish: dish,
           dish: dish,
           count: dish.count,
           modifications: dish.modifications,

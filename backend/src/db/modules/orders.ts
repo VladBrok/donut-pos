@@ -7,11 +7,11 @@ import {
 import { ICookedOrder, IOrder } from "donut-shared/src/actions/orders.js";
 import { logWarn } from "donut-shared/src/lib/log.js";
 import {
+  Param,
   and,
   asc,
   desc,
   eq,
-  exists,
   ilike,
   isNotNull,
   isNull,
@@ -23,12 +23,8 @@ import { PgColumn } from "drizzle-orm/pg-core";
 import {
   client,
   diningTable,
-  dish,
   employee,
-  modification,
   order,
-  orderToDish,
-  orderToDishToModification,
   orderToDishes,
 } from "migrations/schema.js";
 import {
@@ -58,35 +54,8 @@ export interface IGetOrdersPage extends IGetOrder {
   perPage: number;
 }
 
-// TODO: optimize...
 export async function getOrdersPage(params: IGetOrdersPage) {
   console.time("get_orders");
-
-  const orders = db
-    .select({
-      id: order.id,
-      clientId: order.clientId,
-      employeeId: order.employeeId,
-      salePointId: order.salePointId,
-      number: order.number,
-      comment: order.comment,
-      status: order.status,
-      createdDate: order.createdDate,
-      cookingDate: order.cookingDate,
-      cookedDate: order.cookedDate,
-      deliveringDate: order.deliveringDate,
-      deliveredDate: order.deliveredDate,
-      paidDate: order.paidDate,
-      diningTableId: order.diningTableId,
-      type: order.type,
-    })
-    .from(order)
-    .orderBy(makeOrderByFilter(params, order.createdDate))
-    .leftJoin(diningTable, eq(diningTable.id, order.diningTableId))
-    .where(makeWhereFilter(params))
-    .offset((params.page - 1) * params.perPage)
-    .limit(params.perPage)
-    .as("order");
 
   const diningTableEmployee = db
     .select()
@@ -95,17 +64,8 @@ export async function getOrdersPage(params: IGetOrdersPage) {
 
   const data = await db
     .select()
-    .from(orders)
-    .leftJoin(orderToDish, eq(orderToDish.orderId, order.id))
-    .leftJoin(dish, eq(dish.id, orderToDish.dishId))
-    .leftJoin(
-      orderToDishToModification,
-      eq(orderToDishToModification.orderToDishId, orderToDish.id)
-    )
-    .leftJoin(
-      modification,
-      eq(modification.id, orderToDishToModification.modificationId)
-    )
+    .from(order)
+    .leftJoin(orderToDishes, eq(order.id, orderToDishes.orderId))
     .leftJoin(employee, eq(employee.id, order.employeeId))
     .leftJoin(client, eq(client.id, order.clientId))
     .leftJoin(diningTable, eq(diningTable.id, order.diningTableId))
@@ -113,7 +73,10 @@ export async function getOrdersPage(params: IGetOrdersPage) {
       diningTableEmployee,
       eq(diningTableEmployee.id, diningTable.employeeId)
     )
-    .orderBy(makeOrderByFilter(params, orders.createdDate));
+    .where(makeWhereFilter(params))
+    .orderBy(makeOrderByFilter(params, order.createdDate))
+    .offset((params.page - 1) * params.perPage)
+    .limit(params.perPage);
 
   const total = await db
     .select({
@@ -238,11 +201,11 @@ export async function createOrder(
       status: ORDER_STATUSES.CREATED,
     });
 
-    await tx.insert(orderToDishes).values({
-      id: generateUuid(),
-      orderId: orderToCreate.id,
-      dishes: data.dishes,
-    });
+    await tx.execute(
+      sql`INSERT INTO ${orderToDishes} VALUES (${generateUuid()}, ${
+        orderToCreate.id
+      }, ${new Param(data.dishes)})`
+    );
   });
 
   return await getSingleOrder(orderNumber);
@@ -250,27 +213,38 @@ export async function createOrder(
 
 export async function startCookingDish(orderId: string, dishIdInOrder: string) {
   await db.transaction(async (tx) => {
-    const theOrder = (
-      await tx.select().from(order).where(eq(order.id, orderId))
-    )[0];
-
-    if (!theOrder?.cookingDate) {
-      await tx
-        .update(order)
-        .set({
-          status: ORDER_STATUSES.COOKING,
-          cookingDate: new Date(),
-        })
-        .where(eq(order.id, orderId));
-    }
-
     await tx
-      .update(orderToDish)
+      .update(order)
       .set({
-        status: DISH_IN_ORDER_STATUSES.COOKING,
+        status: ORDER_STATUSES.COOKING,
         cookingDate: new Date(),
       })
-      .where(eq(orderToDish.id, dishIdInOrder));
+      .where(and(eq(order.id, orderId), isNull(order.cookingDate)));
+
+    // TODO: prevent sql injection
+    await tx.execute(
+      sql.raw(`
+UPDATE order_to_dishes
+SET dishes = jsonb_set(
+    jsonb_set(
+      dishes, 
+      (
+          SELECT ('{' || index - 1 || ',status}')::text[]
+          FROM jsonb_array_elements(dishes) WITH ORDINALITY arr(elem, index)
+          WHERE (elem ->> 'dishIdInOrder')::text = '${dishIdInOrder}'
+      ),
+      '"${DISH_IN_ORDER_STATUSES.COOKING}"'
+    ), 
+    (
+        SELECT ('{' || index - 1 || ',cookingDate}')::text[]
+        FROM jsonb_array_elements(dishes) WITH ORDINALITY arr(elem, index)
+        WHERE (elem ->> 'dishIdInOrder')::text = '${dishIdInOrder}'
+    ),
+    '"${new Date().toISOString()}"'
+)
+WHERE dishes @? '$[*].dishIdInOrder ? (@ == "${dishIdInOrder}")'
+`)
+    );
   });
 }
 
@@ -291,25 +265,57 @@ export async function finishCookingOrder(orderId: string) {
 }
 
 export async function finishCookingDish(dishIdInOrder: string) {
-  await db
-    .update(orderToDish)
-    .set({
-      status: DISH_IN_ORDER_STATUSES.COOKED,
-      cookedDate: new Date(),
-    })
-    .where(eq(orderToDish.id, dishIdInOrder));
+  await db.execute(
+    sql.raw(`
+  UPDATE order_to_dishes
+  SET dishes = jsonb_set(
+      jsonb_set(
+        dishes, 
+        (
+            SELECT ('{' || index - 1 || ',status}')::text[]
+            FROM jsonb_array_elements(dishes) WITH ORDINALITY arr(elem, index)
+            WHERE (elem ->> 'dishIdInOrder')::text = '${dishIdInOrder}'
+        ),
+        '"${DISH_IN_ORDER_STATUSES.COOKED}"'
+      ), 
+      (
+          SELECT ('{' || index - 1 || ',cookedDate}')::text[]
+          FROM jsonb_array_elements(dishes) WITH ORDINALITY arr(elem, index)
+          WHERE (elem ->> 'dishIdInOrder')::text = '${dishIdInOrder}'
+      ),
+      '"${new Date().toISOString()}"'
+  )
+  WHERE dishes @? '$[*].dishIdInOrder ? (@ == "${dishIdInOrder}")'
+  `)
+  );
 
   return (await getCookedDishes(undefined, dishIdInOrder))[0];
 }
 
 export async function deliverDish(orderId: string, dishIdInOrder: string) {
-  await db
-    .update(orderToDish)
-    .set({
-      status: DISH_IN_ORDER_STATUSES.DELIVERED,
-      deliveredDate: new Date(),
-    })
-    .where(eq(orderToDish.id, dishIdInOrder));
+  await db.execute(
+    sql.raw(`
+  UPDATE order_to_dishes
+  SET dishes = jsonb_set(
+      jsonb_set(
+        dishes, 
+        (
+            SELECT ('{' || index - 1 || ',status}')::text[]
+            FROM jsonb_array_elements(dishes) WITH ORDINALITY arr(elem, index)
+            WHERE (elem ->> 'dishIdInOrder')::text = '${dishIdInOrder}'
+        ),
+        '"${DISH_IN_ORDER_STATUSES.DELIVERED}"'
+      ), 
+      (
+          SELECT ('{' || index - 1 || ',deliveredDate}')::text[]
+          FROM jsonb_array_elements(dishes) WITH ORDINALITY arr(elem, index)
+          WHERE (elem ->> 'dishIdInOrder')::text = '${dishIdInOrder}'
+      ),
+      '"${new Date().toISOString()}"'
+  )
+  WHERE order_id = '${orderId}' AND dishes @? '$[*].dishIdInOrder ? (@ == "${dishIdInOrder}")'
+  `)
+  );
 
   await db
     .update(order)
@@ -320,18 +326,13 @@ export async function deliverDish(orderId: string, dishIdInOrder: string) {
     .where(
       and(
         eq(order.id, orderId),
-        not(
-          exists(
-            db
-              .select()
-              .from(orderToDish)
-              .where(
-                and(
-                  eq(orderToDish.orderId, orderId),
-                  isNull(orderToDish.deliveredDate)
-                )
-              )
-          )
+        eq(
+          sql.raw(`(
+            SELECT dishes @? '$[*].deliveredDate ? (@ == "")' 
+            FROM order_to_dishes
+            WHERE dishes @? '$[*].dishIdInOrder ? (@ == "${dishIdInOrder}")'
+          )`),
+          false
         )
       )
     );
@@ -422,26 +423,29 @@ export async function getCookedDishes(
   const dishes = await dbOrTx
     .select()
     .from(order)
-    .where(employeeId ? eq(order.employeeId, employeeId) : undefined)
     .leftJoin(employee, eq(employee.id, order.employeeId))
     .leftJoin(client, eq(client.id, order.clientId))
-    .leftJoin(
-      orderToDish,
-      and(
-        eq(order.id, orderToDish.orderId),
-        eq(orderToDish.status, DISH_IN_ORDER_STATUSES.COOKED)
-      )
-    )
-    .where(dishIdInOrder ? eq(orderToDish.id, dishIdInOrder) : undefined)
-    .leftJoin(dish, eq(dish.id, orderToDish.dishId))
     .leftJoin(diningTable, eq(diningTable.id, order.diningTableId))
     .leftJoin(
       diningTableEmployee,
       eq(diningTableEmployee.id, diningTable.employeeId)
     )
+    .leftJoin(orderToDishes, eq(orderToDishes.orderId, order.id))
+    .where(
+      and(
+        employeeId ? eq(order.employeeId, employeeId) : undefined,
+        sql.raw(`dishes @? '$[*].cookedDate ? (@ != "")'`),
+        sql.raw(`dishes @? '$[*].deliveredDate ? (@ == "")'`),
+        dishIdInOrder
+          ? sql.raw(
+              `dishes @? '$[*].dishIdInOrder ? (@ == "${dishIdInOrder}")'`
+            )
+          : undefined
+      )
+    )
     .orderBy(asc(order.createdDate));
 
-  return cookedDishesAdapter(dishes);
+  return cookedDishesAdapter(dishes, dishIdInOrder);
 }
 
 export async function payForOrder(orderNumber: string) {

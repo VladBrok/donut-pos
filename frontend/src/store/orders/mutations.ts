@@ -151,7 +151,7 @@ const mutation: MutationTree<IOrdersState> = {
     }
 
     const idxOf = state.cookedDishes.findIndex(
-      (x) => x.order.id === action.payload.order.id
+      (x) => x.dish.dishIdInOrder === action.payload.dishIdInOrder
     );
     if (idxOf > -1) {
       state.cookedDishes.splice(idxOf, 1);

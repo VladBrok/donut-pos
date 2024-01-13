@@ -5,11 +5,12 @@ import postgres from "postgres";
 import { DbLogWriter } from "./log-writer.js";
 
 export let db = null as unknown as PostgresJsDatabase<Record<string, never>>;
+export let dbClient = null as unknown as postgres.Sql<{}>;
 
 export async function connect() {
   const connectionString = process.env.DATABASE_URL || "";
-  const client = postgres(connectionString);
+  dbClient = postgres(connectionString);
   const logger = new DefaultLogger({ writer: new DbLogWriter() });
-  db = drizzle(client, { logger });
+  db = drizzle(dbClient, { logger });
   await db.execute(sql`SET TIME ZONE 'UTC';`);
 }

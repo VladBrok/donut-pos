@@ -22,7 +22,7 @@
         </q-input>
         <q-input
           v-if="order.type === 'dine-in'"
-          :model-value="order.table.number || '-'"
+          :model-value="order.table?.number || '-'"
           readonly
           stack-label
           :label="`${t.tableNumberLabel}`"

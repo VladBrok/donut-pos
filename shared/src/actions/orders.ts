@@ -10,7 +10,7 @@ export interface ICookedOrder {
 
 export interface ICookedDish {
   order: IShallowOrder;
-  dish: Omit<IDishInOrder, "modifications">;
+  dish: IDishInOrder;
 }
 
 export interface IDishInOrderModification {
