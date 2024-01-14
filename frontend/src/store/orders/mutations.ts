@@ -116,7 +116,18 @@ const mutation: MutationTree<IOrdersState> = {
     state: IOrdersState,
     action: ReturnType<typeof dishFinishedCookingAction>
   ) {
-    state.cookedDishes.push(action.payload.cookedDish);
+    const dishInSameOrderIdx = state.cookedDishes.findIndex(
+      (x) => x.order.orderNumber === action.payload.cookedDish.order.orderNumber
+    );
+    if (dishInSameOrderIdx < 0) {
+      state.cookedDishes.push(action.payload.cookedDish);
+    } else {
+      state.cookedDishes.splice(
+        dishInSameOrderIdx + 1,
+        0,
+        action.payload.cookedDish
+      );
+    }
 
     const order = state.ordersForKitchen.find(
       (x) => x.orderNumber === action.payload.cookedDish.order.orderNumber
