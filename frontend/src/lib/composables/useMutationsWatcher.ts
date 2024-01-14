@@ -124,16 +124,18 @@ export const useMutationsWatcher = () => {
             break;
           }
 
-          Notify.create({
-            type: "info",
-            position: "top",
-            timeout: INFO_TIMEOUT_MS,
-            message: t.value.orderCreated({
-              orderNumber: mutation.payload.payload.order.orderNumber,
-            }),
-            multiLine: true,
-            group: false,
-          });
+          if (store.state.auth.user?.permissions?.cook) {
+            Notify.create({
+              type: "info",
+              position: "top",
+              timeout: INFO_TIMEOUT_MS,
+              message: t.value.orderCreated({
+                orderNumber: mutation.payload.payload.order.orderNumber,
+              }),
+              multiLine: true,
+              group: false,
+            });
+          }
           break;
         }
 

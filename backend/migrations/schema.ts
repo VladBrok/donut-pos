@@ -1,4 +1,4 @@
-import { pgTable, pgEnum, uuid, text, integer, index, foreignKey, boolean, time, timestamp } from "drizzle-orm/pg-core"
+import { pgTable, pgEnum, uuid, text, integer, index, foreignKey, boolean, time, timestamp, jsonb } from "drizzle-orm/pg-core"
 
 import { sql } from "drizzle-orm"
 export const keyStatus = pgEnum("key_status", ['default', 'valid', 'invalid', 'expired'])
@@ -164,6 +164,17 @@ export const modification = pgTable("modification", {
 	price: integer("price"),
 });
 
+export const orderToDishes = pgTable("order_to_dishes", {
+	id: uuid("id").primaryKey().notNull(),
+	orderId: uuid("order_id").references(() => order.id, { onDelete: "set null" } ),
+	dishes: jsonb("dishes"),
+},
+(table) => {
+	return {
+		orderId: index("order_to_dishes_order_id").on(table.orderId),
+	}
+});
+
 export const diningTable = pgTable("dining_table", {
 	id: uuid("id").primaryKey().notNull(),
 	employeeId: uuid("employee_id").references(() => employee.id, { onDelete: "set null" } ),
@@ -213,36 +224,5 @@ export const order = pgTable("order", {
 		employeeIdIdx: index("order_employee_id_idx").on(table.employeeId),
 		salePointIdIdx: index("order_sale_point_id_idx").on(table.salePointId),
 		numberIdx: index("order_number_idx").on(table.number),
-	}
-});
-
-export const orderToDishToModification = pgTable("order_to_dish_to_modification", {
-	id: uuid("id").primaryKey().notNull(),
-	orderToDishId: uuid("order_to_dish_id").references(() => orderToDish.id, { onDelete: "set null" } ),
-	modificationId: uuid("modification_id").references(() => modification.id, { onDelete: "set null" } ),
-	modificationCount: integer("modification_count"),
-},
-(table) => {
-	return {
-		orderToDishIdIdx: index("order_to_dish_to_modification_order_to_dish_id_idx").on(table.orderToDishId),
-		modificationIdIdx: index("order_to_dish_to_modification_modification_id_idx").on(table.modificationId),
-	}
-});
-
-export const orderToDish = pgTable("order_to_dish", {
-	id: uuid("id").primaryKey().notNull(),
-	orderId: uuid("order_id").references(() => order.id, { onDelete: "set null" } ),
-	dishId: uuid("dish_id").references(() => dish.id, { onDelete: "set null" } ),
-	dishCount: integer("dish_count"),
-	status: text("status"),
-	cookingDate: timestamp("cooking_date", { mode: 'date' }),
-	cookedDate: timestamp("cooked_date", { mode: 'date' }),
-	deliveredDate: timestamp("delivered_date", { mode: 'date' }),
-},
-(table) => {
-	return {
-		orderIdIdx: index("order_to_dish_order_id_idx").on(table.orderId),
-		dishIdIdx: index("order_to_dish_dish_id_idx").on(table.dishId),
-		statusIdx: index("order_to_dish_status_idx").on(table.status),
 	}
 });

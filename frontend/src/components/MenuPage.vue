@@ -36,10 +36,7 @@
           :key="dish.id"
           ref="dishRefs"
           @open-details-click="selectedDish = dish"
-          @add-click="
-            (containerRef) =>
-              addDishToCurrentOrder(store, dish.id, undefined, containerRef)
-          "
+          @add-click="(containerRef) => addDish(containerRef, dish)"
         />
       </div>
       <div v-else>
@@ -65,8 +62,10 @@ import NoData from "src/components/NoData.vue";
 import { computed, ref } from "vue";
 
 import { loadDishesAction } from "donut-shared/src/actions/dishes";
+import { IDishInOrder } from "donut-shared/src/actions/orders";
 import DishDetailsModal from "src/components/DishDetailsModal.vue";
 import { addDishToCurrentOrder } from "src/lib/add-dish-to-current-order";
+import { generateRandomId } from "src/lib/generate-random-id";
 import { createFuzzySearcher } from "../lib/fuzzy-search";
 import { useI18nStore } from "../lib/i18n";
 import { useStore } from "../store";
@@ -112,5 +111,22 @@ const dishRefs = ref<HTMLElement[]>();
 
 const handleCategoryFilterClick = (id: string) => {
   selectedCategoryId.value = id;
+};
+
+const addDish = (
+  containerRef: HTMLElement,
+  dish: ReturnType<typeof loadDishesAction>["payload"]["dishes"][number]
+) => {
+  const dishInOrder: IDishInOrder = {
+    cookedDate: "",
+    cookingDate: "",
+    deliveredDate: "",
+    status: "",
+    count: 1,
+    dishIdInOrder: generateRandomId(),
+    ...dish,
+    modifications: [],
+  };
+  addDishToCurrentOrder(store, dishInOrder, containerRef);
 };
 </script>

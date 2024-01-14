@@ -1,7 +1,7 @@
 import { DishInOrderStatus } from "src/constants/dish-in-order-statuses.js";
 import { OrderStatus } from "src/constants/order-statuses.js";
 import { OrderType } from "src/constants/order-types.js";
-import { ICurrentOrder, IDiningTable } from "../actions/current-order.js";
+import { IDiningTable } from "../actions/current-order.js";
 import { createAction } from "./index.js";
 
 export interface ICookedOrder {
@@ -10,7 +10,16 @@ export interface ICookedOrder {
 
 export interface ICookedDish {
   order: IShallowOrder;
-  dish: Omit<IDishInOrder, "modifications">;
+  dish: IDishInOrder;
+}
+
+export interface IDishInOrderModification {
+  id: string;
+  name: string;
+  imageUrl: string;
+  price: number;
+  weight: number;
+  count: number;
 }
 
 export interface IDishInOrder {
@@ -27,21 +36,14 @@ export interface IDishInOrder {
   cookingDate: string;
   cookedDate: string;
   deliveredDate: string;
-  modifications: {
-    id: string;
-    name: string;
-    imageUrl: string;
-    price: number;
-    weight: number;
-    count: number;
-  }[];
+  modifications: IDishInOrderModification[];
 }
 
 export interface IOrder {
   id: string;
   type: OrderType;
   comment: string;
-  table: IDiningTable;
+  table: IDiningTable | null;
   orderNumber: string;
   status: OrderStatus;
   createdDate: string;
@@ -106,7 +108,7 @@ export const ordersForKitchenLoadedAction = createAction<{
 }>("orders/ordersForKitchenLoaded");
 
 export const createOrderAction = createAction<{
-  order: ICurrentOrder;
+  order: IOrder;
   isClient?: boolean;
 }>("orders/create");
 

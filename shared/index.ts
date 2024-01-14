@@ -22,11 +22,6 @@ export {
   updateCurrentOrderTableNumberAction,
   updateCurrentOrderTypeAction,
 } from "./src/actions/current-order.js";
-export type {
-  ICurrentOrder,
-  ICurrentOrderDish,
-  ICurrentOrderDishModification,
-} from "./src/actions/current-order.js";
 export {
   createDiningTableAction,
   deleteDiningTableAction,
