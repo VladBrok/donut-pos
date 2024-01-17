@@ -114,6 +114,7 @@
               flat
               dense
               class="q-mb-md"
+              @click="isAddAddressModalOpen = true"
             >
               <q-icon name="add_circle" class="q-mr-sm" />
               <span>{{ t.addDeliveryAddress }}</span>
@@ -222,6 +223,8 @@
       <q-btn flat :label="t.clearOrder" color="negative" @click="clear" />
     </template>
   </confirm-dialog>
+
+  <add-address-modal v-model="isAddAddressModalOpen"> </add-address-modal>
 </template>
 
 <script setup lang="ts">
@@ -245,6 +248,7 @@ import {
   updatePreviousOrderAction,
 } from "donut-shared/src/actions/current-order";
 import { updateCreateOrderAfterAuthAction } from "donut-shared/src/actions/orders";
+import AddAddressModal from "src/components/AddAddressModal.vue";
 import BigSpinner from "src/components/BigSpinner.vue";
 import DishInOrder from "src/components/DishInOrder.vue";
 import OrderView from "src/components/OrderView.vue";
@@ -306,6 +310,7 @@ const hasDishOutOfStock = computed(
 const totalCost = computed(
   () => dishesInOrder.value?.reduce((sum, cur) => sum + cur.totalCost, 0) || 0
 );
+const isAddAddressModalOpen = ref(false);
 const route = useRoute();
 const orderTypes = computed(() =>
   ORDER_TYPES_ARR.map((x) => ({

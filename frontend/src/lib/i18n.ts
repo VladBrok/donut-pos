@@ -92,6 +92,7 @@ export const messages = i18n("messages", {
   modificationNameLabel: "Modification name",
   deleteButton: "Delete",
   confirm: "Confirm",
+  addAddress: "Add address",
   noResults: "No results",
   dishDescriptionPlaceholder: "The best dish",
   search: "Search",
