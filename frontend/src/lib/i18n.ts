@@ -63,7 +63,7 @@ export const messages = i18n("messages", {
   address: "Address",
   addressExplanation1:
     "Enter the delivery address, for example: Pińczów Władysława Jagiełły 31.",
-  addressExplanation2: "The address will appear on Map.",
+  addressExplanation2: "The address will appear on the map.",
   addressExplanation3: "If the address is shown correctly, click 'Save'",
   isEmailVerified: "Email verified",
   role: "Role",
