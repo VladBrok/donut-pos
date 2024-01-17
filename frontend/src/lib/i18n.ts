@@ -203,6 +203,8 @@ export const messages = i18n("messages", {
     "Waiter will come to your table and accept the payment",
   ok: "OK",
   orderIsReady: params(`Order {orderNumber} is ready!`),
+  addDeliveryAddress: "Add Delivery Address",
+  specifyDeliveryAddress: "Please add the delivery address",
 
   // Payment pages
   paymentSuccessPageTitle: "Payment success",

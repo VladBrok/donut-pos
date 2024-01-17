@@ -48,6 +48,12 @@
                 </q-item>
               </template>
             </q-select>
+            <phone-input
+              v-if="order?.type === 'delivery'"
+              v-model="phone"
+              :shouldValidateFormat="true"
+              class="q-mb-md"
+            />
             <q-select
               v-if="order?.type === 'dine-in'"
               :model-value="order?.table?.number"
@@ -102,6 +108,16 @@
                   t.maxLength({ max: COMMENT_MAX_LENGTH }),
               ]"
             />
+            <q-btn
+              v-if="order?.type === 'delivery'"
+              color="primary"
+              flat
+              dense
+              class="q-mb-md"
+            >
+              <q-icon name="add_circle" class="q-mr-sm" />
+              <span>{{ t.addDeliveryAddress }}</span>
+            </q-btn>
           </div>
 
           <div>
@@ -160,15 +176,19 @@
             color="primary"
             type="submit"
             :loading="isSubmitting"
-            :disable="hasDishOutOfStock"
+            :disable="hasDishOutOfStock || requiredAddressNotSpecified"
           >
             {{ t.createOrder }}
             <q-tooltip
-              v-if="hasDishOutOfStock"
+              v-if="hasDishOutOfStock || requiredAddressNotSpecified"
               class="bg-negative text-white text-body1"
               max-width="200px"
             >
-              {{ t.cannotCreateOrderWithOutOfStock }}
+              {{
+                hasDishOutOfStock
+                  ? t.cannotCreateOrderWithOutOfStock
+                  : t.specifyDeliveryAddress
+              }}
             </q-tooltip>
           </q-btn>
         </div>
@@ -209,6 +229,7 @@ import { useSubscription } from "@logux/vuex";
 import {
   CHANNELS,
   COMMENT_MAX_LENGTH,
+  IAddress,
   ORDER_TYPES_ARR,
   addDishToCurrentOrderAction,
   clearCurrentOrderAction,
@@ -227,6 +248,7 @@ import { updateCreateOrderAfterAuthAction } from "donut-shared/src/actions/order
 import BigSpinner from "src/components/BigSpinner.vue";
 import DishInOrder from "src/components/DishInOrder.vue";
 import OrderView from "src/components/OrderView.vue";
+import PhoneInput from "src/components/PhoneInput.vue";
 import { useIsLoggedIn } from "src/lib/composables/useIsLoggedIn";
 import { AUTH_BEFORE_ORDER_CREATE } from "src/lib/constants";
 import { createOrder } from "src/lib/create-order";
@@ -247,6 +269,7 @@ const isConfirmClearOpen = ref(false);
 const isSubmitting = ref(false);
 const channels = computed(() => [CHANNELS.DINING_TABLES]);
 const tableNumberSearchInput = ref("");
+const phone = ref("");
 const tableNumberFuzzySearch = computed(() =>
   createFuzzySearcher(store.state.diningTables.tables, ["number"])
 );
@@ -298,6 +321,11 @@ const orderTypeDefault = ref<(typeof orderTypes.value)[number]>(
 );
 const router = useRouter();
 const isLoggedIn = useIsLoggedIn();
+const address = ref<IAddress>();
+const requiredAddressNotSpecified = computed(
+  () => order.value?.type === "delivery" && !address.value
+);
+// TODO: save phone and address to localStorage
 
 const unsubscribe = watch(
   isSubscribing,
