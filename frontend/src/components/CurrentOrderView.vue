@@ -50,7 +50,14 @@
             </q-select>
             <phone-input
               v-if="order?.type === 'delivery'"
-              v-model="phone"
+              :model-value="order?.phone || ''"
+              @update:model-value="
+                store.commit.crossTab(
+                  updateCurrentOrderPhoneAction({
+                    phone: $event,
+                  })
+                )
+              "
               :shouldValidateFormat="true"
               class="q-mb-md"
             />
@@ -108,17 +115,40 @@
                   t.maxLength({ max: COMMENT_MAX_LENGTH }),
               ]"
             />
-            <q-btn
-              v-if="order?.type === 'delivery'"
-              color="primary"
-              flat
-              dense
-              class="q-mb-md"
-              @click="isAddAddressModalOpen = true"
-            >
-              <q-icon name="add_circle" class="q-mr-sm" />
-              <span>{{ t.addDeliveryAddress }}</span>
-            </q-btn>
+            <div v-if="order?.type === 'delivery'" class="q-mb-md">
+              <q-btn
+                v-if="!order.address"
+                color="primary"
+                flat
+                dense
+                @click="isAddAddressModalOpen = true"
+              >
+                <q-icon name="add_circle" class="q-mr-sm" />
+                <span>{{ t.addDeliveryAddress }}</span>
+              </q-btn>
+              <q-input
+                v-else
+                :model-value="formatAddress(order.address)"
+                readonly
+                stack-label
+                :label="`${t.address}`"
+                type="text"
+              >
+                <template v-slot:append>
+                  <q-btn
+                    round
+                    dense
+                    flat
+                    icon="edit"
+                    @click="isAddAddressModalOpen = true"
+                  >
+                    <q-tooltip>
+                      {{ t.changeDeliveryAddress }}
+                    </q-tooltip>
+                  </q-btn>
+                </template>
+              </q-input>
+            </div>
           </div>
 
           <div>
@@ -224,7 +254,19 @@
     </template>
   </confirm-dialog>
 
-  <add-address-modal v-model="isAddAddressModalOpen"> </add-address-modal>
+  <add-address-modal
+    v-if="isAddAddressModalOpen"
+    v-model="isAddAddressModalOpen"
+    @submit="
+      (isAddAddressModalOpen = false),
+        store.commit.crossTab(
+          updateCurrentOrderAddressAction({
+            address: $event,
+          })
+        )
+    "
+  >
+  </add-address-modal>
 </template>
 
 <script setup lang="ts">
@@ -244,6 +286,8 @@ import {
   updateCurrentOrderTableNumberAction,
 } from "donut-shared";
 import {
+  updateCurrentOrderAddressAction,
+  updateCurrentOrderPhoneAction,
   updateCurrentOrderTypeAction,
   updatePreviousOrderAction,
 } from "donut-shared/src/actions/current-order";
@@ -253,6 +297,7 @@ import BigSpinner from "src/components/BigSpinner.vue";
 import DishInOrder from "src/components/DishInOrder.vue";
 import OrderView from "src/components/OrderView.vue";
 import PhoneInput from "src/components/PhoneInput.vue";
+import { formatAddress } from "src/lib/address";
 import { useIsLoggedIn } from "src/lib/composables/useIsLoggedIn";
 import { AUTH_BEFORE_ORDER_CREATE } from "src/lib/constants";
 import { createOrder } from "src/lib/create-order";
@@ -273,7 +318,6 @@ const isConfirmClearOpen = ref(false);
 const isSubmitting = ref(false);
 const channels = computed(() => [CHANNELS.DINING_TABLES]);
 const tableNumberSearchInput = ref("");
-const phone = ref("");
 const tableNumberFuzzySearch = computed(() =>
   createFuzzySearcher(store.state.diningTables.tables, ["number"])
 );

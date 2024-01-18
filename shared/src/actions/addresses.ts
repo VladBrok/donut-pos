@@ -3,7 +3,6 @@ export interface IAddress {
   city: string;
   street: string;
   homeNumber: string;
-  floor: string;
   postalCode: string;
 }
 

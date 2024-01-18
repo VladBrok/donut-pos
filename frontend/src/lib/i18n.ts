@@ -192,6 +192,7 @@ export const messages = i18n("messages", {
   next: "Next",
 
   // Client pages
+  changeDeliveryAddress: "Change delivery address",
   orderDetails: "Order details",
   viewYourOrders: "view your orders",
   welcome: "Welcome!",
@@ -214,7 +215,6 @@ export const messages = i18n("messages", {
   city: "City",
   street: "Street",
   homeNumber: "Home number",
-  floor: "Floor",
   postalCode: "Postal code",
 
   // Payment pages

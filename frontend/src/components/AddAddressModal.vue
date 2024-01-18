@@ -66,14 +66,6 @@
               ]"
             >
             </q-input>
-            <q-input
-              v-model="data.floor"
-              stack-label
-              :label="`${t.floor}`"
-              lazy-rules
-              type="text"
-            >
-            </q-input>
           </div>
           <iframe class="q-mt-lg" :src="mapSrc" width="100%" height="400px">
           </iframe>
@@ -94,8 +86,8 @@
 <script setup lang="ts">
 import { AddressData, POSTAL_CODE_REGEX } from "donut-shared";
 import { debounce } from "quasar";
+import { makeGoogleMapSearchQuery } from "src/lib/address";
 import { useI18nStore } from "src/lib/i18n";
-import { makeGoogleMapSearchQuery } from "src/lib/make-google-map-search-query";
 import { onFormValidationError } from "src/lib/on-form-validation-error";
 import { reactive, ref, watch } from "vue";
 
@@ -118,7 +110,6 @@ const data = reactive<AddressData>({
   city: "",
   street: "",
   homeNumber: "",
-  floor: "",
   postalCode: "",
 });
 
@@ -146,7 +137,6 @@ async function searchAddress() {
 }
 
 function onSubmit() {
-  console.log(data);
   emit("submit", data);
 }
 </script>

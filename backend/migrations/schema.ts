@@ -14,7 +14,6 @@ export const address = pgTable("address", {
 	city: text("city"),
 	street: text("street"),
 	building: text("building"),
-	floorNumber: text("floor_number"),
 	homeNumber: text("home_number"),
 	postalCode: text("postal_code"),
 });

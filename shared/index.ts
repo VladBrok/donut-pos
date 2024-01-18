@@ -19,9 +19,12 @@ export {
   clearCurrentOrderAction,
   decrementDishInCurrentOrderAction,
   removeDishFromCurrentOrderAction,
+  updateCurrentOrderAddressAction,
   updateCurrentOrderCommentAction,
+  updateCurrentOrderPhoneAction,
   updateCurrentOrderTableNumberAction,
   updateCurrentOrderTypeAction,
+  updatePreviousOrderAction,
 } from "./src/actions/current-order.js";
 export {
   createDiningTableAction,

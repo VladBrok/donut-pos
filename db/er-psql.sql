@@ -3,7 +3,6 @@ CREATE TABLE "address" (
   "city" TEXT,
   "street" TEXT,
   "building" TEXT,
-  "floor_number" TEXT,
   "home_number" TEXT,
   "postal_code" TEXT
 );
