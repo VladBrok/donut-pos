@@ -1,12 +1,11 @@
 CREATE TABLE "address" (
   "id" UUID PRIMARY KEY,
-  "geo_lat" TEXT,
-  "geo_lon" TEXT,
   "city" TEXT,
   "street" TEXT,
   "building" TEXT,
-  "floor_number" INT,
-  "room" TEXT
+  "floor_number" TEXT,
+  "home_number" TEXT,
+  "postal_code" TEXT
 );
 
 CREATE TABLE "dining_table" (

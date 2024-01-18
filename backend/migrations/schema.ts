@@ -1,4 +1,4 @@
-import { pgTable, pgEnum, uuid, text, integer, index, foreignKey, boolean, time, timestamp, jsonb } from "drizzle-orm/pg-core"
+import { pgTable, pgEnum, uuid, text, index, foreignKey, boolean, integer, time, timestamp, jsonb } from "drizzle-orm/pg-core"
 
 import { sql } from "drizzle-orm"
 export const keyStatus = pgEnum("key_status", ['default', 'valid', 'invalid', 'expired'])
@@ -11,13 +11,12 @@ export const codeChallengeMethod = pgEnum("code_challenge_method", ['s256', 'pla
 
 export const address = pgTable("address", {
 	id: uuid("id").primaryKey().notNull(),
-	geoLat: text("geo_lat"),
-	geoLon: text("geo_lon"),
 	city: text("city"),
 	street: text("street"),
 	building: text("building"),
-	floorNumber: integer("floor_number"),
-	room: text("room"),
+	floorNumber: text("floor_number"),
+	homeNumber: text("home_number"),
+	postalCode: text("postal_code"),
 });
 
 export const dishCategory = pgTable("dish_category", {

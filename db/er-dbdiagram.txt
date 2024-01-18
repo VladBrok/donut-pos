@@ -1,12 +1,11 @@
 Table address {
   id UUID [pk]
-  geo_lat TEXT
-  geo_lon TEXT
   city TEXT
   street TEXT
   building TEXT
-  floor_number INT
-  room TEXT
+  floor_number TEXT
+  home_number TEXT
+  postal_code TEXT
 }
 
 Table dining_table {
