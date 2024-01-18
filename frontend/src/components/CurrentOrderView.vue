@@ -131,7 +131,7 @@
                 :model-value="formatAddress(order.address)"
                 readonly
                 stack-label
-                :label="`${t.address}`"
+                :label="`${t.deliveryAddress}`"
                 type="text"
               >
                 <template v-slot:append>

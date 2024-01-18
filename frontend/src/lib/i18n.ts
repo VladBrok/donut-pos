@@ -61,6 +61,7 @@ export const messages = i18n("messages", {
   isPhoneVerified: "Phone verified",
   email: "Email",
   address: "Address",
+  deliveryAddress: "Delivery address",
   addressExplanation1: "Enter the delivery address.",
   addressExplanation2: "The address will appear on the map.",
   addressExplanation3: "If the address is shown correctly, click 'Save'",
