@@ -21,28 +21,70 @@
           </p>
         </div>
         <q-form
-          @submit="searchAddress"
+          @submit="onSubmit"
           @validation-error="onFormValidationError"
+          ref="form"
         >
-          <q-input
-            v-model="addressInput"
-            class="max-w-xsm"
-            stack-label
-            :label="`${t.address} *`"
-            lazy-rules
-            type="text"
-            :loading="isLoading"
+          <div class="address-inputs">
+            <q-input
+              v-model="data.city"
+              stack-label
+              :label="`${t.city} *`"
+              lazy-rules
+              type="text"
+              :rules="[(val) => !!val || t.fieldRequired]"
+            >
+            </q-input>
+            <q-input
+              v-model="data.street"
+              stack-label
+              :label="`${t.street} *`"
+              lazy-rules
+              type="text"
+              :rules="[(val) => !!val || t.fieldRequired]"
+            >
+            </q-input>
+            <q-input
+              v-model="data.homeNumber"
+              stack-label
+              :label="`${t.homeNumber} *`"
+              lazy-rules
+              type="text"
+              :rules="[(val) => !!val || t.fieldRequired]"
+            >
+            </q-input>
+            <q-input
+              v-model="data.postalCode"
+              stack-label
+              mask="##-###"
+              :label="`${t.postalCode} *`"
+              lazy-rules
+              type="text"
+              :rules="[
+                (val) => !!val || t.fieldRequired,
+                (val) => POSTAL_CODE_REGEX.test(val) || t.invalidPostalCode,
+              ]"
+            >
+            </q-input>
+            <q-input
+              v-model="data.floor"
+              stack-label
+              :label="`${t.floor}`"
+              lazy-rules
+              type="text"
+            >
+            </q-input>
+          </div>
+          <iframe class="q-mt-lg" :src="mapSrc" width="100%" height="400px">
+          </iframe>
+          <q-btn
+            color="primary"
+            class="d-block q-mx-auto q-mt-md"
+            type="submit"
+            @click="wasSubmit = true"
           >
-            <template v-slot:prepend>
-              <q-icon name="search" />
-            </template>
-          </q-input>
-          <iframe
-            class="q-mt-lg"
-            :src="mapSrc"
-            width="100%"
-            height="400px"
-          ></iframe>
+            {{ t.save }}
+          </q-btn>
         </q-form>
       </q-card-section>
     </q-card>
@@ -50,17 +92,17 @@
 </template>
 
 <script setup lang="ts">
-import { IAddress } from "donut-shared";
+import { AddressData, POSTAL_CODE_REGEX } from "donut-shared";
 import { debounce } from "quasar";
 import { useI18nStore } from "src/lib/i18n";
+import { makeGoogleMapSearchQuery } from "src/lib/make-google-map-search-query";
 import { onFormValidationError } from "src/lib/on-form-validation-error";
-import { ref, watch } from "vue";
+import { reactive, ref, watch } from "vue";
 
 const emit = defineEmits<{
-  submit: [address: IAddress];
+  submit: [address: AddressData];
 }>();
 
-const addressInput = ref("");
 const t = useI18nStore();
 const linkKey =
   "https://www.google.com/maps/embed/v1/search?key=AIzaSyBK73HewkhHBVVs9nI98-HY_N7cZM_kdjE";
@@ -70,19 +112,41 @@ const q = defaultLoc;
 const srcContent = linkKey + "&q=" + q + "&zoom=" + zoom;
 const mapSrc = ref(srcContent);
 const isLoading = ref(false);
+const wasSubmit = ref(false);
+const form = ref<any>();
+const data = reactive<AddressData>({
+  city: "",
+  street: "",
+  homeNumber: "",
+  floor: "",
+  postalCode: "",
+});
 
 const searchAddressDebounced = debounce(() => {
   searchAddress();
   isLoading.value = false;
 }, 500);
 
-watch(addressInput, () => {
+watch(data, () => {
   isLoading.value = true;
   searchAddressDebounced();
 });
 
 async function searchAddress() {
-  const q = addressInput.value || defaultLoc;
+  const isValid = await form.value.validate(false);
+  if (!wasSubmit.value) {
+    form.value.resetValidation();
+  }
+  if (!isValid) {
+    return;
+  }
+
+  const q = makeGoogleMapSearchQuery(data);
   mapSrc.value = linkKey + "&q=" + q + "&zoom=" + zoom;
+}
+
+function onSubmit() {
+  console.log(data);
+  emit("submit", data);
 }
 </script>

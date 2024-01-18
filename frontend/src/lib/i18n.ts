@@ -61,8 +61,7 @@ export const messages = i18n("messages", {
   isPhoneVerified: "Phone verified",
   email: "Email",
   address: "Address",
-  addressExplanation1:
-    "Enter the delivery address, for example: Pińczów Władysława Jagiełły 31.",
+  addressExplanation1: "Enter the delivery address.",
   addressExplanation2: "The address will appear on the map.",
   addressExplanation3: "If the address is shown correctly, click 'Save'",
   isEmailVerified: "Email verified",
@@ -110,6 +109,7 @@ export const messages = i18n("messages", {
   createEmployee: "Create employee",
   updateEmployee: "Update employee",
   invalidPhoneLengths: "Phone should have exactly 9 digits",
+  invalidPostalCode: "Invalid postal code. Example: 04-919",
   passwordShouldContainDigit: "Password should contain at least 1 digit",
   passwordShouldContainUppercase:
     "Password should contain at least 1 uppercase latin letter",
@@ -211,6 +211,11 @@ export const messages = i18n("messages", {
   orderIsReady: params(`Order {orderNumber} is ready!`),
   addDeliveryAddress: "Add Delivery Address",
   specifyDeliveryAddress: "Please add the delivery address",
+  city: "City",
+  street: "Street",
+  homeNumber: "Home number",
+  floor: "Floor",
+  postalCode: "Postal code",
 
   // Payment pages
   paymentSuccessPageTitle: "Payment success",

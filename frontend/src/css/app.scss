@@ -96,6 +96,12 @@ a:hover {
   width: fit-content;
 }
 
+.address-inputs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 25px;
+}
+
 .image-card {
   width: 100%;
   aspect-ratio: 1.2;

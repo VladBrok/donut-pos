@@ -1,4 +1,4 @@
-export type { IAddress } from "./src/actions/addresses.js";
+export type { AddressData, IAddress } from "./src/actions/addresses.js";
 export type { IPermissions } from "./src/actions/auth.js";
 export {
   cashPaymentRequestDeletedAction,
