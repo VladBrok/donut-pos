@@ -263,8 +263,7 @@
           })
         )
     "
-  >
-  </add-address-modal>
+  />
 </template>
 
 <script setup lang="ts">

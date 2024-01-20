@@ -87,6 +87,7 @@
             color="primary"
             class="d-block q-mx-auto q-mt-md"
             type="submit"
+            :loading="isLoading"
             @click="wasSubmit = true"
           >
             {{ t.save }}
@@ -99,16 +100,29 @@
 
 <script setup lang="ts">
 import { IAddress, POSTAL_CODE_REGEX } from "donut-shared";
-import { debounce } from "quasar";
+import {
+  createAddressAction,
+  updateAddressAction,
+} from "donut-shared/src/actions/addresses";
+import { Notify, debounce } from "quasar";
 import { makeGoogleMapSearchQuery } from "src/lib/address";
+import { SUCCESS_TIMEOUT_MS } from "src/lib/constants";
 import { useI18nStore } from "src/lib/i18n";
 import { onFormValidationError } from "src/lib/on-form-validation-error";
-import { reactive, ref, watch } from "vue";
+import { useStore } from "src/store";
+import { computed, reactive, ref, watch } from "vue";
+
+const props = defineProps<{
+  submitYourself?: boolean;
+  originalAddress?: IAddress;
+}>();
 
 const emit = defineEmits<{
   submit: [address: IAddress];
 }>();
 
+const originalAddress = computed(() => props.originalAddress);
+const isSubmitYourself = computed(() => props.submitYourself);
 const t = useI18nStore();
 const linkKey =
   "https://www.google.com/maps/embed/v1/search?key=AIzaSyA4wNwpARhZ7Y4FKCclfAwqLgxjKhACi0g";
@@ -118,6 +132,7 @@ const defaultLoc = "Pinczow";
 const q = defaultLoc;
 const srcContent = linkKey + "&q=" + q + "&zoom=" + zoom;
 const mapSrc = ref(srcContent);
+const store = useStore();
 const isLoading = ref(false);
 const wasSubmit = ref(false);
 const form = ref<any>();
@@ -130,13 +145,23 @@ const data = reactive<IAddress>({
 
 const searchAddressDebounced = debounce(() => {
   searchAddress();
-  isLoading.value = false;
 }, 500);
 
 watch(data, () => {
-  isLoading.value = true;
   searchAddressDebounced();
 });
+
+watch(
+  originalAddress,
+  () => {
+    if (!originalAddress.value) {
+      return;
+    }
+
+    Object.assign(data, originalAddress.value);
+  },
+  { immediate: true }
+);
 
 async function searchAddress() {
   const isValid = await form.value.validate(false);
@@ -152,6 +177,38 @@ async function searchAddress() {
 }
 
 function onSubmit() {
-  emit("submit", data);
+  if (!isSubmitYourself.value) {
+    emit("submit", data);
+    return;
+  }
+
+  isLoading.value = true;
+  store.commit
+    .sync(
+      !originalAddress.value
+        ? createAddressAction({
+            address: data,
+          })
+        : updateAddressAction({
+            id: originalAddress.value.id || "",
+            address: data,
+          })
+    )
+    .then(() => {
+      Notify.create({
+        type: "positive",
+        position: "top",
+        timeout: SUCCESS_TIMEOUT_MS,
+        message: originalAddress.value
+          ? t.value.updateSuccess
+          : t.value.createSuccess,
+        multiLine: true,
+        group: false,
+      });
+      emit("submit", data);
+    })
+    .finally(() => {
+      isLoading.value = false;
+    });
 }
 </script>

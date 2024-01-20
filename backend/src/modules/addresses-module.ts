@@ -3,9 +3,11 @@ import { CHANNELS } from "donut-shared";
 import {
   addressCreatedAction,
   addressDeletedAction,
+  addressUpdatedAction,
   addressesLoadedAction,
   createAddressAction,
   deleteAddressAction,
+  updateAddressAction,
 } from "donut-shared/src/actions/addresses.js";
 import * as db from "../db/modules/addresses.js";
 
@@ -41,6 +43,36 @@ export default function addressesModule(server: Server) {
   });
 
   server.type(addressCreatedAction, {
+    async access() {
+      return false;
+    },
+    resend(ctx, action) {
+      return action.payload.address.clientId
+        ? [CHANNELS.ADDRESSES_OF_CLIENT(action.payload.address.clientId)]
+        : [];
+    },
+  });
+
+  server.type(updateAddressAction, {
+    async access(ctx) {
+      return Boolean(ctx.userId);
+    },
+    async process(ctx, action, meta) {
+      const address = action.payload.address;
+      if (!address.clientId) {
+        address.clientId = ctx.userId;
+      }
+      await db.updateAddress(action.payload.id, address);
+      await server.process(
+        addressUpdatedAction({
+          id: action.payload.id,
+          address: address,
+        })
+      );
+    },
+  });
+
+  server.type(addressUpdatedAction, {
     async access() {
       return false;
     },

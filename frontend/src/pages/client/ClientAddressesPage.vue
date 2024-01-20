@@ -25,8 +25,12 @@
             <q-icon name="search" />
           </template>
         </q-input>
-        <!-- TODO: open modal on click -->
-        <q-btn color="primary" icon="add" :label="t.addAddress" />
+        <q-btn
+          color="primary"
+          icon="add"
+          :label="t.addAddress"
+          @click="isAddAddressModalOpen = true"
+        />
       </template>
       <template v-slot:body-cell-index="props">
         <q-td :props="props">
@@ -59,7 +63,6 @@
       </template>
       <template v-slot:body-cell-actions="props">
         <q-td :props="props" auto-width>
-          <!-- TODO: open modal on click -->
           <q-btn
             flat
             size="md"
@@ -67,7 +70,7 @@
             color="primary"
             dense
             class="q-mr-sm"
-            @click.stop
+            @click.stop="editAddress(props.row)"
           >
           </q-btn>
           <q-btn
@@ -105,6 +108,14 @@
         />
       </template>
     </confirm-dialog>
+
+    <add-address-modal
+      v-if="isAddAddressModalOpen"
+      v-model="isAddAddressModalOpen"
+      :original-address="editingAddress"
+      submit-yourself
+      @submit="isAddAddressModalOpen = false"
+    />
   </div>
 </template>
 
@@ -113,6 +124,7 @@ import { useSubscription } from "@logux/vuex";
 import { CHANNELS, IAddress, assert } from "donut-shared";
 import { deleteAddressAction } from "donut-shared/src/actions/addresses";
 import { Notify } from "quasar";
+import AddAddressModal from "src/components/AddAddressModal.vue";
 import { formatAddress } from "src/lib/address";
 import { capitalize } from "src/lib/capitalize";
 import { useStore } from "src/store";
@@ -144,6 +156,8 @@ const t = useI18nStore();
 const confirmDelete = ref<null | IAddress>(null);
 const isDeleting = ref(false);
 const searchInput = ref("");
+const isAddAddressModalOpen = ref(false);
+const editingAddress = ref<IAddress>();
 
 const columns: any[] = [
   {
@@ -183,6 +197,11 @@ const columns: any[] = [
 
 const onDeleteAttempt = (row: IAddress) => {
   confirmDelete.value = row;
+};
+
+const editAddress = (row: IAddress) => {
+  editingAddress.value = row;
+  isAddAddressModalOpen.value = true;
 };
 
 const onDeleteConfirmed = () => {

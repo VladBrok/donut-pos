@@ -1,6 +1,7 @@
 import {
   addressCreatedAction,
   addressDeletedAction,
+  addressUpdatedAction,
   addressesLoadedAction,
 } from "donut-shared/src/actions/addresses";
 import { MutationTree } from "vuex";
@@ -28,6 +29,16 @@ const mutation: MutationTree<IAddressesState> = {
     const idx = state.addresses.findIndex((x) => x.id === action.payload.id);
     if (idx > -1) {
       state.addresses.splice(idx, 1);
+    }
+  },
+
+  updated(
+    state: IAddressesState,
+    action: ReturnType<typeof addressUpdatedAction>
+  ) {
+    const address = state.addresses.find((x) => x.id === action.payload.id);
+    if (address) {
+      Object.assign(address, action.payload.address);
     }
   },
 };
