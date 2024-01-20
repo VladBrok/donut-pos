@@ -1,10 +1,14 @@
 Table address {
   id UUID [pk]
+  client_id UUID
   city TEXT
   street TEXT
   building TEXT
   home_number TEXT
   postal_code TEXT
+ Indexes {
+    client_id [name: 'address_client_id_idx']
+  } 
 }
 
 Table dining_table {
@@ -19,7 +23,6 @@ Table dining_table {
 
 Table client {
   id UUID [pk]
-  address_id UUID
   first_name TEXT
   last_name TEXT
   phone TEXT
@@ -29,7 +32,6 @@ Table client {
   password_hash TEXT
   registered_at TIMESTAMP
   Indexes {
-    address_id [name: 'client_address_id_idx']
     phone [name: 'client_phone_idx']
     email [name: 'client_email_idx']
   }
@@ -194,7 +196,7 @@ Table order_to_dishes {
 Ref: dining_table.employee_id > employee.id [delete: set null]
 Ref: order_to_dishes.order_id > order.id [delete: set null]
 Ref: cash_payment_request.order_id > order.id [delete: set null]
-Ref: client.address_id > address.id [delete: set null]
+Ref: address.client_id > client.id [delete: set null]
 Ref: dish.category_id > dish_category.id [delete: set null]
 Ref: work_schedule.sale_point_id > sale_point.id [delete: set null]
 Ref: role_to_permission.role_id > role.id [delete: set null]

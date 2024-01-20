@@ -1,4 +1,4 @@
-import { pgTable, pgEnum, uuid, text, index, foreignKey, boolean, integer, time, timestamp, jsonb } from "drizzle-orm/pg-core"
+import { pgTable, index, foreignKey, pgEnum, uuid, text, boolean, integer, time, timestamp, jsonb } from "drizzle-orm/pg-core"
 
 import { sql } from "drizzle-orm"
 export const keyStatus = pgEnum("key_status", ['default', 'valid', 'invalid', 'expired'])
@@ -16,6 +16,12 @@ export const address = pgTable("address", {
 	building: text("building"),
 	homeNumber: text("home_number"),
 	postalCode: text("postal_code"),
+	clientId: uuid("client_id").references(() => client.id, { onDelete: "set null" } ),
+},
+(table) => {
+	return {
+		clientIdIdx: index("address_client_id_idx").on(table.clientId),
+	}
 });
 
 export const dishCategory = pgTable("dish_category", {
@@ -100,7 +106,6 @@ export const dishToModification = pgTable("dish_to_modification", {
 
 export const client = pgTable("client", {
 	id: uuid("id").primaryKey().notNull(),
-	addressId: uuid("address_id").references(() => address.id, { onDelete: "set null" } ).references(() => address.id, { onDelete: "set null" } ).references(() => address.id, { onDelete: "set null" } ).references(() => address.id, { onDelete: "set null" } ),
 	firstName: text("first_name"),
 	lastName: text("last_name"),
 	phone: text("phone"),
@@ -112,7 +117,6 @@ export const client = pgTable("client", {
 },
 (table) => {
 	return {
-		addressIdIdx: index("client_address_id_idx").on(table.addressId),
 		phoneIdx: index("client_phone_idx").on(table.phone),
 		emailIdx: index("client_email_idx").on(table.email),
 	}
