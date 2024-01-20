@@ -261,7 +261,6 @@ import { useSubscription } from "@logux/vuex";
 import {
   CHANNELS,
   COMMENT_MAX_LENGTH,
-  IAddress,
   ORDER_TYPES_ARR,
   addDishToCurrentOrderAction,
   clearCurrentOrderAction,
@@ -355,9 +354,8 @@ const orderTypeDefault = ref<(typeof orderTypes.value)[number]>(
 );
 const router = useRouter();
 const isLoggedIn = useIsLoggedIn();
-const address = ref<IAddress>();
 const requiredAddressNotSpecified = computed(
-  () => order.value?.type === "delivery" && !address.value
+  () => order.value?.type === "delivery" && !order.value.address
 );
 
 const unsubscribe = watch(
