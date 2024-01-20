@@ -2,6 +2,7 @@ import { createAction } from "./index.js";
 
 export interface IAddress {
   id?: string;
+  clientId?: string;
   city: string;
   street: string;
   homeNumber: string;
@@ -11,3 +12,11 @@ export interface IAddress {
 export const addressesLoadedAction = createAction<{
   addresses: IAddress[];
 }>("addresses/loaded");
+
+export const createAddressAction = createAction<{
+  address: IAddress;
+}>("addresses/create");
+
+export const addressCreatedAction = createAction<{
+  address: IAddress;
+}>("addresses/created");

@@ -21,7 +21,6 @@ import {
 } from "drizzle-orm";
 import { PgColumn } from "drizzle-orm/pg-core";
 import {
-  address,
   client,
   diningTable,
   employee,
@@ -190,15 +189,6 @@ export async function createOrder(
   const orderToCreate = { ...data, id: generateUuid() };
 
   await db.transaction(async (tx) => {
-    const deliveryAddress = data.address;
-    if (deliveryAddress && !deliveryAddress.id) {
-      deliveryAddress.id = generateUuid();
-      deliveryAddress.clientId = !isClient ? null : userId;
-      await tx.insert(address).values({
-        ...deliveryAddress,
-      });
-    }
-
     await tx.insert(order).values({
       id: orderToCreate.id,
       comment: data.comment,
@@ -207,7 +197,7 @@ export async function createOrder(
       clientId: !isClient ? null : userId,
       number: orderNumber,
       diningTableId: data.table?.id || null,
-      deliveryAddress: sql`${new Param(deliveryAddress)}`,
+      deliveryAddress: sql`${new Param(data.address)}`,
       createdDate: new Date(),
       status: ORDER_STATUSES.CREATED,
     });

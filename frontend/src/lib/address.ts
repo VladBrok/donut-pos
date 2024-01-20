@@ -5,7 +5,11 @@ export function makeGoogleMapSearchQuery(data: IAddress) {
   return `${data.city} ${data.street} ${data.homeNumber} ${data.postalCode}`.trim();
 }
 
-export function formatAddress(data: IAddress) {
+export function formatAddress(data?: IAddress) {
+  if (!data) {
+    return "";
+  }
+
   return `ul. ${capitalize(data.street)} ${data.homeNumber}, ${
     data.postalCode
   } ${capitalize(data.city)}`;

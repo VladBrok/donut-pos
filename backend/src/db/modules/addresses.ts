@@ -1,5 +1,6 @@
 import { IAddress } from "donut-shared";
 import { eq } from "drizzle-orm";
+import { generateUuid } from "src/lib/uuid.js";
 import { address, client } from "../../../migrations/schema.js";
 import { db } from "../index.js";
 import { addressAdapter } from "../schema-to-model-adapters.js";
@@ -12,4 +13,12 @@ export async function getAllAdddresses(clientId: string): Promise<IAddress[]> {
     .leftJoin(client, eq(client.id, clientId));
 
   return addressAdapter(data);
+}
+
+export async function createAddress(data: IAddress): Promise<IAddress> {
+  const toCreate = { ...data, id: generateUuid() };
+  await db.insert(address).values({
+    ...toCreate,
+  });
+  return toCreate;
 }

@@ -1,4 +1,5 @@
 import { clearCurrentOrderAction, createOrderAction } from "donut-shared";
+import { createAddressAction } from "donut-shared/src/actions/addresses";
 import { updateCreateOrderAfterAuthAction } from "donut-shared/src/actions/orders";
 import { logError } from "donut-shared/src/lib/log";
 import { Notify } from "quasar";
@@ -19,25 +20,32 @@ export function createOrder(
     return Promise.resolve();
   }
 
-  return store.commit
-    .sync(
+  return Promise.all([
+    !order.address || order.address.id
+      ? Promise.resolve()
+      : store.commit.sync(
+          createAddressAction({
+            address: order.address,
+          })
+        ),
+    store.commit.sync(
       createOrderAction({
         order: order,
         isClient: user.permissions?.client || false,
       })
-    )
-    .then(() => {
-      Notify.create({
-        type: "positive",
-        position: "top",
-        timeout: SUCCESS_TIMEOUT_MS,
-        message: t.value.orderCreateSuccess,
-        multiLine: true,
-        group: false,
-      });
-
-      store.commit.crossTab(clearCurrentOrderAction());
+    ),
+  ]).then(() => {
+    Notify.create({
+      type: "positive",
+      position: "top",
+      timeout: SUCCESS_TIMEOUT_MS,
+      message: t.value.orderCreateSuccess,
+      multiLine: true,
+      group: false,
     });
+
+    store.commit.crossTab(clearCurrentOrderAction());
+  });
 }
 
 export function createOrderAfterAuth(

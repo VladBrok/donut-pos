@@ -48,38 +48,50 @@
                 </q-item>
               </template>
             </q-select>
-            <div v-if="order?.type === 'delivery'" class="q-mb-lg">
-              <q-btn
-                v-if="!order.address"
-                color="primary"
-                outline
-                @click="isAddAddressModalOpen = true"
-              >
-                <q-icon name="add_circle" class="q-mr-sm" />
-                <span>{{ t.addDeliveryAddress }}</span>
-              </q-btn>
-              <q-input
-                v-else
+            <div v-if="order?.type === 'delivery'">
+              <q-select
                 :model-value="formatAddress(order.address)"
-                readonly
+                @update:model-value="
+                  store.commit.crossTab(
+                    updateCurrentOrderAddressAction({
+                      address: addresses.find(
+                        (x) => formatAddress(x) === $event
+                      ),
+                    })
+                  )
+                "
+                use-input
+                fill-input
                 stack-label
-                :label="`${t.deliveryAddress}`"
-                type="text"
+                hide-selected
+                clearable
+                input-debounce="0"
+                :options="filteredAddresses"
+                @filter="filterAddresses"
+                :label="`${t.deliveryAddress} *`"
+                :rules="[(val) => (!!val && val.length > 0) || t.fieldRequired]"
               >
-                <template v-slot:append>
+                <template v-slot:after>
                   <q-btn
                     round
                     dense
-                    flat
-                    icon="edit"
+                    icon="add"
+                    color="primary"
                     @click="isAddAddressModalOpen = true"
                   >
                     <q-tooltip>
-                      {{ t.changeDeliveryAddress }}
+                      {{ t.addNewDeliveryAddress }}
                     </q-tooltip>
                   </q-btn>
                 </template>
-              </q-input>
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section>
+                      {{ t.noResults }}
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
             </div>
             <q-select
               v-if="order?.type === 'dine-in'"
@@ -304,8 +316,29 @@ const userId = ref(store.state.auth.user.userId);
 const channels = computed(() => {
   return userId.value === ANONYMOUS.userId
     ? [CHANNELS.DINING_TABLES]
-    : [CHANNELS.DINING_TABLES, CHANNELS.ADDRESSES];
+    : [CHANNELS.DINING_TABLES, CHANNELS.ADDRESSES_OF_CLIENT(userId.value)];
 });
+
+const addresses = computed(() =>
+  order.value?.address && !order.value.address.id
+    ? [...store.state.addresses.addresses, order.value?.address]
+    : store.state.addresses.addresses
+);
+const addressSearchInput = ref("");
+const addressFuzzySearch = computed(() =>
+  createFuzzySearcher(addresses.value, [
+    "city",
+    "homeNumber",
+    "postalCode",
+    "street",
+  ])
+);
+const filteredAddresses = computed(() =>
+  addressFuzzySearch.value
+    .search(addressSearchInput.value)
+    .map((x) => formatAddress(x))
+);
+
 const tableNumberSearchInput = ref("");
 const tableNumberFuzzySearch = computed(() =>
   createFuzzySearcher(store.state.diningTables.tables, ["number"])
@@ -315,10 +348,10 @@ const filteredTableNames = computed(() =>
     .search(tableNumberSearchInput.value)
     .map((x) => x.number)
 );
+
 const isSubscribing = useSubscription(channels, { store: store as any });
 const diningTables = computed(() => store.state.diningTables.tables);
 const previousOrder = computed(() => store.state.currentOrder.previous);
-const addresses = computed(() => store.state.addresses.addresses);
 const dishesInOrder = computed(() =>
   isSubscribing.value
     ? []
@@ -404,6 +437,12 @@ watch(
 const filterTables = (val: string, update: any) => {
   update(() => {
     tableNumberSearchInput.value = val;
+  });
+};
+
+const filterAddresses = (val: string, update: any) => {
+  update(() => {
+    addressSearchInput.value = val;
   });
 };
 
