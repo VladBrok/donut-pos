@@ -67,8 +67,22 @@
             >
             </q-input>
           </div>
-          <iframe class="q-mt-lg" :src="mapSrc" width="100%" height="400px">
-          </iframe>
+          <div>
+            <iframe
+              class="q-mt-lg no-events"
+              :src="mapSrc"
+              width="100%"
+              height="400px"
+            >
+            </iframe>
+            <q-tooltip
+              anchor="center middle"
+              self="center middle"
+              class="bg-negative text-white text-body2"
+            >
+              {{ t.readonlyMap }}
+            </q-tooltip>
+          </div>
           <q-btn
             color="primary"
             class="d-block q-mx-auto q-mt-md"

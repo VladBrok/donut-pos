@@ -193,6 +193,7 @@ export const messages = i18n("messages", {
   next: "Next",
 
   // Client pages
+  readonlyMap: "The map is view-only",
   changeDeliveryAddress: "Change delivery address",
   orderDetails: "Order details",
   viewYourOrders: "view your orders",

@@ -23,6 +23,10 @@ a:hover {
 
 // Utility classes
 
+.no-events {
+  pointer-events: none;
+}
+
 .overflow-x-hidden {
   overflow-x: hidden;
 }
