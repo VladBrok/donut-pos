@@ -98,7 +98,7 @@
 </template>
 
 <script setup lang="ts">
-import { AddressData, POSTAL_CODE_REGEX } from "donut-shared";
+import { IAddress, POSTAL_CODE_REGEX } from "donut-shared";
 import { debounce } from "quasar";
 import { makeGoogleMapSearchQuery } from "src/lib/address";
 import { useI18nStore } from "src/lib/i18n";
@@ -106,7 +106,7 @@ import { onFormValidationError } from "src/lib/on-form-validation-error";
 import { reactive, ref, watch } from "vue";
 
 const emit = defineEmits<{
-  submit: [address: AddressData];
+  submit: [address: IAddress];
 }>();
 
 const t = useI18nStore();
@@ -121,7 +121,7 @@ const mapSrc = ref(srcContent);
 const isLoading = ref(false);
 const wasSubmit = ref(false);
 const form = ref<any>();
-const data = reactive<AddressData>({
+const data = reactive<IAddress>({
   city: "",
   street: "",
   homeNumber: "",

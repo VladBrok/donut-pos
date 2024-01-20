@@ -3,7 +3,6 @@ CREATE TABLE "address" (
   "client_id" UUID,
   "city" TEXT,
   "street" TEXT,
-  "building" TEXT,
   "home_number" TEXT,
   "postal_code" TEXT
 );

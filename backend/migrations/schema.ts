@@ -13,7 +13,6 @@ export const address = pgTable("address", {
 	id: uuid("id").primaryKey().notNull(),
 	city: text("city"),
 	street: text("street"),
-	building: text("building"),
 	homeNumber: text("home_number"),
 	postalCode: text("postal_code"),
 	clientId: uuid("client_id").references(() => client.id, { onDelete: "set null" } ),

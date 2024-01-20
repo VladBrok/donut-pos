@@ -26,7 +26,7 @@
               stack-label
               :options="orderTypes"
               :label="t.orderTypeLabel"
-              :rules="[(val) => !!val || t.fieldRequired]"
+              class="q-mb-md"
             >
               <template v-slot:before>
                 <q-icon
@@ -48,6 +48,39 @@
                 </q-item>
               </template>
             </q-select>
+            <div v-if="order?.type === 'delivery'" class="q-mb-lg">
+              <q-btn
+                v-if="!order.address"
+                color="primary"
+                outline
+                @click="isAddAddressModalOpen = true"
+              >
+                <q-icon name="add_circle" class="q-mr-sm" />
+                <span>{{ t.addDeliveryAddress }}</span>
+              </q-btn>
+              <q-input
+                v-else
+                :model-value="formatAddress(order.address)"
+                readonly
+                stack-label
+                :label="`${t.deliveryAddress}`"
+                type="text"
+              >
+                <template v-slot:append>
+                  <q-btn
+                    round
+                    dense
+                    flat
+                    icon="edit"
+                    @click="isAddAddressModalOpen = true"
+                  >
+                    <q-tooltip>
+                      {{ t.changeDeliveryAddress }}
+                    </q-tooltip>
+                  </q-btn>
+                </template>
+              </q-input>
+            </div>
             <q-select
               v-if="order?.type === 'dine-in'"
               :model-value="order?.table?.number"
@@ -102,40 +135,6 @@
                   t.maxLength({ max: COMMENT_MAX_LENGTH }),
               ]"
             />
-            <div v-if="order?.type === 'delivery'" class="q-mb-md">
-              <q-btn
-                v-if="!order.address"
-                color="primary"
-                flat
-                dense
-                @click="isAddAddressModalOpen = true"
-              >
-                <q-icon name="add_circle" class="q-mr-sm" />
-                <span>{{ t.addDeliveryAddress }}</span>
-              </q-btn>
-              <q-input
-                v-else
-                :model-value="formatAddress(order.address)"
-                readonly
-                stack-label
-                :label="`${t.deliveryAddress}`"
-                type="text"
-              >
-                <template v-slot:append>
-                  <q-btn
-                    round
-                    dense
-                    flat
-                    icon="edit"
-                    @click="isAddAddressModalOpen = true"
-                  >
-                    <q-tooltip>
-                      {{ t.changeDeliveryAddress }}
-                    </q-tooltip>
-                  </q-btn>
-                </template>
-              </q-input>
-            </div>
           </div>
 
           <div>

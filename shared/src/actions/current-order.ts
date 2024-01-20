@@ -1,4 +1,4 @@
-import { AddressData } from "src/actions/addresses.js";
+import { IAddress } from "src/actions/addresses.js";
 import { IDishInOrder, IOrder } from "src/actions/orders.js";
 import { createAction } from "./index.js";
 
@@ -36,7 +36,7 @@ export const updateCurrentOrderTableNumberAction = createAction<{
 }>("currentOrder/updateTableNumber");
 
 export const updateCurrentOrderAddressAction = createAction<{
-  address: AddressData;
+  address: IAddress;
 }>("currentOrder/updateAddress");
 
 export const removeDishFromCurrentOrderAction = createAction<{
