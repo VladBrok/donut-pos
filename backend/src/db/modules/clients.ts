@@ -16,6 +16,16 @@ export async function findClientByEmail(email: string) {
   return clientAdapter(data)?.[0];
 }
 
+export async function findClientByPhone(phone: string) {
+  const data = await db
+    .select()
+    .from(client)
+    .where(eq(client.phone, phone))
+    .leftJoin(address, eq(address.id, client.addressId));
+
+  return clientAdapter(data)?.[0];
+}
+
 export async function createClient(data: Omit<IClient, "id">) {
   const toCreate = { id: generateUuid(), ...data };
   await db.insert(client).values({

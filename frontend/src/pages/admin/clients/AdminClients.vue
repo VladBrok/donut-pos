@@ -4,7 +4,7 @@
 
     <q-table
       v-else
-      class="q-mx-auto max-w-lg sticky-last-column-table"
+      class="q-mx-auto max-w-xl"
       :rows="clientsPage"
       :columns="columns"
       row-key="id"
@@ -48,6 +48,21 @@
           />
         </q-td>
       </template>
+      <template v-slot:body-cell-isPhoneVerified="props">
+        <q-td :props="props">
+          <q-radio
+            class="disabled-cursor-default"
+            :model-value="'true'"
+            checked-icon="task_alt"
+            unchecked-icon="close"
+            :val="props.row.isPhoneVerified.toString()"
+            label=""
+            disable
+            :color="props.row.isPhoneVerified ? 'positive' : 'negative'"
+            keep-color
+          />
+        </q-td>
+      </template>
       <template v-slot:no-data>
         <no-data></no-data>
       </template>
@@ -60,6 +75,7 @@ import { useSubscription } from "@logux/vuex";
 import { CHANNELS, loadClientsPageAction } from "donut-shared";
 import { ROWS_PER_TABLE_PAGE } from "src/lib/constants";
 import { formatDateTime } from "src/lib/date";
+import { formatPhoneNumber } from "src/lib/phone";
 import { useStore } from "src/store";
 import { computed, ref, watch } from "vue";
 import BigSpinner from "../../../components/BigSpinner.vue";
@@ -118,6 +134,19 @@ const columns: any[] = [
     label: t.value.isEmailVerified,
     align: "center",
     field: "isEmailVerified",
+  },
+  {
+    name: "phone",
+    label: t.value.phone,
+    align: "center",
+    field: "phone",
+    format: (val: string) => (val ? formatPhoneNumber(val) : "-"),
+  },
+  {
+    name: "isPhoneVerified",
+    label: t.value.isPhoneVerified,
+    align: "center",
+    field: "isPhoneVerified",
   },
 ];
 

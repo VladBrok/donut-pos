@@ -2,8 +2,9 @@ import { Server } from "@logux/server";
 import {
   ACCESS_DENIED,
   ANONYMOUS,
-  USER_EXISTS,
   USER_NOT_FOUND,
+  USER_WITH_EMAIL_EXISTS,
+  USER_WITH_PHONE_EXISTS,
   WRONG_PASSWORD,
 } from "donut-shared";
 import {
@@ -78,9 +79,19 @@ export default function authModule(server: Server) {
       return ctx.userId === ANONYMOUS.userId;
     },
     async process(ctx, action, meta) {
-      const user = await clientDb.findClientByEmail(action.payload.email);
-      if (user) {
-        await server.undo(action, meta, USER_EXISTS);
+      const userByEmail = await clientDb.findClientByEmail(
+        action.payload.email
+      );
+      if (userByEmail) {
+        await server.undo(action, meta, USER_WITH_EMAIL_EXISTS);
+        return;
+      }
+
+      const userByPhone = await clientDb.findClientByPhone(
+        action.payload.phone
+      );
+      if (userByPhone) {
+        await server.undo(action, meta, USER_WITH_PHONE_EXISTS);
         return;
       }
 
@@ -89,6 +100,7 @@ export default function authModule(server: Server) {
         passwordHash: await hash(action.payload.password),
         registeredAt: new Date().toISOString(),
         isEmailVerified: false,
+        isPhoneVerified: false,
       });
 
       const accessToken = encodeJwt({ userId: created.id });

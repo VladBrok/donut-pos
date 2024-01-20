@@ -46,6 +46,7 @@
               ]"
             />
             <email-input v-model="email" />
+            <phone-input v-model="phone" shouldValidateFormat />
             <password-input
               v-model="password"
               :should-validate-format="true"
@@ -77,6 +78,7 @@ import { FIRST_NAME_MAX_LENGTH, LAST_NAME_MAX_LENGTH } from "donut-shared";
 import { signUpAction } from "donut-shared/src/actions/auth";
 import EmailInput from "src/components/EmailInput.vue";
 import PasswordInput from "src/components/PasswordInput.vue";
+import PhoneInput from "src/components/PhoneInput.vue";
 import { createOrderAfterAuth } from "src/lib/create-order";
 import { onFormValidationError } from "src/lib/on-form-validation-error";
 import { computed, ref } from "vue";
@@ -89,6 +91,7 @@ const isSigningUp = ref(false);
 const t = useI18nStore();
 const router = useRouter();
 const email = ref("");
+const phone = ref("");
 const password = ref("");
 const firstName = ref("");
 const lastName = ref("");
@@ -103,6 +106,7 @@ const onSubmit = async () => {
     .sync(
       signUpAction({
         email: email.value,
+        phone: phone.value,
         password: password.value,
         firstName: firstName.value,
         lastName: lastName.value,

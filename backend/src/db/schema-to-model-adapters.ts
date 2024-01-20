@@ -276,9 +276,11 @@ export const clientAdapter = (data: ClientSchema[]): IClient[] => {
   return data.map((x) => ({
     id: x.client.id || "",
     email: x.client.email || "",
+    isEmailVerified: x.client.isEmailVerified || false,
+    phone: x.client.phone || "",
+    isPhoneVerified: x.client.isPhoneVerified || false,
     firstName: x.client.firstName || "",
     lastName: x.client.lastName || "",
-    isEmailVerified: x.client.isEmailVerified || false,
     registeredAt: x.client.registeredAt?.toISOString() || "",
     passwordHash: x.client.passwordHash || "",
   }));

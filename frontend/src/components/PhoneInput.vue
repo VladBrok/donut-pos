@@ -6,10 +6,6 @@
     "
     stack-label
     :label="`${t.phoneLabel} *`"
-    :hint="
-      hint ||
-      (shouldValidateFormat ? `${t.phoneExample}: 531 700 505` : undefined)
-    "
     lazy-rules
     unmasked-value
     prefix="+48"
@@ -31,7 +27,6 @@ import { useI18nStore } from "../lib/i18n";
 const props = defineProps<{
   shouldValidateFormat: boolean;
   modelValue: string;
-  hint?: string;
 }>();
 const emit = defineEmits<{
   "update:modelValue": [modelValue: string];
