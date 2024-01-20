@@ -429,6 +429,14 @@ watch(
         })
       );
     }
+
+    if (order.value && addresses.value.length && !order.value?.address) {
+      store.commit.crossTab(
+        updateCurrentOrderAddressAction({
+          address: addresses.value[0],
+        })
+      );
+    }
   },
   { immediate: true }
 );
