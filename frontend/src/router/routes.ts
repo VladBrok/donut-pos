@@ -294,6 +294,13 @@ const routes: RouteRecordRaw[] = [
           title: t.value.orders,
         },
       },
+      {
+        path: "addresses",
+        component: () => import("pages/client/ClientAddressesPage.vue"),
+        meta: {
+          title: t.value.address,
+        },
+      },
     ],
   },
 

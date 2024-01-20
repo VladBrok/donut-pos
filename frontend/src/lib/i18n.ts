@@ -147,6 +147,7 @@ export const messages = i18n("messages", {
     many: "{count} dishes",
   }),
   orders: "Orders",
+  addresses: "Addresses",
   menu: "Menu",
   orderNumber: "Order number",
   tableNumber: "Table",
