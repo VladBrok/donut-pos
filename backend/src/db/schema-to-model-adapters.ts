@@ -164,6 +164,7 @@ export const ordersAdapter = (data: OrderSchema[]): IOrder[] => {
       cookingDate: uniqueOrder.order.cookingDate?.toISOString() || "",
       cookedDate: uniqueOrder.order.cookedDate?.toISOString() || "",
       deliveringDate: uniqueOrder.order.deliveringDate?.toISOString() || "",
+      address: uniqueOrder.order.deliveryAddress || "",
       deliveredDate: uniqueOrder.order.deliveredDate?.toISOString() || "",
       paidDate: uniqueOrder.order.paidDate?.toISOString() || "",
       table: {
@@ -209,6 +210,7 @@ export const shallowOrdersAdapter = (
       deliveringDate: uniqueOrder.order.deliveringDate?.toISOString() || "",
       deliveredDate: uniqueOrder.order.deliveredDate?.toISOString() || "",
       paidDate: uniqueOrder.order.paidDate?.toISOString() || "",
+      address: uniqueOrder.order.deliveryAddress,
       table: {
         id: uniqueOrder.dining_table?.id || "",
         number: uniqueOrder.dining_table?.number || "",

@@ -78,6 +78,7 @@ export interface IShallowOrder {
   deliveringDate: string;
   deliveredDate: string;
   paidDate: string;
+  address?: IAddress;
   employee: {
     id: string;
     firstName: string;

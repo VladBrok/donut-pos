@@ -24,8 +24,31 @@
             </template>
           </q-input>
           <q-input
+            v-if="order.type === 'delivery'"
+            :model-value="formatAddress(order.address)"
+            readonly
+            stack-label
+            :label="`${t.deliveryAddress}`"
+            type="text"
+            class="q-mb-md w-fit"
+          >
+            <template v-slot:after>
+              <q-btn
+                round
+                dense
+                icon="location_on"
+                color="primary"
+                @click="openMap"
+              >
+                <q-tooltip>
+                  {{ t.showOnMap }}
+                </q-tooltip>
+              </q-btn>
+            </template>
+          </q-input>
+          <q-input
             v-if="order.type === 'dine-in'"
-            :model-value="order.table.number || '-'"
+            :model-value="order.table?.number || '-'"
             readonly
             stack-label
             :label="`${t.tableNumberLabel}`"
@@ -97,6 +120,7 @@ import DishInOrder from "src/components/DishInOrder.vue";
 import OrderHistory from "src/components/OrderHistory.vue";
 import OrderView from "src/components/OrderView.vue";
 import PaymentMethodModal from "src/components/PaymentMethodsModal.vue";
+import { formatAddress, makeGoogleMapSearchQuery } from "src/lib/address";
 import { getOrderTypeIcon } from "src/lib/get-order-type-icon";
 import { computed, ref } from "vue";
 import { IOrder } from "../../../shared/src/actions/orders";
@@ -111,4 +135,15 @@ const order = computed(() => props.order);
 const totalCost = computed(() => getOrderTotalCost(order.value.dishes));
 const t = useI18nStore();
 const isPaymentModalOpen = ref(false);
+
+function openMap() {
+  window
+    ?.open(
+      `http://www.google.com/maps/place?q=${makeGoogleMapSearchQuery(
+        order.value.address
+      )}`,
+      "_blank"
+    )
+    ?.focus();
+}
 </script>
