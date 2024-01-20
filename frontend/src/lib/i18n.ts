@@ -272,6 +272,7 @@ export const messages = i18n("messages", {
   confirmEmployeeDelete: "Are you sure you want to delete employee",
   confirmCurrentOrderClear: "Are you sure you want to clear the current order",
   confirmTableDelete: "Are you sure you want to delete table with number",
+  confirmLogout: "Are you sure you want to logout",
 
   // Logux statuses
   disconnectedMessage: "Cannot connect to the server",
