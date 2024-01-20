@@ -29,6 +29,10 @@ export type DiningTableSchema = {
   [employee._.name]: typeof employee.$inferSelect | null;
 };
 
+export type AddressSchema = {
+  [address._.name]: typeof address.$inferSelect;
+};
+
 export type DishSchema = {
   [dish._.name]: typeof dish.$inferSelect;
   [dishCategory._.name]: typeof dishCategory.$inferSelect | null;
@@ -68,7 +72,6 @@ export type DishInOrderSchema = {
 
 export type ClientSchema = {
   [client._.name]: typeof client.$inferSelect;
-  [address._.name]: typeof address.$inferSelect | null;
 };
 
 export type CashPaymentRequestSchema = {

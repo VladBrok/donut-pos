@@ -258,6 +258,7 @@
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
 import {
+  ANONYMOUS,
   CHANNELS,
   COMMENT_MAX_LENGTH,
   ORDER_TYPES_ARR,
@@ -299,7 +300,12 @@ const order = computed(() => store.state.currentOrder.order);
 const t = useI18nStore();
 const isConfirmClearOpen = ref(false);
 const isSubmitting = ref(false);
-const channels = computed(() => [CHANNELS.DINING_TABLES]);
+const userId = ref(store.state.auth.user.userId);
+const channels = computed(() => {
+  return userId.value === ANONYMOUS.userId
+    ? [CHANNELS.DINING_TABLES]
+    : [CHANNELS.DINING_TABLES, CHANNELS.ADDRESSES];
+});
 const tableNumberSearchInput = ref("");
 const tableNumberFuzzySearch = computed(() =>
   createFuzzySearcher(store.state.diningTables.tables, ["number"])
@@ -312,6 +318,7 @@ const filteredTableNames = computed(() =>
 const isSubscribing = useSubscription(channels, { store: store as any });
 const diningTables = computed(() => store.state.diningTables.tables);
 const previousOrder = computed(() => store.state.currentOrder.previous);
+const addresses = computed(() => store.state.addresses.addresses);
 const dishesInOrder = computed(() =>
   isSubscribing.value
     ? []

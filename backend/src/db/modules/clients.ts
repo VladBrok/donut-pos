@@ -1,29 +1,20 @@
-import { db } from "../index.js";
-
 import { IClient } from "donut-shared";
 import { and, desc, eq, ilike, or, sql } from "drizzle-orm";
 import { clientAdapter } from "src/db/schema-to-model-adapters.js";
 import { generateUuid } from "src/lib/uuid.js";
-import { address, client } from "../../../migrations/schema.js";
+import { client } from "../../../migrations/schema.js";
+import { db } from "../index.js";
 
 export async function findClientByEmail(email: string) {
-  const data = await db
-    .select()
-    .from(client)
-    .where(eq(client.email, email))
-    .leftJoin(address, eq(address.id, client.addressId));
+  const data = await db.select().from(client).where(eq(client.email, email));
 
-  return clientAdapter(data)?.[0];
+  return clientAdapter(data.map((x) => ({ client: x })))?.[0];
 }
 
 export async function findClientByPhone(phone: string) {
-  const data = await db
-    .select()
-    .from(client)
-    .where(eq(client.phone, phone))
-    .leftJoin(address, eq(address.id, client.addressId));
+  const data = await db.select().from(client).where(eq(client.phone, phone));
 
-  return clientAdapter(data)?.[0];
+  return clientAdapter(data.map((x) => ({ client: x })))?.[0];
 }
 
 export async function createClient(data: Omit<IClient, "id">) {
@@ -54,7 +45,6 @@ export async function getClientsPage(params: IGetClientsPage) {
   const data = await db
     .select()
     .from(clients)
-    .leftJoin(address, eq(address.id, client.addressId))
     .orderBy(desc(client.registeredAt));
 
   const total = await db
@@ -64,7 +54,10 @@ export async function getClientsPage(params: IGetClientsPage) {
     .from(client)
     .where(makeWhereFilter(params));
 
-  return { clientsPage: clientAdapter(data), total: total?.[0].value || 0 };
+  return {
+    clientsPage: clientAdapter(data.map((x) => ({ client: x }))),
+    total: total?.[0].value || 0,
+  };
 }
 
 // TODO: also search an address + also display an address on client ? (plus the client might need to have many addresses...)

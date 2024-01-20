@@ -1,5 +1,6 @@
 import {
   EMPLOYEE_PERMISSIONS,
+  IAddress,
   ICashPaymentRequest,
   IClient,
   OrderStatus,
@@ -21,6 +22,7 @@ import {
   RoleModel,
 } from "./models.js";
 import {
+  AddressSchema,
   CashPaymentRequestSchema,
   ClientSchema,
   DiningTableSchema,
@@ -269,6 +271,16 @@ export const diningTableAdapter = (
       email: x.employee?.email || "",
     },
     number: x.dining_table.number || "",
+  }));
+};
+
+export const addressAdapter = (data: AddressSchema[]): IAddress[] => {
+  return data.map((x) => ({
+    id: x.address.id || "",
+    city: x.address.city || "",
+    homeNumber: x.address.homeNumber || "",
+    postalCode: x.address.postalCode || "",
+    street: x.address.street || "",
   }));
 };
 

@@ -1,3 +1,5 @@
+import { createAction } from "./index.js";
+
 export interface IAddress {
   id?: string;
   city: string;
@@ -5,3 +7,7 @@ export interface IAddress {
   homeNumber: string;
   postalCode: string;
 }
+
+export const addressesLoadedAction = createAction<{
+  addresses: IAddress[];
+}>("addresses/loaded");
