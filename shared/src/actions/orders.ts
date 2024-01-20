@@ -54,7 +54,6 @@ export interface IOrder {
   deliveredDate: string;
   paidDate: string;
   address?: AddressData;
-  phone?: string;
   employee: {
     id: string;
     firstName: string;

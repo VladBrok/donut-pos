@@ -8,7 +8,6 @@ import {
 } from "donut-shared";
 import {
   updateCurrentOrderAddressAction,
-  updateCurrentOrderPhoneAction,
   updateCurrentOrderTypeAction,
   updatePreviousOrderAction,
 } from "donut-shared/src/actions/current-order";
@@ -117,18 +116,6 @@ const mutation: MutationTree<ICurrentOrderState> = {
     );
 
     state.order.address = action.payload.address;
-  },
-
-  updatePhone(
-    state: ICurrentOrderState,
-    action: ReturnType<typeof updateCurrentOrderPhoneAction>
-  ) {
-    assert(
-      state.order,
-      "Cannot update current order phone when current order is empty"
-    );
-
-    state.order.phone = action.payload.phone;
   },
 
   updatePrevious(

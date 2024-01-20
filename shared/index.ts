@@ -21,7 +21,6 @@ export {
   removeDishFromCurrentOrderAction,
   updateCurrentOrderAddressAction,
   updateCurrentOrderCommentAction,
-  updateCurrentOrderPhoneAction,
   updateCurrentOrderTableNumberAction,
   updateCurrentOrderTypeAction,
   updatePreviousOrderAction,

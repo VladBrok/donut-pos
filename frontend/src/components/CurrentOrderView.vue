@@ -48,19 +48,6 @@
                 </q-item>
               </template>
             </q-select>
-            <phone-input
-              v-if="order?.type === 'delivery'"
-              :model-value="order?.phone || ''"
-              @update:model-value="
-                store.commit.crossTab(
-                  updateCurrentOrderPhoneAction({
-                    phone: $event,
-                  })
-                )
-              "
-              :shouldValidateFormat="true"
-              class="q-mb-md"
-            />
             <q-select
               v-if="order?.type === 'dine-in'"
               :model-value="order?.table?.number"
@@ -287,7 +274,6 @@ import {
 } from "donut-shared";
 import {
   updateCurrentOrderAddressAction,
-  updateCurrentOrderPhoneAction,
   updateCurrentOrderTypeAction,
   updatePreviousOrderAction,
 } from "donut-shared/src/actions/current-order";
@@ -296,7 +282,6 @@ import AddAddressModal from "src/components/AddAddressModal.vue";
 import BigSpinner from "src/components/BigSpinner.vue";
 import DishInOrder from "src/components/DishInOrder.vue";
 import OrderView from "src/components/OrderView.vue";
-import PhoneInput from "src/components/PhoneInput.vue";
 import { formatAddress } from "src/lib/address";
 import { useIsLoggedIn } from "src/lib/composables/useIsLoggedIn";
 import { AUTH_BEFORE_ORDER_CREATE } from "src/lib/constants";
@@ -374,7 +359,6 @@ const address = ref<IAddress>();
 const requiredAddressNotSpecified = computed(
   () => order.value?.type === "delivery" && !address.value
 );
-// TODO: save phone and address to localStorage
 
 const unsubscribe = watch(
   isSubscribing,

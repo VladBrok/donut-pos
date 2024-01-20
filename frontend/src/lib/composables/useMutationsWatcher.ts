@@ -14,7 +14,6 @@ import {
 import { loggedInAction, logoutAction } from "donut-shared/src/actions/auth";
 import {
   updateCurrentOrderAddressAction,
-  updateCurrentOrderPhoneAction,
   updateCurrentOrderTypeAction,
   updatePreviousOrderAction,
 } from "donut-shared/src/actions/current-order";
@@ -79,7 +78,6 @@ export const useMutationsWatcher = () => {
         case removeDishFromCurrentOrderAction.type:
         case updateCurrentOrderTypeAction.type:
         case decrementDishInCurrentOrderAction.type:
-        case updateCurrentOrderPhoneAction.type:
         case updateCurrentOrderAddressAction.type: {
           saveCurrentOrderToStorage(state.currentOrder.order);
           break;

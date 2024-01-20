@@ -35,10 +35,6 @@ export const updateCurrentOrderTableNumberAction = createAction<{
   table: IDiningTable | null;
 }>("currentOrder/updateTableNumber");
 
-export const updateCurrentOrderPhoneAction = createAction<{
-  phone: string;
-}>("currentOrder/updatePhone");
-
 export const updateCurrentOrderAddressAction = createAction<{
   address: AddressData;
 }>("currentOrder/updateAddress");
