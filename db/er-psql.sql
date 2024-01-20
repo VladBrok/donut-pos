@@ -122,6 +122,7 @@ CREATE TABLE "order" (
   "employee_id" UUID,
   "sale_point_id" UUID,
   "dining_table_id" UUID,
+  "delivery_address" JSONB
   "type" TEXT,
   "number" TEXT,
   "comment" TEXT,

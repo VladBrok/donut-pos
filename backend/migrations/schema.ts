@@ -216,6 +216,7 @@ export const order = pgTable("order", {
 	paidDate: timestamp("paid_date", { mode: 'date' }),
 	diningTableId: uuid("dining_table_id").references(() => diningTable.id, { onDelete: "set null" } ),
 	type: text("type"),
+	deliveryAddress: jsonb("delivery_address"),
 },
 (table) => {
 	return {
