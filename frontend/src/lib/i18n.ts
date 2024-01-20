@@ -18,8 +18,9 @@ import {
   PASSWORD_MIN_LENGTH,
   PASSWORD_SPECIAL_CHARS,
   PAYMENT_LINK_GENERATION_ERROR,
-  USER_EXISTS,
   USER_NOT_FOUND,
+  USER_WITH_EMAIL_EXISTS,
+  USER_WITH_PHONE_EXISTS,
   WRONG_PASSWORD,
 } from "donut-shared";
 import { AUTH_BEFORE_ORDER_CREATE } from "src/lib/constants";
@@ -60,6 +61,11 @@ export const messages = i18n("messages", {
   phone: "Phone",
   isPhoneVerified: "Phone verified",
   email: "Email",
+  address: "Address",
+  deliveryAddress: "Delivery address",
+  addressExplanation1: "Enter the delivery address.",
+  addressExplanation2: "The address will appear on the map.",
+  addressExplanation3: "If the address is shown correctly, click 'Save'",
   isEmailVerified: "Email verified",
   role: "Role",
   firstName: "First name",
@@ -92,6 +98,7 @@ export const messages = i18n("messages", {
   modificationNameLabel: "Modification name",
   deleteButton: "Delete",
   confirm: "Confirm",
+  addAddress: "Add address",
   noResults: "No results",
   dishDescriptionPlaceholder: "The best dish",
   search: "Search",
@@ -104,13 +111,13 @@ export const messages = i18n("messages", {
   createEmployee: "Create employee",
   updateEmployee: "Update employee",
   invalidPhoneLengths: "Phone should have exactly 9 digits",
+  invalidPostalCode: "Invalid postal code. Example: 04-919",
   passwordShouldContainDigit: "Password should contain at least 1 digit",
   passwordShouldContainUppercase:
     "Password should contain at least 1 uppercase latin letter",
   passwordShouldContainLowercase:
     "Password should contain at least 1 lowercase latin letter",
   passwordShouldContainSpecial: `Password should contain at least 1 of the following characters: ${PASSWORD_SPECIAL_CHARS}`,
-  phoneExample: "Example",
   passwordHint: `Hint: at least ${PASSWORD_MIN_LENGTH} characters. At least 1 digit, 1 uppercase, 1 lowercase and 1 special`,
   noDataFound: "No data found",
   noNotifications: "No notifications",
@@ -140,6 +147,7 @@ export const messages = i18n("messages", {
     many: "{count} dishes",
   }),
   orders: "Orders",
+  addresses: "Addresses",
   menu: "Menu",
   orderNumber: "Order number",
   tableNumber: "Table",
@@ -186,6 +194,10 @@ export const messages = i18n("messages", {
   next: "Next",
 
   // Client pages
+  readonlyMap: "The map is view-only",
+  changeDeliveryAddress: "Change delivery address",
+  addNewDeliveryAddress: "Add new delivery address",
+  showOnMap: "Show on map",
   orderDetails: "Order details",
   viewYourOrders: "view your orders",
   welcome: "Welcome!",
@@ -203,6 +215,12 @@ export const messages = i18n("messages", {
     "Waiter will come to your table and accept the payment",
   ok: "OK",
   orderIsReady: params(`Order {orderNumber} is ready!`),
+  addDeliveryAddress: "Add Delivery Address",
+  specifyDeliveryAddress: "Please add the delivery address",
+  city: "City",
+  street: "Street",
+  homeNumber: "Home number",
+  postalCode: "Postal code",
 
   // Payment pages
   paymentSuccessPageTitle: "Payment success",
@@ -253,10 +271,12 @@ export const messages = i18n("messages", {
   // Confirmations
   confirmDishCategoryDelete: "Are you sure you want to delete category",
   confirmDishDelete: "Are you sure you want to delete dish",
+  confirmAddressDelete: "Are you sure you want to delete address",
   confirmModificationDelete: "Are you sure you want to delete modification",
   confirmEmployeeDelete: "Are you sure you want to delete employee",
   confirmCurrentOrderClear: "Are you sure you want to clear the current order",
   confirmTableDelete: "Are you sure you want to delete table with number",
+  confirmLogout: "Are you sure you want to logout",
 
   // Logux statuses
   disconnectedMessage: "Cannot connect to the server",
@@ -298,8 +318,10 @@ export const messages = i18n("messages", {
   copyToClipboardError: "Failed to copy",
   [PAYMENT_LINK_GENERATION_ERROR]:
     "Failed to generate a QR code for payment. Please choose a different payment method",
-  [USER_EXISTS]:
+  [USER_WITH_EMAIL_EXISTS]:
     "User with the same email already exists. Please choose another email",
+  [USER_WITH_PHONE_EXISTS]:
+    "User with the same phone already exists. Please choose another phone",
   [AUTH_BEFORE_ORDER_CREATE]: "Plase Sign Up or Login to create an order",
 });
 

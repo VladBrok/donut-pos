@@ -23,6 +23,10 @@ a:hover {
 
 // Utility classes
 
+.no-events {
+  pointer-events: none;
+}
+
 .overflow-x-hidden {
   overflow-x: hidden;
 }
@@ -94,6 +98,12 @@ a:hover {
 
 .w-fit {
   width: fit-content;
+}
+
+.address-inputs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 25px;
 }
 
 .image-card {

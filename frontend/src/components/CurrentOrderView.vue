@@ -26,7 +26,7 @@
               stack-label
               :options="orderTypes"
               :label="t.orderTypeLabel"
-              :rules="[(val) => !!val || t.fieldRequired]"
+              class="q-mb-md"
             >
               <template v-slot:before>
                 <q-icon
@@ -48,6 +48,51 @@
                 </q-item>
               </template>
             </q-select>
+            <div v-if="order?.type === 'delivery'">
+              <q-select
+                :model-value="formatAddress(order.address)"
+                @update:model-value="
+                  store.commit.crossTab(
+                    updateCurrentOrderAddressAction({
+                      address: addresses.find(
+                        (x) => formatAddress(x) === $event
+                      ),
+                    })
+                  )
+                "
+                use-input
+                fill-input
+                stack-label
+                hide-selected
+                clearable
+                input-debounce="0"
+                :options="filteredAddresses"
+                @filter="filterAddresses"
+                :label="`${t.deliveryAddress} *`"
+                :rules="[(val) => (!!val && val.length > 0) || t.fieldRequired]"
+              >
+                <template v-slot:after>
+                  <q-btn
+                    round
+                    dense
+                    icon="add"
+                    color="primary"
+                    @click="isAddAddressModalOpen = true"
+                  >
+                    <q-tooltip>
+                      {{ t.addNewDeliveryAddress }}
+                    </q-tooltip>
+                  </q-btn>
+                </template>
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section>
+                      {{ t.noResults }}
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+            </div>
             <q-select
               v-if="order?.type === 'dine-in'"
               :model-value="order?.table?.number"
@@ -160,15 +205,19 @@
             color="primary"
             type="submit"
             :loading="isSubmitting"
-            :disable="hasDishOutOfStock"
+            :disable="hasDishOutOfStock || requiredAddressNotSpecified"
           >
             {{ t.createOrder }}
             <q-tooltip
-              v-if="hasDishOutOfStock"
+              v-if="hasDishOutOfStock || requiredAddressNotSpecified"
               class="bg-negative text-white text-body1"
               max-width="200px"
             >
-              {{ t.cannotCreateOrderWithOutOfStock }}
+              {{
+                hasDishOutOfStock
+                  ? t.cannotCreateOrderWithOutOfStock
+                  : t.specifyDeliveryAddress
+              }}
             </q-tooltip>
           </q-btn>
         </div>
@@ -202,11 +251,25 @@
       <q-btn flat :label="t.clearOrder" color="negative" @click="clear" />
     </template>
   </confirm-dialog>
+
+  <add-address-modal
+    v-if="isAddAddressModalOpen"
+    v-model="isAddAddressModalOpen"
+    @submit="
+      (isAddAddressModalOpen = false),
+        store.commit.crossTab(
+          updateCurrentOrderAddressAction({
+            address: $event,
+          })
+        )
+    "
+  />
 </template>
 
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
 import {
+  ANONYMOUS,
   CHANNELS,
   COMMENT_MAX_LENGTH,
   ORDER_TYPES_ARR,
@@ -220,13 +283,16 @@ import {
   updateCurrentOrderTableNumberAction,
 } from "donut-shared";
 import {
+  updateCurrentOrderAddressAction,
   updateCurrentOrderTypeAction,
   updatePreviousOrderAction,
 } from "donut-shared/src/actions/current-order";
 import { updateCreateOrderAfterAuthAction } from "donut-shared/src/actions/orders";
+import AddAddressModal from "src/components/AddAddressModal.vue";
 import BigSpinner from "src/components/BigSpinner.vue";
 import DishInOrder from "src/components/DishInOrder.vue";
 import OrderView from "src/components/OrderView.vue";
+import { formatAddress } from "src/lib/address";
 import { useIsLoggedIn } from "src/lib/composables/useIsLoggedIn";
 import { AUTH_BEFORE_ORDER_CREATE } from "src/lib/constants";
 import { createOrder } from "src/lib/create-order";
@@ -245,7 +311,33 @@ const order = computed(() => store.state.currentOrder.order);
 const t = useI18nStore();
 const isConfirmClearOpen = ref(false);
 const isSubmitting = ref(false);
-const channels = computed(() => [CHANNELS.DINING_TABLES]);
+const userId = ref(store.state.auth.user.userId);
+const channels = computed(() => {
+  return userId.value === ANONYMOUS.userId
+    ? [CHANNELS.DINING_TABLES]
+    : [CHANNELS.DINING_TABLES, CHANNELS.ADDRESSES_OF_CLIENT(userId.value)];
+});
+
+const addresses = computed(() =>
+  order.value?.address && !order.value.address.id
+    ? [...store.state.addresses.addresses, order.value?.address]
+    : store.state.addresses.addresses
+);
+const addressSearchInput = ref("");
+const addressFuzzySearch = computed(() =>
+  createFuzzySearcher(addresses.value, [
+    "city",
+    "homeNumber",
+    "postalCode",
+    "street",
+  ])
+);
+const filteredAddresses = computed(() =>
+  addressFuzzySearch.value
+    .search(addressSearchInput.value)
+    .map((x) => formatAddress(x))
+);
+
 const tableNumberSearchInput = ref("");
 const tableNumberFuzzySearch = computed(() =>
   createFuzzySearcher(store.state.diningTables.tables, ["number"])
@@ -255,9 +347,10 @@ const filteredTableNames = computed(() =>
     .search(tableNumberSearchInput.value)
     .map((x) => x.number)
 );
+
 const isSubscribing = useSubscription(channels, { store: store as any });
 const diningTables = computed(() => store.state.diningTables.tables);
-const previousOrder = computed(() => store.state.currentOrder.order);
+const previousOrder = computed(() => store.state.currentOrder.previous);
 const dishesInOrder = computed(() =>
   isSubscribing.value
     ? []
@@ -283,6 +376,7 @@ const hasDishOutOfStock = computed(
 const totalCost = computed(
   () => dishesInOrder.value?.reduce((sum, cur) => sum + cur.totalCost, 0) || 0
 );
+const isAddAddressModalOpen = ref(false);
 const route = useRoute();
 const orderTypes = computed(() =>
   ORDER_TYPES_ARR.map((x) => ({
@@ -298,6 +392,9 @@ const orderTypeDefault = ref<(typeof orderTypes.value)[number]>(
 );
 const router = useRouter();
 const isLoggedIn = useIsLoggedIn();
+const requiredAddressNotSpecified = computed(
+  () => order.value?.type === "delivery" && !order.value.address
+);
 
 const unsubscribe = watch(
   isSubscribing,
@@ -332,6 +429,14 @@ watch(
         })
       );
     }
+
+    if (order.value && addresses.value.length && !order.value?.address) {
+      store.commit.crossTab(
+        updateCurrentOrderAddressAction({
+          address: addresses.value[0],
+        })
+      );
+    }
   },
   { immediate: true }
 );
@@ -339,6 +444,12 @@ watch(
 const filterTables = (val: string, update: any) => {
   update(() => {
     tableNumberSearchInput.value = val;
+  });
+};
+
+const filterAddresses = (val: string, update: any) => {
+  update(() => {
+    addressSearchInput.value = val;
   });
 };
 

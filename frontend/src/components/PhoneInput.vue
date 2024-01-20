@@ -6,12 +6,12 @@
     "
     stack-label
     :label="`${t.phoneLabel} *`"
-    :hint="shouldValidateFormat ? `${t.phoneExample}: 531 700 505` : undefined"
     lazy-rules
     unmasked-value
     prefix="+48"
     mask="### ### ###"
     type="tel"
+    @paste="handlePaste"
     :rules="[
       (val) => (val && val.length > 0) || t.phoneRequired,
       (val) =>
@@ -44,5 +44,21 @@ function getModelValueToUpdate(newValue: string) {
   newValue = newValue.trim();
   newValue = newValue.startsWith("+48") ? newValue : "+48" + newValue;
   return newValue;
+}
+
+function handlePaste(e: ClipboardEvent) {
+  const pasted = (e.clipboardData?.getData("text") || "").trim();
+  if (!pasted.startsWith("+48") && !pasted.startsWith("48")) {
+    return;
+  }
+
+  const indexOfCountryCode = pasted.indexOf("48");
+  const phone = pasted.slice(indexOfCountryCode + 2);
+  if (!PHONE_REGEX.test(phone.replaceAll(/\s+/g, ""))) {
+    return;
+  }
+
+  e.preventDefault();
+  emit("update:modelValue", getModelValueToUpdate(phone));
 }
 </script>

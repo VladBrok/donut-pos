@@ -10,6 +10,7 @@ import { Router } from "vue-router";
 import { Store as VuexStore } from "vuex";
 
 import { assert } from "donut-shared";
+import { IAddressesState } from "src/store/addresses/state";
 import { ICashPaymentRequestsState } from "src/store/cash-payment-requests/state";
 import { IClientsState } from "src/store/clients/state";
 import { ICurrentOrderState } from "src/store/current-order/state";
@@ -21,6 +22,7 @@ import { createClient } from "../lib/logux/create-client";
 import { setErrorHandler } from "../lib/logux/set-error-handler";
 import { setUndoHandler } from "../lib/logux/set-undo-handler";
 import { watchSyncStatus } from "../lib/logux/watch-sync-status";
+import addresses from "./addresses";
 import auth from "./auth";
 import { IAuthState } from "./auth/state";
 import cashPaymentRequests from "./cash-payment-requests";
@@ -55,6 +57,7 @@ export interface StateInterface {
   welcomeBanner: IWelcomeBannerState;
   cashPaymentRequests: ICashPaymentRequestsState;
   clients: IClientsState;
+  addresses: IAddressesState;
 }
 
 // provide typings for `this.$store`
@@ -96,6 +99,7 @@ export default store(function (/* { ssrContext } */) {
     welcomeBanner,
     cashPaymentRequests,
     clients,
+    addresses,
   };
 
   for (const module of Object.values(modules)) {

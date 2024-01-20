@@ -5,6 +5,8 @@ export interface IClient {
   firstName: string;
   lastName: string;
   email: string;
+  phone: string;
+  isPhoneVerified: boolean;
   isEmailVerified: boolean;
   registeredAt: string;
   passwordHash: string;

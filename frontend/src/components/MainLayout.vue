@@ -13,7 +13,7 @@
           round
           icon="logout"
           color="negative"
-          @click="logout"
+          @click="isLogoutConfirmOpen = true"
         >
           <q-tooltip> {{ t.logout }} </q-tooltip>
         </q-btn>
@@ -97,11 +97,19 @@
         </q-page>
       </div>
     </q-page-container>
+
+    <confirm-dialog v-model="isLogoutConfirmOpen">
+      <template #body> {{ t.confirmLogout }}? </template>
+      <template #confirmButton>
+        <q-btn flat :label="t.logout" color="negative" @click="logout" />
+      </template>
+    </confirm-dialog>
   </q-layout>
 </template>
 
 <script setup lang="ts">
 import { logoutAction } from "donut-shared/src/actions/auth";
+import ConfirmDialog from "src/components/ConfirmDialog.vue";
 import OrderDetailsView from "src/components/OrderDetailsView.vue";
 import OrderDrawer from "src/components/OrderDrawer.vue";
 import OrderNumberTitle from "src/components/OrderNumberTitle.vue";
@@ -120,6 +128,7 @@ defineProps<{
   }[];
 }>();
 
+const isLogoutConfirmOpen = ref(false);
 const isMenuDrawerOpen = ref(false);
 const t = useI18nStore();
 const store = useStore();

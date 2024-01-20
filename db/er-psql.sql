@@ -1,12 +1,10 @@
 CREATE TABLE "address" (
   "id" UUID PRIMARY KEY,
-  "geo_lat" TEXT,
-  "geo_lon" TEXT,
+  "client_id" UUID,
   "city" TEXT,
   "street" TEXT,
-  "building" TEXT,
-  "floor_number" INT,
-  "room" TEXT
+  "home_number" TEXT,
+  "postal_code" TEXT
 );
 
 CREATE TABLE "dining_table" (
@@ -17,7 +15,6 @@ CREATE TABLE "dining_table" (
 
 CREATE TABLE "client" (
   "id" UUID PRIMARY KEY,
-  "address_id" UUID,
   "first_name" TEXT,
   "last_name" TEXT,
   "phone" TEXT,
@@ -124,6 +121,7 @@ CREATE TABLE "order" (
   "employee_id" UUID,
   "sale_point_id" UUID,
   "dining_table_id" UUID,
+  "delivery_address" JSONB
   "type" TEXT,
   "number" TEXT,
   "comment" TEXT,
@@ -142,11 +140,11 @@ CREATE TABLE "order_to_dishes" (
   "dishes" JSONB
 );
 
+CREATE INDEX "address_client_id_idx" ON "address" ("client_id");
+
 CREATE INDEX "dining_table_employee_id_idx" ON "dining_table" ("employee_id");
 
 CREATE INDEX "dining_table_number_idx" ON "dining_table" ("number");
-
-CREATE INDEX "client_address_id_idx" ON "client" ("address_id");
 
 CREATE INDEX "client_phone_idx" ON "client" ("phone");
 
@@ -200,7 +198,7 @@ ALTER TABLE "order_to_dishes" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("
 
 ALTER TABLE "cash_payment_request" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "client" ADD FOREIGN KEY ("address_id") REFERENCES "address" ("id") ON DELETE SET NULL;
+ALTER TABLE "address" ADD FOREIGN KEY ("client_id") REFERENCES "client" ("id") ON DELETE SET NULL;
 
 ALTER TABLE "dish" ADD FOREIGN KEY ("category_id") REFERENCES "dish_category" ("id") ON DELETE SET NULL;
 

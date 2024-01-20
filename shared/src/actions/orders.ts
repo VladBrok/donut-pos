@@ -1,3 +1,4 @@
+import { IAddress } from "src/actions/addresses.js";
 import { DishInOrderStatus } from "src/constants/dish-in-order-statuses.js";
 import { OrderStatus } from "src/constants/order-statuses.js";
 import { OrderType } from "src/constants/order-types.js";
@@ -52,6 +53,7 @@ export interface IOrder {
   deliveringDate: string;
   deliveredDate: string;
   paidDate: string;
+  address?: IAddress;
   employee: {
     id: string;
     firstName: string;
@@ -76,6 +78,7 @@ export interface IShallowOrder {
   deliveringDate: string;
   deliveredDate: string;
   paidDate: string;
+  address?: IAddress;
   employee: {
     id: string;
     firstName: string;

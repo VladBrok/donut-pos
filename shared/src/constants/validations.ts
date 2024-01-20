@@ -23,6 +23,7 @@ export const FIRST_NAME_MAX_LENGTH = 50;
 export const LAST_NAME_MAX_LENGTH = 50;
 
 export const PHONE_REGEX = /^\d{9}$/;
+export const POSTAL_CODE_REGEX = /^\d\d[-]\d\d\d$/;
 
 export const MAX_IMAGE_FILE_SIZE_BYTES = 1000000 * 5;
 export const ALLOWED_IMAGE_TYPES = [

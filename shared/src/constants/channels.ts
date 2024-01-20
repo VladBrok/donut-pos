@@ -14,4 +14,5 @@ export const CHANNELS = {
   ORDER_SINGLE: (id = ":orderNumber") => `singleOrder/${id}`,
   ORDERS_FOR_KITCHEN: "ordersForKitchen",
   DINING_TABLES: "diningTables",
+  ADDRESSES_OF_CLIENT: (id = ":clientId") => `addresses/${id}`,
 };

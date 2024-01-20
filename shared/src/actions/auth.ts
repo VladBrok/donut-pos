@@ -20,6 +20,7 @@ export const signUpAction = createAction<{
   firstName: string;
   lastName: string;
   email: string;
+  phone: string;
   password: string;
 }>("auth/signUp");
 

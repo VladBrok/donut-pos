@@ -7,6 +7,7 @@ import {
   updateCurrentOrderTableNumberAction,
 } from "donut-shared";
 import {
+  updateCurrentOrderAddressAction,
   updateCurrentOrderTypeAction,
   updatePreviousOrderAction,
 } from "donut-shared/src/actions/current-order";
@@ -103,6 +104,18 @@ const mutation: MutationTree<ICurrentOrderState> = {
     );
 
     state.order.table = action.payload.table;
+  },
+
+  updateAddress(
+    state: ICurrentOrderState,
+    action: ReturnType<typeof updateCurrentOrderAddressAction>
+  ) {
+    assert(
+      state.order,
+      "Cannot update current order address when current order is empty"
+    );
+
+    state.order.address = action.payload.address;
   },
 
   updatePrevious(

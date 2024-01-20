@@ -1,3 +1,4 @@
+export type { IAddress } from "./src/actions/addresses.js";
 export type { IPermissions } from "./src/actions/auth.js";
 export {
   cashPaymentRequestDeletedAction,
@@ -18,9 +19,11 @@ export {
   clearCurrentOrderAction,
   decrementDishInCurrentOrderAction,
   removeDishFromCurrentOrderAction,
+  updateCurrentOrderAddressAction,
   updateCurrentOrderCommentAction,
   updateCurrentOrderTableNumberAction,
   updateCurrentOrderTypeAction,
+  updatePreviousOrderAction,
 } from "./src/actions/current-order.js";
 export {
   createDiningTableAction,

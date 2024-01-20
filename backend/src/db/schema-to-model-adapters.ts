@@ -1,5 +1,6 @@
 import {
   EMPLOYEE_PERMISSIONS,
+  IAddress,
   ICashPaymentRequest,
   IClient,
   OrderStatus,
@@ -21,6 +22,7 @@ import {
   RoleModel,
 } from "./models.js";
 import {
+  AddressSchema,
   CashPaymentRequestSchema,
   ClientSchema,
   DiningTableSchema,
@@ -162,6 +164,7 @@ export const ordersAdapter = (data: OrderSchema[]): IOrder[] => {
       cookingDate: uniqueOrder.order.cookingDate?.toISOString() || "",
       cookedDate: uniqueOrder.order.cookedDate?.toISOString() || "",
       deliveringDate: uniqueOrder.order.deliveringDate?.toISOString() || "",
+      address: uniqueOrder.order.deliveryAddress || "",
       deliveredDate: uniqueOrder.order.deliveredDate?.toISOString() || "",
       paidDate: uniqueOrder.order.paidDate?.toISOString() || "",
       table: {
@@ -207,6 +210,7 @@ export const shallowOrdersAdapter = (
       deliveringDate: uniqueOrder.order.deliveringDate?.toISOString() || "",
       deliveredDate: uniqueOrder.order.deliveredDate?.toISOString() || "",
       paidDate: uniqueOrder.order.paidDate?.toISOString() || "",
+      address: uniqueOrder.order.deliveryAddress,
       table: {
         id: uniqueOrder.dining_table?.id || "",
         number: uniqueOrder.dining_table?.number || "",
@@ -272,13 +276,25 @@ export const diningTableAdapter = (
   }));
 };
 
+export const addressAdapter = (data: AddressSchema[]): IAddress[] => {
+  return data.map((x) => ({
+    id: x.address.id || "",
+    city: x.address.city || "",
+    homeNumber: x.address.homeNumber || "",
+    postalCode: x.address.postalCode || "",
+    street: x.address.street || "",
+  }));
+};
+
 export const clientAdapter = (data: ClientSchema[]): IClient[] => {
   return data.map((x) => ({
     id: x.client.id || "",
     email: x.client.email || "",
+    isEmailVerified: x.client.isEmailVerified || false,
+    phone: x.client.phone || "",
+    isPhoneVerified: x.client.isPhoneVerified || false,
     firstName: x.client.firstName || "",
     lastName: x.client.lastName || "",
-    isEmailVerified: x.client.isEmailVerified || false,
     registeredAt: x.client.registeredAt?.toISOString() || "",
     passwordHash: x.client.passwordHash || "",
   }));

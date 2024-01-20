@@ -100,26 +100,39 @@ import MainLayout from "../components/MainLayout.vue";
 import { useI18nStore } from "../lib/i18n";
 
 const t = useI18nStore();
-const menuList = [
-  {
-    icon: "o_restaurant_menu",
-    label: t.value.menu,
-    to: "/menu",
-    meta: t.value.menu,
-  },
-  {
-    icon: "o_receipt_long",
-    label: t.value.orders,
-    to: "/orders",
-    meta: t.value.orders,
-  },
-];
+const isLoggedIn = useIsLoggedIn();
+const menuList = computed(() => {
+  const list = [
+    {
+      icon: "o_restaurant_menu",
+      label: t.value.menu,
+      to: "/menu",
+      meta: t.value.menu,
+    },
+    {
+      icon: "o_receipt_long",
+      label: t.value.orders,
+      to: "/orders",
+      meta: t.value.orders,
+    },
+  ];
+
+  if (isLoggedIn.value) {
+    list.push({
+      icon: "o_pin_drop",
+      label: t.value.addresses,
+      to: "/addresses",
+      meta: t.value.addresses,
+    });
+  }
+
+  return list;
+});
 const store = useStore();
 const isCurrentOrderOpen = computed(
   () => store.state.orderDrawer.isCurrentOrderOpen
 );
 const isWelcomeBannerOpen = computed(() => store.state.welcomeBanner.isOpen);
-const isLoggedIn = useIsLoggedIn();
 const userId = ref(store.state.auth.user.userId);
 const channels = computed(() => {
   return userId.value === ANONYMOUS.userId
