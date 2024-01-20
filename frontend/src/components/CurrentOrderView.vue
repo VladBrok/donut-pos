@@ -312,7 +312,7 @@ const filteredTableNames = computed(() =>
 );
 const isSubscribing = useSubscription(channels, { store: store as any });
 const diningTables = computed(() => store.state.diningTables.tables);
-const previousOrder = computed(() => store.state.currentOrder.order);
+const previousOrder = computed(() => store.state.currentOrder.previous);
 const dishesInOrder = computed(() =>
   isSubscribing.value
     ? []
