@@ -22,3 +22,7 @@ export async function createAddress(data: IAddress): Promise<IAddress> {
   });
   return toCreate;
 }
+
+export async function deleteAddress(id: string) {
+  return await db.delete(address).where(eq(address.id, id));
+}

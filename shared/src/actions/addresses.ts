@@ -20,3 +20,12 @@ export const createAddressAction = createAction<{
 export const addressCreatedAction = createAction<{
   address: IAddress;
 }>("addresses/created");
+
+export const deleteAddressAction = createAction<{
+  id: string;
+}>("addresses/delete");
+
+export const addressDeletedAction = createAction<{
+  id: string;
+  clientId: string;
+}>("addresses/deleted");

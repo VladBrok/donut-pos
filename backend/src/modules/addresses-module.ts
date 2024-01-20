@@ -2,8 +2,10 @@ import { Server } from "@logux/server";
 import { CHANNELS } from "donut-shared";
 import {
   addressCreatedAction,
+  addressDeletedAction,
   addressesLoadedAction,
   createAddressAction,
+  deleteAddressAction,
 } from "donut-shared/src/actions/addresses.js";
 import * as db from "../db/modules/addresses.js";
 
@@ -46,6 +48,31 @@ export default function addressesModule(server: Server) {
       return action.payload.address.clientId
         ? [CHANNELS.ADDRESSES_OF_CLIENT(action.payload.address.clientId)]
         : [];
+    },
+  });
+
+  server.type(deleteAddressAction, {
+    async access(ctx, action, meta) {
+      return Boolean(ctx.userId);
+    },
+    async process(ctx, action, meta) {
+      const id = action.payload.id;
+      await db.deleteAddress(id);
+      await server.process(
+        addressDeletedAction({
+          id,
+          clientId: ctx.userId,
+        })
+      );
+    },
+  });
+
+  server.type(addressDeletedAction, {
+    async access() {
+      return false;
+    },
+    resend(ctx, action) {
+      return [CHANNELS.ADDRESSES_OF_CLIENT(action.payload.clientId)];
     },
   });
 }

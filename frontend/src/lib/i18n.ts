@@ -271,6 +271,7 @@ export const messages = i18n("messages", {
   // Confirmations
   confirmDishCategoryDelete: "Are you sure you want to delete category",
   confirmDishDelete: "Are you sure you want to delete dish",
+  confirmAddressDelete: "Are you sure you want to delete address",
   confirmModificationDelete: "Are you sure you want to delete modification",
   confirmEmployeeDelete: "Are you sure you want to delete employee",
   confirmCurrentOrderClear: "Are you sure you want to clear the current order",
