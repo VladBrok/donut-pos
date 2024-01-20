@@ -298,7 +298,7 @@ const routes: RouteRecordRaw[] = [
         path: "addresses",
         component: () => import("pages/client/ClientAddressesPage.vue"),
         meta: {
-          title: t.value.address,
+          title: t.value.addresses,
         },
       },
     ],
