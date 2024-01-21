@@ -196,6 +196,7 @@ export const messages = i18n("messages", {
   next: "Next",
 
   // Client pages
+  clickToPay: "Click on the button to pay",
   readonlyMap: "The map is view-only",
   changeDeliveryAddress: "Change delivery address",
   addNewDeliveryAddress: "Add new delivery address",

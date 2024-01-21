@@ -48,7 +48,7 @@
                   </div>
                   <div
                     v-if="totalCost != null"
-                    class="row justify-between gap-sm q-mb-sm"
+                    class="row justify-between gap-sm"
                   >
                     <div class="text-h6">
                       {{ t.totalCost }}

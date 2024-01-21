@@ -91,12 +91,12 @@
       </div>
     </template>
     <template #options>
-      <div v-if="!order.paidDate" class="row justify-center q-gutter-sm">
+      <div v-if="!order.paidDate" class="row justify-center">
         <q-btn
           color="primary"
           type="submit"
           @click="isPaymentModalOpen = true"
-          class="q-px-xl q-py-sm"
+          class="q-px-lg q-py-xs"
           size="md"
         >
           {{ t.pay }}
