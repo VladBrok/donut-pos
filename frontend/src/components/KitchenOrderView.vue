@@ -1,5 +1,11 @@
 <template>
-  <OrderView :key="order.id" has-content card-padding apply-shadow>
+  <OrderView
+    :key="order.id"
+    has-content
+    card-padding
+    apply-shadow
+    :order-type="order.type"
+  >
     <template #content>
       <order-number-title
         :order-number="order.orderNumber"

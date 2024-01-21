@@ -3,9 +3,12 @@
     :has-content="Boolean(order)"
     :dish-count="getDishesInOrderCount(order)"
     :total-cost="totalCost"
+    :delivery-cost="DELIVERY_COST"
+    :dish-cost="dishesCost"
     :full-content-height="fullScreen"
     :card-padding="fullScreen"
     :apply-shadow="fullScreen"
+    :order-type="order.type"
   >
     <template #content>
       <div>
@@ -103,7 +106,7 @@
   </OrderView>
   <PaymentMethodModal
     v-model="isPaymentModalOpen"
-    :total-cost="getOrderTotalCost(order.dishes)"
+    :total-cost="totalCost"
     :order-number="order.orderNumber"
     :order-id="order.id"
     :order-type="order.type"
@@ -112,7 +115,9 @@
 
 <script setup lang="ts">
 import {
+  DELIVERY_COST,
   getDishesInOrderCount,
+  getDishesTotalCost,
   getOrderDishTotalCost,
   getOrderTotalCost,
 } from "donut-shared";
@@ -132,7 +137,8 @@ const props = defineProps<{
 }>();
 
 const order = computed(() => props.order);
-const totalCost = computed(() => getOrderTotalCost(order.value.dishes));
+const totalCost = computed(() => getOrderTotalCost(order.value));
+const dishesCost = computed(() => getDishesTotalCost(order.value));
 const t = useI18nStore();
 const isPaymentModalOpen = ref(false);
 

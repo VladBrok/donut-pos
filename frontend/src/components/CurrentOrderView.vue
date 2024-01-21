@@ -4,6 +4,9 @@
       :has-content="Boolean(order)"
       :dish-count="getDishesInOrderCount(order)"
       :total-cost="totalCost"
+      :delivery-cost="DELIVERY_COST"
+      :dish-cost="dishCost"
+      :order-type="order?.type"
       custom-empty
     >
       <template #content>
@@ -272,6 +275,7 @@ import {
   ANONYMOUS,
   CHANNELS,
   COMMENT_MAX_LENGTH,
+  DELIVERY_COST,
   ORDER_TYPES_ARR,
   addDishToCurrentOrderAction,
   clearCurrentOrderAction,
@@ -373,8 +377,13 @@ const dishesInOrder = computed(() =>
 const hasDishOutOfStock = computed(
   () => dishesInOrder.value?.some((x) => !x.dish.isActive) || false
 );
-const totalCost = computed(
+
+// TODO: it's a mess. Calculate it in one place (make a function that will return an object with total cost, delivery cost, dish cost, etc. and make a component that will display it. Use this component in OrderView)
+const dishCost = computed(
   () => dishesInOrder.value?.reduce((sum, cur) => sum + cur.totalCost, 0) || 0
+);
+const totalCost = computed(
+  () => dishCost.value + (order.value?.type === "delivery" ? DELIVERY_COST : 0)
 );
 const isAddAddressModalOpen = ref(false);
 const route = useRoute();

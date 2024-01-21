@@ -155,6 +155,8 @@ export const messages = i18n("messages", {
   orderStatus: "Status",
   dishCount: "Dishes",
   total: "Total, zł",
+  totalCost: "Total",
+  delivery: "Delivery",
   copyOrderNumber: "Copy order number to clipboard",
   outOfStock: "Out of stock",
   cannotCreateOrderWithOutOfStock:

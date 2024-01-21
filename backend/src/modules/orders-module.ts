@@ -1,6 +1,7 @@
 import { Server } from "@logux/server";
 import {
   CHANNELS,
+  DELIVERY_COST,
   ITEMS_PER_PAGE,
   PAYMENT_LINK_GENERATION_ERROR,
   createOrderAction,
@@ -436,6 +437,21 @@ export default function ordersModule(server: Server) {
       try {
         const stripe = new Stripe(process.env.STRIPE_KEY || "");
         session = await stripe.checkout.sessions.create({
+          shipping_options:
+            order.type !== "delivery"
+              ? []
+              : [
+                  {
+                    shipping_rate_data: {
+                      type: "fixed_amount",
+                      fixed_amount: {
+                        amount: DELIVERY_COST,
+                        currency: "pln",
+                      },
+                      display_name: "Courier",
+                    },
+                  },
+                ],
           line_items: order.dishes.flatMap((dish) => {
             return [
               {

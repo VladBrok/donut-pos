@@ -1,3 +1,6 @@
+import { IOrder } from "src/actions/orders.js";
+import { DELIVERY_COST } from "../constants/misc.js";
+
 interface IDish {
   price: number;
   count: number;
@@ -12,6 +15,14 @@ export function getOrderDishTotalCost(dish: IDish): number {
   );
 }
 
-export function getOrderTotalCost(dishes: IDish[]): number {
-  return dishes.reduce((sum, cur) => sum + getOrderDishTotalCost(cur), 0) || 0;
+export function getDishesTotalCost(order: IOrder): number {
+  return (
+    order.dishes.reduce((sum, cur) => sum + getOrderDishTotalCost(cur), 0) || 0
+  );
+}
+
+export function getOrderTotalCost(order: IOrder): number {
+  return (
+    getDishesTotalCost(order) + (order.type === "delivery" ? DELIVERY_COST : 0)
+  );
 }
