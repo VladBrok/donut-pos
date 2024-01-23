@@ -361,7 +361,11 @@ export async function deliverDish(orderId: string, dishIdInOrder: string) {
   )[0];
 }
 
-export async function deliverOrder(orderId: string, clientId: string) {
+export async function deliverOrder(
+  orderId: string,
+  userId: string,
+  isCourier?: boolean
+) {
   const theOrder = (
     await db.select().from(order).where(eq(order.id, orderId))
   )?.[0];
@@ -381,7 +385,40 @@ export async function deliverOrder(orderId: string, clientId: string) {
       status: ORDER_STATUSES.DELIVERED,
       deliveredDate: new Date(),
     })
-    .where(and(eq(order.id, orderId), eq(order.clientId, clientId)));
+    .where(
+      and(
+        eq(order.id, orderId),
+        isCourier ? eq(order.employeeId, userId) : eq(order.clientId, userId)
+      )
+    );
+
+  return (
+    await getOrdersShallow({
+      orderId: orderId,
+    })
+  )[0];
+}
+
+export async function startDeliveringOrder(
+  orderId: string,
+  employeeId: string
+) {
+  const theOrder = (
+    await db.select().from(order).where(eq(order.id, orderId))
+  )?.[0];
+
+  if (theOrder?.deliveringDate) {
+    logWarn("Tried to start delivering order that is already delivering");
+    return;
+  }
+  await db
+    .update(order)
+    .set({
+      status: ORDER_STATUSES.DELIVERING,
+      deliveringDate: new Date(),
+      employeeId: employeeId,
+    })
+    .where(eq(order.id, orderId));
 
   return (
     await getOrdersShallow({

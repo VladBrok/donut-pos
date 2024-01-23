@@ -13,7 +13,7 @@ export const CHANNELS = {
     `cashPaymentRequests/${id}`,
   ORDER_SINGLE: (id = ":orderNumber") => `singleOrder/${id}`,
   ORDERS_FOR_KITCHEN: "ordersForKitchen",
-  ORDERS_OF_COURIER: (id = ":courierId") => `ordersCourier/${id}`,
+  ORDERS_FOR_COURIERS: "ordersForCouriers",
   DINING_TABLES: "diningTables",
   ADDRESSES_OF_CLIENT: (id = ":clientId") => `addresses/${id}`,
 };

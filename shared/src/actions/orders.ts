@@ -179,8 +179,17 @@ export const orderCookedAction = createAction<{
   order: ICookedOrder;
 }>("orders/orderCooked");
 
+export const courierStartDeliveringOrderAction = createAction<{
+  orderId: string;
+}>("orders/courierStartDeliveringOrder");
+
+export const courierStartedDeliveringOrderAction = createAction<{
+  order: ICookedOrder;
+}>("orders/courierStartedDeliveringOrder");
+
 export const deliverOrderAction = createAction<{
   orderId: string;
+  isCourier?: boolean;
 }>("orders/deliverOrder");
 
 export const orderDeliveredAction = createAction<{

@@ -236,6 +236,8 @@ export const messages = i18n("messages", {
   // Courier pages
   client: "Client",
   callClient: "Call the client",
+  startDelivering: "Deliver",
+  finishDelivering: "Delivered",
 
   // Order statuses
   orderStatus_active: "All active",

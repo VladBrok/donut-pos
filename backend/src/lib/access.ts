@@ -24,6 +24,16 @@ export async function hasWaiterPermission(data: string | EmployeeModel) {
   );
 }
 
+export async function hasWaiterOrCourierPermission(
+  data: string | EmployeeModel
+) {
+  return await hasPermission(
+    data,
+    (employee) =>
+      !!employee?.permissions.waiter || !!employee?.permissions.courier
+  );
+}
+
 export async function hasCookPermissions(data: string | EmployeeModel) {
   return await hasPermission(data, (employee) => !!employee?.permissions.cook);
 }

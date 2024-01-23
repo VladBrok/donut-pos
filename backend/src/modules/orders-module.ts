@@ -11,6 +11,8 @@ import {
   cookedDishesLoadedAction,
   cookedOrdersLoadedAction,
   courierOrdersLoadedAction,
+  courierStartDeliveringOrderAction,
+  courierStartedDeliveringOrderAction,
   deliverOrderAction,
   dishDeliveredAction,
   dishFinishedCookingAction,
@@ -36,6 +38,7 @@ import * as db from "../db/modules/orders.js";
 import {
   hasCookPermissions,
   hasCourierPermission,
+  hasWaiterOrCourierPermission,
   hasWaiterPermission,
 } from "../lib/access.js";
 
@@ -56,12 +59,9 @@ export default function ordersModule(server: Server) {
 
   server.channel<{
     courierId: string;
-  }>(CHANNELS.ORDERS_OF_COURIER(), {
+  }>(CHANNELS.ORDERS_FOR_COURIERS, {
     async access(ctx) {
-      return (
-        ctx.userId === ctx.params.courierId &&
-        (await hasCourierPermission(ctx.userId))
-      );
+      return await hasCourierPermission(ctx.userId);
     },
     async load(ctx) {
       const orders = await db.getOrdersForCourier(ctx.userId);
@@ -343,7 +343,11 @@ export default function ordersModule(server: Server) {
       return true;
     },
     async process(ctx, action, meta) {
-      const order = await db.deliverOrder(action.payload.orderId, ctx.userId);
+      const order = await db.deliverOrder(
+        action.payload.orderId,
+        ctx.userId,
+        action.payload.isCourier
+      );
       await Promise.all([
         server.process(
           orderDeliveredAction({
@@ -369,6 +373,49 @@ export default function ordersModule(server: Server) {
     },
     resend(ctx, action) {
       return [
+        CHANNELS.ORDERS_FOR_COURIERS,
+        CHANNELS.ORDER_SINGLE(action.payload.order.order.orderNumber),
+        CHANNELS.COOKED_ORDERS_OF_CLIENT(action.payload.order.order.client?.id),
+      ];
+    },
+  });
+
+  server.type(courierStartDeliveringOrderAction, {
+    async access(ctx) {
+      return await hasCourierPermission(ctx.userId);
+    },
+    async process(ctx, action, meta) {
+      const order = await db.startDeliveringOrder(
+        action.payload.orderId,
+        ctx.userId
+      );
+      await Promise.all([
+        server.process(
+          courierStartedDeliveringOrderAction({
+            order: {
+              order: order!,
+            },
+          })
+        ),
+        ctx.sendBack(
+          courierStartedDeliveringOrderAction({
+            order: {
+              order: order!,
+            },
+          })
+        ),
+      ]);
+    },
+  });
+
+  // TODO: resend also somewhere else?
+  server.type(courierStartedDeliveringOrderAction, {
+    async access() {
+      return false;
+    },
+    resend(ctx, action) {
+      return [
+        CHANNELS.ORDERS_FOR_COURIERS,
         CHANNELS.ORDER_SINGLE(action.payload.order.order.orderNumber),
         CHANNELS.COOKED_ORDERS_OF_CLIENT(action.payload.order.order.client?.id),
       ];
@@ -411,7 +458,7 @@ export default function ordersModule(server: Server) {
 
   server.type(payForOrderAction, {
     async access(ctx) {
-      return await hasWaiterPermission(ctx.userId);
+      return await hasWaiterOrCourierPermission(ctx.userId);
     },
     async process(ctx, action, meta) {
       const order = await db.payForOrder(action.payload.orderNumber);

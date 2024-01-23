@@ -21,33 +21,22 @@
 
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
-import { ANONYMOUS, CHANNELS } from "donut-shared";
+import { CHANNELS } from "donut-shared";
 import BigSpinner from "src/components/BigSpinner.vue";
 import CourierOrderView from "src/components/CourierOrderView.vue";
 import NoData from "src/components/NoData.vue";
 import { useStore } from "src/store";
-import { computed, onMounted, ref } from "vue";
+import { computed } from "vue";
 
 const store = useStore();
-const orders = computed(() => store.state.orders.ordersForCourier);
-const userId = ref(store.state.auth.user.userId);
+const userId = computed(() => store.state.auth.user.userId);
+const orders = computed(() =>
+  store.state.orders.ordersForCourier.filter(
+    (x) => !x.employee || x.employee.id === userId.value
+  )
+);
 const channels = computed(() => {
-  return userId.value === ANONYMOUS.userId
-    ? []
-    : [CHANNELS.ORDERS_OF_COURIER(userId.value)];
+  return [CHANNELS.ORDERS_FOR_COURIERS];
 });
 const isSubscribing = useSubscription(channels, { store: store as any });
-const unsubscribe = ref(() => {
-  /* */
-});
-
-onMounted(() => {
-  unsubscribe.value = store.client.on("user", (newId) => {
-    userId.value = newId;
-  });
-});
-
-onMounted(() => {
-  unsubscribe.value();
-});
 </script>
