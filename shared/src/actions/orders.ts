@@ -110,6 +110,10 @@ export const ordersForKitchenLoadedAction = createAction<{
   orders: IOrder[];
 }>("orders/ordersForKitchenLoaded");
 
+export const courierOrdersLoadedAction = createAction<{
+  orders: IOrder[];
+}>("orders/courierOrdersLoaded");
+
 export const createOrderAction = createAction<{
   order: IOrder;
   isClient?: boolean;

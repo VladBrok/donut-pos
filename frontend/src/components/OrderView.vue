@@ -4,7 +4,7 @@
       v-if="hasContent"
       class="full-height"
       :class="{
-        'q-pa-lg': cardPadding,
+        'q-pa-md': cardPadding,
         'shadow-0': !applyShadow,
       }"
     >

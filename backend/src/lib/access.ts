@@ -28,6 +28,13 @@ export async function hasCookPermissions(data: string | EmployeeModel) {
   return await hasPermission(data, (employee) => !!employee?.permissions.cook);
 }
 
+export async function hasCourierPermission(data: string | EmployeeModel) {
+  return await hasPermission(
+    data,
+    (employee) => !!employee?.permissions.courier
+  );
+}
+
 export async function isAdminRole(data: string | RoleModel): Promise<boolean> {
   const role =
     typeof data === "string" ? await roleDb.findRoleById(data) : data;

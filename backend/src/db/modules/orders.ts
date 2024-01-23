@@ -47,6 +47,7 @@ export interface IGetOrder {
   completed?: boolean;
   orderId?: string;
   orderType?: OrderType;
+  customFilter?: () => any;
 }
 
 export interface IGetOrdersPage extends IGetOrder {
@@ -120,12 +121,29 @@ export async function getOrdersForKitchen() {
   return result.ordersPage;
 }
 
+export async function getOrdersForCourier(courierId: string) {
+  const result = await getOrdersPage({
+    page: 1,
+    perPage: Number.MAX_SAFE_INTEGER,
+    statuses: ["cooked", "delivering", "delivered", "paid"],
+    completed: false,
+    orderBy: "asc",
+    customFilter: () =>
+      and(
+        or(eq(order.employeeId, courierId), isNull(order.employeeId)),
+        eq(order.type, "delivery")
+      ),
+  });
+  return result.ordersPage;
+}
+
 export function makeOrderByFilter(params: IGetOrder, createdDateCol: PgColumn) {
   return params.orderBy === "asc" ? asc(createdDateCol) : desc(createdDateCol);
 }
 
 function makeWhereFilter(params: IGetOrder) {
   return and(
+    params.customFilter?.(),
     params.orderType ? eq(order.type, params.orderType) : undefined,
     params.employeeId ? eq(order.employeeId, params.employeeId) : undefined,
     params.clientId ? eq(order.clientId, params.clientId) : undefined,

@@ -10,6 +10,7 @@ import {
 import {
   cookedDishesLoadedAction,
   cookedOrdersLoadedAction,
+  courierOrdersLoadedAction,
   deliverOrderAction,
   dishDeliveredAction,
   dishFinishedCookingAction,
@@ -32,9 +33,13 @@ import {
 import { logError } from "donut-shared/src/lib/log.js";
 import Stripe from "stripe";
 import * as db from "../db/modules/orders.js";
-import { hasCookPermissions, hasWaiterPermission } from "../lib/access.js";
+import {
+  hasCookPermissions,
+  hasCourierPermission,
+  hasWaiterPermission,
+} from "../lib/access.js";
 
-// TODO: split this module up (here, in db, on client, in actions)
+// TODO: split this module up (here, in db, stores on client, in actions; orders for kitchen, orders for courier...?)
 
 export default function ordersModule(server: Server) {
   server.channel(CHANNELS.ORDERS_FOR_KITCHEN, {
@@ -44,6 +49,23 @@ export default function ordersModule(server: Server) {
     async load() {
       const orders = await db.getOrdersForKitchen();
       return ordersForKitchenLoadedAction({
+        orders: orders,
+      });
+    },
+  });
+
+  server.channel<{
+    courierId: string;
+  }>(CHANNELS.ORDERS_OF_COURIER(), {
+    async access(ctx) {
+      return (
+        ctx.userId === ctx.params.courierId &&
+        (await hasCourierPermission(ctx.userId))
+      );
+    },
+    async load(ctx) {
+      const orders = await db.getOrdersForCourier(ctx.userId);
+      return courierOrdersLoadedAction({
         orders: orders,
       });
     },

@@ -2,6 +2,7 @@ import {
   IOrder,
   cookedDishesLoadedAction,
   cookedOrdersLoadedAction,
+  courierOrdersLoadedAction,
   dishDeliveredAction,
   dishFinishedCookingAction,
   dishStartedCookingAction,
@@ -50,6 +51,13 @@ const mutation: MutationTree<IOrdersState> = {
     action: ReturnType<typeof ordersForKitchenLoadedAction>
   ) {
     state.ordersForKitchen = sortDishesByCookingStatus(action.payload.orders);
+  },
+
+  courierOrdersLoaded(
+    state: IOrdersState,
+    action: ReturnType<typeof courierOrdersLoadedAction>
+  ) {
+    state.ordersForCourier = action.payload.orders;
   },
 
   created(state: IOrdersState, action: ReturnType<typeof orderCreatedAction>) {
