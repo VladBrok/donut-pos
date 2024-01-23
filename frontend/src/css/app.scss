@@ -92,6 +92,21 @@ a:hover {
   min-width: 0;
 }
 
+.flex-basis-50 {
+  flex-basis: 50%;
+}
+
+.order-details-flex {
+  display: flex;
+  flex-direction: column;
+}
+
+@media screen and (min-width: 600px) {
+  .order-details-flex {
+    flex-direction: row;
+  }
+}
+
 .no-shrink {
   flex-shrink: 0;
 }

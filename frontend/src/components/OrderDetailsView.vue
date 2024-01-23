@@ -70,23 +70,30 @@
           />
         </div>
 
-        <div>
-          <div v-for="dish of order.dishes" :key="dish.dishIdInOrder">
-            <dish-in-order
-              :dish="dish"
-              :count="dish.count"
-              :total-cost="getOrderDishTotalCost(dish)"
-              :modifications="
-                dish.modifications.map((x) => ({
-                  count: x.count,
-                  modification: x,
-                }))
-              "
-              view-only
-            />
-            <q-separator />
+        <div
+          class="no-wrap"
+          :class="{
+            'order-details-flex': fullScreen,
+          }"
+        >
+          <div class="flex-basis-50">
+            <div v-for="dish of order.dishes" :key="dish.dishIdInOrder">
+              <dish-in-order
+                :dish="dish"
+                :count="dish.count"
+                :total-cost="getOrderDishTotalCost(dish)"
+                :modifications="
+                  dish.modifications.map((x) => ({
+                    count: x.count,
+                    modification: x,
+                  }))
+                "
+                view-only
+              />
+              <q-separator />
+            </div>
           </div>
-          <order-history class="q-mt-xl" :order="order"> </order-history>
+          <order-history class="q-mt-xl" :order="order" />
         </div>
       </div>
     </template>
