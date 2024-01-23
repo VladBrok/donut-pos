@@ -246,6 +246,7 @@ export default function ordersModule(server: Server) {
     },
     resend(ctx, action) {
       return [
+        CHANNELS.ORDERS_FOR_COURIERS,
         CHANNELS.COOKED_ORDERS_OF_CLIENT(action.payload.order.order.client?.id),
         CHANNELS.ORDERS_FOR_KITCHEN,
         CHANNELS.COOKED_DISHES_OF_EMPLOYEE(

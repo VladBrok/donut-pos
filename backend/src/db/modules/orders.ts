@@ -272,12 +272,7 @@ export async function finishCookingOrder(orderId: string) {
       cookedDate: new Date(),
     })
     .where(eq(order.id, orderId));
-  return (
-    await getOrdersShallow({
-      orderId: orderId,
-      strictOrderNumberCompare: true,
-    })
-  )[0];
+  return await getSingleOrder(undefined, undefined, orderId);
 }
 
 export async function finishCookingDish(dishIdInOrder: string) {
@@ -392,11 +387,7 @@ export async function deliverOrder(
       )
     );
 
-  return (
-    await getOrdersShallow({
-      orderId: orderId,
-    })
-  )[0];
+  return await getSingleOrder(undefined, undefined, orderId);
 }
 
 export async function startDeliveringOrder(
@@ -420,11 +411,7 @@ export async function startDeliveringOrder(
     })
     .where(eq(order.id, orderId));
 
-  return (
-    await getOrdersShallow({
-      orderId: orderId,
-    })
-  )[0];
+  return await getSingleOrder(undefined, undefined, orderId);
 }
 
 export async function getOrdersShallow(params: IGetOrder, dbOrTx = db) {
@@ -453,12 +440,14 @@ export async function getCookedOrders(
   orderType: OrderType
 ): Promise<ICookedOrder[]> {
   return (
-    await getOrdersShallow({
+    await getOrdersPage({
       clientId: clientId,
       statuses: ["cooked"],
       orderType: orderType,
+      page: 1,
+      perPage: Number.MAX_SAFE_INTEGER,
     })
-  ).map((x) => ({
+  ).ordersPage.map((x) => ({
     order: x,
   }));
 }

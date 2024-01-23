@@ -6,7 +6,7 @@ import { IDiningTable } from "../actions/current-order.js";
 import { createAction } from "./index.js";
 
 export interface ICookedOrder {
-  order: IShallowOrder;
+  order: IOrder;
 }
 
 export interface ICookedDish {

@@ -89,6 +89,20 @@ export const useMutationsWatcher = () => {
         }
 
         case orderCookedAction.type: {
+          if (store.state.auth.user?.permissions?.courier) {
+            Notify.create({
+              type: "positive",
+              position: "top",
+              timeout: SUCCESS_TIMEOUT_MS,
+              message: t.value.newOrderForCourier({
+                orderNumber: mutation.payload.payload.order.order.orderNumber,
+              }),
+              multiLine: true,
+              group: false,
+            });
+            return;
+          }
+
           Notify.create({
             type: "positive",
             position: "top",

@@ -118,6 +118,16 @@ const mutation: MutationTree<IOrdersState> = {
     action: ReturnType<typeof orderCookedAction>
   ) {
     state.cookedOrders.push(action.payload.order);
+
+    if (
+      action.payload.order.order.type === "delivery" &&
+      !state.ordersForCourier.some(
+        (x) => x.id === action.payload.order.order.id
+      )
+    ) {
+      state.ordersForCourier.push(action.payload.order.order);
+    }
+
     const order = state.ordersForKitchen.find(
       (x) => x.orderNumber === action.payload.order.order.orderNumber
     );

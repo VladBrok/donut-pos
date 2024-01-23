@@ -238,6 +238,7 @@ export const messages = i18n("messages", {
   callClient: "Call the client",
   startDelivering: "Deliver",
   finishDelivering: "Delivered",
+  newOrderForCourier: params(`New order: {orderNumber}`),
 
   // Order statuses
   orderStatus_active: "All active",
