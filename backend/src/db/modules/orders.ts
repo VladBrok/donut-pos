@@ -96,12 +96,9 @@ export async function getSingleOrder(
   userId?: string,
   orderId?: string
 ) {
-  const isClient = (
-    await db
-      .select()
-      .from(client)
-      .where(userId ? eq(client.id, userId) : undefined)
-  )?.[0];
+  const isClient = !userId
+    ? false
+    : (await db.select().from(client).where(eq(client.id, userId)))?.[0];
   const result = await getOrdersPage({
     clientId: !isClient ? undefined : userId,
     page: 1,
