@@ -8,7 +8,7 @@
         name="fade"
         class="card-grid-lg"
       >
-        <KitchenOrderView
+        <CourierOrderView
           v-for="order in orders"
           :key="order.id"
           :order="order"
@@ -23,7 +23,7 @@
 import { useSubscription } from "@logux/vuex";
 import { ANONYMOUS, CHANNELS } from "donut-shared";
 import BigSpinner from "src/components/BigSpinner.vue";
-import KitchenOrderView from "src/components/KitchenOrderView.vue";
+import CourierOrderView from "src/components/CourierOrderView.vue";
 import NoData from "src/components/NoData.vue";
 import { useStore } from "src/store";
 import { computed, onMounted, ref } from "vue";
