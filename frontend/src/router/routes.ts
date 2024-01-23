@@ -304,6 +304,32 @@ const routes: RouteRecordRaw[] = [
     ],
   },
 
+  // Courier
+  {
+    path: "/courier/login",
+    component: () => import("pages/courier/CourierLogin.vue"),
+    meta: {
+      title: t.value.logIn,
+    },
+  },
+  {
+    path: "/courier",
+    component: () => import("layouts/CourierLayout.vue"),
+    children: [
+      {
+        path: "",
+        redirect: "/courier/orders",
+      },
+      {
+        path: "orders",
+        component: () => import("pages/courier/CourierOrdersPage.vue"),
+        meta: {
+          title: t.value.orders,
+        },
+      },
+    ],
+  },
+
   // Always leave this as last one,
   // but you can also remove it
   {

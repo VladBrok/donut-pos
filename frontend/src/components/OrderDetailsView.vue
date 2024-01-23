@@ -3,9 +3,12 @@
     :has-content="Boolean(order)"
     :dish-count="getDishesInOrderCount(order)"
     :total-cost="totalCost"
+    :delivery-cost="DELIVERY_COST"
+    :dish-cost="dishesCost"
     :full-content-height="fullScreen"
     :card-padding="fullScreen"
     :apply-shadow="fullScreen"
+    :order-type="order.type"
   >
     <template #content>
       <div>
@@ -67,33 +70,40 @@
           />
         </div>
 
-        <div>
-          <div v-for="dish of order.dishes" :key="dish.dishIdInOrder">
-            <dish-in-order
-              :dish="dish"
-              :count="dish.count"
-              :total-cost="getOrderDishTotalCost(dish)"
-              :modifications="
-                dish.modifications.map((x) => ({
-                  count: x.count,
-                  modification: x,
-                }))
-              "
-              view-only
-            />
-            <q-separator />
+        <div
+          class="no-wrap"
+          :class="{
+            'order-details-flex': fullScreen,
+          }"
+        >
+          <div class="flex-basis-50">
+            <div v-for="dish of order.dishes" :key="dish.dishIdInOrder">
+              <dish-in-order
+                :dish="dish"
+                :count="dish.count"
+                :total-cost="getOrderDishTotalCost(dish)"
+                :modifications="
+                  dish.modifications.map((x) => ({
+                    count: x.count,
+                    modification: x,
+                  }))
+                "
+                view-only
+              />
+              <q-separator />
+            </div>
           </div>
-          <order-history class="q-mt-xl" :order="order"> </order-history>
+          <order-history class="q-mt-xl" :order="order" />
         </div>
       </div>
     </template>
     <template #options>
-      <div v-if="!order.paidDate" class="row justify-center q-gutter-sm">
+      <div v-if="!order.paidDate" class="row justify-center">
         <q-btn
           color="primary"
           type="submit"
           @click="isPaymentModalOpen = true"
-          class="q-px-xl q-py-sm"
+          class="q-px-lg q-py-xs"
           size="md"
         >
           {{ t.pay }}
@@ -103,7 +113,7 @@
   </OrderView>
   <PaymentMethodModal
     v-model="isPaymentModalOpen"
-    :total-cost="getOrderTotalCost(order.dishes)"
+    :total-cost="totalCost"
     :order-number="order.orderNumber"
     :order-id="order.id"
     :order-type="order.type"
@@ -112,7 +122,9 @@
 
 <script setup lang="ts">
 import {
+  DELIVERY_COST,
   getDishesInOrderCount,
+  getDishesTotalCost,
   getOrderDishTotalCost,
   getOrderTotalCost,
 } from "donut-shared";
@@ -132,7 +144,8 @@ const props = defineProps<{
 }>();
 
 const order = computed(() => props.order);
-const totalCost = computed(() => getOrderTotalCost(order.value.dishes));
+const totalCost = computed(() => getOrderTotalCost(order.value));
+const dishesCost = computed(() => getDishesTotalCost(order.value));
 const t = useI18nStore();
 const isPaymentModalOpen = ref(false);
 

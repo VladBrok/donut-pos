@@ -1,7 +1,10 @@
+import { ORDER_STATUSES } from "donut-shared";
 import {
   IOrder,
   cookedDishesLoadedAction,
   cookedOrdersLoadedAction,
+  courierOrdersLoadedAction,
+  courierStartedDeliveringOrderAction,
   dishDeliveredAction,
   dishFinishedCookingAction,
   dishStartedCookingAction,
@@ -19,6 +22,7 @@ import { MutationTree } from "vuex";
 import { IOrdersState } from "./state";
 
 // TODO: the fact that I have to duplicate logic for updating order status in DB and here is frustrating. I would rather just silently update the whole order with whatever the server sent instead of updating individual props (isCooked, etc.). Think how to do that in a most effective way because it otherwise will cause a lot of bugs going forward
+// ON THE OTHER HAND, I receive only small amount of data needed to mutate the state. And if I were to send the whole lists and pages of data it would be bad for bandwidth...
 
 function sortDishesByCookingStatus(orders: IOrder[]) {
   return orders.map((order) => ({
@@ -50,6 +54,27 @@ const mutation: MutationTree<IOrdersState> = {
     action: ReturnType<typeof ordersForKitchenLoadedAction>
   ) {
     state.ordersForKitchen = sortDishesByCookingStatus(action.payload.orders);
+  },
+
+  courierOrdersLoaded(
+    state: IOrdersState,
+    action: ReturnType<typeof courierOrdersLoadedAction>
+  ) {
+    state.ordersForCourier = action.payload.orders;
+  },
+
+  courierStartedDeliveringOrder(
+    state: IOrdersState,
+    action: ReturnType<typeof courierStartedDeliveringOrderAction>
+  ) {
+    const order = state.ordersForCourier.find(
+      (x) => x.id === action.payload.order.order.id
+    );
+    if (order) {
+      order.status = ORDER_STATUSES.DELIVERING;
+      order.deliveringDate = new Date().toISOString();
+      order.employee = action.payload.order.order.employee;
+    }
   },
 
   created(state: IOrdersState, action: ReturnType<typeof orderCreatedAction>) {
@@ -93,6 +118,16 @@ const mutation: MutationTree<IOrdersState> = {
     action: ReturnType<typeof orderCookedAction>
   ) {
     state.cookedOrders.push(action.payload.order);
+
+    if (
+      action.payload.order.order.type === "delivery" &&
+      !state.ordersForCourier.some(
+        (x) => x.id === action.payload.order.order.id
+      )
+    ) {
+      state.ordersForCourier.push(action.payload.order.order);
+    }
+
     const order = state.ordersForKitchen.find(
       (x) => x.orderNumber === action.payload.order.order.orderNumber
     );
@@ -187,11 +222,18 @@ const mutation: MutationTree<IOrdersState> = {
     state: IOrdersState,
     action: ReturnType<typeof orderDeliveredAction>
   ) {
-    const idx = state.cookedOrders.findIndex(
+    const cookedIdx = state.cookedOrders.findIndex(
       (x) => x.order.id === action.payload.order.order.id
     );
-    if (idx > -1) {
-      state.cookedOrders.splice(idx, 1);
+    if (cookedIdx > -1) {
+      state.cookedOrders.splice(cookedIdx, 1);
+    }
+
+    const courierIdx = state.ordersForCourier.findIndex(
+      (x) => x.id === action.payload.order.order.id
+    );
+    if (courierIdx > -1) {
+      state.ordersForCourier.splice(courierIdx, 1);
     }
 
     if (state.order) {
@@ -220,6 +262,13 @@ const mutation: MutationTree<IOrdersState> = {
     );
     if (cooked) {
       cooked.order.paidDate = new Date().toISOString();
+    }
+
+    const courierOrder = state.ordersForCourier.find(
+      (x) => x.id === action.payload.order.id
+    );
+    if (courierOrder) {
+      courierOrder.paidDate = new Date().toISOString();
     }
   },
 

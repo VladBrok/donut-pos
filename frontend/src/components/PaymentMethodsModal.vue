@@ -62,8 +62,8 @@
     :order-id="orderId"
   />
 
-  <client-takeout-cash-payment-modal
-    v-if="isClient && orderType === 'takeout'"
+  <client-takeout-delivery-cash-payment-modal
+    v-if="isClient && (orderType === 'takeout' || orderType === 'delivery')"
     v-model="isCashPaymentModalOpen"
     @close="isCashPaymentModalOpen = false"
   />
@@ -78,7 +78,7 @@
 <script setup lang="ts">
 import { OrderType } from "donut-shared";
 import ClientDineInCashPaymentModal from "src/components/ClientDineInCashPaymentModal.vue";
-import ClientTakeoutCashPaymentModal from "src/components/ClientTakeoutCashPaymentModal.vue";
+import ClientTakeoutDeliveryCashPaymentModal from "src/components/ClientTakeoutDeliveryCashPaymentModal.vue";
 import CreditCardOrBlikPaymentModal from "src/components/CreditCardOrBlikPaymentModal.vue";
 import PaymentMethodCard from "src/components/PaymentMethodCard.vue";
 import WaiterCashPaymentModal from "src/components/WaiterCashPaymentModal.vue";

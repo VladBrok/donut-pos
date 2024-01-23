@@ -74,6 +74,8 @@ const email = ref(
     ? "waiter@donut.com"
     : router.currentRoute.value.path.includes("kitchen")
     ? "kitchen@donut.com"
+    : router.currentRoute.value.path.includes("courier")
+    ? "courier@donut.com"
     : "client@donut.com"
 ); // TODO: remove
 const password = ref(

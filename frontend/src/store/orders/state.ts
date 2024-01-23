@@ -8,6 +8,7 @@ export interface IOrdersState {
   totalOrders: number;
   ordersPage: IOrder[];
   ordersForKitchen: IOrder[];
+  ordersForCourier: IOrder[];
   cookedDishes: ICookedDish[];
   cookedOrders: ICookedOrder[];
   order: IOrder | null;
@@ -19,6 +20,7 @@ const state: IOrdersState = {
   totalOrders: 0,
   ordersPage: [],
   ordersForKitchen: [],
+  ordersForCourier: [],
   cookedDishes: [],
   cookedOrders: [],
   order: null,

@@ -47,6 +47,7 @@ export interface IGetOrder {
   completed?: boolean;
   orderId?: string;
   orderType?: OrderType;
+  customFilter?: () => any;
 }
 
 export interface IGetOrdersPage extends IGetOrder {
@@ -96,12 +97,9 @@ export async function getSingleOrder(
   userId?: string,
   orderId?: string
 ) {
-  const isClient = (
-    await db
-      .select()
-      .from(client)
-      .where(userId ? eq(client.id, userId) : undefined)
-  )?.[0];
+  const isClient = !userId
+    ? false
+    : (await db.select().from(client).where(eq(client.id, userId)))?.[0];
   const result = await getOrdersPage({
     clientId: !isClient ? undefined : userId,
     page: 1,
@@ -123,12 +121,29 @@ export async function getOrdersForKitchen() {
   return result.ordersPage;
 }
 
+export async function getOrdersForCourier(courierId: string) {
+  const result = await getOrdersPage({
+    page: 1,
+    perPage: Number.MAX_SAFE_INTEGER,
+    statuses: ["cooked", "delivering", "delivered", "paid"],
+    completed: false,
+    orderBy: "asc",
+    customFilter: () =>
+      and(
+        or(eq(order.employeeId, courierId), isNull(order.employeeId)),
+        eq(order.type, "delivery")
+      ),
+  });
+  return result.ordersPage;
+}
+
 export function makeOrderByFilter(params: IGetOrder, createdDateCol: PgColumn) {
   return params.orderBy === "asc" ? asc(createdDateCol) : desc(createdDateCol);
 }
 
 function makeWhereFilter(params: IGetOrder) {
   return and(
+    params.customFilter?.(),
     params.orderType ? eq(order.type, params.orderType) : undefined,
     params.employeeId ? eq(order.employeeId, params.employeeId) : undefined,
     params.clientId ? eq(order.clientId, params.clientId) : undefined,
@@ -257,12 +272,7 @@ export async function finishCookingOrder(orderId: string) {
       cookedDate: new Date(),
     })
     .where(eq(order.id, orderId));
-  return (
-    await getOrdersShallow({
-      orderId: orderId,
-      strictOrderNumberCompare: true,
-    })
-  )[0];
+  return await getSingleOrder(undefined, undefined, orderId);
 }
 
 export async function finishCookingDish(dishIdInOrder: string) {
@@ -346,7 +356,11 @@ export async function deliverDish(orderId: string, dishIdInOrder: string) {
   )[0];
 }
 
-export async function deliverOrder(orderId: string, clientId: string) {
+export async function deliverOrder(
+  orderId: string,
+  userId: string,
+  isCourier?: boolean
+) {
   const theOrder = (
     await db.select().from(order).where(eq(order.id, orderId))
   )?.[0];
@@ -366,13 +380,38 @@ export async function deliverOrder(orderId: string, clientId: string) {
       status: ORDER_STATUSES.DELIVERED,
       deliveredDate: new Date(),
     })
-    .where(and(eq(order.id, orderId), eq(order.clientId, clientId)));
+    .where(
+      and(
+        eq(order.id, orderId),
+        isCourier ? eq(order.employeeId, userId) : eq(order.clientId, userId)
+      )
+    );
 
-  return (
-    await getOrdersShallow({
-      orderId: orderId,
+  return await getSingleOrder(undefined, undefined, orderId);
+}
+
+export async function startDeliveringOrder(
+  orderId: string,
+  employeeId: string
+) {
+  const theOrder = (
+    await db.select().from(order).where(eq(order.id, orderId))
+  )?.[0];
+
+  if (theOrder?.deliveringDate) {
+    logWarn("Tried to start delivering order that is already delivering");
+    return;
+  }
+  await db
+    .update(order)
+    .set({
+      status: ORDER_STATUSES.DELIVERING,
+      deliveringDate: new Date(),
+      employeeId: employeeId,
     })
-  )[0];
+    .where(eq(order.id, orderId));
+
+  return await getSingleOrder(undefined, undefined, orderId);
 }
 
 export async function getOrdersShallow(params: IGetOrder, dbOrTx = db) {
@@ -401,12 +440,14 @@ export async function getCookedOrders(
   orderType: OrderType
 ): Promise<ICookedOrder[]> {
   return (
-    await getOrdersShallow({
+    await getOrdersPage({
       clientId: clientId,
       statuses: ["cooked"],
       orderType: orderType,
+      page: 1,
+      perPage: Number.MAX_SAFE_INTEGER,
     })
-  ).map((x) => ({
+  ).ordersPage.map((x) => ({
     order: x,
   }));
 }

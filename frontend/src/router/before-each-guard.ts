@@ -45,6 +45,18 @@ export const beforeEachGuard: NavigationGuardWithThis<undefined> = (
   }
 
   if (
+    to.path.startsWith("/courier") &&
+    !to.path.startsWith("/courier/login") &&
+    !user.permissions?.courier
+  ) {
+    return "/courier/login";
+  }
+
+  if (to.path.startsWith("/courier/login") && user.permissions?.courier) {
+    return "/courier";
+  }
+
+  if (
     (to.path.startsWith("/login") || to.path.startsWith("/sign-up")) &&
     user.permissions?.client
   ) {

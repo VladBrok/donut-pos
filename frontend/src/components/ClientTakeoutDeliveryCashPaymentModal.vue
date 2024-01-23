@@ -28,7 +28,6 @@
 
 <script setup lang="ts">
 import { useI18nStore } from "src/lib/i18n";
-import { useStore } from "src/store";
 import { computed } from "vue";
 
 const props = defineProps<{
@@ -36,6 +35,5 @@ const props = defineProps<{
 }>();
 const modelValue = computed(() => props.modelValue);
 const emit = defineEmits(["close", "update:modelValue"]);
-const store = useStore();
 const t = useI18nStore();
 </script>

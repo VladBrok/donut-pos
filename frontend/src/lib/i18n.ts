@@ -155,6 +155,8 @@ export const messages = i18n("messages", {
   orderStatus: "Status",
   dishCount: "Dishes",
   total: "Total, zł",
+  totalCost: "Total",
+  delivery: "Delivery",
   copyOrderNumber: "Copy order number to clipboard",
   outOfStock: "Out of stock",
   cannotCreateOrderWithOutOfStock:
@@ -194,6 +196,7 @@ export const messages = i18n("messages", {
   next: "Next",
 
   // Client pages
+  clickToPay: "Click on the button to pay",
   readonlyMap: "The map is view-only",
   changeDeliveryAddress: "Change delivery address",
   addNewDeliveryAddress: "Add new delivery address",
@@ -230,6 +233,13 @@ export const messages = i18n("messages", {
   goToMenu: "go to menu",
   acceptPayment: "Accept payment",
 
+  // Courier pages
+  client: "Client",
+  callClient: "Call the client",
+  startDelivering: "Deliver",
+  finishDelivering: "Delivered",
+  newOrderForCourier: params(`New order: {orderNumber}`),
+
   // Order statuses
   orderStatus_active: "All active",
   orderStatus_completed: "Completed",
@@ -250,6 +260,7 @@ export const messages = i18n("messages", {
   waiterLoginPageTitle: "Waiter login",
   clientLoginPageTitle: "Log in",
   kitchenLoginPageTitle: "Login to kitchen",
+  courierLoginPageTitle: "Courier login",
   passwordRequired: "Please enter a password",
   phoneRequired: "Please enter a phone number",
   emailRequired: "Please enter your email",

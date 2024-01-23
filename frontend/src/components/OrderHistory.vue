@@ -1,5 +1,5 @@
 <template>
-  <q-timeline>
+  <q-timeline class="w-fit">
     <q-timeline-entry
       v-for="(status, i) of statuses"
       :key="i"

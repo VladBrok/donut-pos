@@ -1,6 +1,7 @@
 import { Server } from "@logux/server";
 import {
   CHANNELS,
+  DELIVERY_COST,
   ITEMS_PER_PAGE,
   PAYMENT_LINK_GENERATION_ERROR,
   createOrderAction,
@@ -9,6 +10,9 @@ import {
 import {
   cookedDishesLoadedAction,
   cookedOrdersLoadedAction,
+  courierOrdersLoadedAction,
+  courierStartDeliveringOrderAction,
+  courierStartedDeliveringOrderAction,
   deliverOrderAction,
   dishDeliveredAction,
   dishFinishedCookingAction,
@@ -31,9 +35,14 @@ import {
 import { logError } from "donut-shared/src/lib/log.js";
 import Stripe from "stripe";
 import * as db from "../db/modules/orders.js";
-import { hasCookPermissions, hasWaiterPermission } from "../lib/access.js";
+import {
+  hasCookPermissions,
+  hasCourierPermission,
+  hasWaiterOrCourierPermission,
+  hasWaiterPermission,
+} from "../lib/access.js";
 
-// TODO: split this module up (here, in db, on client, in actions)
+// TODO: split this module up (here, in db, stores on client, in actions; orders for kitchen, orders for courier...?)
 
 export default function ordersModule(server: Server) {
   server.channel(CHANNELS.ORDERS_FOR_KITCHEN, {
@@ -43,6 +52,20 @@ export default function ordersModule(server: Server) {
     async load() {
       const orders = await db.getOrdersForKitchen();
       return ordersForKitchenLoadedAction({
+        orders: orders,
+      });
+    },
+  });
+
+  server.channel<{
+    courierId: string;
+  }>(CHANNELS.ORDERS_FOR_COURIERS, {
+    async access(ctx) {
+      return await hasCourierPermission(ctx.userId);
+    },
+    async load(ctx) {
+      const orders = await db.getOrdersForCourier(ctx.userId);
+      return courierOrdersLoadedAction({
         orders: orders,
       });
     },
@@ -223,6 +246,7 @@ export default function ordersModule(server: Server) {
     },
     resend(ctx, action) {
       return [
+        CHANNELS.ORDERS_FOR_COURIERS,
         CHANNELS.COOKED_ORDERS_OF_CLIENT(action.payload.order.order.client?.id),
         CHANNELS.ORDERS_FOR_KITCHEN,
         CHANNELS.COOKED_DISHES_OF_EMPLOYEE(
@@ -320,7 +344,11 @@ export default function ordersModule(server: Server) {
       return true;
     },
     async process(ctx, action, meta) {
-      const order = await db.deliverOrder(action.payload.orderId, ctx.userId);
+      const order = await db.deliverOrder(
+        action.payload.orderId,
+        ctx.userId,
+        action.payload.isCourier
+      );
       await Promise.all([
         server.process(
           orderDeliveredAction({
@@ -346,6 +374,49 @@ export default function ordersModule(server: Server) {
     },
     resend(ctx, action) {
       return [
+        CHANNELS.ORDERS_FOR_COURIERS,
+        CHANNELS.ORDER_SINGLE(action.payload.order.order.orderNumber),
+        CHANNELS.COOKED_ORDERS_OF_CLIENT(action.payload.order.order.client?.id),
+      ];
+    },
+  });
+
+  server.type(courierStartDeliveringOrderAction, {
+    async access(ctx) {
+      return await hasCourierPermission(ctx.userId);
+    },
+    async process(ctx, action, meta) {
+      const order = await db.startDeliveringOrder(
+        action.payload.orderId,
+        ctx.userId
+      );
+      await Promise.all([
+        server.process(
+          courierStartedDeliveringOrderAction({
+            order: {
+              order: order!,
+            },
+          })
+        ),
+        ctx.sendBack(
+          courierStartedDeliveringOrderAction({
+            order: {
+              order: order!,
+            },
+          })
+        ),
+      ]);
+    },
+  });
+
+  // TODO: resend also somewhere else?
+  server.type(courierStartedDeliveringOrderAction, {
+    async access() {
+      return false;
+    },
+    resend(ctx, action) {
+      return [
+        CHANNELS.ORDERS_FOR_COURIERS,
         CHANNELS.ORDER_SINGLE(action.payload.order.order.orderNumber),
         CHANNELS.COOKED_ORDERS_OF_CLIENT(action.payload.order.order.client?.id),
       ];
@@ -388,7 +459,7 @@ export default function ordersModule(server: Server) {
 
   server.type(payForOrderAction, {
     async access(ctx) {
-      return await hasWaiterPermission(ctx.userId);
+      return await hasWaiterOrCourierPermission(ctx.userId);
     },
     async process(ctx, action, meta) {
       const order = await db.payForOrder(action.payload.orderNumber);
@@ -436,6 +507,21 @@ export default function ordersModule(server: Server) {
       try {
         const stripe = new Stripe(process.env.STRIPE_KEY || "");
         session = await stripe.checkout.sessions.create({
+          shipping_options:
+            order.type !== "delivery"
+              ? []
+              : [
+                  {
+                    shipping_rate_data: {
+                      type: "fixed_amount",
+                      fixed_amount: {
+                        amount: DELIVERY_COST,
+                        currency: "pln",
+                      },
+                      display_name: "Courier",
+                    },
+                  },
+                ],
           line_items: order.dishes.flatMap((dish) => {
             return [
               {

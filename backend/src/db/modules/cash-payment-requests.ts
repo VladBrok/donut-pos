@@ -28,7 +28,7 @@ export async function requestCashPayment(
 ): Promise<ICashPaymentRequest> {
   const id = generateUuid();
   const order = await getSingleOrder(undefined, undefined, orderId);
-  const totalCost = getOrderTotalCost(order.dishes);
+  const totalCost = getOrderTotalCost(order);
 
   await db.insert(cashPaymentRequest).values({
     id: id,

@@ -24,8 +24,25 @@ export async function hasWaiterPermission(data: string | EmployeeModel) {
   );
 }
 
+export async function hasWaiterOrCourierPermission(
+  data: string | EmployeeModel
+) {
+  return await hasPermission(
+    data,
+    (employee) =>
+      !!employee?.permissions.waiter || !!employee?.permissions.courier
+  );
+}
+
 export async function hasCookPermissions(data: string | EmployeeModel) {
   return await hasPermission(data, (employee) => !!employee?.permissions.cook);
+}
+
+export async function hasCourierPermission(data: string | EmployeeModel) {
+  return await hasPermission(
+    data,
+    (employee) => !!employee?.permissions.courier
+  );
 }
 
 export async function isAdminRole(data: string | RoleModel): Promise<boolean> {

@@ -180,6 +180,8 @@ export const ordersAdapter = (data: OrderSchema[]): IOrder[] => {
       client: uniqueOrder.client
         ? {
             id: uniqueOrder.client.id,
+            phone: uniqueOrder.client?.phone || "",
+            firstName: uniqueOrder.client?.firstName || "",
           }
         : null,
       employee: uniqueOrder.employee

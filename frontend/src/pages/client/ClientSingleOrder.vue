@@ -7,7 +7,7 @@
         <h1 class="text-h4">
           <order-number-title :order-number="order.orderNumber" />
         </h1>
-        <order-details-view :order="order" full-screen> </order-details-view>
+        <order-details-view :order="order" full-screen />
       </div>
     </div>
   </div>

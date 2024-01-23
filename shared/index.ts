@@ -76,6 +76,7 @@ export { assert } from "./src/lib/assert.js";
 export { delay } from "./src/lib/delay.js";
 export { getDishesInOrderCount } from "./src/lib/get-dishes-in-order-count.js";
 export {
+  getDishesTotalCost,
   getOrderDishTotalCost,
   getOrderTotalCost,
 } from "./src/lib/get-order-total-cost.js";

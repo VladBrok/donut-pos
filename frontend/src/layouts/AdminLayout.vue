@@ -34,6 +34,12 @@ const menuList = [
     meta: t.value.diningTables,
   },
   {
+    icon: "o_badge",
+    label: t.value.employees,
+    to: "/admin/employees",
+    meta: t.value.employees,
+  },
+  {
     icon: "o_person",
     label: t.value.clients,
     to: "/admin/clients",

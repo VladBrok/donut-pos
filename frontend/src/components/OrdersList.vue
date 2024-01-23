@@ -86,7 +86,7 @@ import {
   getOrderTotalCost,
   openArbitraryOrderAction,
 } from "donut-shared";
-import { loadOrdersPageAction } from "donut-shared/src/actions/orders";
+import { IOrder, loadOrdersPageAction } from "donut-shared/src/actions/orders";
 import BigSpinner from "src/components/BigSpinner.vue";
 import FilterPill from "src/components/FilterPill.vue";
 import NoData from "src/components/NoData.vue";
@@ -94,7 +94,6 @@ import { ROWS_PER_TABLE_PAGE } from "src/lib/constants";
 import { formatCurrency } from "src/lib/currency";
 import { useI18nStore } from "src/lib/i18n";
 import { useStore } from "src/store";
-import { IOrdersState } from "src/store/orders/state";
 import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 
 const props = defineProps<{
@@ -145,20 +144,19 @@ const columns: any[] = [
     name: "tableNumber",
     label: t.value.tableNumber,
     align: "left",
-    field: (row: IOrdersState["ordersPage"][number]) => row.table.number || "-",
+    field: (row: IOrder) => row.table?.number || "-",
   },
   {
     name: "dishCount",
     label: t.value.dishCount,
     align: "left",
-    field: (row: IOrdersState["ordersPage"][number]) => row.dishes.length,
+    field: (row: IOrder) => row.dishes.length,
   },
   {
     name: "total",
     label: t.value.total,
     align: "left",
-    field: (row: IOrdersState["ordersPage"][number]) =>
-      formatCurrency(getOrderTotalCost(row.dishes), false),
+    field: (row: IOrder) => formatCurrency(getOrderTotalCost(row), false),
   },
   {
     name: "status",

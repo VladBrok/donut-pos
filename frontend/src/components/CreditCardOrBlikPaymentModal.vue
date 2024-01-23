@@ -10,7 +10,7 @@
         <q-btn icon="close" flat round dense v-close-popup size="lg" />
       </q-card-section>
 
-      <payment-qr-code
+      <payment-card
         v-if="modelValue"
         :order-number="orderNumber"
         :method="method"
@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import PaymentQrCode from "src/components/PaymentQrCode.vue";
+import PaymentCard from "src/components/PaymentCard.vue";
 import { computed } from "vue";
 
 const props = defineProps<{

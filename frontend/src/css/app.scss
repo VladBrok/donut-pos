@@ -10,7 +10,7 @@ body {
 .link:visited,
 .link:hover,
 .link:active {
-  color: #0000ee;
+  color: #275fd1;
 }
 
 a:hover {
@@ -64,12 +64,12 @@ a:hover {
 }
 
 .order-view-content-height {
-  height: calc(100vh - 240px);
+  height: calc(100vh - 230px);
 }
 
 @media screen and (min-width: 1023px) {
   .order-view-content-height {
-    height: calc(100vh - 265px);
+    height: calc(100vh - 310px);
   }
 }
 
@@ -90,6 +90,21 @@ a:hover {
 .flex-grow {
   flex-grow: 1;
   min-width: 0;
+}
+
+.flex-basis-50 {
+  flex-basis: 50%;
+}
+
+.order-details-flex {
+  display: flex;
+  flex-direction: column;
+}
+
+@media screen and (min-width: 600px) {
+  .order-details-flex {
+    flex-direction: row;
+  }
 }
 
 .no-shrink {
@@ -170,8 +185,20 @@ a:hover {
 
 .card-grid-lg {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 25px;
+}
+
+@media screen and (min-width: 500px) {
+  .card-grid-lg {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
+
+@media screen and (min-width: 900px) {
+  .card-grid-lg {
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  }
 }
 
 .max-w-xl {

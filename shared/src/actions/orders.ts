@@ -6,7 +6,7 @@ import { IDiningTable } from "../actions/current-order.js";
 import { createAction } from "./index.js";
 
 export interface ICookedOrder {
-  order: IShallowOrder;
+  order: IOrder;
 }
 
 export interface ICookedDish {
@@ -61,6 +61,8 @@ export interface IOrder {
   } | null;
   client: {
     id: string;
+    phone: string;
+    firstName: string;
   } | null;
   dishes: IDishInOrder[];
 }
@@ -109,6 +111,10 @@ export const ordersPageLoadedAction = createAction<{
 export const ordersForKitchenLoadedAction = createAction<{
   orders: IOrder[];
 }>("orders/ordersForKitchenLoaded");
+
+export const courierOrdersLoadedAction = createAction<{
+  orders: IOrder[];
+}>("orders/courierOrdersLoaded");
 
 export const createOrderAction = createAction<{
   order: IOrder;
@@ -173,8 +179,17 @@ export const orderCookedAction = createAction<{
   order: ICookedOrder;
 }>("orders/orderCooked");
 
+export const courierStartDeliveringOrderAction = createAction<{
+  orderId: string;
+}>("orders/courierStartDeliveringOrder");
+
+export const courierStartedDeliveringOrderAction = createAction<{
+  order: ICookedOrder;
+}>("orders/courierStartedDeliveringOrder");
+
 export const deliverOrderAction = createAction<{
   orderId: string;
+  isCourier?: boolean;
 }>("orders/deliverOrder");
 
 export const orderDeliveredAction = createAction<{
