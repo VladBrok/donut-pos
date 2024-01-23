@@ -4,6 +4,7 @@
     has-content
     card-padding
     apply-shadow
+    full-content-height
     :order-type="order.type"
   >
     <template #content>
@@ -17,7 +18,6 @@
           :model-value="formatAddress(order.address)"
           readonly
           stack-label
-          :label="`${t.deliveryAddress}`"
           type="text"
           class="q-mb-md w-fit"
         >
@@ -31,6 +31,31 @@
             >
               <q-tooltip>
                 {{ t.showOnMap }}
+              </q-tooltip>
+            </q-btn>
+          </template>
+        </q-input>
+
+        <q-input
+          v-if="order.employee"
+          :model-value="order.client?.phone"
+          readonly
+          stack-label
+          type="text"
+          class="q-mb-md w-fit"
+          label-slot
+        >
+          <template v-slot:label>
+            <p>
+              <span class="text-dark text-h6 text-weight-bold">{{
+                order.client?.firstName
+              }}</span>
+            </p>
+          </template>
+          <template v-slot:after>
+            <q-btn round dense icon="call" color="primary" @click="callClient">
+              <q-tooltip>
+                {{ t.callClient }}
               </q-tooltip>
             </q-btn>
           </template>
@@ -77,5 +102,9 @@ function openMap() {
       "_blank"
     )
     ?.focus();
+}
+
+function callClient() {
+  window?.open(`tel:${order.value.client?.phone}`);
 }
 </script>

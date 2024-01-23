@@ -233,6 +233,10 @@ export const messages = i18n("messages", {
   goToMenu: "go to menu",
   acceptPayment: "Accept payment",
 
+  // Courier pages
+  client: "Client",
+  callClient: "Call the client",
+
   // Order statuses
   orderStatus_active: "All active",
   orderStatus_completed: "Completed",

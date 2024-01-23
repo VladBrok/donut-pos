@@ -61,6 +61,8 @@ export interface IOrder {
   } | null;
   client: {
     id: string;
+    phone: string;
+    firstName: string;
   } | null;
   dishes: IDishInOrder[];
 }
