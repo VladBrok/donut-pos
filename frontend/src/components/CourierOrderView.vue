@@ -9,76 +9,80 @@
       :order-type="order.type"
     >
       <template #content>
-        <order-number-title
-          :order-number="order.orderNumber"
-          class="text-h6 q-mb-sm"
-          copy-button-size="sm"
-        />
-        <div>
-          <q-input
-            :model-value="formatAddress(order.address)"
-            readonly
-            stack-label
-            type="text"
-            class="q-mb-md w-fit"
-          >
-            <template v-slot:after>
-              <q-btn
-                round
-                dense
-                icon="location_on"
-                color="primary"
-                @click="openMap"
+        <div class="full-height column">
+          <order-number-title
+            :order-number="order.orderNumber"
+            class="text-h6 q-mb-sm"
+            is-link
+          />
+          <div class="flex-grow column justify-between">
+            <div>
+              <q-input
+                :model-value="formatAddress(order.address)"
+                readonly
+                stack-label
+                type="text"
+                class="q-mb-md w-fit"
               >
-                <q-tooltip>
-                  {{ t.showOnMap }}
-                </q-tooltip>
-              </q-btn>
-            </template>
-          </q-input>
+                <template v-slot:after>
+                  <q-btn
+                    round
+                    dense
+                    icon="location_on"
+                    color="primary"
+                    @click="openMap"
+                  >
+                    <q-tooltip>
+                      {{ t.showOnMap }}
+                    </q-tooltip>
+                  </q-btn>
+                </template>
+              </q-input>
 
-          <q-input
-            v-if="order.employee"
-            :model-value="order.client?.phone"
-            readonly
-            stack-label
-            type="text"
-            class="q-mb-md w-fit"
-            label-slot
-          >
-            <template v-slot:label>
-              <p>
-                <span class="text-dark text-h6 text-weight-bold">{{
-                  order.client?.firstName
-                }}</span>
-              </p>
-            </template>
-            <template v-slot:after>
-              <q-btn
-                round
-                dense
-                icon="call"
-                color="primary"
-                @click="callClient"
+              <q-input
+                v-if="order.employee"
+                :model-value="order.client?.phone"
+                readonly
+                stack-label
+                type="text"
+                class="q-mb-md w-fit"
+                label-slot
               >
-                <q-tooltip>
-                  {{ t.callClient }}
-                </q-tooltip>
+                <template v-slot:label>
+                  <p>
+                    <span class="text-dark text-h6 text-weight-bold">{{
+                      order.client?.firstName
+                    }}</span>
+                  </p>
+                </template>
+                <template v-slot:after>
+                  <q-btn
+                    round
+                    dense
+                    icon="call"
+                    color="primary"
+                    @click="callClient"
+                  >
+                    <q-tooltip>
+                      {{ t.callClient }}
+                    </q-tooltip>
+                  </q-btn>
+                </template>
+              </q-input>
+            </div>
+            <div class="row gap-sm q-py-xs">
+              <CourierOrderStatusButton
+                v-if="order.paidDate || !order.deliveringDate"
+                :order="order"
+              />
+              <q-btn
+                v-if="!order.paidDate && order.employee"
+                color="primary"
+                @click="isPaymentModalOpen = true"
+              >
+                {{ t.pay }}
               </q-btn>
-            </template>
-          </q-input>
-          <div class="row gap-sm">
-            <CourierOrderStatusButton
-              v-if="order.paidDate || !order.deliveringDate"
-              :order="order"
-            />
-            <q-btn
-              v-if="!order.paidDate"
-              color="primary"
-              @click="isPaymentModalOpen = true"
-            >
-              {{ t.pay }}
-            </q-btn>
+            </div>
           </div>
         </div>
       </template>

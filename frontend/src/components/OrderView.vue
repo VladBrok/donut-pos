@@ -8,11 +8,12 @@
         'shadow-0': !applyShadow,
       }"
     >
-      <div>
+      <div class="full-height">
         <div
           class="scroll overflow-x-hidden"
           :class="{
             'order-view-content-height': !fullContentHeight,
+            'full-height': fullContentHeight,
           }"
         >
           <slot name="content" />
