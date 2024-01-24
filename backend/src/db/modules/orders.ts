@@ -208,7 +208,12 @@ export async function createOrder(
       id: orderToCreate.id,
       comment: data.comment,
       type: data.type,
-      employeeId: isClient ? data.table?.employee.id : userId,
+      employeeId:
+        data.type === "delivery"
+          ? null
+          : isClient
+          ? data.table?.employee.id
+          : userId,
       clientId: !isClient ? null : userId,
       number: orderNumber,
       diningTableId: data.table?.id || null,

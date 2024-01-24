@@ -21,7 +21,7 @@ export function createOrder(
   }
 
   return Promise.all([
-    !order.address || order.address.id
+    !order.address || order.address.id || !user.permissions?.client
       ? Promise.resolve()
       : store.commit.sync(
           createAddressAction({
