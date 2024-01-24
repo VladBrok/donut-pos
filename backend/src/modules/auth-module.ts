@@ -67,6 +67,7 @@ export default function authModule(server: Server) {
         loggedInAction({
           userId: user.id,
           permissions: isClient ? { client: true } : (user as any).permissions,
+          firstName: user.firstName,
           accessToken,
           role: isClient ? undefined : (user as any).role,
         })
@@ -87,8 +88,11 @@ export default function authModule(server: Server) {
         return;
       }
 
+      // TODO: login and signup are based on the assumption that anonymous client will have only phone, so we handle case only with phone. If anonymous client could have email, then we need to handle it also......
+
       const userByPhone = await clientDb.findClientByPhone(
-        action.payload.phone
+        action.payload.phone,
+        true
       );
       if (userByPhone) {
         await server.undo(action, meta, USER_WITH_PHONE_EXISTS);
@@ -109,6 +113,7 @@ export default function authModule(server: Server) {
         loggedInAction({
           userId: created.id,
           permissions: { client: true },
+          firstName: created.firstName,
           accessToken,
           isNewUser: true,
         })

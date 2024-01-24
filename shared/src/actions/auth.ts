@@ -26,6 +26,7 @@ export const signUpAction = createAction<{
 
 export const loggedInAction = createAction<{
   userId: string;
+  firstName: string;
   accessToken: string;
   permissions: IPermissions;
   role?: ReturnType<typeof loadRolesAction>["payload"]["roles"][number];

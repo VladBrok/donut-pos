@@ -69,6 +69,7 @@ export const messages = i18n("messages", {
   isEmailVerified: "Email verified",
   role: "Role",
   firstName: "First name",
+  clientFirstName: "Client first name",
   lastName: "Last name",
   registeredAt: "Registration date",
   description: "Description",
@@ -203,7 +204,7 @@ export const messages = i18n("messages", {
   showOnMap: "Show on map",
   orderDetails: "Order details",
   viewYourOrders: "view your orders",
-  welcome: "Welcome!",
+  welcome: params("Welcome, {firstName}!"),
   chooseDishesInstruction:
     "Choose dishes that you want to order from the menu.",
   viewOrdersInstruction: "You can view your orders on the",

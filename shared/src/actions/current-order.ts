@@ -27,6 +27,14 @@ export const updateCurrentOrderCommentAction = createAction<{
   comment: string;
 }>("currentOrder/updateComment");
 
+export const updateCurrentOrderClientPhoneAction = createAction<{
+  phone: string;
+}>("currentOrder/updateClientPhone");
+
+export const updateCurrentOrderClientFirstNameAction = createAction<{
+  firstName: string;
+}>("currentOrder/updateClientFirstName");
+
 export const updateCurrentOrderTypeAction = createAction<{
   type: string;
 }>("currentOrder/updateType");

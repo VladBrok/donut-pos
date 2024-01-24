@@ -205,9 +205,22 @@ export async function createOrder(
   const orderToCreate = { ...structuredClone(data), id: generateUuid() };
 
   await db.transaction(async (tx) => {
+    // TODO: add ability on FE to select already existing client (anonymous or not) and send his ID here.............
+    let newClientId = "";
     if (orderToCreate.address && !orderToCreate.address.id) {
       if (!orderToCreate.address.clientId) {
-        orderToCreate.address.clientId = userId; // TODO: if not isClient, assume it's employee and create anonymous client and get his id
+        if (isClient) {
+          orderToCreate.address.clientId = userId;
+        } else {
+          newClientId = generateUuid();
+          await tx.insert(client).values({
+            id: newClientId,
+            firstName: data.client?.firstName,
+            phone: data.client?.phone,
+            isAnonymous: true,
+          });
+          orderToCreate.address.clientId = newClientId;
+        }
       }
       orderToCreate.address.id = generateUuid();
       await tx.insert(address).values({
@@ -225,7 +238,7 @@ export async function createOrder(
           : isClient
           ? data.table?.employee.id
           : userId,
-      clientId: !isClient ? null : userId,
+      clientId: newClientId ? newClientId : !isClient ? null : userId,
       number: orderNumber,
       diningTableId: data.table?.id || null,
       deliveryAddress: sql`${new Param(orderToCreate.address)}`,
