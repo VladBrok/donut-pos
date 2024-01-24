@@ -58,8 +58,7 @@
             v-model="password"
             should-validate-format
             :required="!originalEmployee"
-          >
-          </password-input>
+          />
         </q-card-section>
       </q-card>
       <div class="row justify-end q-gutter-sm q-mt-md">

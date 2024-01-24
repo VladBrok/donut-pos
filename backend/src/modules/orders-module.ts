@@ -7,6 +7,7 @@ import {
   createOrderAction,
   orderCreatedAction,
 } from "donut-shared";
+import { addressCreatedAction } from "donut-shared/src/actions/addresses.js";
 import {
   cookedDishesLoadedAction,
   cookedOrdersLoadedAction,
@@ -434,6 +435,13 @@ export default function ordersModule(server: Server) {
         action.payload.isClient
       );
       await Promise.all([
+        !action.payload.order.address || action.payload.order.address.id
+          ? Promise.resolve()
+          : server.process(
+              addressCreatedAction({
+                address: created.address,
+              })
+            ),
         server.process(
           orderCreatedAction({
             order: created,

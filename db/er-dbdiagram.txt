@@ -28,11 +28,13 @@ Table client {
   is_phone_verified BOOLEAN
   email TEXT
   is_email_verified BOOLEAN
+  is_anonymous BOOLEAN
   password_hash TEXT
   registered_at TIMESTAMP
   Indexes {
     phone [name: 'client_phone_idx']
     email [name: 'client_email_idx']
+    is_anonymous [name: 'client_is_anonymous_idx']
   }
 }
 

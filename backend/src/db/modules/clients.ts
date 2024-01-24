@@ -1,5 +1,5 @@
 import { IClient } from "donut-shared";
-import { and, desc, eq, ilike, or, sql } from "drizzle-orm";
+import { and, desc, eq, ilike, not, or, sql } from "drizzle-orm";
 import { clientAdapter } from "src/db/schema-to-model-adapters.js";
 import { generateUuid } from "src/lib/uuid.js";
 import { client } from "../../../migrations/schema.js";
@@ -11,8 +11,19 @@ export async function findClientByEmail(email: string) {
   return clientAdapter(data.map((x) => ({ client: x })))?.[0];
 }
 
-export async function findClientByPhone(phone: string) {
-  const data = await db.select().from(client).where(eq(client.phone, phone));
+export async function findClientByPhone(
+  phone: string,
+  ignoreAnonymous?: boolean
+) {
+  const data = await db
+    .select()
+    .from(client)
+    .where(
+      and(
+        eq(client.phone, phone),
+        ignoreAnonymous ? not(eq(client.isAnonymous, true)) : undefined
+      )
+    );
 
   return clientAdapter(data.map((x) => ({ client: x })))?.[0];
 }

@@ -21,6 +21,7 @@ CREATE TABLE "client" (
   "is_phone_verified" BOOLEAN,
   "email" TEXT,
   "is_email_verified" BOOLEAN,
+  "is_anonymous" BOOLEAN,
   "password_hash" TEXT,
   "registered_at" TIMESTAMP
 );
@@ -121,7 +122,7 @@ CREATE TABLE "order" (
   "employee_id" UUID,
   "sale_point_id" UUID,
   "dining_table_id" UUID,
-  "delivery_address" JSONB
+  "delivery_address" JSONB,
   "type" TEXT,
   "number" TEXT,
   "comment" TEXT,
@@ -149,6 +150,8 @@ CREATE INDEX "dining_table_number_idx" ON "dining_table" ("number");
 CREATE INDEX "client_phone_idx" ON "client" ("phone");
 
 CREATE INDEX "client_email_idx" ON "client" ("email");
+
+CREATE INDEX "client_is_anonymous_idx" ON "client" ("is_anonymous");
 
 CREATE INDEX "cash_payment_request_order_id_idx" ON "cash_payment_request" ("order_id");
 

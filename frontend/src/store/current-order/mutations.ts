@@ -8,6 +8,8 @@ import {
 } from "donut-shared";
 import {
   updateCurrentOrderAddressAction,
+  updateCurrentOrderClientFirstNameAction,
+  updateCurrentOrderClientPhoneAction,
   updateCurrentOrderTypeAction,
   updatePreviousOrderAction,
 } from "donut-shared/src/actions/current-order";
@@ -83,6 +85,38 @@ const mutation: MutationTree<ICurrentOrderState> = {
     );
 
     state.order.comment = action.payload.comment;
+  },
+
+  updateClientPhone(
+    state: ICurrentOrderState,
+    action: ReturnType<typeof updateCurrentOrderClientPhoneAction>
+  ) {
+    assert(
+      state.order,
+      "Cannot update current order phone when order is empty"
+    );
+    state.order.client = state.order.client || {
+      id: "",
+      firstName: "",
+      phone: "",
+    };
+    state.order.client.phone = action.payload.phone;
+  },
+
+  updateClientFirstName(
+    state: ICurrentOrderState,
+    action: ReturnType<typeof updateCurrentOrderClientFirstNameAction>
+  ) {
+    assert(
+      state.order,
+      "Cannot update current order client first name when order is empty"
+    );
+    state.order.client = state.order.client || {
+      id: "",
+      firstName: "",
+      phone: "",
+    };
+    state.order.client.firstName = action.payload.firstName;
   },
 
   updateType(

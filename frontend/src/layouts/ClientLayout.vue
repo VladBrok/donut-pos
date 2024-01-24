@@ -50,7 +50,11 @@
           >
             <div class="text-body1">
               <p class="text-center text-h6 q-mb-sm">
-                {{ t.welcome }}
+                {{
+                  t.welcome({
+                    firstName: user.firstName || "",
+                  })
+                }}
               </p>
               <p>
                 {{ t.chooseDishesInstruction }}
@@ -133,6 +137,7 @@ const isCurrentOrderOpen = computed(
   () => store.state.orderDrawer.isCurrentOrderOpen
 );
 const isWelcomeBannerOpen = computed(() => store.state.welcomeBanner.isOpen);
+const user = ref(store.state.auth.user);
 const userId = ref(store.state.auth.user.userId);
 const channels = computed(() => {
   return userId.value === ANONYMOUS.userId

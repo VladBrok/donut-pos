@@ -21,6 +21,7 @@ import {
 } from "drizzle-orm";
 import { PgColumn } from "drizzle-orm/pg-core";
 import {
+  address,
   client,
   diningTable,
   employee,
@@ -201,18 +202,46 @@ export async function createOrder(
     throw new Error(`Duplicate order number was generated: ${orderNumber}`);
   }
 
-  const orderToCreate = { ...data, id: generateUuid() };
+  const orderToCreate = { ...structuredClone(data), id: generateUuid() };
 
   await db.transaction(async (tx) => {
+    // TODO: add ability on FE to select already existing client (anonymous or not) and send his ID here.............
+    let newClientId = "";
+    if (orderToCreate.address && !orderToCreate.address.id) {
+      if (!orderToCreate.address.clientId) {
+        if (isClient) {
+          orderToCreate.address.clientId = userId;
+        } else {
+          newClientId = generateUuid();
+          await tx.insert(client).values({
+            id: newClientId,
+            firstName: data.client?.firstName,
+            phone: data.client?.phone,
+            isAnonymous: true,
+          });
+          orderToCreate.address.clientId = newClientId;
+        }
+      }
+      orderToCreate.address.id = generateUuid();
+      await tx.insert(address).values({
+        ...orderToCreate.address,
+      });
+    }
+
     await tx.insert(order).values({
       id: orderToCreate.id,
       comment: data.comment,
       type: data.type,
-      employeeId: isClient ? data.table?.employee.id : userId,
-      clientId: !isClient ? null : userId,
+      employeeId:
+        data.type === "delivery"
+          ? null
+          : isClient
+          ? data.table?.employee.id
+          : userId,
+      clientId: newClientId ? newClientId : !isClient ? null : userId,
       number: orderNumber,
       diningTableId: data.table?.id || null,
-      deliveryAddress: sql`${new Param(data.address)}`,
+      deliveryAddress: sql`${new Param(orderToCreate.address)}`,
       createdDate: new Date(),
       status: ORDER_STATUSES.CREATED,
     });

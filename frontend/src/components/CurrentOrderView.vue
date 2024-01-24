@@ -96,6 +96,39 @@
                 </template>
               </q-select>
             </div>
+            <q-input
+              v-if="!isClient && order?.type === 'delivery'"
+              :model-value="order?.client?.firstName"
+              @update:model-value="
+                store.commit.crossTab(
+                  updateCurrentOrderClientFirstNameAction({
+                    firstName: $event?.toString() || '',
+                  })
+                )
+              "
+              stack-label
+              :label="`${t.clientFirstName} *`"
+              lazy-rules
+              type="text"
+              :rules="[
+                (val) => (!!val && val.length > 0) || t.fieldRequired,
+                (val) =>
+                  val.length <= FIRST_NAME_MAX_LENGTH ||
+                  t.maxLength({ max: FIRST_NAME_MAX_LENGTH }),
+              ]"
+            />
+            <phone-input
+              v-if="!isClient && order?.type === 'delivery'"
+              :model-value="order?.client?.phone || ''"
+              @update:model-value="
+                store.commit.crossTab(
+                  updateCurrentOrderClientPhoneAction({
+                    phone: $event,
+                  })
+                )
+              "
+              shouldValidateFormat
+            />
             <q-select
               v-if="order?.type === 'dine-in'"
               :model-value="order?.table?.number"
@@ -276,6 +309,7 @@ import {
   CHANNELS,
   COMMENT_MAX_LENGTH,
   DELIVERY_COST,
+  FIRST_NAME_MAX_LENGTH,
   ORDER_TYPES_ARR,
   addDishToCurrentOrderAction,
   clearCurrentOrderAction,
@@ -288,6 +322,8 @@ import {
 } from "donut-shared";
 import {
   updateCurrentOrderAddressAction,
+  updateCurrentOrderClientFirstNameAction,
+  updateCurrentOrderClientPhoneAction,
   updateCurrentOrderTypeAction,
   updatePreviousOrderAction,
 } from "donut-shared/src/actions/current-order";
@@ -296,6 +332,7 @@ import AddAddressModal from "src/components/AddAddressModal.vue";
 import BigSpinner from "src/components/BigSpinner.vue";
 import DishInOrder from "src/components/DishInOrder.vue";
 import OrderView from "src/components/OrderView.vue";
+import PhoneInput from "src/components/PhoneInput.vue";
 import { formatAddress } from "src/lib/address";
 import { useIsLoggedIn } from "src/lib/composables/useIsLoggedIn";
 import { AUTH_BEFORE_ORDER_CREATE } from "src/lib/constants";
@@ -322,6 +359,7 @@ const channels = computed(() => {
     : [CHANNELS.DINING_TABLES, CHANNELS.ADDRESSES_OF_CLIENT(userId.value)];
 });
 
+const isClient = computed(() => store.state.auth.user.permissions?.client);
 const addresses = computed(() =>
   order.value?.address && !order.value.address.id
     ? [...store.state.addresses.addresses, order.value?.address]
