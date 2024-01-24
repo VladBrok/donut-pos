@@ -113,11 +113,13 @@ export const client = pgTable("client", {
 	registeredAt: timestamp("registered_at", { mode: 'date' }),
 	email: text("email"),
 	isEmailVerified: boolean("is_email_verified"),
+	isAnonymous: boolean("is_anonymous"),
 },
 (table) => {
 	return {
 		phoneIdx: index("client_phone_idx").on(table.phone),
 		emailIdx: index("client_email_idx").on(table.email),
+		isAnonymousIdx: index("client_is_anonymous_idx").on(table.isAnonymous),
 	}
 });
 
