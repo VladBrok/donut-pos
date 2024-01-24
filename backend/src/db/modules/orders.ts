@@ -21,6 +21,7 @@ import {
 } from "drizzle-orm";
 import { PgColumn } from "drizzle-orm/pg-core";
 import {
+  address,
   client,
   diningTable,
   employee,
@@ -201,9 +202,19 @@ export async function createOrder(
     throw new Error(`Duplicate order number was generated: ${orderNumber}`);
   }
 
-  const orderToCreate = { ...data, id: generateUuid() };
+  const orderToCreate = { ...structuredClone(data), id: generateUuid() };
 
   await db.transaction(async (tx) => {
+    if (orderToCreate.address && !orderToCreate.address.id) {
+      if (!orderToCreate.address.clientId) {
+        orderToCreate.address.clientId = userId; // TODO: if not isClient, assume it's employee and create anonymous client and get his id
+      }
+      orderToCreate.address.id = generateUuid();
+      await tx.insert(address).values({
+        ...orderToCreate.address,
+      });
+    }
+
     await tx.insert(order).values({
       id: orderToCreate.id,
       comment: data.comment,
@@ -217,7 +228,7 @@ export async function createOrder(
       clientId: !isClient ? null : userId,
       number: orderNumber,
       diningTableId: data.table?.id || null,
-      deliveryAddress: sql`${new Param(data.address)}`,
+      deliveryAddress: sql`${new Param(orderToCreate.address)}`,
       createdDate: new Date(),
       status: ORDER_STATUSES.CREATED,
     });
