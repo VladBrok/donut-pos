@@ -134,7 +134,9 @@ const channels = computed(() =>
 );
 let isSubscribing = useSubscription(channels, { store: store as any });
 
-const filteredAddresses = computed(() => [address.value].filter(Boolean));
+const filteredAddresses = computed(() =>
+  [formatAddress(address.value)].filter(Boolean)
+);
 const filterAddresses = (val: string, update: any) => {
   update(() => {
     //
