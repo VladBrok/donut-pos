@@ -3,6 +3,8 @@ import {
   IAddress,
   ICashPaymentRequest,
   IClient,
+  ISalePoint,
+  IWorkSchedule,
   OrderStatus,
   OrderType,
 } from "donut-shared";
@@ -33,6 +35,7 @@ import {
   ModificationSchema,
   OrderSchema,
   RoleSchema,
+  SalePointSchema,
   ShallowOrderSchema,
 } from "./schemas.js";
 
@@ -324,5 +327,17 @@ export const cashPaymentRequestsAdapter = (
     paidDate: x.order?.paidDate?.toISOString() || "",
     employeeId: x.order?.employeeId || "",
     clientId: x.order?.clientId || "",
+  }));
+};
+
+export const salePointsAdapter = (data: SalePointSchema[]): ISalePoint[] => {
+  return data.map((x) => ({
+    id: x.sale_point.id || "",
+    address: x.address,
+    email: x.sale_point.email || "",
+    isDefault: x.sale_point.isDefault || false,
+    name: x.sale_point.name || "",
+    phone: x.sale_point.phone || "",
+    workSchedule: x.sale_point.workSchedule as IWorkSchedule[],
   }));
 };

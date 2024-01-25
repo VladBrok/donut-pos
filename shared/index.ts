@@ -1,5 +1,7 @@
+export type { ISalePoint, IWorkSchedule } from "./src/actions/sale-points.js";
 export type { IAddress } from "./src/actions/addresses.js";
 export type { IPermissions } from "./src/actions/auth.js";
+export { createSalePointAction, deleteSalePointAction, loadSalePointsAction, salePointCreatedAction, salePointDeletedAction, salePointUpdatedAction, updateSalePointAction } from "./src/actions/sale-points.js";
 export {
   cashPaymentRequestDeletedAction,
   cashPaymentRequestedAction,
