@@ -2,6 +2,7 @@ export const CHANNELS = {
   DISH_CATEGORIES: "dishCategories",
   DISHES: "dishes",
   MODIFICATIONS: "modifications",
+  SALE_POINTS: "salePoints",
   EMPLOYEES: "employees",
   ROLES: "roles",
   CLIENTS: "clients",
