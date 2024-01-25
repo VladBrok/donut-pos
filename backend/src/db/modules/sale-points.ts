@@ -23,6 +23,10 @@ export async function createSalePoint(data: ISalePoint) {
   const toCreate = { ...data, id: generateUuid() };
 
   await db.transaction(async (tx) => {
+    if (data.isDefault) {
+      await tx.update(salePoint).set({ isDefault: false });
+    }
+
     const newAddress = { ...data.address, id: generateUuid() };
     await tx.insert(address).values(newAddress);
     await tx.insert(salePoint).values({
@@ -39,6 +43,10 @@ export async function updateSalePoint(data: ISalePoint) {
   const theSalePoint = (await getAllSalePoints(data.id))[0];
 
   await db.transaction(async (tx) => {
+    if (data.isDefault && !theSalePoint.isDefault) {
+      await tx.update(salePoint).set({ isDefault: false });
+    }
+
     const newAddressId = generateUuid();
     const addressId =
       theSalePoint.address.id === data.address.id
