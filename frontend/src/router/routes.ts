@@ -172,6 +172,32 @@ const routes: RouteRecordRaw[] = [
           title: t.value.clients,
         },
       },
+
+      // Sale points
+      {
+        path: "sale-points",
+        component: () =>
+          import("src/pages/admin/sale-points/AdminSalePoints.vue"),
+        meta: {
+          title: t.value.salePoints,
+        },
+      },
+      {
+        path: "sale-points/create",
+        component: () =>
+          import("src/pages/admin/sale-points/AdminCreateUpdateSalePoint.vue"),
+        meta: {
+          title: t.value.createSalePoint,
+        },
+      },
+      {
+        path: "sale-points/update/:id",
+        component: () =>
+          import("src/pages/admin/sale-points/AdminCreateUpdateSalePoint.vue"),
+        meta: {
+          title: t.value.updateSalePoint,
+        },
+      },
     ],
   },
 
