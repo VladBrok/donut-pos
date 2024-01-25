@@ -16,9 +16,6 @@
           <p>
             {{ t.addressExplanation2 }}
           </p>
-          <p>
-            {{ t.addressExplanation3 }}
-          </p>
         </div>
         <q-form
           @submit="onSubmit"

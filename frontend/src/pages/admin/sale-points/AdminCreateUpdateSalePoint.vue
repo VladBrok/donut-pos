@@ -5,56 +5,60 @@
     <q-form v-else @submit="onSubmit" @validation-error="onFormValidationError">
       <q-card class="q-pa-md">
         <q-card-section class="q-gutter-lg">
-          <photo-upload
-            v-model:url="imageUrl"
-            v-model:file="imageFile"
-          ></photo-upload>
           <q-input
             v-model.trim="name"
             stack-label
-            :label="`${t.modificationNameLabel} *`"
+            :label="`${t.salePointNameLabel} *`"
             lazy-rules
             type="text"
             :rules="[
               (val) => (!!val && val.length > 0) || t.fieldRequired,
               (val) =>
-                val.length <= MAX_MODIFICATION_NAME_LENGTH ||
-                t.maxLength({ max: MAX_MODIFICATION_NAME_LENGTH }),
+                val.length <= MAX_SALE_POINT_NAME_LENGTH ||
+                t.maxLength({ max: MAX_SALE_POINT_NAME_LENGTH }),
             ]"
           />
-          <q-input
-            v-model.number="price"
+          <email-input v-model="email" />
+          <phone-input v-model="phone" shouldValidateFormat />
+          <q-select
+            :model-value="formatAddress(address)"
+            use-input
+            fill-input
             stack-label
-            :label="`${t.price} *`"
-            lazy-rules
-            type="number"
-            step="0.01"
-            :rules="[
-              (val) => val !== '' || t.fieldRequired,
-              (val) =>
-                val <= MAX_MODIFICATION_PRICE ||
-                t.maxValue({ max: MAX_MODIFICATION_PRICE }),
-              (val) =>
-                val >= MIN_MODIFICATION_PRICE ||
-                t.minValue({ min: MIN_MODIFICATION_PRICE }),
-            ]"
-          />
-          <q-input
-            v-model.number="weight"
-            stack-label
-            :label="`${t.weight} *`"
-            lazy-rules
-            type="number"
-            step="1"
-            :rules="[
-              (val) => val !== '' || t.fieldRequired,
-              (val) =>
-                val <= MAX_MODIFICATION_WEIGHT ||
-                t.maxValue({ max: MAX_MODIFICATION_WEIGHT }),
-              (val) =>
-                val >= MIN_MODIFICATION_WEIGHT ||
-                t.minValue({ min: MIN_MODIFICATION_WEIGHT }),
-            ]"
+            hide-selected
+            clearable
+            input-debounce="0"
+            :options="filteredAddresses"
+            @filter="filterAddresses"
+            :label="`${t.address} *`"
+            :rules="[(val) => (!!val && val.length > 0) || t.fieldRequired]"
+          >
+            <template v-slot:after>
+              <q-btn
+                round
+                dense
+                icon="add"
+                color="primary"
+                @click="isAddAddressModalOpen = true"
+              >
+                <q-tooltip>
+                  {{ t.addNewAddress }}
+                </q-tooltip>
+              </q-btn>
+            </template>
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section>
+                  {{ t.noResults }}
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+          <q-toggle
+            v-model="isDefault"
+            :label="t.isDefault"
+            size="lg"
+            left-label
           />
         </q-card-section>
       </q-card>
@@ -74,64 +78,81 @@
       </div>
     </q-form>
   </div>
+
+  <add-address-modal
+    v-if="isAddAddressModalOpen"
+    v-model="isAddAddressModalOpen"
+    @submit="(isAddAddressModalOpen = false), (address = $event)"
+  />
 </template>
 
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
 import {
   CHANNELS,
-  MAX_MODIFICATION_NAME_LENGTH,
-  MAX_MODIFICATION_PRICE,
-  MAX_MODIFICATION_WEIGHT,
-  MIN_MODIFICATION_PRICE,
-  MIN_MODIFICATION_WEIGHT,
-  createModificationAction,
-  updateModificationAction,
+  IAddress,
+  IWorkSchedule,
+  MAX_SALE_POINT_NAME_LENGTH,
+  createSalePointAction,
+  updateSalePointAction,
 } from "donut-shared";
 import { Notify } from "quasar";
-import { fractionalToWhole, wholeToFractional } from "src/lib/currency";
+import AddAddressModal from "src/components/AddAddressModal.vue";
+import EmailInput from "src/components/EmailInput.vue";
+import PhoneInput from "src/components/PhoneInput.vue";
+import { formatAddress } from "src/lib/address";
+import { generateRandomId } from "src/lib/generate-random-id";
 import { onFormValidationError } from "src/lib/on-form-validation-error";
 import { useStore } from "src/store";
 import { computed, ref, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 import BackButton from "../../../components/BackButton.vue";
 import BigSpinner from "../../../components/BigSpinner.vue";
-import PhotoUpload from "../../../components/PhotoUpload.vue";
-import { blobToBase64 } from "../../../lib/blob-to-base64";
-import { ERROR_TIMEOUT_MS, SUCCESS_TIMEOUT_MS } from "../../../lib/constants";
+import { SUCCESS_TIMEOUT_MS } from "../../../lib/constants";
 import { useI18nStore } from "../../../lib/i18n";
 
 const t = useI18nStore();
 const store = useStore();
 const router = useRouter();
 const isSubmitting = ref(false);
-
 const name = ref("");
-const imageUrl = ref("");
-const imageFile = ref<File>();
-const price = ref<number | string>("");
-const weight = ref<number | string>("");
+const phone = ref("");
+const email = ref("");
+const isDefault = ref(false);
+const address = ref<IAddress>();
+const workSchedule = ref<IWorkSchedule[]>([]);
+const isAddAddressModalOpen = ref(false);
 
 const id = computed(() => router.currentRoute.value.params.id);
-const originalModification = computed(() => {
+const originalSalePoint = computed(() => {
   return id.value
-    ? store.state.modifications.modifications.find((x) => x.id === id.value)
+    ? store.state.salePoints.salePoints.find((x) => x.id === id.value)
     : undefined;
 });
 const channels = computed(() =>
-  id.value && !originalModification.value ? [CHANNELS.MODIFICATIONS] : []
+  id.value && !originalSalePoint.value ? [CHANNELS.SALE_POINTS] : []
 );
 let isSubscribing = useSubscription(channels, { store: store as any });
 
+const filteredAddresses = computed(() => [address.value].filter(Boolean));
+const filterAddresses = (val: string, update: any) => {
+  update(() => {
+    //
+  });
+};
+
 const unsubscribe = watchEffect(
   () => {
-    if (originalModification.value) {
-      name.value = originalModification.value.name;
-      imageUrl.value = originalModification.value.imageUrl;
-      price.value = fractionalToWhole(originalModification.value.price);
-      weight.value = originalModification.value.weight;
+    if (originalSalePoint.value) {
+      name.value = originalSalePoint.value.name;
+      email.value = originalSalePoint.value.email;
+      phone.value = originalSalePoint.value.phone;
+      address.value = originalSalePoint.value.address;
+      isDefault.value = originalSalePoint.value.isDefault;
+      workSchedule.value = originalSalePoint.value.workSchedule;
+
       unsubscribe();
-    } else if (id.value && store.state.modifications.modifications.length) {
+    } else if (id.value && store.state.salePoints.salePoints.length) {
       router.push("/404");
     }
   },
@@ -141,39 +162,31 @@ const unsubscribe = watchEffect(
 );
 
 const onSubmit = async () => {
-  let imageBase64 = "";
-  try {
-    if (imageUrl.value && imageFile.value) {
-      imageBase64 = await blobToBase64(imageFile.value);
-    }
-  } catch {
-    Notify.create({
-      type: "negative",
-      position: "top",
-      timeout: ERROR_TIMEOUT_MS,
-      message: t.value.imageCorrupted,
-      multiLine: true,
-      group: false,
-    });
-    return;
-  }
-
   isSubmitting.value = true;
   store.commit
     .sync(
-      originalModification.value
-        ? updateModificationAction({
-            id: originalModification.value.id,
-            name: name.value,
-            price: wholeToFractional(+price.value || 0),
-            imageBase64,
-            weight: +weight.value || 0,
+      originalSalePoint.value
+        ? updateSalePointAction({
+            salePoint: {
+              id: originalSalePoint.value.id,
+              name: name.value,
+              address: address.value,
+              email: email.value,
+              workSchedule: workSchedule.value,
+              isDefault: isDefault.value,
+              phone: phone.value,
+            },
           })
-        : createModificationAction({
-            name: name.value,
-            price: wholeToFractional(+price.value || 0),
-            imageBase64,
-            weight: +weight.value || 0,
+        : createSalePointAction({
+            salePoint: {
+              id: generateRandomId(),
+              name: name.value,
+              address: address.value,
+              email: email.value,
+              workSchedule: workSchedule.value,
+              isDefault: isDefault.value,
+              phone: phone.value,
+            },
           })
     )
     .then(() => {
@@ -181,13 +194,13 @@ const onSubmit = async () => {
         type: "positive",
         position: "top",
         timeout: SUCCESS_TIMEOUT_MS,
-        message: originalModification.value
+        message: originalSalePoint.value
           ? t.value.updateSuccess
           : t.value.createSuccess,
         multiLine: true,
         group: false,
       });
-      router.push("/admin/modifications");
+      router.push("/admin/sale-points");
     })
     .finally(() => {
       isSubmitting.value = false;

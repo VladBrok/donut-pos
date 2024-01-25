@@ -24,28 +24,28 @@ export interface ISalePoint {
 
 export const loadSalePointsAction = createAction<{
   salePoints: ISalePoint[];
-}>("sale-points/load");
+}>("salePoints/load");
 
 export const deleteSalePointAction = createAction<{
   id: string;
-}>("sale-points/delete");
+}>("salePoints/delete");
 
 export const createSalePointAction = createAction<{
   salePoint: ISalePoint;
-}>("sale-points/create");
+}>("salePoints/create");
 
 export const salePointCreatedAction = createAction<{
   salePoint: ISalePoint;
-}>("sale-points/created");
+}>("salePoints/created");
 
 export const updateSalePointAction = createAction<{
   salePoint: ISalePoint;
-}>("sale-points/update");
+}>("salePoints/update");
 
 export const salePointUpdatedAction = createAction<{
   salePoint: ISalePoint;
-}>("sale-points/updated");
+}>("salePoints/updated");
 
 export const salePointDeletedAction = createAction<{
   id: string;
-}>("sale-points/deleted");
+}>("salePoints/deleted");
