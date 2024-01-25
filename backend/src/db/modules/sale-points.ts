@@ -1,10 +1,6 @@
 import { ISalePoint } from "donut-shared";
 import { Param, eq, sql } from "drizzle-orm";
-import {
-  address,
-  modification,
-  salePoint,
-} from "../../../migrations/schema.js";
+import { address, salePoint } from "../../../migrations/schema.js";
 import { generateUuid } from "../../lib/uuid.js";
 import { db } from "../index.js";
 import { salePointsAdapter } from "../schema-to-model-adapters.js";
@@ -40,11 +36,32 @@ export async function createSalePoint(data: ISalePoint) {
 }
 
 export async function updateSalePoint(data: ISalePoint) {
-  await db
-    .update(modification)
-    .set({
-      ...data,
-    })
-    .where(eq(modification.id, data.id || ""));
-  return data;
+  const theSalePoint = (await getAllSalePoints(data.id))[0];
+
+  await db.transaction(async (tx) => {
+    const newAddressId = generateUuid();
+    const addressId =
+      theSalePoint.address.id === data.address.id
+        ? data.address.id
+        : newAddressId;
+    if (theSalePoint.address.id !== data.address.id) {
+      await tx.insert(address).values({
+        ...data.address,
+        id: newAddressId,
+      });
+    }
+
+    const toUpdate: Partial<ISalePoint> = structuredClone(data);
+    delete toUpdate.address;
+    await tx
+      .update(salePoint)
+      .set({
+        ...toUpdate,
+        workSchedule: sql`${new Param(data.workSchedule)}`,
+        addressId: addressId,
+      })
+      .where(eq(salePoint.id, data.id || ""));
+  });
+
+  return (await getAllSalePoints(data.id))[0];
 }
