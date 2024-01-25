@@ -163,6 +163,11 @@ export const messages = i18n("messages", {
   dishCount: "Dishes",
   total: "Total, zł",
   totalCost: "Total",
+  noLunchBreak: "No lunch break",
+  addLunchBreak: "Add lunch break",
+  addWorkTime: "Add work time",
+  removeLunchBreak: "Remove lunch break",
+  removeWorkTime: "Remove work time",
   delivery: "Delivery",
   copyOrderNumber: "Copy order number to clipboard",
   outOfStock: "Out of stock",
@@ -181,6 +186,8 @@ export const messages = i18n("messages", {
   amountHint: "Amount given by customer",
   totalToPay: "Total",
   change: "Change",
+  workSchedule: "Work schedule",
+  weekend: "Weekend",
   makeSureChangeGiven: "Make sure you give the customer the change",
   paid: "Paid",
   cashPaymentRequest: "Cash payment request",
@@ -257,6 +264,16 @@ export const messages = i18n("messages", {
   orderStatus_paid: "Paid",
   orderStatus_delivering: "Delivering",
   orderStatus_delivered: "Delivered",
+
+  // Days of week
+  // Sunday - Saturday : 0 - 6
+  dayOfWeekShort0: "Sun",
+  dayOfWeekShort1: "Mon",
+  dayOfWeekShort2: "Tue",
+  dayOfWeekShort3: "Wed",
+  dayOfWeekShort4: "Thu",
+  dayOfWeekShort5: "Fri",
+  dayOfWeekShort6: "Sat",
 
   // Order types
   [`orderType_${ORDER_TYPES.DINE_IN}`]: "Dine in",

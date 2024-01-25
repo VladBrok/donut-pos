@@ -27,6 +27,10 @@ a:hover {
   pointer-events: none;
 }
 
+.text-no-wrap {
+  white-space: nowrap;
+}
+
 .overflow-x-hidden {
   overflow-x: hidden;
 }

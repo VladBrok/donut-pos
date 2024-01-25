@@ -12,7 +12,6 @@ const mutation: MutationTree<ISalePointsState> = {
     state: ISalePointsState,
     action: ReturnType<typeof loadSalePointsAction>
   ) {
-    console.log("load");
     state.salePoints = action.payload.salePoints;
   },
 

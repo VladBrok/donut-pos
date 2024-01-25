@@ -60,6 +60,15 @@
             size="lg"
             left-label
           />
+          <div>
+            <p class="q-mb-sm">
+              {{ t.workSchedule }}
+            </p>
+            <work-schedule
+              :schedule="workSchedule"
+              @update-schedule="workSchedule = $event"
+            />
+          </div>
         </q-card-section>
       </q-card>
       <div class="row justify-end q-gutter-sm q-mt-md">
@@ -100,6 +109,7 @@ import { Notify } from "quasar";
 import AddAddressModal from "src/components/AddAddressModal.vue";
 import EmailInput from "src/components/EmailInput.vue";
 import PhoneInput from "src/components/PhoneInput.vue";
+import WorkSchedule from "src/components/WorkSchedule.vue";
 import { formatAddress } from "src/lib/address";
 import { generateRandomId } from "src/lib/generate-random-id";
 import { onFormValidationError } from "src/lib/on-form-validation-error";
@@ -120,7 +130,19 @@ const phone = ref("");
 const email = ref("");
 const isDefault = ref(false);
 const address = ref<IAddress>();
-const workSchedule = ref<IWorkSchedule[]>([]);
+const workSchedule = ref<IWorkSchedule[]>(
+  Array<IWorkSchedule[]>(7)
+    .fill(null as any)
+    .map((_, i) => {
+      return {
+        openingTime: i === 6 ? null : "",
+        closingTime: i === 6 ? null : "",
+        breakStart: null,
+        breakEnd: null,
+        dayOfWeek: (i + 1) % 7,
+      };
+    })
+);
 const isAddAddressModalOpen = ref(false);
 
 const id = computed(() => router.currentRoute.value.params.id);
@@ -151,7 +173,9 @@ const unsubscribe = watchEffect(
       phone.value = originalSalePoint.value.phone;
       address.value = originalSalePoint.value.address;
       isDefault.value = originalSalePoint.value.isDefault;
-      workSchedule.value = originalSalePoint.value.workSchedule;
+      workSchedule.value = originalSalePoint.value.workSchedule
+        .slice()
+        .map((x) => ({ ...x }));
 
       unsubscribe();
     } else if (id.value && store.state.salePoints.salePoints.length) {

@@ -6,10 +6,10 @@ export interface IWorkSchedule {
    * Sunday - Saturday : 0 - 6
    */
   dayOfWeek: number;
-  openingTime: string;
-  closingTime: string;
-  breakStart: string;
-  breakEnd: string;
+  openingTime: string | null;
+  closingTime: string | null;
+  breakStart: string | null;
+  breakEnd: string | null;
 }
 
 export interface ISalePoint {
