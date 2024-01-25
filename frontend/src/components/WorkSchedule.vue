@@ -34,9 +34,10 @@
           </q-tooltip>
         </q-btn>
         <q-input
+          hide-bottom-space
+          no-error-icon
           v-if="scheduleEntry.openingTime != null"
           lazy-rules
-          hide-bottom-space
           dense
           v-model="scheduleEntry.openingTime"
           mask="time"
@@ -45,9 +46,10 @@
         </q-input>
         <span v-if="scheduleEntry.openingTime != null">—</span>
         <q-input
+          hide-bottom-space
+          no-error-icon
           v-if="scheduleEntry.openingTime != null"
           lazy-rules
-          hide-bottom-space
           dense
           v-model="scheduleEntry.closingTime"
           mask="time"
@@ -103,8 +105,9 @@
         >
         </q-icon>
         <q-input
-          lazy-rules
           hide-bottom-space
+          no-error-icon
+          lazy-rules
           dense
           v-if="scheduleEntry.breakStart != null"
           v-model="scheduleEntry.breakStart"
@@ -114,8 +117,9 @@
         </q-input>
         <span v-if="scheduleEntry.breakStart != null">—</span>
         <q-input
-          lazy-rules
           hide-bottom-space
+          no-error-icon
+          lazy-rules
           dense
           v-if="scheduleEntry.breakStart != null"
           v-model="scheduleEntry.breakEnd"
@@ -167,6 +171,12 @@ watch(workSchedule, () => {
 watch(
   originalSchedule,
   () => {
+    if (
+      JSON.stringify(originalSchedule.value) === JSON.stringify(workSchedule)
+    ) {
+      return;
+    }
+
     workSchedule.splice(0, workSchedule.length, ...originalSchedule.value);
   },
   { immediate: true }
