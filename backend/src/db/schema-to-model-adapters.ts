@@ -302,6 +302,7 @@ export const clientAdapter = (data: ClientSchema[]): IClient[] => {
     lastName: x.client.lastName || "",
     registeredAt: x.client.registeredAt?.toISOString() || "",
     passwordHash: x.client.passwordHash || "",
+    isAnonymous: x.client.isAnonymous || false,
   }));
 };
 

@@ -60,6 +60,7 @@ export const messages = i18n("messages", {
   waiter: "Waiter",
   phone: "Phone",
   isPhoneVerified: "Phone verified",
+  isAnonymous: "Anonymous",
   isDefault: "Default",
   email: "Email",
   address: "Address",
