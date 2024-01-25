@@ -47,19 +47,6 @@ Table cash_payment_request {
   }
 }
 
-Table work_schedule {
-  id UUID [pk]
-  sale_point_id UUID
-  day_of_week INT // 0 - Sunday, 1 - Monday, ...
-  start TIME
-  end TIME
-  pause_start TIME
-  pause_end TIME
-  Indexes {
-    sale_point_id [name: 'work_schedule_sale_point_id_idx']
-  } 
-}
-
 Table permission {
   id UUID [pk]
   code_name TEXT // e.g. "create_menu"
@@ -125,6 +112,7 @@ Table sale_point {
   phone TEXT
   email TEXT
   is_default BOOLEAN
+  work_schedule JSONB
   Indexes {
     address_id [name: 'sale_point_address_id_idx']
   }
@@ -201,7 +189,6 @@ Ref: order_to_dishes.order_id > order.id [delete: set null]
 Ref: cash_payment_request.order_id > order.id [delete: set null]
 Ref: address.client_id > client.id [delete: set null]
 Ref: dish.category_id > dish_category.id [delete: set null]
-Ref: work_schedule.sale_point_id > sale_point.id [delete: set null]
 Ref: role_to_permission.role_id > role.id [delete: set null]
 Ref: role_to_permission.permission_id > permission.id [delete: set null]
 Ref: employee.role_id > role.id [delete: set null]
