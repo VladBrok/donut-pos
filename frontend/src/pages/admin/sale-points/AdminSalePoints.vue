@@ -4,7 +4,7 @@
     <q-table
       v-else
       class="q-mx-auto max-w-xl sticky-last-column-table"
-      :rows="modificationsFiltered"
+      :rows="salePointsFiltered"
       :columns="columns"
       row-key="id"
       binary-state-sort
@@ -28,8 +28,8 @@
         <q-btn
           color="primary"
           icon="add"
-          :label="t.addModification"
-          to="/admin/modifications/create"
+          :label="t.addSalePoint"
+          to="/admin/sale-points/create"
         />
       </template>
       <template v-slot:body-cell-index="props">
@@ -37,12 +37,18 @@
           {{ props.rowIndex + 1 }}
         </q-td>
       </template>
-      <template v-slot:body-cell-image="props">
+      <template v-slot:body-cell-isDefault="props">
         <q-td :props="props">
-          <q-img
-            :src="props.row.imageUrl"
-            fit="cover"
-            class="rounded-borders image-sm"
+          <q-radio
+            class="disabled-cursor-default"
+            :model-value="'true'"
+            checked-icon="task_alt"
+            unchecked-icon="close"
+            :val="props.row.isDefault.toString()"
+            label=""
+            disable
+            :color="props.row.isDefault ? 'positive' : 'negative'"
+            keep-color
           />
         </q-td>
       </template>
@@ -56,7 +62,7 @@
             dense
             class="q-mr-sm"
             @click.stop
-            :to="`/admin/modifications/update/${props.row.id}`"
+            :to="`/admin/sale-points/update/${props.row.id}`"
           >
           </q-btn>
           <q-btn
@@ -71,7 +77,7 @@
         </q-td>
       </template>
       <template v-slot:no-data>
-        <no-data></no-data>
+        <no-data />
       </template>
     </q-table>
 
@@ -80,7 +86,7 @@
       @update:model-value="confirmDelete = null"
     >
       <template #body>
-        {{ t.confirmModificationDelete }}
+        {{ t.confirmSalePointDelete }}
         <span class="text-weight-bold">"{{ confirmDelete?.name || "" }}"</span>?
       </template>
       <template #confirmButton>
@@ -97,9 +103,16 @@
 
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
-import { CHANNELS, assert, deleteModificationAction } from "donut-shared";
+import {
+  CHANNELS,
+  IAddress,
+  ISalePoint,
+  assert,
+  deleteSalePointAction,
+} from "donut-shared";
 import { Notify } from "quasar";
-import { formatCurrency } from "src/lib/currency";
+import { formatAddress } from "src/lib/address";
+import { formatPhoneNumber } from "src/lib/phone";
 import { useStore } from "src/store";
 import { computed, ref } from "vue";
 import BigSpinner from "../../../components/BigSpinner.vue";
@@ -111,24 +124,30 @@ import {
 } from "../../../lib/constants";
 import { createFuzzySearcher } from "../../../lib/fuzzy-search";
 import { useI18nStore } from "../../../lib/i18n";
-import { IModificationsState } from "../../../store/modifications/state";
 
 const store = useStore();
-const modifications = computed(() => store.state.modifications.modifications);
+const salePoints = computed(() => store.state.salePoints.salePoints);
 const fuzzySearch = computed(() =>
-  createFuzzySearcher(modifications.value, ["name", "price", "weight"])
+  createFuzzySearcher(salePoints.value, [
+    "name",
+    "phone",
+    "email",
+    "isDefault",
+    "address.city",
+    "address.street",
+    "address.homeNumber",
+    "address.postalCode",
+  ])
 );
-const modificationsFiltered = computed(() =>
+const salePointsFiltered = computed(() =>
   fuzzySearch.value.search(searchInput.value)
 );
 const channels = computed(() => {
-  return [CHANNELS.MODIFICATIONS];
+  return [CHANNELS.SALE_POINTS];
 });
 let isSubscribing = useSubscription(channels, { store: store as any });
 const t = useI18nStore();
-const confirmDelete = ref<null | IModificationsState["modifications"][number]>(
-  null
-);
+const confirmDelete = ref<null | ISalePoint>(null);
 const isDeleting = ref(false);
 const searchInput = ref("");
 
@@ -140,12 +159,6 @@ const columns: any[] = [
     align: "center",
   },
   {
-    name: "image",
-    label: t.value.image,
-    align: "center",
-    field: "imageUrl",
-  },
-  {
     name: "name",
     label: t.value.name,
     align: "center",
@@ -153,24 +166,35 @@ const columns: any[] = [
     sortable: true,
   },
   {
-    name: "price",
-    label: t.value.price,
+    name: "address",
+    label: t.value.address,
     align: "center",
-    field: "price",
-    sortable: true,
-    format: (x: number) => formatCurrency(x, false),
+    field: "address",
+    format: (x: IAddress) => formatAddress(x),
   },
   {
-    name: "weight",
-    label: t.value.weight,
+    name: "phone",
+    label: t.value.phone,
     align: "center",
-    field: "weight",
-    sortable: true,
+    field: "phone",
+    format: (val: string) => formatPhoneNumber(val),
+  },
+  {
+    name: "email",
+    label: t.value.email,
+    align: "center",
+    field: "email",
+  },
+  {
+    name: "isDefault",
+    label: t.value.isDefault,
+    align: "center",
+    field: "isDefault",
   },
   { name: "actions", label: "", align: "right" },
 ];
 
-const onDeleteAttempt = (row: IModificationsState["modifications"][number]) => {
+const onDeleteAttempt = (row: ISalePoint) => {
   confirmDelete.value = row;
 };
 
@@ -181,7 +205,7 @@ const onDeleteConfirmed = () => {
   isDeleting.value = true;
   store.commit
     .sync(
-      deleteModificationAction({
+      deleteSalePointAction({
         id: toDelete,
       })
     )
