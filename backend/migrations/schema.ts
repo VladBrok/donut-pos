@@ -35,6 +35,7 @@ export const salePoint = pgTable("sale_point", {
 	name: text("name"),
 	phone: text("phone"),
 	isDefault: boolean("is_default"),
+	email: text("email"),
 },
 (table) => {
 	return {

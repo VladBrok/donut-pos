@@ -93,6 +93,7 @@ CREATE TABLE "sale_point" (
   "address_id" UUID,
   "name" TEXT,
   "phone" TEXT,
+  "email" TEXT,
   "is_default" BOOLEAN
 );
 

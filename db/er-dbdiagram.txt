@@ -123,6 +123,7 @@ Table sale_point {
   address_id UUID
   name TEXT
   phone TEXT
+  email TEXT
   is_default BOOLEAN
   Indexes {
     address_id [name: 'sale_point_address_id_idx']
