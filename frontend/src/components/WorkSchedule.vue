@@ -3,13 +3,10 @@
     <div
       v-for="(scheduleEntry, i) of workSchedule"
       :key="i"
-      class="row no-wrap gap-md q-mb-sm"
+      class="work-schedule-entry no-wrap"
     >
-      <div
-        class="row items-center gap-sm no-wrap"
-        style="flex-basis: 240px; flex-shrink: 0; flex-grow: 0"
-      >
-        <div style="flex: 0 0 30px">
+      <div class="work-schedule-entry-left row items-center gap-sm no-wrap">
+        <div class="work-schedule-day-of-week">
           {{ t[`dayOfWeekShort${scheduleEntry.dayOfWeek}`] }}
         </div>
         <p
@@ -91,7 +88,7 @@
 
       <div
         v-if="scheduleEntry.openingTime != null"
-        class="row items-center no-wrap gap-sm"
+        class="work-schedule-entry-right row items-center no-wrap gap-sm"
       >
         <p
           v-if="scheduleEntry.breakStart == null"
