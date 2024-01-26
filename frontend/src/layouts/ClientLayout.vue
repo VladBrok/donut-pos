@@ -142,7 +142,10 @@ const userId = ref(store.state.auth.user.userId);
 const channels = computed(() => {
   return userId.value === ANONYMOUS.userId
     ? []
-    : [CHANNELS.COOKED_ORDERS_OF_CLIENT(userId.value)];
+    : [
+        CHANNELS.COOKED_ORDERS_OF_CLIENT(userId.value),
+        CHANNELS.DEFAULT_SALE_POINT,
+      ];
 });
 let isSubscribing = useSubscription(channels, { store: store as any });
 const cookedOrders = computed(() => store.state.orders.cookedOrders);

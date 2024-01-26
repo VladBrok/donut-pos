@@ -1,18 +1,34 @@
 import { ISalePoint } from "donut-shared";
-import { Param, eq, sql } from "drizzle-orm";
+import { Param, and, eq, sql } from "drizzle-orm";
 import { address, salePoint } from "../../../migrations/schema.js";
 import { generateUuid } from "../../lib/uuid.js";
 import { db } from "../index.js";
 import { salePointsAdapter } from "../schema-to-model-adapters.js";
 
-export async function getAllSalePoints(id?: string): Promise<ISalePoint[]> {
+export interface IGetSalePointsParams {
+  id?: string;
+  selectDefault?: boolean;
+}
+
+export async function getAllSalePoints(
+  params?: IGetSalePointsParams
+): Promise<ISalePoint[]> {
   const data = await db
     .select()
     .from(salePoint)
     .leftJoin(address, eq(address.id, salePoint.addressId))
-    .where(id ? eq(salePoint.id, id) : undefined);
+    .where(
+      and(
+        params?.id ? eq(salePoint.id, params.id) : undefined,
+        params?.selectDefault ? eq(salePoint.isDefault, true) : undefined
+      )
+    );
 
   return salePointsAdapter(data);
+}
+
+export async function getDefaultSalePoint(): Promise<ISalePoint | undefined> {
+  return (await getAllSalePoints({ selectDefault: true }))[0];
 }
 
 export async function deleteSalePoint(id: string) {
@@ -36,11 +52,11 @@ export async function createSalePoint(data: ISalePoint) {
     });
   });
 
-  return (await getAllSalePoints(toCreate.id))[0];
+  return (await getAllSalePoints({ id: toCreate.id }))[0];
 }
 
 export async function updateSalePoint(data: ISalePoint) {
-  const theSalePoint = (await getAllSalePoints(data.id))[0];
+  const theSalePoint = (await getAllSalePoints({ id: data.id }))[0];
 
   await db.transaction(async (tx) => {
     if (data.isDefault && !theSalePoint.isDefault) {
@@ -71,5 +87,5 @@ export async function updateSalePoint(data: ISalePoint) {
       .where(eq(salePoint.id, data.id || ""));
   });
 
-  return (await getAllSalePoints(data.id))[0];
+  return (await getAllSalePoints({ id: data.id }))[0];
 }

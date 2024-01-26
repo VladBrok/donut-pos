@@ -9,6 +9,7 @@ import {
   salePointUpdatedAction,
   updateSalePointAction,
 } from "donut-shared";
+import { loadDefaultSalePointAction } from "donut-shared/src/actions/sale-points.js";
 import * as db from "../db/modules/sale-points.js";
 import { hasAdminPermission } from "../lib/access.js";
 
@@ -20,6 +21,16 @@ export default function salePointsModule(server: Server) {
     async load() {
       const salePoints = await db.getAllSalePoints();
       return loadSalePointsAction({ salePoints });
+    },
+  });
+
+  server.channel(CHANNELS.DEFAULT_SALE_POINT, {
+    async access(ctx) {
+      return Boolean(ctx.userId);
+    },
+    async load() {
+      const salePoint = await db.getDefaultSalePoint();
+      return loadDefaultSalePointAction({ salePoint });
     },
   });
 

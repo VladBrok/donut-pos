@@ -26,6 +26,10 @@ export const loadSalePointsAction = createAction<{
   salePoints: ISalePoint[];
 }>("salePoints/load");
 
+export const loadDefaultSalePointAction = createAction<{
+  salePoint?: ISalePoint;
+}>("salePoints/loadDefault");
+
 export const deleteSalePointAction = createAction<{
   id: string;
 }>("salePoints/delete");

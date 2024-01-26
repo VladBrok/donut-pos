@@ -3,6 +3,7 @@ export const CHANNELS = {
   DISHES: "dishes",
   MODIFICATIONS: "modifications",
   SALE_POINTS: "salePoints",
+  DEFAULT_SALE_POINT: "defaultSalePoint",
   EMPLOYEES: "employees",
   ROLES: "roles",
   CLIENTS: "clients",

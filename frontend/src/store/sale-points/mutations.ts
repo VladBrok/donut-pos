@@ -4,6 +4,7 @@ import {
   salePointDeletedAction,
   salePointUpdatedAction,
 } from "donut-shared";
+import { loadDefaultSalePointAction } from "donut-shared/src/actions/sale-points";
 import { MutationTree } from "vuex";
 import { ISalePointsState } from "./state";
 
@@ -13,6 +14,13 @@ const mutation: MutationTree<ISalePointsState> = {
     action: ReturnType<typeof loadSalePointsAction>
   ) {
     state.salePoints = action.payload.salePoints;
+  },
+
+  loadDefault(
+    state: ISalePointsState,
+    action: ReturnType<typeof loadDefaultSalePointAction>
+  ) {
+    state.defaultSalePoint = action.payload.salePoint;
   },
 
   deleted(
