@@ -26,7 +26,6 @@
             fill-input
             stack-label
             hide-selected
-            clearable
             input-debounce="0"
             :options="filteredAddresses"
             @filter="filterAddresses"

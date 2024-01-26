@@ -53,7 +53,7 @@ export default function salePointsModule(server: Server) {
       return false;
     },
     resend() {
-      return CHANNELS.SALE_POINTS;
+      return [CHANNELS.SALE_POINTS, CHANNELS.DEFAULT_SALE_POINT];
     },
   });
 
@@ -76,7 +76,7 @@ export default function salePointsModule(server: Server) {
       return false;
     },
     resend() {
-      return CHANNELS.SALE_POINTS;
+      return [CHANNELS.SALE_POINTS, CHANNELS.DEFAULT_SALE_POINT];
     },
   });
 
@@ -100,7 +100,7 @@ export default function salePointsModule(server: Server) {
       return false;
     },
     resend() {
-      return CHANNELS.SALE_POINTS;
+      return [CHANNELS.SALE_POINTS, CHANNELS.DEFAULT_SALE_POINT];
     },
   });
 }

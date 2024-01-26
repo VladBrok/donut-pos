@@ -30,6 +30,10 @@ const mutation: MutationTree<ISalePointsState> = {
     state.salePoints = state.salePoints.filter(
       (x) => x.id !== action.payload.id
     );
+
+    if (state.defaultSalePoint?.id === action.payload.id) {
+      state.defaultSalePoint = undefined;
+    }
   },
 
   created(
@@ -37,6 +41,9 @@ const mutation: MutationTree<ISalePointsState> = {
     action: ReturnType<typeof salePointCreatedAction>
   ) {
     state.salePoints.push(action.payload.salePoint);
+    if (action.payload.salePoint.isDefault) {
+      state.defaultSalePoint = action.payload.salePoint;
+    }
   },
 
   updated(
@@ -48,6 +55,13 @@ const mutation: MutationTree<ISalePointsState> = {
     );
     if (salePoint) {
       Object.assign(salePoint, action.payload);
+    }
+
+    if (
+      state.defaultSalePoint?.id === action.payload.salePoint.id ||
+      action.payload.salePoint.isDefault
+    ) {
+      state.defaultSalePoint = action.payload.salePoint;
     }
   },
 };
