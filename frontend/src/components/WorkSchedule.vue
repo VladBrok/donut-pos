@@ -41,14 +41,30 @@
           dense
           v-model="scheduleEntry.openingTime"
           mask="time"
-          :rules="['time', (val) => !!val || t.fieldRequired]"
+          reactive-rules
+          :rules="[
+            'time',
+            (val) => !!val || t.fieldRequired,
+            (val) =>
+              !dayjs(scheduleEntry.closingTime, 'HH:mm', true).isValid() ||
+              dayjs(val, 'HH:mm').isBefore(
+                dayjs(scheduleEntry.closingTime, 'HH:mm')
+              ) ||
+              t.openingTimeBeforeClosing,
+            (val) =>
+              !dayjs(scheduleEntry.breakStart, 'HH:mm', true).isValid() ||
+              dayjs(val, 'HH:mm').isBefore(
+                dayjs(scheduleEntry.breakStart, 'HH:mm')
+              ) ||
+              t.openingTimeBeforeBreakStart,
+          ]"
         >
         </q-input>
         <span v-if="scheduleEntry.openingTime != null">—</span>
         <q-input
+          v-if="scheduleEntry.openingTime != null"
           hide-bottom-space
           no-error-icon
-          v-if="scheduleEntry.openingTime != null"
           lazy-rules
           dense
           v-model="scheduleEntry.closingTime"
@@ -105,26 +121,46 @@
         >
         </q-icon>
         <q-input
+          v-if="scheduleEntry.breakStart != null"
+          reactive-rules
           hide-bottom-space
           no-error-icon
           lazy-rules
           dense
-          v-if="scheduleEntry.breakStart != null"
           v-model="scheduleEntry.breakStart"
           mask="time"
-          :rules="['time', (val) => !!val || t.fieldRequired]"
+          :rules="[
+            'time',
+            (val) => !!val || t.fieldRequired,
+            (val) =>
+              !dayjs(scheduleEntry.breakEnd, 'HH:mm', true).isValid() ||
+              dayjs(val, 'HH:mm').isBefore(
+                dayjs(scheduleEntry.breakEnd, 'HH:mm')
+              ) ||
+              t.breakStartBeforeEnd,
+          ]"
         >
         </q-input>
         <span v-if="scheduleEntry.breakStart != null">—</span>
         <q-input
+          v-if="scheduleEntry.breakStart != null"
           hide-bottom-space
           no-error-icon
           lazy-rules
           dense
-          v-if="scheduleEntry.breakStart != null"
+          reactive-rules
           v-model="scheduleEntry.breakEnd"
           mask="time"
-          :rules="['time', (val) => !!val || t.fieldRequired]"
+          :rules="[
+            'time',
+            (val) => !!val || t.fieldRequired,
+            (val) =>
+              !dayjs(scheduleEntry.closingTime, 'HH:mm', true).isValid() ||
+              dayjs(val, 'HH:mm').isBefore(
+                dayjs(scheduleEntry.closingTime, 'HH:mm')
+              ) ||
+              t.breakEndBeforeClosing,
+          ]"
         >
         </q-input>
         <q-btn
@@ -148,6 +184,7 @@
 </template>
 
 <script setup lang="ts">
+import dayjs from "dayjs";
 import { IWorkSchedule } from "donut-shared";
 import { useI18nStore } from "src/lib/i18n";
 import { computed, reactive, watch } from "vue";
