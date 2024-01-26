@@ -1,4 +1,4 @@
-import { pgTable, index, foreignKey, pgEnum, uuid, text, boolean, integer, time, timestamp, jsonb } from "drizzle-orm/pg-core"
+import { pgTable, index, foreignKey, pgEnum, uuid, text, boolean, jsonb, timestamp, integer } from "drizzle-orm/pg-core"
 
 import { sql } from "drizzle-orm"
 export const keyStatus = pgEnum("key_status", ['default', 'valid', 'invalid', 'expired'])
@@ -35,25 +35,12 @@ export const salePoint = pgTable("sale_point", {
 	name: text("name"),
 	phone: text("phone"),
 	isDefault: boolean("is_default"),
+	email: text("email"),
+	workSchedule: jsonb("work_schedule"),
 },
 (table) => {
 	return {
 		addressIdIdx: index("sale_point_address_id_idx").on(table.addressId),
-	}
-});
-
-export const workSchedule = pgTable("work_schedule", {
-	id: uuid("id").primaryKey().notNull(),
-	salePointId: uuid("sale_point_id").references(() => salePoint.id, { onDelete: "set null" } ).references(() => salePoint.id, { onDelete: "set null" } ).references(() => salePoint.id, { onDelete: "set null" } ).references(() => salePoint.id, { onDelete: "set null" } ),
-	dayOfWeek: integer("day_of_week"),
-	start: time("start"),
-	end: time("end"),
-	pauseStart: time("pause_start"),
-	pauseEnd: time("pause_end"),
-},
-(table) => {
-	return {
-		salePointIdIdx: index("work_schedule_sale_point_id_idx").on(table.salePointId),
 	}
 });
 

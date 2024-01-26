@@ -13,7 +13,6 @@
         <big-spinner v-if="isSubscribing" />
         <div v-else>
           <div>
-            <!-- TODO: add client autotomplete field -->
             <q-select
               :model-value="
                 orderTypes.find((x) => x.value === order?.type) ||

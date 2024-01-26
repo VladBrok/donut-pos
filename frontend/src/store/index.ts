@@ -17,6 +17,7 @@ import { ICurrentOrderState } from "src/store/current-order/state";
 import { IDiningTablesState } from "src/store/dining-tables/state";
 import { IOrderDrawerState } from "src/store/order-drawer/state";
 import { IOrdersState } from "src/store/orders/state";
+import { ISalePointsState } from "src/store/sale-points/state";
 import { IWelcomeBannerState } from "src/store/welcome-banner/state";
 import { createClient } from "../lib/logux/create-client";
 import { setErrorHandler } from "../lib/logux/set-error-handler";
@@ -41,6 +42,7 @@ import orderDrawer from "./order-drawer";
 import orders from "./orders";
 import roles from "./roles";
 import { IRolesState } from "./roles/state";
+import salePoints from "./sale-points";
 import welcomeBanner from "./welcome-banner";
 
 export interface StateInterface {
@@ -58,6 +60,7 @@ export interface StateInterface {
   cashPaymentRequests: ICashPaymentRequestsState;
   clients: IClientsState;
   addresses: IAddressesState;
+  salePoints: ISalePointsState;
 }
 
 // provide typings for `this.$store`
@@ -100,6 +103,7 @@ export default store(function (/* { ssrContext } */) {
     cashPaymentRequests,
     clients,
     addresses,
+    salePoints,
   };
 
   for (const module of Object.values(modules)) {

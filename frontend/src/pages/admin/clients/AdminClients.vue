@@ -63,6 +63,21 @@
           />
         </q-td>
       </template>
+      <template v-slot:body-cell-isAnonymous="props">
+        <q-td :props="props">
+          <q-radio
+            class="disabled-cursor-default"
+            :model-value="'true'"
+            checked-icon="task_alt"
+            unchecked-icon="close"
+            :val="props.row.isAnonymous?.toString()"
+            label=""
+            disable
+            :color="props.row.isAnonymous ? 'positive' : 'negative'"
+            keep-color
+          />
+        </q-td>
+      </template>
       <template v-slot:no-data>
         <no-data></no-data>
       </template>
@@ -147,6 +162,12 @@ const columns: any[] = [
     label: t.value.isPhoneVerified,
     align: "center",
     field: "isPhoneVerified",
+  },
+  {
+    name: "isAnonymous",
+    label: t.value.isAnonymous,
+    align: "center",
+    field: "isAnonymous",
   },
 ];
 

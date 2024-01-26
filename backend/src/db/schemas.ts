@@ -13,6 +13,7 @@ import {
   permission,
   role,
   roleToPermission,
+  salePoint,
 } from "migrations/schema.js";
 
 export type EmployeeSchema = {
@@ -78,4 +79,9 @@ export type CashPaymentRequestSchema = {
   [cashPaymentRequest._.name]: typeof cashPaymentRequest.$inferSelect;
   [order._.name]: typeof order.$inferSelect | null;
   [diningTable._.name]: typeof diningTable.$inferSelect | null;
+};
+
+export type SalePointSchema = {
+  [salePoint._.name]: typeof salePoint.$inferSelect;
+  [address._.name]: typeof address.$inferSelect | null;
 };

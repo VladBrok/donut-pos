@@ -218,6 +218,7 @@ export async function createOrder(
             firstName: data.client?.firstName,
             phone: data.client?.phone,
             isAnonymous: true,
+            registeredAt: new Date(new Date().toISOString()),
           });
           orderToCreate.address.clientId = newClientId;
         }

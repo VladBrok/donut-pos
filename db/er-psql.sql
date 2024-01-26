@@ -32,16 +32,6 @@ CREATE TABLE "cash_payment_request" (
   "total_cost" INT
 );
 
-CREATE TABLE "work_schedule" (
-  "id" UUID PRIMARY KEY,
-  "sale_point_id" UUID,
-  "day_of_week" INT,
-  "start" TIME,
-  "end" TIME,
-  "pause_start" TIME,
-  "pause_end" TIME
-);
-
 CREATE TABLE "permission" (
   "id" UUID PRIMARY KEY,
   "code_name" TEXT
@@ -93,7 +83,9 @@ CREATE TABLE "sale_point" (
   "address_id" UUID,
   "name" TEXT,
   "phone" TEXT,
-  "is_default" BOOLEAN
+  "email" TEXT,
+  "is_default" BOOLEAN,
+  "work_schedule" JSONB
 );
 
 CREATE TABLE "dish_to_sale_point" (
@@ -155,8 +147,6 @@ CREATE INDEX "client_is_anonymous_idx" ON "client" ("is_anonymous");
 
 CREATE INDEX "cash_payment_request_order_id_idx" ON "cash_payment_request" ("order_id");
 
-CREATE INDEX "work_schedule_sale_point_id_idx" ON "work_schedule" ("sale_point_id");
-
 CREATE INDEX "role_to_permission_role_id_idx" ON "role_to_permission" ("role_id");
 
 CREATE INDEX "role_to_permission_permission_id_idx" ON "role_to_permission" ("permission_id");
@@ -204,8 +194,6 @@ ALTER TABLE "cash_payment_request" ADD FOREIGN KEY ("order_id") REFERENCES "orde
 ALTER TABLE "address" ADD FOREIGN KEY ("client_id") REFERENCES "client" ("id") ON DELETE SET NULL;
 
 ALTER TABLE "dish" ADD FOREIGN KEY ("category_id") REFERENCES "dish_category" ("id") ON DELETE SET NULL;
-
-ALTER TABLE "work_schedule" ADD FOREIGN KEY ("sale_point_id") REFERENCES "sale_point" ("id") ON DELETE SET NULL;
 
 ALTER TABLE "role_to_permission" ADD FOREIGN KEY ("role_id") REFERENCES "role" ("id") ON DELETE SET NULL;
 

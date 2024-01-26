@@ -45,5 +45,11 @@ const menuList = [
     to: "/admin/clients",
     meta: t.value.clients,
   },
+  {
+    icon: "o_storefront",
+    label: t.value.salePoints,
+    to: "/admin/sale-points",
+    meta: t.value.salePoints,
+  },
 ];
 </script>
