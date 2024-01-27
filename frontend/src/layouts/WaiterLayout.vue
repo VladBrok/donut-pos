@@ -6,7 +6,7 @@
         :notification-count="notificationCount"
       >
         <template #notification-list>
-          <cash-payment-requests
+          <cash-payment-request
             v-for="request in cashPaymentRequests"
             :key="request.id"
             :request="request"
@@ -80,6 +80,7 @@ import {
   closeCurrentOrderAction,
   openCurrentOrderAction,
 } from "donut-shared/src/actions/order-drawer";
+import CashPaymentRequest from "src/components/CashPaymentRequest.vue";
 import CookedDishStatusButton from "src/components/CookedDishStatusButton.vue";
 import CookedOrderNotification from "src/components/CookedOrderNotification.vue";
 import CurrentOrderDishesBadge from "src/components/CurrentOrderDishesBadge.vue";
@@ -125,9 +126,7 @@ const channels = computed(() => {
 });
 let isSubscribing = useSubscription(channels, { store: store as any });
 const cookedDishes = computed(() => store.state.orders.cookedDishes);
-const cookedOrders = computed(() =>
-  store.state.orders.cookedOrders.filter((x) => x.order.type === "takeout")
-);
+const cookedOrders = computed(() => store.state.orders.cookedOrders);
 const cashPaymentRequests = computed(
   () => store.state.cashPaymentRequests.requests
 );

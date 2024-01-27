@@ -117,7 +117,9 @@ const mutation: MutationTree<IOrdersState> = {
     state: IOrdersState,
     action: ReturnType<typeof orderCookedAction>
   ) {
-    state.cookedOrders.push(action.payload.order);
+    if (action.payload.order.order.type === "takout") {
+      state.cookedOrders.push(action.payload.order);
+    }
 
     if (
       action.payload.order.order.type === "delivery" &&
