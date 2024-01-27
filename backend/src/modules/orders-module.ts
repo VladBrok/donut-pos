@@ -386,6 +386,7 @@ export default function ordersModule(server: Server) {
         CHANNELS.ORDERS_FOR_COURIERS,
         CHANNELS.ORDER_SINGLE(action.payload.order.order.orderNumber),
         CHANNELS.COOKED_ORDERS(action.payload.order.order.client?.id),
+        CHANNELS.ORDERS_OF_EMPLOYEE(action.payload.order.order.employee?.id),
       ];
     },
   });
