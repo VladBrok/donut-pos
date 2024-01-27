@@ -1,4 +1,4 @@
-import { ORDER_STATUSES } from "donut-shared";
+import { ORDER_STATUSES, ORDER_TYPES } from "donut-shared";
 import {
   IOrder,
   cookedDishesLoadedAction,
@@ -117,12 +117,12 @@ const mutation: MutationTree<IOrdersState> = {
     state: IOrdersState,
     action: ReturnType<typeof orderCookedAction>
   ) {
-    if (action.payload.order.order.type === "takout") {
+    if (action.payload.order.order.type === ORDER_TYPES.TAKEOUT) {
       state.cookedOrders.push(action.payload.order);
     }
 
     if (
-      action.payload.order.order.type === "delivery" &&
+      action.payload.order.order.type === ORDER_TYPES.DELIVERY &&
       !state.ordersForCourier.some(
         (x) => x.id === action.payload.order.order.id
       )

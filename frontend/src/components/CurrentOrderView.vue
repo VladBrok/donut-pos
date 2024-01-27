@@ -50,7 +50,7 @@
                 </q-item>
               </template>
             </q-select>
-            <div v-if="order?.type === 'delivery'">
+            <div v-if="order?.type === ORDER_TYPES.DELIVERY">
               <q-select
                 :model-value="formatAddress(order.address)"
                 @update:model-value="
@@ -96,7 +96,7 @@
               </q-select>
             </div>
             <q-input
-              v-if="!isClient && order?.type === 'delivery'"
+              v-if="!isClient && order?.type === ORDER_TYPES.DELIVERY"
               :model-value="order?.client?.firstName"
               @update:model-value="
                 store.commit.crossTab(
@@ -129,7 +129,7 @@
               shouldValidateFormat
             />
             <q-select
-              v-if="order?.type === 'dine-in'"
+              v-if="order?.type === ORDER_TYPES.DINE_IN"
               :model-value="order?.table?.number"
               @update:model-value="
                 store.commit.crossTab(
@@ -309,6 +309,7 @@ import {
   COMMENT_MAX_LENGTH,
   DELIVERY_COST,
   FIRST_NAME_MAX_LENGTH,
+  ORDER_TYPES,
   ORDER_TYPES_ARR,
   addDishToCurrentOrderAction,
   clearCurrentOrderAction,
@@ -420,7 +421,9 @@ const dishCost = computed(
   () => dishesInOrder.value?.reduce((sum, cur) => sum + cur.totalCost, 0) || 0
 );
 const totalCost = computed(
-  () => dishCost.value + (order.value?.type === "delivery" ? DELIVERY_COST : 0)
+  () =>
+    dishCost.value +
+    (order.value?.type === ORDER_TYPES.DELIVERY ? DELIVERY_COST : 0)
 );
 const isAddAddressModalOpen = ref(false);
 const route = useRoute();
@@ -433,13 +436,13 @@ const orderTypes = computed(() =>
 );
 const orderTypeDefault = ref<(typeof orderTypes.value)[number]>(
   route.query.table
-    ? orderTypes.value.find((x) => x.value === "dine-in")!
-    : orderTypes.value.find((x) => x.value === "takeout")!
+    ? orderTypes.value.find((x) => x.value === ORDER_TYPES.DINE_IN)!
+    : orderTypes.value.find((x) => x.value === ORDER_TYPES.TAKEOUT)!
 );
 const router = useRouter();
 const isLoggedIn = useIsLoggedIn();
 const requiredAddressNotSpecified = computed(
-  () => order.value?.type === "delivery" && !order.value.address
+  () => order.value?.type === ORDER_TYPES.DELIVERY && !order.value.address
 );
 
 const unsubscribe = watch(

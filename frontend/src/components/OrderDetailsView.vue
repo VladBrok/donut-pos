@@ -14,7 +14,7 @@
       <PrintButton
         v-if="!isClient"
         class="q-mb-md"
-        :allow-print-ticket="order.type === 'takeout'"
+        :allow-print-ticket="order.type === ORDER_TYPES.TAKEOUT"
       />
       <div>
         <div>
@@ -32,7 +32,7 @@
             </template>
           </q-input>
           <q-input
-            v-if="order.type === 'delivery'"
+            v-if="order.type === ORDER_TYPES.DELIVERY"
             :model-value="formatAddress(order.address)"
             readonly
             stack-label
@@ -55,7 +55,7 @@
             </template>
           </q-input>
           <q-input
-            v-if="order.type === 'dine-in'"
+            v-if="order.type === ORDER_TYPES.DINE_IN"
             :model-value="order.table?.number || '-'"
             readonly
             stack-label
@@ -128,6 +128,7 @@
 <script setup lang="ts">
 import {
   DELIVERY_COST,
+  ORDER_TYPES,
   getDishesInOrderCount,
   getDishesTotalCost,
   getOrderDishTotalCost,
