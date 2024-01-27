@@ -3,6 +3,7 @@ import {
   CHANNELS,
   DELIVERY_COST,
   ITEMS_PER_PAGE,
+  ORDER_TYPES,
   PAYMENT_LINK_GENERATION_ERROR,
   createOrderAction,
   orderCreatedAction,
@@ -96,7 +97,12 @@ export default function ordersModule(server: Server) {
       );
     },
     async load(ctx, action, meta) {
-      const dishes = await db.getCookedDishes(ctx.userId);
+      const dishes = await db.getCookedDishes(
+        ctx.userId,
+        undefined,
+        undefined,
+        true
+      );
       return cookedDishesLoadedAction({
         dishes: dishes,
       });
@@ -288,15 +294,17 @@ export default function ordersModule(server: Server) {
     resend(ctx, action) {
       return [
         CHANNELS.ORDERS_FOR_KITCHEN,
-        CHANNELS.COOKED_DISHES_OF_EMPLOYEE(
-          action.payload.cookedDish.order.employee?.id
-        ),
+        action.payload.cookedDish.order.type === ORDER_TYPES.DINE_IN
+          ? CHANNELS.COOKED_DISHES_OF_EMPLOYEE(
+              action.payload.cookedDish.order.employee?.id
+            )
+          : "",
         CHANNELS.ORDER_SINGLE(action.payload.cookedDish.order.orderNumber),
         CHANNELS.ORDERS_OF_EMPLOYEE(
           action.payload.cookedDish.order.employee?.id
         ),
         CHANNELS.ORDERS_OF_CLIENT(action.payload.cookedDish.order.client?.id),
-      ];
+      ].filter(Boolean);
     },
   });
 

@@ -1,6 +1,7 @@
 import {
   DISH_IN_ORDER_STATUSES,
   ORDER_STATUSES,
+  ORDER_TYPES,
   OrderStatus,
   OrderType,
 } from "donut-shared";
@@ -492,7 +493,8 @@ export async function getCookedOrders(
 export async function getCookedDishes(
   employeeId?: string,
   dishIdInOrder?: string,
-  dbOrTx = db
+  dbOrTx = db,
+  dineInOnly = false
 ) {
   const diningTableEmployee = db
     .select()
@@ -512,6 +514,7 @@ export async function getCookedDishes(
     .leftJoin(orderToDishes, eq(orderToDishes.orderId, order.id))
     .where(
       and(
+        dineInOnly ? eq(order.type, ORDER_TYPES.DINE_IN) : undefined,
         employeeId ? eq(order.employeeId, employeeId) : undefined,
         sql.raw(`dishes @? '$[*].cookedDate ? (@ != "")'`),
         sql.raw(`dishes @? '$[*].deliveredDate ? (@ == "")'`),
