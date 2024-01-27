@@ -83,8 +83,7 @@
         </p>
       </template>
       <template #content>
-        <order-details-view v-if="selectedOrder" :order="selectedOrder">
-        </order-details-view>
+        <order-details-view v-if="selectedOrder" :order="selectedOrder" />
       </template>
     </order-drawer>
 

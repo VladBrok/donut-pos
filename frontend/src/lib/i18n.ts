@@ -133,6 +133,9 @@ export const messages = i18n("messages", {
   noDataFound: "No data found",
   noNotifications: "No notifications",
   goBack: "Go back",
+  printTicket: "Print ticket",
+  printReceipt: "Print receipt",
+  print: "Print",
 
   // Waiter pages
   main: "Main",
