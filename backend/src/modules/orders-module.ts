@@ -304,7 +304,7 @@ export default function ordersModule(server: Server) {
           action.payload.cookedDish.order.employee?.id
         ),
         CHANNELS.ORDERS_OF_CLIENT(action.payload.cookedDish.order.client?.id),
-      ].filter(Boolean);
+      ];
     },
   });
 

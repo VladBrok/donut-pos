@@ -125,7 +125,9 @@ const channels = computed(() => {
 });
 let isSubscribing = useSubscription(channels, { store: store as any });
 const cookedDishes = computed(() => store.state.orders.cookedDishes);
-const cookedOrders = computed(() => store.state.orders.cookedOrders);
+const cookedOrders = computed(() =>
+  store.state.orders.cookedOrders.filter((x) => x.order.type === "takeout")
+);
 const cashPaymentRequests = computed(
   () => store.state.cashPaymentRequests.requests
 );
