@@ -242,7 +242,9 @@ export async function createOrder(
       clientId: newClientId ? newClientId : !isClient ? null : userId,
       number: orderNumber,
       diningTableId: data.table?.id || null,
-      deliveryAddress: sql`${new Param(orderToCreate.address)}`,
+      deliveryAddress: orderToCreate.address
+        ? sql`${new Param(orderToCreate.address)}`
+        : null,
       createdDate: new Date(),
       status: ORDER_STATUSES.CREATED,
     });
