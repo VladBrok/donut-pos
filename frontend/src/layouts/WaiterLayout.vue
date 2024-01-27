@@ -6,10 +6,15 @@
         :notification-count="notificationCount"
       >
         <template #notification-list>
-          <CashPaymentRequest
+          <cash-payment-requests
             v-for="request in cashPaymentRequests"
             :key="request.id"
             :request="request"
+          />
+          <cooked-order-notification
+            v-for="order of cookedOrders"
+            :key="order.order.id"
+            :order="order"
           />
           <dish-in-order
             v-for="item of cookedDishes"
@@ -75,8 +80,8 @@ import {
   closeCurrentOrderAction,
   openCurrentOrderAction,
 } from "donut-shared/src/actions/order-drawer";
-import CashPaymentRequest from "src/components/CashPaymentRequest.vue";
 import CookedDishStatusButton from "src/components/CookedDishStatusButton.vue";
+import CookedOrderNotification from "src/components/CookedOrderNotification.vue";
 import CurrentOrderDishesBadge from "src/components/CurrentOrderDishesBadge.vue";
 import CurrentOrderView from "src/components/CurrentOrderView.vue";
 import DishInOrder from "src/components/DishInOrder.vue";
@@ -115,15 +120,20 @@ const channels = computed(() => {
     : [
         CHANNELS.COOKED_DISHES_OF_EMPLOYEE(userId.value),
         CHANNELS.CASH_PAYMENT_REQUESTS_OF_EMPLOYEE(userId.value),
+        CHANNELS.COOKED_ORDERS(userId.value),
       ];
 });
 let isSubscribing = useSubscription(channels, { store: store as any });
 const cookedDishes = computed(() => store.state.orders.cookedDishes);
+const cookedOrders = computed(() => store.state.orders.cookedOrders);
 const cashPaymentRequests = computed(
   () => store.state.cashPaymentRequests.requests
 );
 const notificationCount = computed(
-  () => cookedDishes.value.length + cashPaymentRequests.value.length
+  () =>
+    cookedDishes.value.length +
+    cashPaymentRequests.value.length +
+    cookedOrders.value.length
 );
 const unsubscribe = ref(() => {
   /* */

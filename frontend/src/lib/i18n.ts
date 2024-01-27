@@ -195,7 +195,8 @@ export const messages = i18n("messages", {
   makeSureChangeGiven: "Make sure you give the customer the change",
   paid: "Paid",
   cashPaymentRequest: "Cash payment request",
-  orderReady: "Your order is ready!",
+  clientOrderReady: "Your order is ready!",
+  employeeOrderReady: "Takeout order is ready",
   pickOrderUp: "Pick it up at our restaurant at",
   cashPaymentRequested: params(
     "Cash payment requested: table {table}, order {orderNumber}"
@@ -212,6 +213,8 @@ export const messages = i18n("messages", {
   confirmOrderReceived: "Confirm received",
   orderReceiveInstruction:
     'Before receiving the order, click "Confirm received"',
+  takeoutOrderDeliverInstruction:
+    'After you give order to a client, click "Delivered',
   next: "Next",
 
   // Client pages

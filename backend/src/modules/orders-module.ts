@@ -104,10 +104,10 @@ export default function ordersModule(server: Server) {
   });
 
   server.channel<{
-    clientId: string;
-  }>(CHANNELS.COOKED_ORDERS_OF_CLIENT(), {
+    userId: string;
+  }>(CHANNELS.COOKED_ORDERS(), {
     async access(ctx, action, meta) {
-      return ctx.userId === ctx.params.clientId;
+      return ctx.userId === ctx.params.userId;
     },
     async load(ctx, action, meta) {
       const orders = await db.getCookedOrders(ctx.userId, "takeout");
@@ -248,7 +248,7 @@ export default function ordersModule(server: Server) {
     resend(ctx, action) {
       return [
         CHANNELS.ORDERS_FOR_COURIERS,
-        CHANNELS.COOKED_ORDERS_OF_CLIENT(action.payload.order.order.client?.id),
+        CHANNELS.COOKED_ORDERS(action.payload.order.order.client?.id),
         CHANNELS.ORDERS_FOR_KITCHEN,
         CHANNELS.COOKED_DISHES_OF_EMPLOYEE(
           action.payload.order.order.employee?.id
@@ -348,7 +348,7 @@ export default function ordersModule(server: Server) {
       const order = await db.deliverOrder(
         action.payload.orderId,
         ctx.userId,
-        action.payload.isCourier
+        action.payload.isEmployee
       );
       await Promise.all([
         server.process(
@@ -377,7 +377,7 @@ export default function ordersModule(server: Server) {
       return [
         CHANNELS.ORDERS_FOR_COURIERS,
         CHANNELS.ORDER_SINGLE(action.payload.order.order.orderNumber),
-        CHANNELS.COOKED_ORDERS_OF_CLIENT(action.payload.order.order.client?.id),
+        CHANNELS.COOKED_ORDERS(action.payload.order.order.client?.id),
       ];
     },
   });
@@ -419,7 +419,7 @@ export default function ordersModule(server: Server) {
       return [
         CHANNELS.ORDERS_FOR_COURIERS,
         CHANNELS.ORDER_SINGLE(action.payload.order.order.orderNumber),
-        CHANNELS.COOKED_ORDERS_OF_CLIENT(action.payload.order.order.client?.id),
+        CHANNELS.COOKED_ORDERS(action.payload.order.order.client?.id),
       ];
     },
   });
@@ -492,7 +492,7 @@ export default function ordersModule(server: Server) {
     },
     resend(ctx, action) {
       return [
-        CHANNELS.COOKED_ORDERS_OF_CLIENT(action.payload.order.client?.id),
+        CHANNELS.COOKED_ORDERS(action.payload.order.client?.id),
         CHANNELS.ORDER_SINGLE(action.payload.order.orderNumber),
         CHANNELS.ORDERS_OF_EMPLOYEE(action.payload.order.employee?.id),
         CHANNELS.ORDERS_OF_CLIENT(action.payload.order.client?.id),

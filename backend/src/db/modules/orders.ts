@@ -391,7 +391,7 @@ export async function deliverDish(orderId: string, dishIdInOrder: string) {
 export async function deliverOrder(
   orderId: string,
   userId: string,
-  isCourier?: boolean
+  isEmployee?: boolean
 ) {
   const theOrder = (
     await db.select().from(order).where(eq(order.id, orderId))
@@ -415,7 +415,7 @@ export async function deliverOrder(
     .where(
       and(
         eq(order.id, orderId),
-        isCourier ? eq(order.employeeId, userId) : eq(order.clientId, userId)
+        isEmployee ? eq(order.employeeId, userId) : eq(order.clientId, userId)
       )
     );
 
@@ -468,12 +468,17 @@ export async function getOrdersShallow(params: IGetOrder, dbOrTx = db) {
 }
 
 export async function getCookedOrders(
-  clientId: string,
+  userId: string,
   orderType: OrderType
 ): Promise<ICookedOrder[]> {
+  const isClient = (
+    await db.select().from(client).where(eq(client.id, userId))
+  )?.[0];
+
   return (
     await getOrdersPage({
-      clientId: clientId,
+      clientId: isClient ? userId : undefined,
+      employeeId: isClient ? undefined : userId,
       statuses: ["cooked"],
       orderType: orderType,
       page: 1,

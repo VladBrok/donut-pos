@@ -3,7 +3,7 @@
     <div class="flex-grow">
       <div class="text-body2">
         <p class="text-h6 q-mb-xs">
-          {{ t.orderReady }}
+          {{ isClient ? t.clientOrderReady : t.employeeOrderReady }}
         </p>
         <OrderNumberTitle :order-number="order.order.orderNumber" is-link />
         <div
@@ -41,10 +41,14 @@
           </q-btn>
           <div v-else>
             <p class="text-body2 q-mb-sm">
-              {{ t.orderReceiveInstruction }}
+              {{
+                isClient
+                  ? t.orderReceiveInstruction
+                  : t.takeoutOrderDeliverInstruction
+              }}
             </p>
             <q-btn color="primary" @click="orderDelivered" :loading="isLoading">
-              {{ t.confirmOrderReceived }}
+              {{ isClient ? t.confirmOrderReceived : t.delivered }}
             </q-btn>
           </div>
         </div>
@@ -55,11 +59,13 @@
       :order-number="order.order.orderNumber"
       :order-id="order.order.id"
       :order-type="order.order.type"
+      :total-cost="getOrderTotalCost(order.order)"
     />
   </div>
 </template>
 
 <script setup lang="ts">
+import { getOrderTotalCost } from "donut-shared";
 import {
   ICookedOrder,
   deliverOrderAction,
@@ -82,6 +88,7 @@ const isLoading = ref(false);
 const defaultSalePoint = computed(
   () => store.state.salePoints.defaultSalePoint
 );
+const isClient = computed(() => store.state.auth.user.permissions?.client);
 
 function openMap() {
   window
@@ -100,6 +107,7 @@ function orderDelivered() {
     .sync(
       deliverOrderAction({
         orderId: props.order.order.id,
+        isEmployee: !isClient.value,
       })
     )
     .finally(() => {

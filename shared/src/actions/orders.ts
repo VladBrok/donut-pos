@@ -189,7 +189,7 @@ export const courierStartedDeliveringOrderAction = createAction<{
 
 export const deliverOrderAction = createAction<{
   orderId: string;
-  isCourier?: boolean;
+  isEmployee?: boolean;
 }>("orders/deliverOrder");
 
 export const orderDeliveredAction = createAction<{
