@@ -128,7 +128,6 @@ const notificationCount = computed(
 const unsubscribe = ref(() => {
   /* */
 });
-const isInnerLoading = ref(false);
 
 onMounted(() => {
   unsubscribe.value = store.client.on("user", (newId) => {
