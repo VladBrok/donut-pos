@@ -270,7 +270,7 @@ export async function startCookingDish(orderId: string, dishIdInOrder: string) {
       })
       .where(and(eq(order.id, orderId), isNull(order.cookingDate)));
 
-    // TODO: prevent sql injection
+    // TODO: prevent sql injection (here and in other similar places)
     await tx.execute(
       sql.raw(`
 UPDATE order_to_dishes
@@ -565,6 +565,5 @@ export async function checkTableTaken(tableId: string) {
     customFilter: () => eq(order.diningTableId, tableId),
     completed: false,
   });
-  console.log("found:", found);
   return found.ordersPage?.[0]?.orderNumber || null;
 }

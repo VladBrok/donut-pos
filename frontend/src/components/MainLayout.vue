@@ -147,7 +147,6 @@ const channels = computed(() => {
 });
 const isSubscribing = useSubscription(channels, { store: store as any });
 const selectedOrder = computed(() => {
-  console.log("recompute");
   return isSubscribing.value
     ? null
     : userId.value === store.state.orderDrawer.order?.employee?.id ||

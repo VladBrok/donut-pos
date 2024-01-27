@@ -437,7 +437,6 @@ export default function ordersModule(server: Server) {
     },
   });
 
-  // TODO: resend also somewhere else?
   server.type(courierStartedDeliveringOrderAction, {
     async access() {
       return false;

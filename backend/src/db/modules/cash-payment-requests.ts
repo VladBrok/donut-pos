@@ -6,7 +6,7 @@ import { cashPaymentRequestsAdapter } from "src/db/schema-to-model-adapters.js";
 import { generateUuid } from "src/lib/uuid.js";
 import { db } from "../index.js";
 
-// TODO: maybe add request time so that i can sort by it and return most recent last
+// TODO: maybe add request time so that i can sort by it and return most recent last AND display request time in notification
 export async function getCashPaymentRequests(employeeId?: string, id?: string) {
   const data = await db
     .select()
