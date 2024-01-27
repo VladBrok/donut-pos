@@ -16,6 +16,7 @@ import {
   ordersForKitchenLoadedAction,
   ordersPageLoadedAction,
   paymentLinkReceivedAction,
+  tableTakenCheckedAction,
   updateCreateOrderAfterAuthAction,
 } from "donut-shared/src/actions/orders";
 import { MutationTree } from "vuex";
@@ -294,6 +295,13 @@ const mutation: MutationTree<IOrdersState> = {
     action: ReturnType<typeof updateCreateOrderAfterAuthAction>
   ) {
     state.createOrderAfterAuth = action.payload.value;
+  },
+
+  tableTakenChecked(
+    state: IOrdersState,
+    action: ReturnType<typeof tableTakenCheckedAction>
+  ) {
+    state.tableTakenByOrderNumber = action.payload.takenByOrderNumber;
   },
 };
 

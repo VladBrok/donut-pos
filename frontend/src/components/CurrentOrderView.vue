@@ -299,6 +299,38 @@
         )
     "
   />
+
+  <confirm-dialog v-model="isConfirmOrderCreateModalOpen">
+    <template #body>
+      <div class="row no-wrap">
+        <div>
+          {{
+            t.confirmOrderWithTakenTableCreate1({
+              tableNumber: order?.table?.number || "",
+            })
+          }}
+        </div>
+        &nbsp;
+        <order-number-title
+          :orderNumber="store.state.orders.tableTakenByOrderNumber || ''"
+          is-link
+        />
+      </div>
+      <div>{{ t.confirmOrderWithTakenTableCreate2 }}</div>
+    </template>
+    <template #confirmButton>
+      <q-btn
+        flat
+        :label="t.createOrder"
+        color="primary"
+        @click="
+          (isCreateConfirmed = true),
+            (isConfirmOrderCreateModalOpen = false),
+            onSubmit()
+        "
+      />
+    </template>
+  </confirm-dialog>
 </template>
 
 <script setup lang="ts">
@@ -327,10 +359,14 @@ import {
   updateCurrentOrderTypeAction,
   updatePreviousOrderAction,
 } from "donut-shared/src/actions/current-order";
-import { updateCreateOrderAfterAuthAction } from "donut-shared/src/actions/orders";
+import {
+  checkTableTakenAction,
+  updateCreateOrderAfterAuthAction,
+} from "donut-shared/src/actions/orders";
 import AddAddressModal from "src/components/AddAddressModal.vue";
 import BigSpinner from "src/components/BigSpinner.vue";
 import DishInOrder from "src/components/DishInOrder.vue";
+import OrderNumberTitle from "src/components/OrderNumberTitle.vue";
 import OrderView from "src/components/OrderView.vue";
 import PhoneInput from "src/components/PhoneInput.vue";
 import { formatAddress } from "src/lib/address";
@@ -351,7 +387,9 @@ const store = useStore();
 const order = computed(() => store.state.currentOrder.order);
 const t = useI18nStore();
 const isConfirmClearOpen = ref(false);
+const isCreateConfirmed = ref(false);
 const isSubmitting = ref(false);
+const isConfirmOrderCreateModalOpen = ref(false);
 const userId = ref(store.state.auth.user.userId);
 const channels = computed(() => {
   return userId.value === ANONYMOUS.userId
@@ -519,17 +557,36 @@ async function onSubmit() {
   }
 
   isSubmitting.value = true;
-  (order.value?.type
-    ? Promise.resolve()
-    : store.commit.crossTab(
+  try {
+    if (!order.value?.type) {
+      await store.commit.crossTab(
         updateCurrentOrderTypeAction({
           type: orderTypeDefault.value.value,
         })
-      )
-  ).then(() => {
-    createOrder(store, t).finally(() => {
-      isSubmitting.value = false;
-    });
-  });
+      );
+    }
+
+    if (
+      order.value?.type === ORDER_TYPES.DINE_IN &&
+      order.value.table &&
+      !isCreateConfirmed.value
+    ) {
+      await store.commit.sync(
+        checkTableTakenAction({
+          tableId: order.value.table.id,
+        })
+      );
+      if (store.state.orders.tableTakenByOrderNumber) {
+        isConfirmOrderCreateModalOpen.value = true;
+        return;
+      }
+    } else if (isCreateConfirmed.value) {
+      isCreateConfirmed.value = false;
+    }
+
+    await createOrder(store, t);
+  } finally {
+    isSubmitting.value = false;
+  }
 }
 </script>

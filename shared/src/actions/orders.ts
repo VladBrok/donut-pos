@@ -216,3 +216,12 @@ export const paymentLinkReceivedAction = createAction<{
 export const updateCreateOrderAfterAuthAction = createAction<{
   value: boolean;
 }>("orders/updateCreateOrderAfterAuth");
+
+export const checkTableTakenAction = createAction<{
+  tableId: string;
+}>("orders/checkTableTaken");
+
+export const tableTakenCheckedAction = createAction<{
+  tableId: string;
+  takenByOrderNumber: string | null;
+}>("orders/tableTakenChecked");

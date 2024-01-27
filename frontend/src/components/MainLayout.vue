@@ -150,7 +150,8 @@ const selectedOrder = computed(() => {
   console.log("recompute");
   return isSubscribing.value
     ? null
-    : userId.value === store.state.orderDrawer.order?.employee?.id
+    : userId.value === store.state.orderDrawer.order?.employee?.id ||
+      !store.state.orderDrawer.order
     ? store.state.orderDrawer.order
     : store.state.orders.order;
 });

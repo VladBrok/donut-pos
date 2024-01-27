@@ -10,6 +10,7 @@ import {
 } from "donut-shared";
 import { addressCreatedAction } from "donut-shared/src/actions/addresses.js";
 import {
+  checkTableTakenAction,
   cookedDishesLoadedAction,
   cookedOrdersLoadedAction,
   courierOrdersLoadedAction,
@@ -33,6 +34,7 @@ import {
   paymentLinkReceivedAction,
   startCookingDishAction,
   startDeliveredDishAction,
+  tableTakenCheckedAction,
 } from "donut-shared/src/actions/orders.js";
 import { logError } from "donut-shared/src/lib/log.js";
 import Stripe from "stripe";
@@ -163,6 +165,22 @@ export default function ordersModule(server: Server) {
         ordersPage: ordersPage,
         totalOrders: total,
       });
+    },
+  });
+
+  // TODO: what we will do with the client? disallow them to create order at all (for waiter we show modal)
+  server.type(checkTableTakenAction, {
+    async access(ctx) {
+      return await hasWaiterPermission(ctx.userId);
+    },
+    async process(ctx, action, meta) {
+      const orderNumber = await db.checkTableTaken(action.payload.tableId);
+      return await ctx.sendBack(
+        tableTakenCheckedAction({
+          tableId: action.payload.tableId,
+          takenByOrderNumber: orderNumber,
+        })
+      );
     },
   });
 

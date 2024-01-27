@@ -322,6 +322,8 @@ export const messages = i18n("messages", {
   confirmSalePointDelete: "Are you sure you want to delete sale point",
   confirmEmployeeDelete: "Are you sure you want to delete employee",
   confirmCurrentOrderClear: "Are you sure you want to clear the current order",
+  confirmOrderWithTakenTableCreate1: params("Table {tableNumber} is taken by"),
+  confirmOrderWithTakenTableCreate2: "Create the new order anyway?",
   confirmTableDelete: "Are you sure you want to delete table with number",
   confirmLogout: "Are you sure you want to logout",
 

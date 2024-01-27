@@ -557,3 +557,14 @@ export async function payForOrder(orderNumber: string) {
     })
   )[0];
 }
+
+export async function checkTableTaken(tableId: string) {
+  const found = await getOrdersPage({
+    page: 1,
+    perPage: 1,
+    customFilter: () => eq(order.diningTableId, tableId),
+    completed: false,
+  });
+  console.log("found:", found);
+  return found.ordersPage?.[0]?.orderNumber || null;
+}

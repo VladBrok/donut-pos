@@ -66,7 +66,7 @@
           </p>
         </template>
         <template #content>
-          <current-order-view> </current-order-view>
+          <current-order-view />
         </template>
       </order-drawer>
     </template>
