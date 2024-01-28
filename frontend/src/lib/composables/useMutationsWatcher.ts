@@ -1,24 +1,13 @@
 import {
   ANONYMOUS,
-  addDishToCurrentOrderAction,
   assert,
   cashPaymentRequestedAction,
   clearCurrentOrderAction,
-  decrementDishInCurrentOrderAction,
   openWelcomeBannerAction,
   orderCreatedAction,
-  removeDishFromCurrentOrderAction,
-  updateCurrentOrderCommentAction,
-  updateCurrentOrderTableNumberAction,
 } from "donut-shared";
 import { loggedInAction, logoutAction } from "donut-shared/src/actions/auth";
-import {
-  updateCurrentOrderAddressAction,
-  updateCurrentOrderClientFirstNameAction,
-  updateCurrentOrderClientPhoneAction,
-  updateCurrentOrderTypeAction,
-  updatePreviousOrderAction,
-} from "donut-shared/src/actions/current-order";
+import { updatePreviousOrderAction } from "donut-shared/src/actions/current-order";
 import {
   ICookedDish,
   dishFinishedCookingAction,
@@ -51,134 +40,123 @@ export const useMutationsWatcher = () => {
 
   onMounted(() => {
     unsubscribe.value = store.subscribe((mutation, state) => {
-      switch (mutation.type) {
-        case loggedInAction.type: {
-          saveUserToStorage(state.auth.user);
-          if (mutation.payload.payload.isNewUser) {
-            setTimeout(() => {
-              store.commit.crossTab(openWelcomeBannerAction());
-            }, 100);
-          }
-          break;
+      if (mutation.type === loggedInAction.type) {
+        saveUserToStorage(state.auth.user);
+        if (mutation.payload.payload.isNewUser) {
+          setTimeout(() => {
+            store.commit.crossTab(openWelcomeBannerAction());
+          }, 100);
         }
+        return;
+      }
 
-        case logoutAction.type: {
-          const role = getUserFromStorage()?.role?.codeName;
-          const redirectTo = `${
-            !role ? "" : role === "cook" ? "/kitchen" : role
-          }/login`;
-          removeItem(Keys.User);
-          store.client.changeUser(ANONYMOUS.userId);
-          router.push(redirectTo);
-          break;
-        }
+      if (mutation.type === logoutAction.type) {
+        const role = getUserFromStorage()?.role?.codeName;
+        const redirectTo = `${
+          !role ? "" : role === "cook" ? "/kitchen" : role
+        }/login`;
+        removeItem(Keys.User);
+        store.client.changeUser(ANONYMOUS.userId);
+        router.push(redirectTo);
+        return;
+      }
 
-        // TODO: change to if(startsWith("currentOrder")); check before it that it's ok
-        case addDishToCurrentOrderAction.type:
-        case updateCurrentOrderCommentAction.type:
-        case updateCurrentOrderTableNumberAction.type:
-        case removeDishFromCurrentOrderAction.type:
-        case updateCurrentOrderTypeAction.type:
-        case decrementDishInCurrentOrderAction.type:
-        case updateCurrentOrderAddressAction.type:
-        case updateCurrentOrderClientFirstNameAction.type:
-        case updateCurrentOrderClientPhoneAction.type: {
-          saveCurrentOrderToStorage(state.currentOrder.order);
-          break;
-        }
+      if (mutation.type === clearCurrentOrderAction.type) {
+        saveCurrentOrderToStorage(null);
+        return;
+      }
 
-        case clearCurrentOrderAction.type: {
-          saveCurrentOrderToStorage(null);
-          break;
-        }
+      if (mutation.type.startsWith("currentOrder")) {
+        saveCurrentOrderToStorage(state.currentOrder.order);
+        return;
+      }
 
-        case orderCookedAction.type: {
-          if (store.state.auth.user?.permissions?.courier) {
-            Notify.create({
-              type: "positive",
-              position: "top",
-              timeout: SUCCESS_TIMEOUT_MS,
-              message: t.value.newOrderForCourier({
-                orderNumber: mutation.payload.payload.order.order.orderNumber,
-              }),
-              multiLine: true,
-              group: false,
-            });
-            return;
-          }
-
+      if (mutation.type === orderCookedAction.type) {
+        if (store.state.auth.user?.permissions?.courier) {
           Notify.create({
             type: "positive",
             position: "top",
             timeout: SUCCESS_TIMEOUT_MS,
-            message: t.value.orderIsReady({
+            message: t.value.newOrderForCourier({
               orderNumber: mutation.payload.payload.order.order.orderNumber,
             }),
             multiLine: true,
             group: false,
           });
-          break;
+          return;
         }
 
-        case cashPaymentRequestedAction.type: {
+        Notify.create({
+          type: "positive",
+          position: "top",
+          timeout: SUCCESS_TIMEOUT_MS,
+          message: t.value.orderIsReady({
+            orderNumber: mutation.payload.payload.order.order.orderNumber,
+          }),
+          multiLine: true,
+          group: false,
+        });
+        return;
+      }
+
+      if (mutation.type === cashPaymentRequestedAction.type) {
+        Notify.create({
+          type: "info",
+          position: "top",
+          timeout: INFO_TIMEOUT_MS,
+          message: t.value.cashPaymentRequested({
+            orderNumber: mutation.payload.payload.request.orderNumber,
+            table: mutation.payload.payload.request.table.number,
+          }),
+          multiLine: true,
+          group: false,
+        });
+        return;
+      }
+
+      if (mutation.type === orderCreatedAction.type) {
+        if (store.state.auth.user?.permissions?.client) {
+          store.commit.crossTab(
+            updatePreviousOrderAction({
+              order: mutation.payload.payload.order,
+            })
+          );
+          return;
+        }
+
+        if (store.state.auth.user?.permissions?.cook) {
           Notify.create({
             type: "info",
             position: "top",
             timeout: INFO_TIMEOUT_MS,
-            message: t.value.cashPaymentRequested({
-              orderNumber: mutation.payload.payload.request.orderNumber,
-              table: mutation.payload.payload.request.table.number,
+            message: t.value.orderCreated({
+              orderNumber: mutation.payload.payload.order.orderNumber,
             }),
             multiLine: true,
             group: false,
           });
-          break;
+        }
+        return;
+      }
+
+      if (mutation.type === dishFinishedCookingAction.type) {
+        if (state.auth.user.role?.codeName !== "waiter") {
+          return;
         }
 
-        case orderCreatedAction.type: {
-          if (store.state.auth.user?.permissions?.client) {
-            store.commit.crossTab(
-              updatePreviousOrderAction({
-                order: mutation.payload.payload.order,
-              })
-            );
-            break;
-          }
-
-          if (store.state.auth.user?.permissions?.cook) {
-            Notify.create({
-              type: "info",
-              position: "top",
-              timeout: INFO_TIMEOUT_MS,
-              message: t.value.orderCreated({
-                orderNumber: mutation.payload.payload.order.orderNumber,
-              }),
-              multiLine: true,
-              group: false,
-            });
-          }
-          break;
-        }
-
-        case dishFinishedCookingAction.type: {
-          if (state.auth.user.role?.codeName !== "waiter") {
-            return;
-          }
-
-          const cooked: ICookedDish = mutation.payload.payload.cookedDish;
-          Notify.create({
-            type: "info",
-            position: "top",
-            timeout: INFO_TIMEOUT_MS,
-            message: t.value.dishCooked({
-              dishName: cooked.dish.name,
-              table: cooked.order.table.number,
-            }),
-            multiLine: true,
-            group: false,
-          });
-          break;
-        }
+        const cooked: ICookedDish = mutation.payload.payload.cookedDish;
+        Notify.create({
+          type: "info",
+          position: "top",
+          timeout: INFO_TIMEOUT_MS,
+          message: t.value.dishCooked({
+            dishName: cooked.dish.name,
+            table: cooked.order.table.number,
+          }),
+          multiLine: true,
+          group: false,
+        });
+        return;
       }
     });
   });
