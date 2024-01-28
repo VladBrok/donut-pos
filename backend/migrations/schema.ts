@@ -181,6 +181,7 @@ export const cashPaymentRequest = pgTable("cash_payment_request", {
 	id: uuid("id").primaryKey().notNull(),
 	orderId: uuid("order_id").references(() => order.id, { onDelete: "set null" } ),
 	totalCost: integer("total_cost"),
+	requestedAt: timestamp("requested_at", { mode: 'date' }),
 },
 (table) => {
 	return {

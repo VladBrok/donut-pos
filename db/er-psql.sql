@@ -29,7 +29,8 @@ CREATE TABLE "client" (
 CREATE TABLE "cash_payment_request" (
   "id" UUID PRIMARY KEY,
   "order_id" UUID,
-  "total_cost" INT
+  "total_cost" INT,
+  "requested_at" TIMESTAMP
 );
 
 CREATE TABLE "permission" (

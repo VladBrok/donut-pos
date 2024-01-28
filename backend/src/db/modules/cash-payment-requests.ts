@@ -1,12 +1,11 @@
 import { ICashPaymentRequest, getOrderTotalCost } from "donut-shared";
-import { and, eq } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 import { cashPaymentRequest, diningTable, order } from "migrations/schema.js";
 import { getSingleOrder } from "src/db/modules/orders.js";
 import { cashPaymentRequestsAdapter } from "src/db/schema-to-model-adapters.js";
 import { generateUuid } from "src/lib/uuid.js";
 import { db } from "../index.js";
 
-// TODO: maybe add request time so that i can sort by it and return most recent last
 export async function getCashPaymentRequests(employeeId?: string, id?: string) {
   const data = await db
     .select()
@@ -18,7 +17,8 @@ export async function getCashPaymentRequests(employeeId?: string, id?: string) {
         employeeId ? eq(order.employeeId, employeeId) : undefined,
         id ? eq(cashPaymentRequest.id, id) : undefined
       )
-    );
+    )
+    .orderBy(asc(cashPaymentRequest.requestedAt));
 
   return cashPaymentRequestsAdapter(data);
 }
@@ -34,6 +34,7 @@ export async function requestCashPayment(
     id: id,
     orderId: orderId,
     totalCost: totalCost,
+    requestedAt: new Date(new Date().toISOString()),
   });
 
   return (await getCashPaymentRequests(undefined, id))[0];

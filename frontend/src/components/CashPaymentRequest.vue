@@ -2,9 +2,12 @@
   <div class="row no-wrap gap-md q-py-md q-px-xs items-center">
     <div class="flex-grow">
       <div class="text-body2">
-        <p class="text-h6 q-mb-xs">
-          {{ t.cashPaymentRequest }}
-        </p>
+        <div class="q-mb-xs row no-wrap items-center justify-between">
+          <p class="text-subtitle1 text-weight-bold">
+            {{ t.cashPaymentRequest }}
+          </p>
+          <NotificationTime :time="request.requestedAt" />
+        </div>
         <div>
           {{ t.tableNumber }}
           {{ request.table.number || "-" }},
@@ -41,6 +44,7 @@ import {
   ICashPaymentRequest,
   deleteCashPaymentRequestAction,
 } from "donut-shared";
+import NotificationTime from "src/components/NotificationTime.vue";
 import OrderNumberTitle from "src/components/OrderNumberTitle.vue";
 import WaiterCashPaymentModal from "src/components/WaiterCashPaymentModal.vue";
 import { formatCurrency } from "src/lib/currency";

@@ -3,12 +3,14 @@ import {
   CHANNELS,
   DELIVERY_COST,
   ITEMS_PER_PAGE,
+  ORDER_TYPES,
   PAYMENT_LINK_GENERATION_ERROR,
   createOrderAction,
   orderCreatedAction,
 } from "donut-shared";
 import { addressCreatedAction } from "donut-shared/src/actions/addresses.js";
 import {
+  checkTableTakenAction,
   cookedDishesLoadedAction,
   cookedOrdersLoadedAction,
   courierOrdersLoadedAction,
@@ -32,6 +34,7 @@ import {
   paymentLinkReceivedAction,
   startCookingDishAction,
   startDeliveredDishAction,
+  tableTakenCheckedAction,
 } from "donut-shared/src/actions/orders.js";
 import { logError } from "donut-shared/src/lib/log.js";
 import Stripe from "stripe";
@@ -96,7 +99,12 @@ export default function ordersModule(server: Server) {
       );
     },
     async load(ctx, action, meta) {
-      const dishes = await db.getCookedDishes(ctx.userId);
+      const dishes = await db.getCookedDishes(
+        ctx.userId,
+        undefined,
+        undefined,
+        true
+      );
       return cookedDishesLoadedAction({
         dishes: dishes,
       });
@@ -104,10 +112,10 @@ export default function ordersModule(server: Server) {
   });
 
   server.channel<{
-    clientId: string;
-  }>(CHANNELS.COOKED_ORDERS_OF_CLIENT(), {
+    userId: string;
+  }>(CHANNELS.COOKED_ORDERS(), {
     async access(ctx, action, meta) {
-      return ctx.userId === ctx.params.clientId;
+      return ctx.userId === ctx.params.userId;
     },
     async load(ctx, action, meta) {
       const orders = await db.getCookedOrders(ctx.userId, "takeout");
@@ -157,6 +165,22 @@ export default function ordersModule(server: Server) {
         ordersPage: ordersPage,
         totalOrders: total,
       });
+    },
+  });
+
+  // TODO: what we will do with the client? disallow them to create order at all (for waiter we show modal)
+  server.type(checkTableTakenAction, {
+    async access(ctx) {
+      return await hasWaiterPermission(ctx.userId);
+    },
+    async process(ctx, action, meta) {
+      const orderNumber = await db.checkTableTaken(action.payload.tableId);
+      return await ctx.sendBack(
+        tableTakenCheckedAction({
+          tableId: action.payload.tableId,
+          takenByOrderNumber: orderNumber,
+        })
+      );
     },
   });
 
@@ -248,7 +272,7 @@ export default function ordersModule(server: Server) {
     resend(ctx, action) {
       return [
         CHANNELS.ORDERS_FOR_COURIERS,
-        CHANNELS.COOKED_ORDERS_OF_CLIENT(action.payload.order.order.client?.id),
+        CHANNELS.COOKED_ORDERS(action.payload.order.order.client?.id),
         CHANNELS.ORDERS_FOR_KITCHEN,
         CHANNELS.COOKED_DISHES_OF_EMPLOYEE(
           action.payload.order.order.employee?.id
@@ -288,9 +312,11 @@ export default function ordersModule(server: Server) {
     resend(ctx, action) {
       return [
         CHANNELS.ORDERS_FOR_KITCHEN,
-        CHANNELS.COOKED_DISHES_OF_EMPLOYEE(
-          action.payload.cookedDish.order.employee?.id
-        ),
+        action.payload.cookedDish.order.type === ORDER_TYPES.DINE_IN
+          ? CHANNELS.COOKED_DISHES_OF_EMPLOYEE(
+              action.payload.cookedDish.order.employee?.id
+            )
+          : "",
         CHANNELS.ORDER_SINGLE(action.payload.cookedDish.order.orderNumber),
         CHANNELS.ORDERS_OF_EMPLOYEE(
           action.payload.cookedDish.order.employee?.id
@@ -348,7 +374,7 @@ export default function ordersModule(server: Server) {
       const order = await db.deliverOrder(
         action.payload.orderId,
         ctx.userId,
-        action.payload.isCourier
+        action.payload.isEmployee
       );
       await Promise.all([
         server.process(
@@ -377,7 +403,8 @@ export default function ordersModule(server: Server) {
       return [
         CHANNELS.ORDERS_FOR_COURIERS,
         CHANNELS.ORDER_SINGLE(action.payload.order.order.orderNumber),
-        CHANNELS.COOKED_ORDERS_OF_CLIENT(action.payload.order.order.client?.id),
+        CHANNELS.COOKED_ORDERS(action.payload.order.order.client?.id),
+        CHANNELS.ORDERS_OF_EMPLOYEE(action.payload.order.order.employee?.id),
       ];
     },
   });
@@ -410,7 +437,6 @@ export default function ordersModule(server: Server) {
     },
   });
 
-  // TODO: resend also somewhere else?
   server.type(courierStartedDeliveringOrderAction, {
     async access() {
       return false;
@@ -419,7 +445,7 @@ export default function ordersModule(server: Server) {
       return [
         CHANNELS.ORDERS_FOR_COURIERS,
         CHANNELS.ORDER_SINGLE(action.payload.order.order.orderNumber),
-        CHANNELS.COOKED_ORDERS_OF_CLIENT(action.payload.order.order.client?.id),
+        CHANNELS.COOKED_ORDERS(action.payload.order.order.client?.id),
       ];
     },
   });
@@ -492,7 +518,7 @@ export default function ordersModule(server: Server) {
     },
     resend(ctx, action) {
       return [
-        CHANNELS.COOKED_ORDERS_OF_CLIENT(action.payload.order.client?.id),
+        CHANNELS.COOKED_ORDERS(action.payload.order.client?.id),
         CHANNELS.ORDER_SINGLE(action.payload.order.orderNumber),
         CHANNELS.ORDERS_OF_EMPLOYEE(action.payload.order.employee?.id),
         CHANNELS.ORDERS_OF_CLIENT(action.payload.order.client?.id),

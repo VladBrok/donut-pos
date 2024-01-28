@@ -14,6 +14,7 @@ export interface IOrdersState {
   order: IOrder | null;
   paymentLink?: string;
   createOrderAfterAuth?: boolean;
+  tableTakenByOrderNumber: string | null;
 }
 
 const state: IOrdersState = {
@@ -24,6 +25,7 @@ const state: IOrdersState = {
   cookedDishes: [],
   cookedOrders: [],
   order: null,
+  tableTakenByOrderNumber: null,
 };
 
 export default state;

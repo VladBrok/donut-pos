@@ -37,7 +37,9 @@
                     </div>
                   </div>
                   <div
-                    v-if="deliveryCost != null && orderType === 'delivery'"
+                    v-if="
+                      deliveryCost != null && orderType === ORDER_TYPES.DELIVERY
+                    "
                     class="row justify-between gap-sm"
                   >
                     <div class="text-h6">
@@ -73,7 +75,7 @@
 </template>
 
 <script setup lang="ts">
-import { OrderType } from "donut-shared";
+import { ORDER_TYPES, OrderType } from "donut-shared";
 import { formatCurrency } from "src/lib/currency";
 import { useI18nStore } from "../lib/i18n";
 import NoData from "./NoData.vue";

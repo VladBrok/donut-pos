@@ -11,6 +11,11 @@
     :order-type="order.type"
   >
     <template #content>
+      <PrintButton
+        v-if="!isClient"
+        class="q-mb-md"
+        :allow-print-ticket="order.type === ORDER_TYPES.TAKEOUT"
+      />
       <div>
         <div>
           <!-- TODO: add client field -->
@@ -27,7 +32,7 @@
             </template>
           </q-input>
           <q-input
-            v-if="order.type === 'delivery'"
+            v-if="order.type === ORDER_TYPES.DELIVERY"
             :model-value="formatAddress(order.address)"
             readonly
             stack-label
@@ -50,7 +55,7 @@
             </template>
           </q-input>
           <q-input
-            v-if="order.type === 'dine-in'"
+            v-if="order.type === ORDER_TYPES.DINE_IN"
             :model-value="order.table?.number || '-'"
             readonly
             stack-label
@@ -123,6 +128,7 @@
 <script setup lang="ts">
 import {
   DELIVERY_COST,
+  ORDER_TYPES,
   getDishesInOrderCount,
   getDishesTotalCost,
   getOrderDishTotalCost,
@@ -132,8 +138,10 @@ import DishInOrder from "src/components/DishInOrder.vue";
 import OrderHistory from "src/components/OrderHistory.vue";
 import OrderView from "src/components/OrderView.vue";
 import PaymentMethodModal from "src/components/PaymentMethodsModal.vue";
+import PrintButton from "src/components/PrintButton.vue";
 import { formatAddress, makeGoogleMapSearchQuery } from "src/lib/address";
 import { getOrderTypeIcon } from "src/lib/get-order-type-icon";
+import { useStore } from "src/store";
 import { computed, ref } from "vue";
 import { IOrder } from "../../../shared/src/actions/orders";
 import { useI18nStore } from "../lib/i18n";
@@ -148,6 +156,8 @@ const totalCost = computed(() => getOrderTotalCost(order.value));
 const dishesCost = computed(() => getDishesTotalCost(order.value));
 const t = useI18nStore();
 const isPaymentModalOpen = ref(false);
+const store = useStore();
+const isClient = computed(() => store.state.auth.user.permissions?.client);
 
 function openMap() {
   window

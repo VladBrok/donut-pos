@@ -1,4 +1,4 @@
-import { ORDER_STATUSES } from "donut-shared";
+import { ORDER_STATUSES, ORDER_TYPES } from "donut-shared";
 import {
   IOrder,
   cookedDishesLoadedAction,
@@ -16,6 +16,7 @@ import {
   ordersForKitchenLoadedAction,
   ordersPageLoadedAction,
   paymentLinkReceivedAction,
+  tableTakenCheckedAction,
   updateCreateOrderAfterAuthAction,
 } from "donut-shared/src/actions/orders";
 import { MutationTree } from "vuex";
@@ -117,10 +118,12 @@ const mutation: MutationTree<IOrdersState> = {
     state: IOrdersState,
     action: ReturnType<typeof orderCookedAction>
   ) {
-    state.cookedOrders.push(action.payload.order);
+    if (action.payload.order.order.type === ORDER_TYPES.TAKEOUT) {
+      state.cookedOrders.push(action.payload.order);
+    }
 
     if (
-      action.payload.order.order.type === "delivery" &&
+      action.payload.order.order.type === ORDER_TYPES.DELIVERY &&
       !state.ordersForCourier.some(
         (x) => x.id === action.payload.order.order.id
       )
@@ -151,17 +154,25 @@ const mutation: MutationTree<IOrdersState> = {
     state: IOrdersState,
     action: ReturnType<typeof dishFinishedCookingAction>
   ) {
-    const dishInSameOrderIdx = state.cookedDishes.findIndex(
-      (x) => x.order.orderNumber === action.payload.cookedDish.order.orderNumber
-    );
-    if (dishInSameOrderIdx < 0) {
-      state.cookedDishes.push(action.payload.cookedDish);
-    } else {
-      state.cookedDishes.splice(
-        dishInSameOrderIdx + 1,
-        0,
-        action.payload.cookedDish
+    if (
+      !state.cookedDishes.find(
+        (x) =>
+          x.dish.dishIdInOrder === action.payload.cookedDish.dish.dishIdInOrder
+      )
+    ) {
+      const dishInSameOrderIdx = state.cookedDishes.findIndex(
+        (x) =>
+          x.order.orderNumber === action.payload.cookedDish.order.orderNumber
       );
+      if (dishInSameOrderIdx < 0) {
+        state.cookedDishes.push(action.payload.cookedDish);
+      } else {
+        state.cookedDishes.splice(
+          dishInSameOrderIdx + 1,
+          0,
+          action.payload.cookedDish
+        );
+      }
     }
 
     const order = state.ordersForKitchen.find(
@@ -171,7 +182,7 @@ const mutation: MutationTree<IOrdersState> = {
       (x) => x.dishIdInOrder === action.payload.cookedDish.dish.dishIdInOrder
     );
 
-    if (dish) {
+    if (dish && !dish.cookedDate) {
       dish.status = "cooked";
       dish.cookedDate = new Date().toISOString();
     }
@@ -284,6 +295,13 @@ const mutation: MutationTree<IOrdersState> = {
     action: ReturnType<typeof updateCreateOrderAfterAuthAction>
   ) {
     state.createOrderAfterAuth = action.payload.value;
+  },
+
+  tableTakenChecked(
+    state: IOrdersState,
+    action: ReturnType<typeof tableTakenCheckedAction>
+  ) {
+    state.tableTakenByOrderNumber = action.payload.takenByOrderNumber;
   },
 };
 

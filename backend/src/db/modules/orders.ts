@@ -1,6 +1,7 @@
 import {
   DISH_IN_ORDER_STATUSES,
   ORDER_STATUSES,
+  ORDER_TYPES,
   OrderStatus,
   OrderType,
 } from "donut-shared";
@@ -242,7 +243,9 @@ export async function createOrder(
       clientId: newClientId ? newClientId : !isClient ? null : userId,
       number: orderNumber,
       diningTableId: data.table?.id || null,
-      deliveryAddress: sql`${new Param(orderToCreate.address)}`,
+      deliveryAddress: orderToCreate.address
+        ? sql`${new Param(orderToCreate.address)}`
+        : null,
       createdDate: new Date(),
       status: ORDER_STATUSES.CREATED,
     });
@@ -267,7 +270,6 @@ export async function startCookingDish(orderId: string, dishIdInOrder: string) {
       })
       .where(and(eq(order.id, orderId), isNull(order.cookingDate)));
 
-    // TODO: prevent sql injection
     await tx.execute(
       sql.raw(`
 UPDATE order_to_dishes
@@ -389,7 +391,7 @@ export async function deliverDish(orderId: string, dishIdInOrder: string) {
 export async function deliverOrder(
   orderId: string,
   userId: string,
-  isCourier?: boolean
+  isEmployee?: boolean
 ) {
   const theOrder = (
     await db.select().from(order).where(eq(order.id, orderId))
@@ -413,7 +415,7 @@ export async function deliverOrder(
     .where(
       and(
         eq(order.id, orderId),
-        isCourier ? eq(order.employeeId, userId) : eq(order.clientId, userId)
+        isEmployee ? eq(order.employeeId, userId) : eq(order.clientId, userId)
       )
     );
 
@@ -466,12 +468,17 @@ export async function getOrdersShallow(params: IGetOrder, dbOrTx = db) {
 }
 
 export async function getCookedOrders(
-  clientId: string,
+  userId: string,
   orderType: OrderType
 ): Promise<ICookedOrder[]> {
+  const isClient = (
+    await db.select().from(client).where(eq(client.id, userId))
+  )?.[0];
+
   return (
     await getOrdersPage({
-      clientId: clientId,
+      clientId: isClient ? userId : undefined,
+      employeeId: isClient ? undefined : userId,
       statuses: ["cooked"],
       orderType: orderType,
       page: 1,
@@ -485,7 +492,8 @@ export async function getCookedOrders(
 export async function getCookedDishes(
   employeeId?: string,
   dishIdInOrder?: string,
-  dbOrTx = db
+  dbOrTx = db,
+  dineInOnly = false
 ) {
   const diningTableEmployee = db
     .select()
@@ -505,6 +513,7 @@ export async function getCookedDishes(
     .leftJoin(orderToDishes, eq(orderToDishes.orderId, order.id))
     .where(
       and(
+        dineInOnly ? eq(order.type, ORDER_TYPES.DINE_IN) : undefined,
         employeeId ? eq(order.employeeId, employeeId) : undefined,
         sql.raw(`dishes @? '$[*].cookedDate ? (@ != "")'`),
         sql.raw(`dishes @? '$[*].deliveredDate ? (@ == "")'`),
@@ -546,4 +555,14 @@ export async function payForOrder(orderNumber: string) {
       strictOrderNumberCompare: true,
     })
   )[0];
+}
+
+export async function checkTableTaken(tableId: string) {
+  const found = await getOrdersPage({
+    page: 1,
+    perPage: 1,
+    customFilter: () => eq(order.diningTableId, tableId),
+    completed: false,
+  });
+  return found.ordersPage?.[0]?.orderNumber || null;
 }

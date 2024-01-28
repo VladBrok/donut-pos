@@ -15,7 +15,7 @@
         </template>
       </NotificationsBell>
       <q-btn
-        class="q-mr-md shopping-basket"
+        class="q-mr-sm shopping-basket"
         flat
         round
         icon="o_shopping_basket"
@@ -142,10 +142,7 @@ const userId = ref(store.state.auth.user.userId);
 const channels = computed(() => {
   return userId.value === ANONYMOUS.userId
     ? []
-    : [
-        CHANNELS.COOKED_ORDERS_OF_CLIENT(userId.value),
-        CHANNELS.DEFAULT_SALE_POINT,
-      ];
+    : [CHANNELS.COOKED_ORDERS(userId.value), CHANNELS.DEFAULT_SALE_POINT];
 });
 let isSubscribing = useSubscription(channels, { store: store as any });
 const cookedOrders = computed(() => store.state.orders.cookedOrders);

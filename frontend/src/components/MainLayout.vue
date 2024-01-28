@@ -3,6 +3,9 @@
     <q-header class="bg-white text-black shadow-up-1" bordered>
       <q-toolbar class="q-py-sm">
         <q-btn dense flat round icon="menu" @click="toggleMenuDrawer" />
+        <q-avatar class="q-pl-xs q-mr-xs">
+          <logo-image no-text />
+        </q-avatar>
         <q-toolbar-title>
           {{ $route.meta.title || "" }}
         </q-toolbar-title>
@@ -38,7 +41,9 @@
       bordered
     >
       <q-scroll-area class="fit">
-        <!-- TODO: add logo here -->
+        <div class="q-px-lg q-pt-lg q-pb-sm">
+          <logo-image />
+        </div>
         <div class="q-pa-sm">
           <q-list>
             <template v-for="(menuItem, index) in menuList" :key="index">
@@ -64,7 +69,7 @@
     <slot name="drawers" />
 
     <order-drawer
-      :model-value="Boolean(selectedOrder)"
+      :model-value="Boolean(selectedOrder) || isSubscribing"
       @update:model-value="store.commit.local(closeArbitraryOrderAction())"
       @close="store.commit.local(closeArbitraryOrderAction())"
     >
@@ -83,8 +88,8 @@
         </p>
       </template>
       <template #content>
-        <order-details-view v-if="selectedOrder" :order="selectedOrder">
-        </order-details-view>
+        <order-details-view v-if="selectedOrder" :order="selectedOrder" />
+        <big-spinner v-if="isSubscribing"></big-spinner>
       </template>
     </order-drawer>
 
@@ -108,14 +113,17 @@
 </template>
 
 <script setup lang="ts">
+import { useSubscription } from "@logux/vuex";
 import { logoutAction } from "donut-shared/src/actions/auth";
+import BigSpinner from "src/components/BigSpinner.vue";
 import ConfirmDialog from "src/components/ConfirmDialog.vue";
+import LogoImage from "src/components/LogoImage.vue";
 import OrderDetailsView from "src/components/OrderDetailsView.vue";
 import OrderDrawer from "src/components/OrderDrawer.vue";
 import OrderNumberTitle from "src/components/OrderNumberTitle.vue";
 import { useIsLoggedIn } from "src/lib/composables/useIsLoggedIn";
 import { computed, ref } from "vue";
-import { closeArbitraryOrderAction } from "../../../shared";
+import { CHANNELS, closeArbitraryOrderAction } from "../../../shared";
 import { useI18nStore } from "../lib/i18n";
 import { useStore } from "../store";
 
@@ -132,7 +140,26 @@ const isLogoutConfirmOpen = ref(false);
 const isMenuDrawerOpen = ref(false);
 const t = useI18nStore();
 const store = useStore();
-const selectedOrder = computed(() => store.state.orderDrawer.order);
+const userId = computed(() => store.state.auth.user.userId);
+const channels = computed(() => {
+  console.log(
+    "channel recompute:",
+    userId.value === store.state.orderDrawer.order?.employee?.id
+  );
+  return !store.state.orderDrawer.order ||
+    userId.value === store.state.orderDrawer.order.employee?.id
+    ? []
+    : [CHANNELS.ORDER_SINGLE(store.state.orderDrawer.order.orderNumber || "")];
+});
+const isSubscribing = useSubscription(channels, { store: store as any });
+const selectedOrder = computed(() => {
+  return isSubscribing.value
+    ? null
+    : userId.value === store.state.orderDrawer.order?.employee?.id ||
+      !store.state.orderDrawer.order
+    ? store.state.orderDrawer.order
+    : store.state.orders.order;
+});
 const isLoggedIn = useIsLoggedIn();
 
 function toggleMenuDrawer() {

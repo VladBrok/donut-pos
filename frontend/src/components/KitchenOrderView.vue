@@ -27,7 +27,7 @@
           </template>
         </q-input>
         <q-input
-          v-if="order.type === 'dine-in'"
+          v-if="order.type === ORDER_TYPES.DINE_IN"
           :model-value="order.table?.number || '-'"
           readonly
           stack-label
@@ -37,7 +37,7 @@
           class="q-mb-md"
         />
         <q-input
-          v-if="order.type === 'dine-in'"
+          v-if="order.type === ORDER_TYPES.DINE_IN"
           :model-value="
             order.employee?.lastName + ' ' + order.employee?.firstName
           "
@@ -107,6 +107,7 @@
 </template>
 
 <script setup lang="ts">
+import { ORDER_TYPES } from "donut-shared";
 import {
   IOrder,
   markOrderAsCookedAction,

@@ -41,7 +41,7 @@ function updateStatus() {
     promise = store.commit.sync(
       deliverOrderAction({
         orderId: order.value.id,
-        isCourier: true,
+        isEmployee: true,
       })
     );
   } else {
