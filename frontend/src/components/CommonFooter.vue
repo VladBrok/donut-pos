@@ -61,11 +61,13 @@
         </div>
       </div>
 
-      <div style="flex: 1 0 35%">
-        <p class="text-weight-bold">{{ t.donutPosFooterTitle }}</p>
-        <p class="text-dark-lighter">
-          {{ t.donutPosFooterDescription }}
-        </p>
+      <div style="flex: 1 0 35%" class="row items-center">
+        <div>
+          <p class="text-weight-bold">{{ t.donutPosFooterTitle }}</p>
+          <p class="text-dark-lighter">
+            {{ t.donutPosFooterDescription }}
+          </p>
+        </div>
       </div>
     </div>
   </footer>
