@@ -328,6 +328,7 @@ export const cashPaymentRequestsAdapter = (
     paidDate: x.order?.paidDate?.toISOString() || "",
     employeeId: x.order?.employeeId || "",
     clientId: x.order?.clientId || "",
+    requestedAt: x.cash_payment_request?.requestedAt?.toISOString() || "",
   }));
 };
 

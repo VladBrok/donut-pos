@@ -2,7 +2,7 @@
   <div class="row no-wrap gap-md q-py-md q-px-xs items-center">
     <div class="flex-grow">
       <div class="text-body2">
-        <p class="text-h6 q-mb-xs">
+        <p class="text-subtitle1 text-weight-bold q-mb-xs">
           {{ isClient ? t.clientOrderReady : t.employeeOrderReady }}
         </p>
         <OrderNumberTitle :order-number="order.order.orderNumber" is-link />

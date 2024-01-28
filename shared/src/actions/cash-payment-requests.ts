@@ -10,6 +10,7 @@ export interface ICashPaymentRequest {
     id: string;
     number: string;
   };
+  requestedAt: string;
   orderNumber: string;
   status: OrderStatus;
   createdDate: string;
