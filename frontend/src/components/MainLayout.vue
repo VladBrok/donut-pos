@@ -144,10 +144,6 @@ const t = useI18nStore();
 const store = useStore();
 const userId = computed(() => store.state.auth.user.userId);
 const channels = computed(() => {
-  console.log(
-    "channel recompute:",
-    userId.value === store.state.orderDrawer.order?.employee?.id
-  );
   return !store.state.orderDrawer.order ||
     userId.value === store.state.orderDrawer.order.employee?.id
     ? []

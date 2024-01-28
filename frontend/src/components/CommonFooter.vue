@@ -1,10 +1,10 @@
 <template>
   <footer class="bg-white shadow-up-1 q-px-md q-py-md">
-    <div class="row no-wrap gap-md">
-      <div class="row items-center q-pl-sm" style="flex: 1 1 30%">
+    <div class="row gap-md footer-inner-container">
+      <div class="row items-center q-pl-sm" style="flex: 0 0 25%">
         <LogoImage style="width: 130px" />
       </div>
-      <div style="flex: 1 1 45%" class="row items-center">
+      <div style="flex: 0 0 35%" class="row items-center">
         <div>
           <div class="row no-wrap items-center gap-xs q-mb-sm">
             <q-btn
@@ -61,7 +61,7 @@
         </div>
       </div>
 
-      <div style="flex: 1 1 50%">
+      <div style="flex: 1 0 35%">
         <p class="text-weight-bold">{{ t.donutPosFooterTitle }}</p>
         <p class="text-dark-lighter">
           {{ t.donutPosFooterDescription }}
