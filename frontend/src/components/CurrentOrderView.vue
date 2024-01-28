@@ -569,6 +569,7 @@ async function onSubmit() {
     if (
       order.value?.type === ORDER_TYPES.DINE_IN &&
       order.value.table &&
+      !isClient.value &&
       !isCreateConfirmed.value
     ) {
       await store.commit.sync(
