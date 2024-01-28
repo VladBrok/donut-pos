@@ -1,10 +1,7 @@
 <template>
   <div class="q-pa-md bg-gray-lightest min-height-window">
     <div>
-      <div class="q-my-xl text-center text-dark-ligher">
-        <div>
-          <!-- <q-icon :name="iconName" style="font-size: 55px" /> -->
-        </div>
+      <div class="q-my-xl text-center text-dark-lighter">
         <h1 class="text-h3">
           {{ t.signUp }}
         </h1>

@@ -257,6 +257,11 @@ export const messages = i18n("messages", {
   isSuccessfull: "is successfull",
   goToMenu: "go to menu",
   acceptPayment: "Accept payment",
+  callUs: "Call us",
+  writeUsEmail: "Write us an email",
+  donutPosFooterTitle: "Donut, the POS system",
+  donutPosFooterDescription:
+    "Stay ahead of the competition with real-time order management, remote accessibility, and advanced analytics. Transform the dining experience with our solution – where convenience meets excellence.",
 
   // Courier pages
   client: "Client",
