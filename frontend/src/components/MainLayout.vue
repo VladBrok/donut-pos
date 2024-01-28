@@ -3,6 +3,9 @@
     <q-header class="bg-white text-black shadow-up-1" bordered>
       <q-toolbar class="q-py-sm">
         <q-btn dense flat round icon="menu" @click="toggleMenuDrawer" />
+        <q-avatar class="q-pl-xs q-mr-xs">
+          <logo-image no-text />
+        </q-avatar>
         <q-toolbar-title>
           {{ $route.meta.title || "" }}
         </q-toolbar-title>
@@ -38,7 +41,9 @@
       bordered
     >
       <q-scroll-area class="fit">
-        <!-- TODO: add logo here -->
+        <div class="q-px-lg q-pt-lg q-pb-sm">
+          <logo-image />
+        </div>
         <div class="q-pa-sm">
           <q-list>
             <template v-for="(menuItem, index) in menuList" :key="index">
@@ -112,6 +117,7 @@ import { useSubscription } from "@logux/vuex";
 import { logoutAction } from "donut-shared/src/actions/auth";
 import BigSpinner from "src/components/BigSpinner.vue";
 import ConfirmDialog from "src/components/ConfirmDialog.vue";
+import LogoImage from "src/components/LogoImage.vue";
 import OrderDetailsView from "src/components/OrderDetailsView.vue";
 import OrderDrawer from "src/components/OrderDrawer.vue";
 import OrderNumberTitle from "src/components/OrderNumberTitle.vue";
