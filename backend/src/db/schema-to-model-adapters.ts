@@ -238,6 +238,7 @@ export const shallowOrdersAdapter = (
             id: uniqueOrder.employee.id,
             firstName: uniqueOrder.employee.firstName || "",
             lastName: uniqueOrder.employee.lastName || "",
+            email: uniqueOrder.employee.email || "",
           }
         : null,
     }));

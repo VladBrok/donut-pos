@@ -87,6 +87,7 @@ export interface IShallowOrder {
     id: string;
     firstName: string;
     lastName: string;
+    email: string;
   } | null;
   client: {
     id: string;

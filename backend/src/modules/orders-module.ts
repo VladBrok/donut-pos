@@ -336,6 +336,18 @@ export default function ordersModule(server: Server) {
     async access() {
       return false;
     },
+    async process(ctx, action) {
+      console.log(
+        "dish finished cooking:",
+        action.payload.cookedDish.order.type
+      );
+      if (action.payload.cookedDish.order.type === ORDER_TYPES.DINE_IN) {
+        await sendEmailNotification(
+          action.payload.cookedDish.order.employee?.email || "",
+          `${action.payload.cookedDish.dish.name} for table ${action.payload.cookedDish.order.table.number} is ready`
+        );
+      }
+    },
     resend(ctx, action) {
       return [
         CHANNELS.ORDERS_FOR_KITCHEN,
