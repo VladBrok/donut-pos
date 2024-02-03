@@ -525,6 +525,17 @@ export default function ordersModule(server: Server) {
     async access() {
       return false;
     },
+    async process(ctx, action) {
+      const cooks = await db.getCookEmails();
+      await Promise.allSettled(
+        cooks.map((email) =>
+          sendEmailNotification(
+            email,
+            `New order: ${action.payload.order.orderNumber}`
+          )
+        )
+      );
+    },
     resend(ctx, action) {
       return [CHANNELS.ORDERS_FOR_KITCHEN];
     },

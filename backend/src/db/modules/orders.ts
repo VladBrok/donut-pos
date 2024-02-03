@@ -576,6 +576,15 @@ export async function getCourierEmails() {
     .leftJoin(role, eq(role.id, employee.roleId))
     .where(eq(role.codeName, EMPLOYEE_ROLES.COURIER));
   const result = emails.map((x) => x.email || "").filter(Boolean);
-  console.log("\n\ncouriers:", result);
+  return result;
+}
+
+export async function getCookEmails() {
+  const emails = await db
+    .select({ email: employee.email })
+    .from(employee)
+    .leftJoin(role, eq(role.id, employee.roleId))
+    .where(eq(role.codeName, EMPLOYEE_ROLES.COOK));
+  const result = emails.map((x) => x.email || "").filter(Boolean);
   return result;
 }
