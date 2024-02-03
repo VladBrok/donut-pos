@@ -47,7 +47,7 @@ export default function cashPaymentRequestsModule(server: Server) {
       return false;
     },
     async process(ctx, action) {
-      // TODO: i18n messages in some way?
+      // TODO: i18n messages in some way? In fact we should use the same notification text as we use for corresponding notifications on FE. This means we should move i18n to `shared`
       await sendEmailNotification(
         action.payload.request.employeeEmail,
         `Cash payment request for table ${action.payload.request.table.number}, order ${action.payload.request.orderNumber}`

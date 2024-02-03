@@ -185,6 +185,7 @@ export const ordersAdapter = (data: OrderSchema[]): IOrder[] => {
             id: uniqueOrder.client.id,
             phone: uniqueOrder.client?.phone || "",
             firstName: uniqueOrder.client?.firstName || "",
+            email: uniqueOrder.client?.email || "",
           }
         : null,
       employee: uniqueOrder.employee
@@ -192,6 +193,7 @@ export const ordersAdapter = (data: OrderSchema[]): IOrder[] => {
             id: uniqueOrder.employee.id,
             firstName: uniqueOrder.employee.firstName || "",
             lastName: uniqueOrder.employee.lastName || "",
+            email: uniqueOrder.employee.email || "",
           }
         : null,
       dishes: uniqueOrder.order_to_dishes?.dishes as IDishInOrder[],

@@ -37,6 +37,7 @@ import {
   tableTakenCheckedAction,
 } from "donut-shared/src/actions/orders.js";
 import { logError } from "donut-shared/src/lib/log.js";
+import { sendEmailNotification } from "src/lib/notification-service.js";
 import Stripe from "stripe";
 import * as db from "../db/modules/orders.js";
 import {
@@ -268,6 +269,32 @@ export default function ordersModule(server: Server) {
   server.type(orderCookedAction, {
     async access() {
       return false;
+    },
+    async process(ctx, action, meta) {
+      const message = `Order ${action.payload.order.order.orderNumber} is ready`;
+      if (action.payload.order.order.employee?.id) {
+        await sendEmailNotification(
+          action.payload.order.order.employee?.email,
+          message
+        );
+      }
+
+      if (
+        action.payload.order.order.client?.id &&
+        action.payload.order.order.type === ORDER_TYPES.TAKEOUT
+      ) {
+        await sendEmailNotification(
+          action.payload.order.order.client?.email,
+          message
+        );
+      }
+
+      if (action.payload.order.order.type === ORDER_TYPES.DELIVERY) {
+        const courierEmails = await db.getCourierEmails();
+        await Promise.allSettled(
+          courierEmails.map((email) => sendEmailNotification(email, message))
+        );
+      }
     },
     resend(ctx, action) {
       return [

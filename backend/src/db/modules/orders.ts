@@ -1,5 +1,6 @@
 import {
   DISH_IN_ORDER_STATUSES,
+  EMPLOYEE_ROLES,
   ORDER_STATUSES,
   ORDER_TYPES,
   OrderStatus,
@@ -28,6 +29,7 @@ import {
   employee,
   order,
   orderToDishes,
+  role,
 } from "migrations/schema.js";
 import {
   cookedDishesAdapter,
@@ -565,4 +567,15 @@ export async function checkTableTaken(tableId: string) {
     completed: false,
   });
   return found.ordersPage?.[0]?.orderNumber || null;
+}
+
+export async function getCourierEmails() {
+  const emails = await db
+    .select({ email: employee.email })
+    .from(employee)
+    .leftJoin(role, eq(role.id, employee.roleId))
+    .where(eq(role.codeName, EMPLOYEE_ROLES.COURIER));
+  const result = emails.map((x) => x.email || "").filter(Boolean);
+  console.log("\n\ncouriers:", result);
+  return result;
 }
