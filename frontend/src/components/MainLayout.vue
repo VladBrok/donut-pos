@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="hHh LpR fFf" class="bg-gray-lightest">
+  <q-layout view="hHh LpR lfr" class="bg-gray-lightest">
     <q-header class="bg-white text-black shadow-up-1" bordered>
       <q-toolbar class="q-py-sm">
         <q-btn dense flat round icon="menu" @click="toggleMenuDrawer" />
@@ -100,6 +100,7 @@
             <router-view />
           </div>
         </q-page>
+        <CommonFooter />
       </div>
     </q-page-container>
 
@@ -126,6 +127,7 @@ import { computed, ref } from "vue";
 import { CHANNELS, closeArbitraryOrderAction } from "../../../shared";
 import { useI18nStore } from "../lib/i18n";
 import { useStore } from "../store";
+import CommonFooter from "./CommonFooter.vue";
 
 defineProps<{
   menuList: {
@@ -142,10 +144,6 @@ const t = useI18nStore();
 const store = useStore();
 const userId = computed(() => store.state.auth.user.userId);
 const channels = computed(() => {
-  console.log(
-    "channel recompute:",
-    userId.value === store.state.orderDrawer.order?.employee?.id
-  );
   return !store.state.orderDrawer.order ||
     userId.value === store.state.orderDrawer.order.employee?.id
     ? []

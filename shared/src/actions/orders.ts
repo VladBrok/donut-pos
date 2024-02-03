@@ -58,11 +58,13 @@ export interface IOrder {
     id: string;
     firstName: string;
     lastName: string;
+    email: string;
   } | null;
   client: {
     id: string;
     phone: string;
     firstName: string;
+    email: string;
   } | null;
   dishes: IDishInOrder[];
 }
@@ -85,6 +87,7 @@ export interface IShallowOrder {
     id: string;
     firstName: string;
     lastName: string;
+    email: string;
   } | null;
   client: {
     id: string;

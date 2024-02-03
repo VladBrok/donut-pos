@@ -21,6 +21,7 @@ export interface ICashPaymentRequest {
   deliveredDate: string;
   paidDate: string;
   employeeId: string;
+  employeeEmail: string;
   clientId: string;
 }
 

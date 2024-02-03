@@ -1,5 +1,5 @@
 <template>
-  <div class="text-dark-ligher text-caption">
+  <div class="text-dark-lighter text-caption">
     {{ formatDateTime(time) }}
   </div>
 </template>

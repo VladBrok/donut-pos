@@ -37,6 +37,7 @@ import {
   tableTakenCheckedAction,
 } from "donut-shared/src/actions/orders.js";
 import { logError } from "donut-shared/src/lib/log.js";
+import { sendEmailNotification } from "src/lib/notification-service.js";
 import Stripe from "stripe";
 import * as db from "../db/modules/orders.js";
 import {
@@ -269,6 +270,32 @@ export default function ordersModule(server: Server) {
     async access() {
       return false;
     },
+    async process(ctx, action, meta) {
+      const message = `Order ${action.payload.order.order.orderNumber} is ready`;
+      if (action.payload.order.order.employee?.id) {
+        await sendEmailNotification(
+          action.payload.order.order.employee?.email,
+          message
+        );
+      }
+
+      if (
+        action.payload.order.order.client?.id &&
+        action.payload.order.order.type === ORDER_TYPES.TAKEOUT
+      ) {
+        await sendEmailNotification(
+          action.payload.order.order.client?.email,
+          message
+        );
+      }
+
+      if (action.payload.order.order.type === ORDER_TYPES.DELIVERY) {
+        const courierEmails = await db.getCourierEmails();
+        await Promise.allSettled(
+          courierEmails.map((email) => sendEmailNotification(email, message))
+        );
+      }
+    },
     resend(ctx, action) {
       return [
         CHANNELS.ORDERS_FOR_COURIERS,
@@ -308,6 +335,18 @@ export default function ordersModule(server: Server) {
   server.type(dishFinishedCookingAction, {
     async access() {
       return false;
+    },
+    async process(ctx, action) {
+      console.log(
+        "dish finished cooking:",
+        action.payload.cookedDish.order.type
+      );
+      if (action.payload.cookedDish.order.type === ORDER_TYPES.DINE_IN) {
+        await sendEmailNotification(
+          action.payload.cookedDish.order.employee?.email || "",
+          `${action.payload.cookedDish.dish.name} for table ${action.payload.cookedDish.order.table.number} is ready`
+        );
+      }
     },
     resend(ctx, action) {
       return [
@@ -485,6 +524,17 @@ export default function ordersModule(server: Server) {
   server.type(orderCreatedAction, {
     async access() {
       return false;
+    },
+    async process(ctx, action) {
+      const cooks = await db.getCookEmails();
+      await Promise.allSettled(
+        cooks.map((email) =>
+          sendEmailNotification(
+            email,
+            `New order: ${action.payload.order.orderNumber}`
+          )
+        )
+      );
     },
     resend(ctx, action) {
       return [CHANNELS.ORDERS_FOR_KITCHEN];
