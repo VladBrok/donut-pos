@@ -1,6 +1,11 @@
 import { ICashPaymentRequest, getOrderTotalCost } from "donut-shared";
 import { and, asc, eq } from "drizzle-orm";
-import { cashPaymentRequest, diningTable, order } from "migrations/schema.js";
+import {
+  cashPaymentRequest,
+  diningTable,
+  employee,
+  order,
+} from "migrations/schema.js";
 import { getSingleOrder } from "src/db/modules/orders.js";
 import { cashPaymentRequestsAdapter } from "src/db/schema-to-model-adapters.js";
 import { generateUuid } from "src/lib/uuid.js";
@@ -12,6 +17,7 @@ export async function getCashPaymentRequests(employeeId?: string, id?: string) {
     .from(cashPaymentRequest)
     .leftJoin(order, eq(order.id, cashPaymentRequest.orderId))
     .leftJoin(diningTable, eq(diningTable.id, order.diningTableId))
+    .leftJoin(employee, eq(employee.id, order.employeeId))
     .where(
       and(
         employeeId ? eq(order.employeeId, employeeId) : undefined,

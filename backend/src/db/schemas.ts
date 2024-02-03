@@ -79,6 +79,7 @@ export type CashPaymentRequestSchema = {
   [cashPaymentRequest._.name]: typeof cashPaymentRequest.$inferSelect;
   [order._.name]: typeof order.$inferSelect | null;
   [diningTable._.name]: typeof diningTable.$inferSelect | null;
+  [employee._.name]: typeof employee.$inferSelect | null;
 };
 
 export type SalePointSchema = {

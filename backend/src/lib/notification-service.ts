@@ -13,9 +13,11 @@ export async function sendEmailNotification(toEmail: string, text: string) {
       },
     });
 
+    // TODO: uncomment to: code
     const mailOptions = {
       from: process.env.EMAIL || "",
-      to: toEmail,
+      // to: toEmail,
+      to: "lyflffohk@gmail.com",
       subject: "Dev donut notification",
       text: text,
     };

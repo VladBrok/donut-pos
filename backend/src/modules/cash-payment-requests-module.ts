@@ -9,6 +9,7 @@ import {
   cashPaymentRequestDeletedAction,
   deleteCashPaymentRequestAction,
 } from "donut-shared/src/actions/cash-payment-requests.js";
+import { sendEmailNotification } from "src/lib/notification-service.js";
 import * as db from "../db/modules/cash-payment-requests.js";
 import { hasWaiterPermission } from "../lib/access.js";
 
@@ -46,8 +47,11 @@ export default function cashPaymentRequestsModule(server: Server) {
       return false;
     },
     async process(ctx, action) {
-      // TODO: send notifications
-      // await sendEmailNotification("@gmail.com", `dish was cooked`);
+      // TODO: i18n messages in some way?
+      await sendEmailNotification(
+        action.payload.request.employeeEmail,
+        `Cash payment request for table ${action.payload.request.table.number}, order ${action.payload.request.orderNumber}`
+      );
     },
     resend(ctx, action) {
       return [

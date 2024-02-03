@@ -327,6 +327,7 @@ export const cashPaymentRequestsAdapter = (
     deliveredDate: x.order?.deliveredDate?.toISOString() || "",
     paidDate: x.order?.paidDate?.toISOString() || "",
     employeeId: x.order?.employeeId || "",
+    employeeEmail: x.employee?.email || "",
     clientId: x.order?.clientId || "",
     requestedAt: x.cash_payment_request?.requestedAt?.toISOString() || "",
   }));
