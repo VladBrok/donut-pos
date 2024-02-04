@@ -29,7 +29,7 @@ export default function authModule(server: Server) {
 
   server.type(loginAction, {
     access(ctx) {
-      return ctx.userId === ANONYMOUS.userId;
+      return true;
     },
     async process(ctx, action, meta) {
       const isClient = action.payload.permissions.client;
