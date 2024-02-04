@@ -1,6 +1,7 @@
 import {
   EMPLOYEE_PERMISSIONS,
   IAddress,
+  IAdminDashboardData,
   ICashPaymentRequest,
   IClient,
   ISalePoint,
@@ -25,6 +26,7 @@ import {
 } from "./models.js";
 import {
   AddressSchema,
+  AdminDashboardSchema,
   CashPaymentRequestSchema,
   ClientSchema,
   DiningTableSchema,
@@ -346,4 +348,15 @@ export const salePointsAdapter = (data: SalePointSchema[]): ISalePoint[] => {
     phone: x.sale_point.phone || "",
     workSchedule: x.sale_point.workSchedule as IWorkSchedule[],
   }));
+};
+
+export const adminDashboardAdapter = (
+  data: AdminDashboardSchema
+): IAdminDashboardData => {
+  return {
+    orderTypes: data.orderTypes.map((x) => ({
+      count: x.count,
+      type: x.type || "",
+    })),
+  };
 };

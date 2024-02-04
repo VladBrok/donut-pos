@@ -18,4 +18,5 @@ export const CHANNELS = {
   ORDERS_FOR_COURIERS: "ordersForCouriers",
   DINING_TABLES: "diningTables",
   ADDRESSES_OF_CLIENT: (id = ":clientId") => `addresses/${id}`,
+  ADMIN_DASHBOARD: "adminDashboard",
 };
