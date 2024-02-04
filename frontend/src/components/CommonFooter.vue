@@ -82,11 +82,11 @@ import { formatAddress, makeGoogleMapSearchQuery } from "src/lib/address";
 import { useI18nStore } from "src/lib/i18n";
 import { formatPhoneNumber } from "src/lib/phone";
 import { useStore } from "src/store";
-import { computed, ref } from "vue";
+import { computed } from "vue";
 
 const t = useI18nStore();
 const store = useStore();
-const userId = ref(store.state.auth.user.userId);
+const userId = computed(() => store.state.auth.user.userId);
 const channels = computed(() => {
   return userId.value === ANONYMOUS.userId ? [] : [CHANNELS.DEFAULT_SALE_POINT];
 });

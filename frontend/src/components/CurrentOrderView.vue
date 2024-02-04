@@ -390,7 +390,7 @@ const isConfirmClearOpen = ref(false);
 const isCreateConfirmed = ref(false);
 const isSubmitting = ref(false);
 const isConfirmOrderCreateModalOpen = ref(false);
-const userId = ref(store.state.auth.user.userId);
+const userId = computed(() => store.state.auth.user.userId);
 const channels = computed(() => {
   return userId.value === ANONYMOUS.userId
     ? [CHANNELS.DINING_TABLES]
