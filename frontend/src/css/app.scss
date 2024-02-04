@@ -123,6 +123,10 @@ a:hover {
   min-width: 0;
 }
 
+.flex-1 {
+  flex: 1 0 0;
+}
+
 .flex-basis-50 {
   flex-basis: 50%;
 }
@@ -203,6 +207,10 @@ a:hover {
 
 .gap-md {
   gap: 20px;
+}
+
+.gap-lg {
+  gap: 35px;
 }
 
 .w-100 {
