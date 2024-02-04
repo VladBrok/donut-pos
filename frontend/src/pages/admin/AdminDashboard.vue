@@ -68,7 +68,7 @@ const options = computed(() => ({
   labels: orderTypes.value.map((x) => x.label),
   responsive: [
     {
-      breakpoint: 4000,
+      breakpoint: 10000,
       options: {
         chart: {
           width: 380,
