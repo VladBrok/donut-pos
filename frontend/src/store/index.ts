@@ -14,6 +14,7 @@ import { IAddressesState } from "src/store/addresses/state";
 import { ICashPaymentRequestsState } from "src/store/cash-payment-requests/state";
 import { IClientsState } from "src/store/clients/state";
 import { ICurrentOrderState } from "src/store/current-order/state";
+import { IDashboardState } from "src/store/dashboard/state";
 import { IDiningTablesState } from "src/store/dining-tables/state";
 import { IOrderDrawerState } from "src/store/order-drawer/state";
 import { IOrdersState } from "src/store/orders/state";
@@ -29,6 +30,7 @@ import { IAuthState } from "./auth/state";
 import cashPaymentRequests from "./cash-payment-requests";
 import clients from "./clients";
 import currentOrder from "./current-order";
+import dashboard from "./dashboard";
 import diningTables from "./dining-tables";
 import dishCategories from "./dish-categories";
 import { IDishCategoriesState } from "./dish-categories/state";
@@ -61,6 +63,7 @@ export interface StateInterface {
   clients: IClientsState;
   addresses: IAddressesState;
   salePoints: ISalePointsState;
+  dashboard: IDashboardState;
 }
 
 // provide typings for `this.$store`
@@ -104,6 +107,7 @@ export default store(function (/* { ssrContext } */) {
     clients,
     addresses,
     salePoints,
+    dashboard,
   };
 
   for (const module of Object.values(modules)) {
