@@ -92,4 +92,6 @@ export type AdminDashboardSchema = {
     type: string | null;
     count: number;
   }[];
+  orderCount: number;
+  clientCount: number;
 };

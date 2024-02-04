@@ -358,5 +358,7 @@ export const adminDashboardAdapter = (
       count: x.count,
       type: x.type || "",
     })),
+    clientCount: data.clientCount,
+    orderCount: data.orderCount,
   };
 };

@@ -6,6 +6,8 @@ export interface IAdminDashboardData {
     type: OrderType;
     count: number;
   }[];
+  orderCount: number;
+  clientCount: number;
 }
 
 export const adminDashboardLoadedAction = createAction<{

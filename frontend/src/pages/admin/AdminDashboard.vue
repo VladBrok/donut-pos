@@ -28,11 +28,10 @@ const isSubscribing = useSubscription(channels, { store: store as any });
 const data = computed(() => store.state.dashboard.data);
 const t = useI18nStore();
 const orderTypes = computed(() => {
-  const res = ORDER_TYPES_ARR.map((x) => ({
+  return ORDER_TYPES_ARR.map((x) => ({
     label: t.value[`orderType_${x}`],
     value: data.value.orderTypes.find((type) => type.type === x)?.count || 0,
   }));
-  return res;
 });
 const options = computed(() => ({
   labels: orderTypes.value.map((x) => x.label),
