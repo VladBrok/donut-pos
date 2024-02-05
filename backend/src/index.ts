@@ -3,11 +3,13 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat.js";
 import timezone from "dayjs/plugin/timezone.js";
 import utc from "dayjs/plugin/utc.js";
+import { setLogger } from "donut-shared/src/lib/log.js";
 import addressesModule from "src/modules/addresses-module.js";
 import cashPaymentRequestsModule from "src/modules/cash-payment-requests-module.js";
 import clientsModule from "src/modules/clients-module.js";
 import dashboardModule from "src/modules/dashboard-module.js";
 import diningTablesModule from "src/modules/dining-tables-module.js";
+import logModule from "src/modules/log-module.js";
 import ordersModule from "src/modules/orders-module.js";
 import salePointsModule from "src/modules/sale-points-module.js";
 import * as db from "./db/index.js";
@@ -44,5 +46,10 @@ clientsModule(server);
 addressesModule(server);
 salePointsModule(server);
 dashboardModule(server);
+logModule(server);
+
+setLogger((date, type, ...messages) => {
+  console.log("server log");
+});
 
 server.listen();
