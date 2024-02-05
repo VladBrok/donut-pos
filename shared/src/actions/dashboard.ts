@@ -18,3 +18,7 @@ export const adminDashboardLoadedAction = createAction<{
 export const updateAdminDashboardOrderCreated = createAction<{
   order: IOrder;
 }>("dashboard/orderCreated");
+
+export const updateAdminDashboardClientSignedUp = createAction(
+  "dashboard/clientSignedUp"
+);

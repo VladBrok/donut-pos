@@ -25,6 +25,10 @@ const mutation: MutationTree<IDashboardState> = {
       orderType.count++;
     }
   },
+
+  clientSignedUp(state: IDashboardState) {
+    state.data.clientCount++;
+  },
 };
 
 export default mutation;
