@@ -12,7 +12,8 @@ import diningTablesModule from "src/modules/dining-tables-module.js";
 import logModule from "src/modules/log-module.js";
 import ordersModule from "src/modules/orders-module.js";
 import salePointsModule from "src/modules/sale-points-module.js";
-import winston from "winston";
+import * as winston from "winston";
+import "winston-daily-rotate-file";
 import * as db from "./db/index.js";
 import authModule from "./modules/auth-module.js";
 import { default as dishCategoriesModule } from "./modules/dish-categories-module.js";
@@ -52,7 +53,13 @@ logModule(server);
 const logger = winston.createLogger({
   format: winston.format.prettyPrint(),
   defaultMeta: { service: "user-service" },
-  transports: [new winston.transports.File({ filename: "combined.log" })],
+  transports: [
+    new winston.transports.DailyRotateFile({
+      filename: "%DATE%.log",
+      datePattern: "YYYY-MM-DD",
+      zippedArchive: true,
+    }),
+  ],
 });
 
 setLogger((date, type, ...messages) => {
