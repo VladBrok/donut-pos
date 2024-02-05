@@ -533,7 +533,7 @@ export default function ordersModule(server: Server) {
       );
     },
     resend(ctx, action) {
-      return [CHANNELS.ORDERS_FOR_KITCHEN];
+      return [CHANNELS.ORDERS_FOR_KITCHEN, CHANNELS.ADMIN_DASHBOARD];
     },
   });
 

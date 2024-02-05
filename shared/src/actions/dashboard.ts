@@ -1,3 +1,4 @@
+import { IOrder } from "src/actions/orders.js";
 import { OrderType } from "src/constants/order-types.js";
 import { createAction } from "./index.js";
 
@@ -13,3 +14,7 @@ export interface IAdminDashboardData {
 export const adminDashboardLoadedAction = createAction<{
   data: IAdminDashboardData;
 }>("dashboard/loaded");
+
+export const updateAdminDashboardOrderCreated = createAction<{
+  order: IOrder;
+}>("dashboard/orderCreated");
