@@ -60,7 +60,7 @@
                     round
                     dense
                     icon="call"
-                    color="primary"
+                    color="secondary"
                     @click="callClient"
                   >
                     <q-tooltip>
