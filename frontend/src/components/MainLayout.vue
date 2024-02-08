@@ -143,9 +143,11 @@ const isMenuDrawerOpen = ref(false);
 const t = useI18nStore();
 const store = useStore();
 const userId = computed(() => store.state.auth.user.userId);
+const isClient = computed(() => store.state.auth.user.permissions?.client);
 const channels = computed(() => {
   return !store.state.orderDrawer.order ||
-    userId.value === store.state.orderDrawer.order.employee?.id
+    userId.value === store.state.orderDrawer.order.employee?.id ||
+    isClient.value
     ? []
     : [CHANNELS.ORDER_SINGLE(store.state.orderDrawer.order.orderNumber || "")];
 });
@@ -154,7 +156,8 @@ const selectedOrder = computed(() => {
   return isSubscribing.value
     ? null
     : userId.value === store.state.orderDrawer.order?.employee?.id ||
-      !store.state.orderDrawer.order
+      !store.state.orderDrawer.order ||
+      isClient.value
     ? store.state.orderDrawer.order
     : store.state.orders.order;
 });
