@@ -1,8 +1,8 @@
 <template>
   <div>
     <big-spinner v-if="isSubscribing"></big-spinner>
-    <div v-else class="row gap-lg">
-      <dashboard-card class="flex-1">
+    <div v-else class="row justify-center gap-lg q-mx-auto max-w-xl">
+      <dashboard-card class="admin-dashboard-flex-item">
         <template #title>
           {{ t.orderTypes }}
         </template>
@@ -10,7 +10,7 @@
           <div ref="chart"></div>
         </template>
       </dashboard-card>
-      <dashboard-card class="flex-1">
+      <dashboard-card class="admin-dashboard-flex-item">
         <template #title>
           {{ t.orderCount }}
         </template>
@@ -22,7 +22,7 @@
           </div>
         </template>
       </dashboard-card>
-      <dashboard-card class="flex-1">
+      <dashboard-card class="admin-dashboard-flex-item">
         <template #title>
           {{ t.clientCount }}
         </template>

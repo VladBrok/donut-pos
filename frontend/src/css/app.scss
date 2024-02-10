@@ -127,6 +127,11 @@ a:hover {
   flex: 1 0 0;
 }
 
+.admin-dashboard-flex-item {
+  min-width: 280px;
+  min-height: 280px;
+}
+
 .flex-basis-50 {
   flex-basis: 50%;
 }
