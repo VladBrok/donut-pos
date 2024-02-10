@@ -1,6 +1,6 @@
 <template>
   <footer class="bg-white shadow-up-1 q-px-md q-py-md">
-    <div class="row gap-md footer-inner-container">
+    <div class="row gap-md">
       <div class="row items-center q-pl-sm" style="flex: 0 0 25%">
         <LogoImage style="width: 130px" />
       </div>
