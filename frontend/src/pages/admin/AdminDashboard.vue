@@ -7,11 +7,12 @@
           {{ t.orderTypes }}
         </template>
         <template #content>
-          <apexchart
+          <div ref="chart"></div>
+          <!-- <apexchart
             type="donut"
             :options="options"
             :series="series"
-          ></apexchart>
+          ></apexchart> -->
         </template>
       </dashboard-card>
       <dashboard-card class="flex-1">
@@ -49,13 +50,17 @@ import BigSpinner from "src/components/BigSpinner.vue";
 import DashboardCard from "src/components/DashboardCard.vue";
 import { useI18nStore } from "src/lib/i18n";
 import { useStore } from "src/store";
-import { computed } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 
+const chart = ref();
 const store = useStore();
+const ApexCharts = ref();
+const donutChart = ref();
 const channels = computed(() => {
   return [CHANNELS.ADMIN_DASHBOARD];
 });
 const isSubscribing = useSubscription(channels, { store: store as any });
+const isLoadingApex = ref(false);
 const data = computed(() => store.state.dashboard.data);
 const t = useI18nStore();
 const orderTypes = computed(() => {
@@ -64,7 +69,12 @@ const orderTypes = computed(() => {
     value: data.value.orderTypes.find((type) => type.type === x)?.count || 0,
   }));
 });
+const series = computed(() => orderTypes.value.map((x) => x.value));
 const options = computed(() => ({
+  chart: {
+    type: "donut",
+  },
+  series: series.value,
   labels: orderTypes.value.map((x) => x.label),
   responsive: [
     {
@@ -85,5 +95,27 @@ const options = computed(() => ({
     },
   ],
 }));
-const series = computed(() => orderTypes.value.map((x) => x.value));
+
+onMounted(async () => {
+  isLoadingApex.value = true;
+  try {
+    const charts = await import("apexcharts");
+    ApexCharts.value = charts.default;
+  } finally {
+    isLoadingApex.value = false;
+  }
+});
+
+watch([options, chart, ApexCharts], () => {
+  if (!chart.value || !ApexCharts.value) {
+    return;
+  }
+
+  if (!donutChart.value) {
+    donutChart.value = new ApexCharts.value(chart.value, options.value);
+    donutChart.value.render();
+  } else {
+    donutChart.value.updateOptions(options.value);
+  }
+});
 </script>
