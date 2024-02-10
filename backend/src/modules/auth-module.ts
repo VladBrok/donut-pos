@@ -2,6 +2,7 @@ import { Server } from "@logux/server";
 import {
   ACCESS_DENIED,
   ANONYMOUS,
+  CHANNELS,
   USER_NOT_FOUND,
   USER_WITH_EMAIL_EXISTS,
   USER_WITH_PHONE_EXISTS,
@@ -12,6 +13,7 @@ import {
   loginAction,
   signUpAction,
 } from "donut-shared/src/actions/auth.js";
+import { updateAdminDashboardClientSignedUp } from "donut-shared/src/actions/dashboard.js";
 import * as clientDb from "../db/modules/clients.js";
 import * as db from "../db/modules/employees.js";
 import { compareWithHash, hash } from "../lib/crypt.js";
@@ -29,7 +31,7 @@ export default function authModule(server: Server) {
 
   server.type(loginAction, {
     access(ctx) {
-      return ctx.userId === ANONYMOUS.userId;
+      return true;
     },
     async process(ctx, action, meta) {
       const isClient = action.payload.permissions.client;
@@ -88,8 +90,6 @@ export default function authModule(server: Server) {
         return;
       }
 
-      // TODO: login and signup are based on the assumption that anonymous client will have only phone, so we handle case only with phone. If anonymous client could have email, then we need to handle it also......
-
       const userByPhone = await clientDb.findClientByPhone(
         action.payload.phone,
         true
@@ -109,15 +109,27 @@ export default function authModule(server: Server) {
 
       const accessToken = encodeJwt({ userId: created.id });
 
-      await ctx.sendBack(
-        loggedInAction({
-          userId: created.id,
-          permissions: { client: true },
-          firstName: created.firstName,
-          accessToken,
-          isNewUser: true,
-        })
-      );
+      await Promise.all([
+        server.process(updateAdminDashboardClientSignedUp()),
+        ctx.sendBack(
+          loggedInAction({
+            userId: created.id,
+            permissions: { client: true },
+            firstName: created.firstName,
+            accessToken,
+            isNewUser: true,
+          })
+        ),
+      ]);
+    },
+  });
+
+  server.type(updateAdminDashboardClientSignedUp, {
+    async access() {
+      return false;
+    },
+    resend(ctx, action) {
+      return [CHANNELS.ADMIN_DASHBOARD];
     },
   });
 }

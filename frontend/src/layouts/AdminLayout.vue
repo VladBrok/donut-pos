@@ -10,6 +10,12 @@ const t = useI18nStore();
 
 const menuList = [
   {
+    icon: "o_query_stats",
+    label: t.value.dashboard,
+    to: "/admin/dashboard",
+    meta: t.value.dashboard,
+  },
+  {
     icon: "o_menu_book",
     label: t.value.dishCategories,
     to: "/admin/dish-categories",

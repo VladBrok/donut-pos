@@ -136,6 +136,10 @@ export const messages = i18n("messages", {
   printTicket: "Print ticket",
   printReceipt: "Print receipt",
   print: "Print",
+  orderCount: "Order count",
+  clientCount: "Client count",
+  orderTypes: "Order types",
+  orderType: "Order type",
 
   // Waiter pages
   main: "Main",

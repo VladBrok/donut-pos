@@ -7,7 +7,7 @@
         </p>
         <OrderNumberTitle :order-number="order.order.orderNumber" is-link />
         <div
-          v-if="defaultSalePoint"
+          v-if="defaultSalePoint && isClient"
           class="text-body2 q-mt-xs row no-wrap items-center gap-sm"
         >
           <div>

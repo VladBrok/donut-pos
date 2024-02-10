@@ -103,7 +103,7 @@ const props = defineProps<{
 const store = useStore();
 const t = useI18nStore();
 const ordersPage = computed(() => store.state.orders.ordersPage);
-const userId = ref(store.state.auth.user.userId);
+const userId = computed(() => store.state.auth.user.userId);
 const channels = computed(() => {
   return userId.value === ANONYMOUS.userId
     ? []
@@ -139,6 +139,12 @@ const columns: any[] = [
     label: t.value.orderNumber,
     align: "left",
     field: "orderNumber",
+  },
+  {
+    name: "type",
+    label: t.value.orderType,
+    align: "left",
+    field: (row: IOrder) => t.value[`orderType_${row.type}`],
   },
   {
     name: "tableNumber",

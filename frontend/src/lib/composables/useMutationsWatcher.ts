@@ -8,6 +8,7 @@ import {
 } from "donut-shared";
 import { loggedInAction, logoutAction } from "donut-shared/src/actions/auth";
 import { updatePreviousOrderAction } from "donut-shared/src/actions/current-order";
+import { updateAdminDashboardOrderCreated } from "donut-shared/src/actions/dashboard";
 import {
   ICookedDish,
   dishFinishedCookingAction,
@@ -115,6 +116,12 @@ export const useMutationsWatcher = () => {
       }
 
       if (mutation.type === orderCreatedAction.type) {
+        store.commit.crossTab(
+          updateAdminDashboardOrderCreated({
+            order: mutation.payload.payload.order,
+          })
+        );
+
         if (store.state.auth.user?.permissions?.client) {
           store.commit.crossTab(
             updatePreviousOrderAction({

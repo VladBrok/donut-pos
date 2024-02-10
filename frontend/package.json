@@ -1,8 +1,9 @@
 {
   "name": "donut-frontend",
   "version": "0.0.1",
-  "description": "Donut, a POS system",
+  "description": "Stay ahead of the competition with real-time order management, remote accessibility, and advanced analytics. Transform the dining experience with our solution – where convenience meets excellence.",
   "productName": "Donut",
+  "productDescription": "Stay ahead of the competition with real-time order management, remote accessibility, and advanced analytics. Transform the dining experience with our solution – where convenience meets excellence.",
   "author": "VladBrok",
   "private": true,
   "scripts": {
@@ -18,6 +19,7 @@
     "@nanostores/i18n": "0.12.0",
     "@nanostores/vue": "0.10.0",
     "@quasar/extras": "1.16.7",
+    "apexcharts": "^3.45.2",
     "dayjs": "1.11.10",
     "donut-shared": "0.0.1",
     "fuse.js": "7.0.0",

@@ -18,6 +18,10 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         path: "",
+        redirect: "/admin/dashboard",
+      },
+      {
+        path: "dashboard",
         component: () => import("pages/admin/AdminDashboard.vue"),
         meta: {
           title: t.value.dashboard,

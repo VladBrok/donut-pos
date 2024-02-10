@@ -86,3 +86,12 @@ export type SalePointSchema = {
   [salePoint._.name]: typeof salePoint.$inferSelect;
   [address._.name]: typeof address.$inferSelect | null;
 };
+
+export type AdminDashboardSchema = {
+  orderTypes: {
+    type: string | null;
+    count: number;
+  }[];
+  orderCount: number;
+  clientCount: number;
+};

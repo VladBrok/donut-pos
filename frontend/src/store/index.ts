@@ -4,21 +4,22 @@ import {
   createStoreCreator,
   useStore as loguxUseStore,
 } from "@logux/vuex";
+import { assert, writeLogAction } from "donut-shared";
+import { setLogger } from "donut-shared/src/lib/log";
 import { store } from "quasar/wrappers";
-import { InjectionKey } from "vue";
-import { Router } from "vue-router";
-import { Store as VuexStore } from "vuex";
-
-import { assert } from "donut-shared";
 import { IAddressesState } from "src/store/addresses/state";
 import { ICashPaymentRequestsState } from "src/store/cash-payment-requests/state";
 import { IClientsState } from "src/store/clients/state";
 import { ICurrentOrderState } from "src/store/current-order/state";
+import { IDashboardState } from "src/store/dashboard/state";
 import { IDiningTablesState } from "src/store/dining-tables/state";
 import { IOrderDrawerState } from "src/store/order-drawer/state";
 import { IOrdersState } from "src/store/orders/state";
 import { ISalePointsState } from "src/store/sale-points/state";
 import { IWelcomeBannerState } from "src/store/welcome-banner/state";
+import { InjectionKey } from "vue";
+import { Router } from "vue-router";
+import { Store as VuexStore } from "vuex";
 import { createClient } from "../lib/logux/create-client";
 import { setErrorHandler } from "../lib/logux/set-error-handler";
 import { setUndoHandler } from "../lib/logux/set-undo-handler";
@@ -29,6 +30,7 @@ import { IAuthState } from "./auth/state";
 import cashPaymentRequests from "./cash-payment-requests";
 import clients from "./clients";
 import currentOrder from "./current-order";
+import dashboard from "./dashboard";
 import diningTables from "./dining-tables";
 import dishCategories from "./dish-categories";
 import { IDishCategoriesState } from "./dish-categories/state";
@@ -61,6 +63,7 @@ export interface StateInterface {
   clients: IClientsState;
   addresses: IAddressesState;
   salePoints: ISalePointsState;
+  dashboard: IDashboardState;
 }
 
 // provide typings for `this.$store`
@@ -104,6 +107,7 @@ export default store(function (/* { ssrContext } */) {
     clients,
     addresses,
     salePoints,
+    dashboard,
   };
 
   for (const module of Object.values(modules)) {
@@ -125,6 +129,15 @@ export default store(function (/* { ssrContext } */) {
   setErrorHandler(Store);
   watchSyncStatus(Store.client);
   logLoguxEvents(Store.client);
+  setLogger((date, type, ...messages) => {
+    Store.commit.sync(
+      writeLogAction({
+        date,
+        type,
+        messages,
+      })
+    );
+  });
   // confirm(Store.client);
 
   Store.client.start();

@@ -37,6 +37,8 @@
     "jsonwebtoken": "9.0.2",
     "nodemailer": "^6.9.8",
     "postgres": "3.4.3",
-    "stripe": "^14.10.0"
+    "stripe": "^14.10.0",
+    "winston": "^3.11.0",
+    "winston-daily-rotate-file": "^4.7.1"
   }
 }

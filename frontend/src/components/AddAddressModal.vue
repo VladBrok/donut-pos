@@ -123,7 +123,6 @@ const isSubmitYourself = computed(() => props.submitYourself);
 const t = useI18nStore();
 const linkKey =
   "https://www.google.com/maps/embed/v1/search?key=AIzaSyA4wNwpARhZ7Y4FKCclfAwqLgxjKhACi0g";
-// AIzaSyBK73HewkhHBVVs9nI98-HY_N7cZM_kdjE
 const zoom = 14;
 const defaultLoc = "Pinczow";
 const q = defaultLoc;

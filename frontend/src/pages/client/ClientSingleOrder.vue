@@ -1,6 +1,6 @@
 <template>
   <div class="bg-gray-lightest min-height-window column justify-between">
-    <div class="q-pa-md">
+    <div class="q-pa-md q-mb-xl">
       <div class="q-mx-auto max-w-lg">
         <back-button />
         <big-spinner v-if="isSubscribing" />
