@@ -16,7 +16,7 @@
     />
     <q-menu fit style="overflow-x: hidden; min-width: 300px">
       <div class="q-px-xs" style="min-width: 300px">
-        <TransitionGroup tag="div" name="fade">
+        <TransitionGroup tag="div" name="fade" style="min-width: 300px">
           <p v-if="!notificationCount">
             <NoData :key="'empty'" :text="t.noNotifications" class="q-py-lg" />
           </p>
