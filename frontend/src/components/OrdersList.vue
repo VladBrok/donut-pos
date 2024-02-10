@@ -141,6 +141,12 @@ const columns: any[] = [
     field: "orderNumber",
   },
   {
+    name: "type",
+    label: t.value.orderType,
+    align: "left",
+    field: (row: IOrder) => t.value[`orderType_${row.type}`],
+  },
+  {
     name: "tableNumber",
     label: t.value.tableNumber,
     align: "left",
