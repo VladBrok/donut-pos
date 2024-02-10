@@ -8,11 +8,6 @@
         </template>
         <template #content>
           <div ref="chart"></div>
-          <!-- <apexchart
-            type="donut"
-            :options="options"
-            :series="series"
-          ></apexchart> -->
         </template>
       </dashboard-card>
       <dashboard-card class="flex-1">
