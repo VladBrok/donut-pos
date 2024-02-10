@@ -42,13 +42,5 @@ export async function log(
       timeZone: "Europe/Warsaw",
     });
 
-  // const message = messages
-  //   .map((x) =>
-  //     typeof x === "object" || typeof x === "boolean" || x == null
-  //       ? JSON.stringify(x)
-  //       : x
-  //   )
-  //   .join(" ");
-
   logger(date, type, ...messages);
 }
