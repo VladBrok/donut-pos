@@ -26,7 +26,7 @@ export default function salePointsModule(server: Server) {
 
   server.channel(CHANNELS.DEFAULT_SALE_POINT, {
     async access(ctx) {
-      return Boolean(ctx.userId);
+      return true;
     },
     async load() {
       const salePoint = await db.getDefaultSalePoint();

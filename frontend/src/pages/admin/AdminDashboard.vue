@@ -45,7 +45,7 @@
 
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
-import { CHANNELS, ORDER_TYPES_ARR } from "donut-shared";
+import { ANONYMOUS, CHANNELS, ORDER_TYPES_ARR } from "donut-shared";
 import BigSpinner from "src/components/BigSpinner.vue";
 import DashboardCard from "src/components/DashboardCard.vue";
 import { useI18nStore } from "src/lib/i18n";
@@ -56,8 +56,9 @@ const chart = ref();
 const store = useStore();
 const ApexCharts = ref();
 const donutChart = ref();
+const userId = computed(() => store.state.auth.user.userId);
 const channels = computed(() => {
-  return [CHANNELS.ADMIN_DASHBOARD];
+  return userId.value === ANONYMOUS.userId ? [] : [CHANNELS.ADMIN_DASHBOARD];
 });
 const isSubscribing = useSubscription(channels, { store: store as any });
 const isLoadingApex = ref(false);

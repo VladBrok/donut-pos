@@ -76,7 +76,6 @@
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
 import { CHANNELS } from "donut-shared/src/constants/channels";
-import { ANONYMOUS } from "donut-shared/src/constants/misc";
 import LogoImage from "src/components/LogoImage.vue";
 import { formatAddress, makeGoogleMapSearchQuery } from "src/lib/address";
 import { useI18nStore } from "src/lib/i18n";
@@ -88,7 +87,7 @@ const t = useI18nStore();
 const store = useStore();
 const userId = computed(() => store.state.auth.user.userId);
 const channels = computed(() => {
-  return userId.value === ANONYMOUS.userId ? [] : [CHANNELS.DEFAULT_SALE_POINT];
+  return [CHANNELS.DEFAULT_SALE_POINT];
 });
 let isSubscribing = useSubscription(channels, { store: store as any });
 const defaultSalePoint = computed(
