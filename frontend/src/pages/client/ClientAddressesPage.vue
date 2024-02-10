@@ -110,9 +110,16 @@
     </confirm-dialog>
 
     <add-address-modal
+      v-if="isEditAddressModalOpen"
+      v-model="isEditAddressModalOpen"
+      :original-address="editingAddress"
+      submit-yourself
+      @submit="isEditAddressModalOpen = false"
+    />
+
+    <add-address-modal
       v-if="isAddAddressModalOpen"
       v-model="isAddAddressModalOpen"
-      :original-address="editingAddress"
       submit-yourself
       @submit="isAddAddressModalOpen = false"
     />
@@ -157,6 +164,7 @@ const confirmDelete = ref<null | IAddress>(null);
 const isDeleting = ref(false);
 const searchInput = ref("");
 const isAddAddressModalOpen = ref(false);
+const isEditAddressModalOpen = ref(false);
 const editingAddress = ref<IAddress>();
 
 const columns: any[] = [
@@ -201,7 +209,7 @@ const onDeleteAttempt = (row: IAddress) => {
 
 const editAddress = (row: IAddress) => {
   editingAddress.value = row;
-  isAddAddressModalOpen.value = true;
+  isEditAddressModalOpen.value = true;
 };
 
 const onDeleteConfirmed = () => {
