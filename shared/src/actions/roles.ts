@@ -1,4 +1,4 @@
-import { EMPLOYEE_ROLES_ARR } from "src/constants/employee.js";
+import { EMPLOYEE_ROLES_ARR } from "../constants/employee.js";
 import { createAction } from "./index.js";
 
 export const loadRolesAction = createAction<{

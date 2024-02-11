@@ -1,5 +1,5 @@
-import { IAddress } from "src/actions/addresses.js";
-import { IDishInOrder, IOrder } from "src/actions/orders.js";
+import { IAddress } from "../actions/addresses.js";
+import { IDishInOrder, IOrder } from "../actions/orders.js";
 import { createAction } from "./index.js";
 
 export interface IDiningTable {

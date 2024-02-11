@@ -1,4 +1,4 @@
-import { IAddress } from "src/actions/addresses.js";
+import { IAddress } from "../actions/addresses.js";
 import { createAction } from "./index.js";
 
 export interface IWorkSchedule {

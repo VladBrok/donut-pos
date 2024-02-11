@@ -169,7 +169,7 @@ export const ordersAdapter = (data: OrderSchema[]): IOrder[] => {
       cookingDate: uniqueOrder.order.cookingDate?.toISOString() || "",
       cookedDate: uniqueOrder.order.cookedDate?.toISOString() || "",
       deliveringDate: uniqueOrder.order.deliveringDate?.toISOString() || "",
-      address: uniqueOrder.order.deliveryAddress || "",
+      address: uniqueOrder.order.deliveryAddress as IAddress,
       deliveredDate: uniqueOrder.order.deliveredDate?.toISOString() || "",
       paidDate: uniqueOrder.order.paidDate?.toISOString() || "",
       table: {
@@ -219,7 +219,7 @@ export const shallowOrdersAdapter = (
       deliveringDate: uniqueOrder.order.deliveringDate?.toISOString() || "",
       deliveredDate: uniqueOrder.order.deliveredDate?.toISOString() || "",
       paidDate: uniqueOrder.order.paidDate?.toISOString() || "",
-      address: uniqueOrder.order.deliveryAddress,
+      address: uniqueOrder.order.deliveryAddress as IAddress,
       table: {
         id: uniqueOrder.dining_table?.id || "",
         number: uniqueOrder.dining_table?.number || "",
@@ -324,7 +324,7 @@ export const cashPaymentRequestsAdapter = (
     },
     orderType: x.order?.type as OrderType,
     orderNumber: x.order?.number || "",
-    status: x.order?.status || "",
+    status: x.order?.status as OrderStatus,
     createdDate: x.order?.createdDate?.toISOString() || "",
     cookingDate: x.order?.cookingDate?.toISOString() || "",
     cookedDate: x.order?.cookedDate?.toISOString() || "",
@@ -341,7 +341,7 @@ export const cashPaymentRequestsAdapter = (
 export const salePointsAdapter = (data: SalePointSchema[]): ISalePoint[] => {
   return data.map((x) => ({
     id: x.sale_point.id || "",
-    address: x.address,
+    address: x.address as IAddress,
     email: x.sale_point.email || "",
     isDefault: x.sale_point.isDefault || false,
     name: x.sale_point.name || "",
@@ -356,7 +356,7 @@ export const adminDashboardAdapter = (
   return {
     orderTypes: data.orderTypes.map((x) => ({
       count: x.count,
-      type: x.type || "",
+      type: x.type as OrderType,
     })),
     clientCount: data.clientCount,
     orderCount: data.orderCount,

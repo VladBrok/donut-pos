@@ -496,7 +496,9 @@ export default function ordersModule(server: Server) {
         action.payload.isClient
       );
       await Promise.all([
-        !action.payload.order.address || action.payload.order.address.id
+        !action.payload.order.address ||
+        action.payload.order.address.id ||
+        !created.address
           ? Promise.resolve()
           : server.process(
               addressCreatedAction({

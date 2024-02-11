@@ -1,4 +1,4 @@
-import { IDiningTable } from "src/actions/current-order.js";
+import { IDiningTable } from "../actions/current-order.js";
 import { createAction } from "./index.js";
 
 export const loadDiningTablesAction = createAction<{
