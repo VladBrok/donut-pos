@@ -1,8 +1,8 @@
-import { IAddress } from "src/actions/addresses.js";
-import { DishInOrderStatus } from "src/constants/dish-in-order-statuses.js";
-import { OrderStatus } from "src/constants/order-statuses.js";
-import { OrderType } from "src/constants/order-types.js";
+import { IAddress } from "../actions/addresses.js";
 import { IDiningTable } from "../actions/current-order.js";
+import { DishInOrderStatus } from "../constants/dish-in-order-statuses.js";
+import { OrderStatus } from "../constants/order-statuses.js";
+import { OrderType } from "../constants/order-types.js";
 import { createAction } from "./index.js";
 
 export interface ICookedOrder {

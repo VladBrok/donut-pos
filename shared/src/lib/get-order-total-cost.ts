@@ -1,4 +1,4 @@
-import { IOrder } from "src/actions/orders.js";
+import { IOrder } from "../actions/orders.js";
 import { DELIVERY_COST } from "../constants/misc.js";
 
 interface IDish {

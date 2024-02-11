@@ -228,6 +228,7 @@ export async function createOrder(
       }
       orderToCreate.address.id = generateUuid();
       await tx.insert(address).values({
+        id: orderToCreate.address.id,
         ...orderToCreate.address,
       });
     }

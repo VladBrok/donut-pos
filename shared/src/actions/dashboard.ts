@@ -1,5 +1,5 @@
-import { IOrder } from "src/actions/orders.js";
-import { OrderType } from "src/constants/order-types.js";
+import { IOrder } from "../actions/orders.js";
+import { OrderType } from "../constants/order-types.js";
 import { createAction } from "./index.js";
 
 export interface IAdminDashboardData {

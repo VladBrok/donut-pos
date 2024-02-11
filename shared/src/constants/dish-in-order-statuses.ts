@@ -1,4 +1,4 @@
-import { ORDER_STATUSES } from "src/constants/order-statuses.js";
+import { ORDER_STATUSES } from "../constants/order-statuses.js";
 
 export const DISH_IN_ORDER_STATUSES = {
   COOKING: "cooking",

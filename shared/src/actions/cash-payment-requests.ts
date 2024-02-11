@@ -1,5 +1,5 @@
-import { OrderStatus } from "src/constants/order-statuses.js";
-import { OrderType } from "src/constants/order-types.js";
+import { OrderStatus } from "../constants/order-statuses.js";
+import { OrderType } from "../constants/order-types.js";
 import { createAction } from "./index.js";
 
 export interface ICashPaymentRequest {
