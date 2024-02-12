@@ -31,6 +31,7 @@ const server = new Server(
     subprotocol: "1.0.0",
     supports: "1.x",
     fileUrl: import.meta.url,
+    host: "0.0.0.0",
   })
 );
 db.connect();
