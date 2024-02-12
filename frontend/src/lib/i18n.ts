@@ -5,6 +5,7 @@ import {
   localeFrom,
   params,
 } from "@nanostores/i18n";
+import { persistentAtom } from "@nanostores/persistent";
 import { useStore as useNanoStore } from "@nanostores/vue";
 import {
   ACCESS_DENIED,
@@ -25,10 +26,12 @@ import {
 } from "donut-shared";
 import { AUTH_BEFORE_ORDER_CREATE } from "src/lib/constants";
 
+export const setting = persistentAtom<string | undefined>("locale");
+export const AVAILABLE_LOCALES = ["en", "pl"];
 export const locale = localeFrom(
-  // atom("pl"),
+  setting,
   browser({
-    available: ["en" /* "pl" */],
+    available: AVAILABLE_LOCALES,
     fallback: "en",
   })
 );
@@ -320,8 +323,8 @@ export const messages = i18n("messages", {
 
   // Misc
   scanToOrder: "Scan to order",
-  cafe: "Cafe",
-  cafeName: "Pinczow",
+  cafe: "Restaurant",
+  cafeName: "",
 
   // Confirmations
   confirmDishCategoryDelete: "Are you sure you want to delete category",

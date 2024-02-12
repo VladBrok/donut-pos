@@ -58,13 +58,6 @@ const emit = defineEmits<{
 const t = useI18nStore();
 const router = useRouter();
 
-// const phone = ref(
-//   router.currentRoute.value.path.includes("admin")
-//     ? "+48000000000"
-//     : router.currentRoute.value.path.includes("waiter")
-//     ? "+48100000001"
-//     : "+48300020009"
-// );
 const email = ref(
   router.currentRoute.value.path.includes("admin")
     ? "admin@donut.com"

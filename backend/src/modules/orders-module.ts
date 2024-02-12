@@ -47,8 +47,6 @@ import {
   hasWaiterPermission,
 } from "../lib/access.js";
 
-// TODO: split this module up (here, in db, stores on client, in actions; orders for kitchen, orders for courier...?)
-
 export default function ordersModule(server: Server) {
   server.channel(CHANNELS.ORDERS_FOR_KITCHEN, {
     async access(ctx) {

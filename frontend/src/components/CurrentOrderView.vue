@@ -6,7 +6,7 @@
       :total-cost="totalCost"
       :delivery-cost="DELIVERY_COST"
       :dish-cost="dishCost"
-      :order-type="order?.type"
+      :order-type="order?.type!"
       custom-empty
     >
       <template #content>
@@ -260,7 +260,7 @@
       <template #empty>
         <div class="q-mt-xl">
           <div v-if="previousOrder" class="column justify-center items-center">
-            <q-img src="~assets/cart.svg" alt="" fit="cover" class="image-md" />
+            <q-img src="/images/cart.svg" alt="" fit="cover" class="image-md" />
             <p class="text-h6">{{ t.orderWasCreated }}!</p>
             <RouterLink
               class="text-body1 q-mt-sm"
@@ -449,7 +449,6 @@ const hasDishOutOfStock = computed(
   () => dishesInOrder.value?.some((x) => !x.dish.isActive) || false
 );
 
-// TODO: it's a mess. Calculate it in one place (make a function that will return an object with total cost, delivery cost, dish cost, etc. and make a component that will display it. Use this component in OrderView)
 const dishCost = computed(
   () => dishesInOrder.value?.reduce((sum, cur) => sum + cur.totalCost, 0) || 0
 );

@@ -22,9 +22,6 @@ import {
 import { MutationTree } from "vuex";
 import { IOrdersState } from "./state";
 
-// TODO: the fact that I have to duplicate logic for updating order status in DB and here is frustrating. I would rather just silently update the whole order with whatever the server sent instead of updating individual props (isCooked, etc.). Think how to do that in a most effective way because it otherwise will cause a lot of bugs going forward
-// ON THE OTHER HAND, I receive only small amount of data needed to mutate the state. And if I were to send the whole lists and pages of data it would be bad for bandwidth...
-
 function sortDishesByCookingStatus(orders: IOrder[]) {
   return orders.map((order) => ({
     ...order,

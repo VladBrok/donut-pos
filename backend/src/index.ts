@@ -79,4 +79,6 @@ setLogger((date, type, ...messages) => {
   );
 });
 
-server.listen();
+server.listen().then(() => {
+  console.log("pm2 update test");
+});
