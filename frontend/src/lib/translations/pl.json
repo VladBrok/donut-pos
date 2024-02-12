@@ -53,7 +53,7 @@
     "maxFileSize": "Maksymalny rozmiar pliku to {max} mb",
     "allowedFilesAre": "Dozwolone typy plików to {allowed}",
     "sameModificationAlreadyAdded": "Ta sama modyfikacja została już dodana do tego dania",
-    "save": "Ratować",
+    "save": "Zapisz",
     "cancel": "Anulować",
     "uploadImage": "Załaduj obrazek",
     "categoryNameLabel": "Nazwa Kategorii",
