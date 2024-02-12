@@ -5,6 +5,7 @@ import {
   localeFrom,
   params,
 } from "@nanostores/i18n";
+import { persistentAtom } from "@nanostores/persistent";
 import { useStore as useNanoStore } from "@nanostores/vue";
 import {
   ACCESS_DENIED,
@@ -25,10 +26,16 @@ import {
 } from "donut-shared";
 import { AUTH_BEFORE_ORDER_CREATE } from "src/lib/constants";
 
+export const setting = persistentAtom<string | undefined>("locale");
+
+setTimeout(() => {
+  setting.set("pl");
+}, 3000);
+
 export const locale = localeFrom(
-  // atom("pl"),
+  setting,
   browser({
-    available: ["en" /* "pl" */],
+    available: ["en", "pl"],
     fallback: "en",
   })
 );
