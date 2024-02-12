@@ -208,7 +208,6 @@ export async function createOrder(
   const orderToCreate = { ...structuredClone(data), id: generateUuid() };
 
   await db.transaction(async (tx) => {
-    // TODO: add ability on FE to select already existing client (anonymous or not) and send his ID here.............
     let newClientId = "";
     if (orderToCreate.address && !orderToCreate.address.id) {
       if (!orderToCreate.address.clientId) {

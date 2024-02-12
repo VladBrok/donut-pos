@@ -18,7 +18,6 @@
       />
       <div>
         <div>
-          <!-- TODO: add client field -->
           <q-input
             stack-label
             readonly

@@ -71,7 +71,6 @@ export async function getClientsPage(params: IGetClientsPage) {
   };
 }
 
-// TODO: also search an address + also display an address on client (add ability to view details on each client where we will show all addresses (nested table maybe with all addresses))
 function makeWhereFilter(params: IGetClientsPage) {
   return and(
     params.search
