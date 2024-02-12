@@ -325,8 +325,8 @@ export const messages = i18n("messages", {
 
   // Misc
   scanToOrder: "Scan to order",
-  cafe: "Cafe",
-  cafeName: "Pinczow",
+  cafe: "Restaurant",
+  cafeName: "",
 
   // Confirmations
   confirmDishCategoryDelete: "Are you sure you want to delete category",
