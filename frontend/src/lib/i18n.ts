@@ -45,8 +45,6 @@ export const i18n = createI18n(locale, {
 export const messages = i18n("messages", {
   // Config
   weightGram: "g",
-  pl: "Polish",
-  en: "English",
 
   // Admin dashboard
   dashboard: "Dashboard",

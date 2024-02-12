@@ -34,13 +34,12 @@
 </template>
 
 <script setup lang="ts">
-import { AVAILABLE_LOCALES, locale, setting, useI18nStore } from "src/lib/i18n";
+import { AVAILABLE_LOCALES, locale, setting } from "src/lib/i18n";
 import { ref, watch } from "vue";
 
 const localeVal = ref(locale.get());
-const t = useI18nStore();
 
-setting.subscribe((value) => {
+locale.subscribe((value) => {
   localeVal.value = value || "";
 });
 
