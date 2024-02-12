@@ -28,10 +28,6 @@ import { AUTH_BEFORE_ORDER_CREATE } from "src/lib/constants";
 
 export const setting = persistentAtom<string | undefined>("locale");
 
-setTimeout(() => {
-  setting.set("pl");
-}, 3000);
-
 export const locale = localeFrom(
   setting,
   browser({
