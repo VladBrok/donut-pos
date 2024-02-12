@@ -80,6 +80,4 @@ setLogger((date, type, ...messages) => {
   );
 });
 
-server.listen().then(() => {
-  console.log("pm2 update test");
-});
+server.listen();
