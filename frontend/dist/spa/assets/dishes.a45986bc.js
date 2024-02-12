@@ -1,1 +1,0 @@
-import{b7 as e}from"./index.92b1981f.js";e("dishes/load");const t=e("dishes/delete"),d=e("dishes/create");e("dishes/created");const i=e("dishes/update");e("dishes/updated");e("dishes/deleted");export{d as c,t as d,i as u};
