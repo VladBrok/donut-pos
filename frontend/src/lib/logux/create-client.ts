@@ -8,8 +8,7 @@ export function createClient() {
     server:
       process.env.NODE_ENV === "development"
         ? "ws://localhost:31337"
-        : "ws://localhost:31337",
-    // : "wss://logux.example.com",
+        : "wss://donut-server-preprod.my.to",
     subprotocol: "1.0.0",
     userId: getUserFromStorage()?.userId || ANONYMOUS.userId,
     token: getUserFromStorage()?.accessToken || "",

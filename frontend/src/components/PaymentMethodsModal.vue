@@ -14,7 +14,7 @@
 
       <q-card-section>
         <PaymentMethodCard
-          image-src="/src/assets/cash.svg"
+          image-src="~assets/cash.svg"
           @click="isCashPaymentModalOpen = true"
         >
           <template #text>
@@ -24,7 +24,7 @@
 
         <PaymentMethodCard
           class="q-mt-lg"
-          image-src="/src/assets/credit-card.svg"
+          image-src="~assets/credit-card.svg"
           @click="
             method = 'card';
             isCreditOrBlikPaymentModalOpen = true;
@@ -35,7 +35,7 @@
 
         <PaymentMethodCard
           class="q-mt-lg"
-          image-src="/src/assets/blik.png"
+          image-src="~assets/blik.png"
           @click="
             method = 'blik';
             isCreditOrBlikPaymentModalOpen = true;
