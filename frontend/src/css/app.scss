@@ -23,6 +23,16 @@ a:hover {
 
 // Utility classes
 
+.country-icon {
+  width: 25px;
+  height: 15px;
+  margin-bottom: 1px;
+}
+
+.language-switch-select .q-field__prepend.q-field__marginal:first-child {
+  padding-right: 0;
+}
+
 .no-events {
   pointer-events: none;
 }

@@ -15,7 +15,7 @@
         </template>
       </NotificationsBell>
       <q-btn
-        class="q-mr-sm shopping-basket"
+        class="q-mr-xs shopping-basket"
         flat
         round
         icon="o_shopping_basket"

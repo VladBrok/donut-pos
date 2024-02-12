@@ -9,6 +9,7 @@
         <q-toolbar-title>
           {{ $route.meta.title || "" }}
         </q-toolbar-title>
+        <LanguageSwitch class="q-mr-xs" />
         <slot name="actions" />
         <q-btn
           v-if="isLoggedIn"
@@ -118,6 +119,7 @@ import { useSubscription } from "@logux/vuex";
 import { logoutAction } from "donut-shared/src/actions/auth";
 import BigSpinner from "src/components/BigSpinner.vue";
 import ConfirmDialog from "src/components/ConfirmDialog.vue";
+import LanguageSwitch from "src/components/LanguageSwitch.vue";
 import LogoImage from "src/components/LogoImage.vue";
 import OrderDetailsView from "src/components/OrderDetailsView.vue";
 import OrderDrawer from "src/components/OrderDrawer.vue";

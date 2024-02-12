@@ -1,5 +1,5 @@
 <template>
-  <q-btn class="q-mr-sm" flat round icon="o_notifications">
+  <q-btn class="q-mr-xs" flat round icon="o_notifications">
     <q-tooltip> {{ t.showNotifications }} </q-tooltip>
     <q-spinner-rings
       v-if="isLoading"

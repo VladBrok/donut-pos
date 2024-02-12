@@ -1,6 +1,8 @@
 {
   "messages": {
     "weightGram": "G",
+    "pl": "Polski",
+    "en": "Angielski",
     "dashboard": "Panel",
     "logout": "Wyloguj",
     "dishCategories": "Kategorie",

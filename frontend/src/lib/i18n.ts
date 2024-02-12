@@ -27,11 +27,11 @@ import {
 import { AUTH_BEFORE_ORDER_CREATE } from "src/lib/constants";
 
 export const setting = persistentAtom<string | undefined>("locale");
-
+export const AVAILABLE_LOCALES = ["en", "pl"];
 export const locale = localeFrom(
   setting,
   browser({
-    available: ["en", "pl"],
+    available: AVAILABLE_LOCALES,
     fallback: "en",
   })
 );
@@ -45,6 +45,8 @@ export const i18n = createI18n(locale, {
 export const messages = i18n("messages", {
   // Config
   weightGram: "g",
+  pl: "Polish",
+  en: "English",
 
   // Admin dashboard
   dashboard: "Dashboard",
