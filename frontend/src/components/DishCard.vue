@@ -16,6 +16,7 @@
           padding="0 sm"
           class="q-mr-md"
           @click="emit('openDetailsClick')"
+          :title="t.openDetails"
         >
           <span class="text-h5 q-pr-sm">+</span>
           <q-tooltip>
@@ -28,6 +29,7 @@
           padding="0 sm"
           outline
           @click="emit('addClick', containerRef)"
+          :title="t.addToCurrentOrder"
         >
           <span class="text-h5">+</span>
           <q-tooltip>

@@ -6,6 +6,7 @@
     color="primary"
     icon="arrow_back"
     @click="$router.back()"
+    :title="t.goBack"
   >
     <q-tooltip>
       {{ t.goBack }}

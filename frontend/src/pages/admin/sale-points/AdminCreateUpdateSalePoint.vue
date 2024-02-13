@@ -39,6 +39,7 @@
                 icon="add"
                 color="primary"
                 @click="isAddAddressModalOpen = true"
+                :title="t.addNewAddress"
               >
                 <q-tooltip>
                   {{ t.addNewAddress }}

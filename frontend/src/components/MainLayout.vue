@@ -2,12 +2,21 @@
   <q-layout view="hHh LpR lfr" class="bg-gray-lightest">
     <q-header class="bg-white text-black shadow-up-1" bordered>
       <q-toolbar class="q-py-sm">
-        <q-btn dense flat round icon="menu" @click="toggleMenuDrawer" />
+        <q-btn
+          dense
+          flat
+          round
+          icon="menu"
+          @click="toggleMenuDrawer"
+          :title="t.toggleMenu"
+        />
         <q-avatar class="q-pl-xs q-mr-xs">
           <logo-image no-text />
         </q-avatar>
         <q-toolbar-title>
-          {{ $route.meta.title || "" }}
+          <h1 class="text-h6 text-weight-regular line-height-normal">
+            {{ $route.meta.title || "" }}
+          </h1>
         </q-toolbar-title>
         <LanguageSwitch class="q-mr-xs" />
         <slot name="actions" />
@@ -18,6 +27,7 @@
           icon="logout"
           color="negative"
           @click="isLogoutConfirmOpen = true"
+          :title="t.logout"
         >
           <q-tooltip> {{ t.logout }} </q-tooltip>
         </q-btn>
@@ -28,6 +38,7 @@
           round
           icon="login"
           to="/login"
+          :title="t.logIn"
         >
           <q-tooltip> {{ t.logIn }} </q-tooltip>
         </q-btn>
@@ -53,6 +64,7 @@
                 :active="$route.meta.title === menuItem.meta"
                 v-ripple
                 :to="menuItem.to"
+                role=""
               >
                 <q-item-section avatar>
                   <q-icon :name="menuItem.icon" size="sm"> </q-icon>

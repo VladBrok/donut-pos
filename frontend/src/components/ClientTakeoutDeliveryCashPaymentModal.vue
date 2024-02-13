@@ -6,7 +6,7 @@
     <q-card class="dialog-sm q-pb-md q-px-md">
       <q-card-section class="row items-center q-pb-none">
         <q-space />
-        <q-btn icon="close" flat round dense v-close-popup />
+        <q-btn icon="close" flat round dense v-close-popup :title="t.close" />
       </q-card-section>
 
       <q-card-section>

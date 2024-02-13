@@ -43,6 +43,7 @@
             :src="props.row.imageUrl"
             fit="cover"
             class="rounded-borders image-sm"
+            :alt="props.row.name"
           />
         </q-td>
       </template>

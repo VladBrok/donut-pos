@@ -9,7 +9,7 @@
     >
       <q-img
         :src="dish.imageUrl"
-        alt=""
+        :alt="dish.name"
         fit="cover"
         class="image-sm-md shadow-3 rounded-borders no-shrink"
       >
@@ -42,6 +42,7 @@
             round
             icon="close"
             @click="emit('delete')"
+            :title="t.deleteDish"
           />
         </div>
         <div v-if="forKitchen">
@@ -53,6 +54,7 @@
             icon="open_in_new"
             color="dark-gray"
             @click="expand"
+            :title="t.viewDetails"
           >
             <q-tooltip>{{ t.viewDetails }}</q-tooltip>
           </q-btn>

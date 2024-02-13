@@ -5,7 +5,7 @@
         <q-space />
         <div class="text-h6">{{ t.addAddress }}</div>
         <q-space />
-        <q-btn icon="close" flat round dense v-close-popup />
+        <q-btn icon="close" flat round dense v-close-popup :title="t.close" />
       </q-card-section>
 
       <q-card-section>
@@ -70,6 +70,7 @@
               :src="mapSrc"
               width="100%"
               height="400px"
+              title="map"
             >
             </iframe>
             <q-tooltip

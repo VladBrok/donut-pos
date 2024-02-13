@@ -23,6 +23,7 @@
             color="primary"
             size="md"
             @click="openMap"
+            :title="t.showOnMap"
           >
             <q-tooltip>
               {{ t.showOnMap }}

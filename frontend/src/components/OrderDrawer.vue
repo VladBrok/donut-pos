@@ -6,7 +6,14 @@
           <slot name="title" />
         </div>
         <div class="flex-grow row justify-end items-start">
-          <q-btn dense flat round icon="close" @click="emit('close')" />
+          <q-btn
+            dense
+            flat
+            round
+            icon="close"
+            @click="emit('close')"
+            :title="t.close"
+          />
         </div>
       </div>
       <div class="q-px-sm">
@@ -17,5 +24,9 @@
 </template>
 
 <script setup lang="ts">
+import { useI18nStore } from "src/lib/i18n";
+
 const emit = defineEmits(["close"]);
+
+const t = useI18nStore();
 </script>

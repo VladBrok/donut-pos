@@ -15,6 +15,7 @@
               color="primary"
               size="md"
               @click="openMap"
+              :title="t.showOnMap"
             >
               <q-tooltip>
                 {{ t.showOnMap }}
@@ -32,6 +33,7 @@
               icon="call"
               color="primary"
               @click="call"
+              :title="t.callUs"
             >
               <q-tooltip>
                 {{ t.callUs }}
@@ -49,6 +51,7 @@
               icon="mail"
               color="primary"
               @click="writeEmail"
+              :title="t.writeUsEmail"
             >
               <q-tooltip>
                 {{ t.writeUsEmail }}

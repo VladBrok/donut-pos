@@ -1,7 +1,7 @@
 <template>
   <div class="row justify-center q-mb-lg">
     <div class="image-md relative-position">
-      <q-img :src="url" fit="cover" class="image-md rounded-borders" />
+      <q-img :src="url" fit="cover" class="image-md rounded-borders" alt="" />
       <q-file
         ref="fileInputRef"
         class="show-validation-errors-only q-mr-sm"
@@ -30,6 +30,7 @@
         round
         color="primary"
         @click="triggerFilePick"
+        :title="t.uploadImage"
       >
         <q-tooltip>
           {{ t.uploadImage }}

@@ -20,6 +20,7 @@
         round
         icon="o_shopping_basket"
         @click="toggleCurrentOrderDrawer"
+        :title="t.openCurrentOrder"
       >
         <q-tooltip> {{ t.openCurrentOrder }} </q-tooltip>
         <CurrentOrderDishesBadge />
