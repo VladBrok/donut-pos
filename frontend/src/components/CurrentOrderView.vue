@@ -80,6 +80,7 @@
                     icon="add"
                     color="primary"
                     @click="isAddAddressModalOpen = true"
+                    :title="t.addNewDeliveryAddress"
                   >
                     <q-tooltip>
                       {{ t.addNewDeliveryAddress }}
@@ -260,7 +261,12 @@
       <template #empty>
         <div class="q-mt-xl">
           <div v-if="previousOrder" class="column justify-center items-center">
-            <q-img src="/images/cart.svg" alt="" fit="cover" class="image-md" />
+            <q-img
+              src="/images/cart.svg"
+              alt="Cart"
+              fit="cover"
+              class="image-md"
+            />
             <p class="text-h6">{{ t.orderWasCreated }}!</p>
             <RouterLink
               class="text-body1 q-mt-sm"

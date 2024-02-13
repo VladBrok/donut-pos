@@ -46,6 +46,7 @@
                 icon="location_on"
                 color="primary"
                 @click="openMap"
+                :title="t.showOnMap"
               >
                 <q-tooltip>
                   {{ t.showOnMap }}

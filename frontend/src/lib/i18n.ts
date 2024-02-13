@@ -49,6 +49,10 @@ export const messages = i18n("messages", {
   // Admin dashboard
   dashboard: "Dashboard",
   logout: "Logout",
+  deleteDish: "Delete dish",
+  toggleMenu: "Toggle menu",
+  increment: "Increment",
+  decrement: "Decrement",
   dishCategories: "Categories",
   createDishCategory: "Create dish category",
   updateDishCategory: "Update dish category",

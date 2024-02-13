@@ -4,7 +4,7 @@
       <q-card-section>
         <q-img
           :src="imageUrl"
-          alt=""
+          :alt="name"
           fit="cover"
           class="image-card shadow-3 rounded-borders product-card-image"
         >

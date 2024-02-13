@@ -2,7 +2,7 @@
   "name": "donut-shared",
   "version": "0.0.1",
   "description": "Donut, a POS system",
-  "productName": "Donut",
+  "productName": "Donut POS",
   "author": "VladBrok",
   "main": "index.ts",
   "private": true,

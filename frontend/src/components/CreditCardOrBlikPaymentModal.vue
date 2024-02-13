@@ -7,7 +7,15 @@
     <q-card class="q-pb-sm">
       <q-card-section class="row items-center q-pb-none">
         <q-space />
-        <q-btn icon="close" flat round dense v-close-popup size="lg" />
+        <q-btn
+          icon="close"
+          flat
+          round
+          dense
+          v-close-popup
+          size="lg"
+          :title="t.close"
+        />
       </q-card-section>
 
       <payment-card
@@ -21,6 +29,7 @@
 
 <script setup lang="ts">
 import PaymentCard from "src/components/PaymentCard.vue";
+import { useI18nStore } from "src/lib/i18n";
 import { computed } from "vue";
 
 const props = defineProps<{
@@ -30,5 +39,6 @@ const props = defineProps<{
 }>();
 const emit = defineEmits(["update:modelValue"]);
 
+const t = useI18nStore();
 const modelValue = computed(() => props.modelValue);
 </script>

@@ -1,10 +1,14 @@
 {
   "messages": {
-    "weightGram": "G",
+    "weightGram": "g",
     "pl": "Polski",
     "en": "Angielski",
     "dashboard": "Panel",
     "logout": "Wyloguj",
+    "deleteDish": "Usuń danie",
+    "increment": "Zwiększyć",
+    "decrement": "Zmniejszyć",
+    "toggleMenu": "Przełącz menu",
     "dishCategories": "Kategorie",
     "createDishCategory": "Utwórz kategorię dania",
     "updateDishCategory": "Zaktualizuj kategorię dania",

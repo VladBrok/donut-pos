@@ -37,6 +37,10 @@ a:hover {
   pointer-events: none;
 }
 
+.line-height-normal {
+  line-height: normal;
+}
+
 .text-no-wrap {
   white-space: nowrap;
 }
@@ -115,7 +119,7 @@ a:hover {
 }
 
 .page-wrapper-height {
-  height: calc(100vh - 59px);
+  height: calc(100vh - 71px);
 }
 
 .dialog-md {

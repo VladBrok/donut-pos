@@ -1,5 +1,11 @@
 <template>
-  <q-btn class="q-mr-xs" flat round icon="o_notifications">
+  <q-btn
+    class="q-mr-xs"
+    flat
+    round
+    icon="o_notifications"
+    :title="t.showNotifications"
+  >
     <q-tooltip> {{ t.showNotifications }} </q-tooltip>
     <q-spinner-rings
       v-if="isLoading"
@@ -14,7 +20,7 @@
       color="red"
       :label="notificationCount || ''"
     />
-    <q-menu fit style="overflow-x: hidden; min-width: 300px">
+    <q-menu fit style="overflow-x: hidden; min-width: 300px" role="">
       <div class="q-px-xs" style="min-width: 300px">
         <TransitionGroup tag="div" name="fade" style="min-width: 300px">
           <p v-if="!notificationCount">

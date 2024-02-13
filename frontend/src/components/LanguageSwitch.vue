@@ -11,7 +11,7 @@
     <template v-slot:prepend>
       <q-img
         :src="`/images/${localeVal}.svg`"
-        alt=""
+        :alt="localeVal"
         fit="cover"
         class="country-icon"
       />

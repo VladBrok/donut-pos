@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /login
+Allow: /sign-up
+Allow: /menu
+Allow: /orders
+Allow: /addresses
+Disallow: /
+
+Sitemap: https://donut-preprod.my.to/sitemap.xml

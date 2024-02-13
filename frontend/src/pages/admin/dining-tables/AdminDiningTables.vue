@@ -37,15 +37,6 @@
           {{ props.rowIndex + 1 }}
         </q-td>
       </template>
-      <template v-slot:body-cell-image="props">
-        <q-td :props="props">
-          <q-img
-            :src="props.row.imageUrl"
-            fit="cover"
-            class="rounded-borders image-sm"
-          />
-        </q-td>
-      </template>
       <template v-slot:body-cell-actions="props">
         <q-td :props="props" auto-width>
           <q-btn

@@ -25,6 +25,7 @@
             scheduleEntry.openingTime = '';
             scheduleEntry.closingTime = '';
           "
+          :title="t.addWorkTime"
         >
           <q-tooltip>
             {{ t.addWorkTime }}
@@ -79,6 +80,7 @@
             scheduleEntry.openingTime = null;
             scheduleEntry.closingTime = null;
           "
+          :title="t.removeWorkTime"
         >
           <q-tooltip>
             {{ t.removeWorkTime }}
@@ -106,6 +108,7 @@
             scheduleEntry.breakStart = '';
             scheduleEntry.breakEnd = '';
           "
+          :title="t.addLunchBreak"
         >
           <q-tooltip>
             {{ t.addLunchBreak }}
@@ -170,6 +173,7 @@
             scheduleEntry.breakStart = null;
             scheduleEntry.breakEnd = null;
           "
+          :title="t.removeLunchBreak"
         >
           <q-tooltip>
             {{ t.removeLunchBreak }}

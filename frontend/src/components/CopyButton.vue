@@ -6,6 +6,7 @@
     rounded
     icon="content_copy"
     @click="copy(text)"
+    :title="tooltip"
   >
     <q-tooltip>
       {{ tooltip }}
