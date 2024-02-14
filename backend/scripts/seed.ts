@@ -619,7 +619,7 @@ await db
   .delete(cashPaymentRequest)
   .where(eq(cashPaymentRequest.id, cashPaymentRequest.id));
 
-const commonDishes = [
+const makeCommonDishes = () => [
   {
     id: drinks[0].id,
     name: "Vodka",
@@ -636,7 +636,7 @@ const commonDishes = [
     description:
       "<i>Vodka</i> is a <b>clear</b> distilled alcoholic beverage originating from Eastern Europe and Scandinavia. It is typically made from fermented grains or potatoes and is known for its neutral flavor profile",
     deliveredDate: "",
-    dishIdInOrder: "feleatgtb8p8",
+    dishIdInOrder: generateUuid(),
     modifications: [
       {
         id: drinkModifications[0].id,
@@ -674,7 +674,7 @@ const commonDishes = [
     description:
       "A classic <i>Italian</i> pizza topped with tomato sauce, fresh mozzarella cheese, basil leaves, and a drizzle of olive oil",
     deliveredDate: "",
-    dishIdInOrder: "srsxur9yhkaq",
+    dishIdInOrder: generateUuid(),
     modifications: [],
   },
 ];
@@ -695,7 +695,7 @@ await db.insert(order).values({
 });
 await db.insert(orderToDishes).values({
   id: generateUuid(),
-  dishes: sql`${new Param(commonDishes)}`,
+  dishes: sql`${new Param(makeCommonDishes())}`,
   orderId: courierOrderUuid1,
 });
 
@@ -717,7 +717,7 @@ await db.insert(order).values({
 });
 await db.insert(orderToDishes).values({
   id: generateUuid(),
-  dishes: sql`${new Param(commonDishes)}`,
+  dishes: sql`${new Param(makeCommonDishes())}`,
   orderId: courierOrderUuid2,
 });
 
@@ -737,7 +737,7 @@ await db.insert(order).values({
 await db.insert(orderToDishes).values({
   id: generateUuid(),
   dishes: sql`${new Param(
-    commonDishes.map((x, i) =>
+    makeCommonDishes().map((x, i) =>
       i === 0
         ? x
         : {
@@ -763,7 +763,7 @@ await db.insert(order).values({
 });
 await db.insert(orderToDishes).values({
   id: generateUuid(),
-  dishes: sql`${new Param(commonDishes)}`,
+  dishes: sql`${new Param(makeCommonDishes())}`,
   orderId: kitchenOrderUuid2,
 });
 
