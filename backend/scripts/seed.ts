@@ -147,7 +147,7 @@ for (const addr of addresses) {
 
 await db.delete(salePoint).where(eq(salePoint.id, salePoint.id));
 
-await db.insert(salePoint).values({
+const theSalePoint: typeof salePoint.$inferInsert = {
   id: generateUuid(),
   addressId: locationAddressId,
   isDefault: true,
@@ -205,7 +205,9 @@ await db.insert(salePoint).values({
       openingTime: null,
     },
   ],
-});
+};
+
+await db.insert(salePoint).values(theSalePoint);
 
 // Employee
 
