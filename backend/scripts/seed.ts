@@ -1,4 +1,5 @@
 import {
+  DISH_IN_ORDER_STATUSES,
   EMPLOYEE_ROLES,
   EMPLOYEE_ROLES_ARR,
   ORDER_STATUSES,
@@ -10,6 +11,7 @@ import { hash } from "src/lib/crypt.js";
 import { generateOrderNumber } from "src/lib/generate-order-number.js";
 import {
   address,
+  cashPaymentRequest,
   client,
   diningTable,
   dish,
@@ -613,16 +615,19 @@ for (const tbl of tables) {
 
 await db.delete(order).where(eq(order.id, order.id));
 await db.delete(orderToDishes).where(eq(orderToDishes.id, orderToDishes.id));
+await db
+  .delete(cashPaymentRequest)
+  .where(eq(cashPaymentRequest.id, cashPaymentRequest.id));
 
 const commonDishes = [
   {
-    id: "6bf9e7d1-7a94-4bf3-918d-b9acedf8fe39",
+    id: drinks[0].id,
     name: "Vodka",
     count: 1,
     price: 1500,
     status: "",
     weight: 500,
-    category: { id: "d7dec7f4-d2ef-465d-bc35-7a82977cda01", name: "Drinks" },
+    category: categories[0],
     imageUrl:
       "https://domalkoholi.pl/userdata/public/gfx/3287/absolut-0%2C7l.jpg",
     isActive: true,
@@ -634,7 +639,7 @@ const commonDishes = [
     dishIdInOrder: "feleatgtb8p8",
     modifications: [
       {
-        id: "289f3802-f191-4d52-a33c-bb1e8eda03da",
+        id: drinkModifications[0].id,
         name: "Sugar",
         count: 1,
         price: 300,
@@ -643,7 +648,7 @@ const commonDishes = [
           "https://www.tasteofhome.com/wp-content/uploads/2019/11/sugar-shutterstock_615908132.jpg",
       },
       {
-        id: "17ae24fa-557b-4359-bf47-548e7cb634fa",
+        id: drinkModifications[1].id,
         name: "Lemon",
         count: 2,
         price: 400,
@@ -654,13 +659,13 @@ const commonDishes = [
     ],
   },
   {
-    id: "1c4af40a-b64d-4a17-b45a-3d16a6f9f534",
+    id: pizzas[0].id,
     name: "Margherita",
     count: 2,
     price: 1200,
     status: "",
     weight: 350,
-    category: { id: "e3bad328-06ae-409a-87a8-ea914583c35a", name: "Pizza" },
+    category: categories[3],
     imageUrl:
       "https://cdn.galleries.smcloud.net/t/galleries/gf-th4D-DoeK-NWgH_pizza-margherita-skad-pochodzi-nazwa-jpg-1920x1080-nocrop.jpg",
     isActive: true,
@@ -690,7 +695,7 @@ await db.insert(order).values({
 });
 await db.insert(orderToDishes).values({
   id: generateUuid(),
-  dishes: commonDishes,
+  dishes: sql`${new Param(commonDishes)}`,
   orderId: courierOrderUuid1,
 });
 
@@ -712,8 +717,61 @@ await db.insert(order).values({
 });
 await db.insert(orderToDishes).values({
   id: generateUuid(),
-  dishes: commonDishes,
+  dishes: sql`${new Param(commonDishes)}`,
   orderId: courierOrderUuid2,
+});
+
+let kitchenOrderUuid1 = generateUuid();
+await db.insert(order).values({
+  id: kitchenOrderUuid1,
+  clientId: mainClientId,
+  comment: "",
+  createdDate: new Date(),
+  cookingDate: new Date(),
+  number: generateOrderNumber(),
+  status: ORDER_STATUSES.COOKING,
+  type: ORDER_TYPES.DINE_IN,
+  employeeId: waiterUuid,
+  diningTableId: (await db.select().from(diningTable))[0].id,
+});
+await db.insert(orderToDishes).values({
+  id: generateUuid(),
+  dishes: sql`${new Param(
+    commonDishes.map((x, i) =>
+      i === 0
+        ? x
+        : {
+            ...x,
+            cookedDate: new Date(),
+            cookingDate: new Date(),
+            status: DISH_IN_ORDER_STATUSES.COOKED,
+          }
+    )
+  )}`,
+  orderId: kitchenOrderUuid1,
+});
+
+let kitchenOrderUuid2 = generateUuid();
+await db.insert(order).values({
+  id: kitchenOrderUuid2,
+  clientId: mainClientId,
+  comment: "",
+  createdDate: new Date(),
+  number: generateOrderNumber(),
+  status: ORDER_STATUSES.CREATED,
+  type: ORDER_TYPES.TAKEOUT,
+});
+await db.insert(orderToDishes).values({
+  id: generateUuid(),
+  dishes: sql`${new Param(commonDishes)}`,
+  orderId: kitchenOrderUuid2,
+});
+
+await db.insert(cashPaymentRequest).values({
+  id: generateUuid(),
+  requestedAt: new Date(),
+  totalCost: 5000,
+  orderId: kitchenOrderUuid1,
 });
 
 logInfo("seeding complete.");
