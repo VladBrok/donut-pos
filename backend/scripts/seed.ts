@@ -1,7 +1,13 @@
-import { EMPLOYEE_ROLES, EMPLOYEE_ROLES_ARR } from "donut-shared";
+import {
+  EMPLOYEE_ROLES,
+  EMPLOYEE_ROLES_ARR,
+  ORDER_STATUSES,
+  ORDER_TYPES,
+} from "donut-shared";
 import { logInfo } from "donut-shared/src/lib/log.js";
-import { eq } from "drizzle-orm";
+import { Param, eq, sql } from "drizzle-orm";
 import { hash } from "src/lib/crypt.js";
+import { generateOrderNumber } from "src/lib/generate-order-number.js";
 import {
   address,
   client,
@@ -11,6 +17,8 @@ import {
   dishToModification,
   employee,
   modification,
+  order,
+  orderToDishes,
   permission,
   role,
   roleToPermission,
@@ -214,6 +222,7 @@ await db.insert(salePoint).values(theSalePoint);
 await db.delete(employee).where(eq(employee.id, employee.id));
 
 const waiterUuid = generateUuid();
+const courierUuid = generateUuid();
 
 const employees: (typeof employee.$inferInsert)[] = [
   {
@@ -250,7 +259,7 @@ const employees: (typeof employee.$inferInsert)[] = [
     phone: "+48300020009",
   },
   {
-    id: generateUuid(),
+    id: courierUuid,
     email: "courier@donut.com",
     passwordHash: await hash("1234Db_3333>"),
     firstName: "Usain",
@@ -548,6 +557,10 @@ for (const dsh of [...drinks, ...fruits, ...pizzas, ...desserts]) {
   });
 }
 
+await db
+  .delete(dishToModification)
+  .where(eq(dishToModification.id, dishToModification.id));
+
 for (const drink of drinks) {
   for (const modif of drinkModifications) {
     await db.insert(dishToModification).values({
@@ -595,5 +608,112 @@ for (const tbl of tables) {
     ...tbl,
   });
 }
+
+// Orders
+
+await db.delete(order).where(eq(order.id, order.id));
+await db.delete(orderToDishes).where(eq(orderToDishes.id, orderToDishes.id));
+
+const commonDishes = [
+  {
+    id: "6bf9e7d1-7a94-4bf3-918d-b9acedf8fe39",
+    name: "Vodka",
+    count: 1,
+    price: 1500,
+    status: "",
+    weight: 500,
+    category: { id: "d7dec7f4-d2ef-465d-bc35-7a82977cda01", name: "Drinks" },
+    imageUrl:
+      "https://domalkoholi.pl/userdata/public/gfx/3287/absolut-0%2C7l.jpg",
+    isActive: true,
+    cookedDate: "",
+    cookingDate: "",
+    description:
+      "<i>Vodka</i> is a <b>clear</b> distilled alcoholic beverage originating from Eastern Europe and Scandinavia. It is typically made from fermented grains or potatoes and is known for its neutral flavor profile",
+    deliveredDate: "",
+    dishIdInOrder: "feleatgtb8p8",
+    modifications: [
+      {
+        id: "289f3802-f191-4d52-a33c-bb1e8eda03da",
+        name: "Sugar",
+        count: 1,
+        price: 300,
+        weight: 5,
+        imageUrl:
+          "https://www.tasteofhome.com/wp-content/uploads/2019/11/sugar-shutterstock_615908132.jpg",
+      },
+      {
+        id: "17ae24fa-557b-4359-bf47-548e7cb634fa",
+        name: "Lemon",
+        count: 2,
+        price: 400,
+        weight: 30,
+        imageUrl:
+          "https://cdn.britannica.com/84/188484-050-F27B0049/lemons-tree.jpg",
+      },
+    ],
+  },
+  {
+    id: "1c4af40a-b64d-4a17-b45a-3d16a6f9f534",
+    name: "Margherita",
+    count: 2,
+    price: 1200,
+    status: "",
+    weight: 350,
+    category: { id: "e3bad328-06ae-409a-87a8-ea914583c35a", name: "Pizza" },
+    imageUrl:
+      "https://cdn.galleries.smcloud.net/t/galleries/gf-th4D-DoeK-NWgH_pizza-margherita-skad-pochodzi-nazwa-jpg-1920x1080-nocrop.jpg",
+    isActive: true,
+    cookedDate: "",
+    cookingDate: "",
+    description:
+      "A classic <i>Italian</i> pizza topped with tomato sauce, fresh mozzarella cheese, basil leaves, and a drizzle of olive oil",
+    deliveredDate: "",
+    dishIdInOrder: "srsxur9yhkaq",
+    modifications: [],
+  },
+];
+
+let courierOrderUuid1 = generateUuid();
+await db.insert(order).values({
+  id: courierOrderUuid1,
+  deliveryAddress: sql`${new Param((await db.select().from(address))[0])}`,
+  clientId: mainClientId,
+  comment: "fast, please",
+  cookedDate: new Date(),
+  createdDate: new Date(),
+  cookingDate: new Date(),
+  number: generateOrderNumber(),
+  status: ORDER_STATUSES.COOKED,
+  paidDate: new Date(),
+  type: ORDER_TYPES.DELIVERY,
+});
+await db.insert(orderToDishes).values({
+  id: generateUuid(),
+  dishes: commonDishes,
+  orderId: courierOrderUuid1,
+});
+
+let courierOrderUuid2 = generateUuid();
+await db.insert(order).values({
+  id: courierOrderUuid2,
+  deliveryAddress: sql`${new Param((await db.select().from(address))[1])}`,
+  clientId: mainClientId,
+  comment: "deliver tomorrow",
+  cookedDate: new Date(),
+  createdDate: new Date(),
+  cookingDate: new Date(),
+  deliveringDate: new Date(),
+  number: generateOrderNumber(),
+  status: ORDER_STATUSES.DELIVERING,
+  paidDate: new Date(),
+  type: ORDER_TYPES.DELIVERY,
+  employeeId: courierUuid,
+});
+await db.insert(orderToDishes).values({
+  id: generateUuid(),
+  dishes: commonDishes,
+  orderId: courierOrderUuid2,
+});
 
 logInfo("seeding complete.");
