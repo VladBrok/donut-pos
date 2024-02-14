@@ -799,4 +799,30 @@ await db.insert(orderToDishes).values({
   orderId: takeoutClientOrderUuid,
 });
 
+let takeoutEmployeeOrderUuid = generateUuid();
+await db.insert(order).values({
+  id: takeoutEmployeeOrderUuid,
+  clientId: mainClientId,
+  comment: "",
+  createdDate: new Date(),
+  cookingDate: new Date(),
+  cookedDate: new Date(),
+  number: generateOrderNumber(),
+  status: ORDER_STATUSES.COOKED,
+  type: ORDER_TYPES.TAKEOUT,
+  employeeId: waiterUuid,
+});
+await db.insert(orderToDishes).values({
+  id: generateUuid(),
+  dishes: sql`${new Param(
+    makeCommonDishes().map((x) => ({
+      ...x,
+      cookingDate: new Date().toISOString(),
+      cookedDate: new Date().toISOString(),
+      status: DISH_IN_ORDER_STATUSES.COOKED,
+    }))
+  )}`,
+  orderId: takeoutEmployeeOrderUuid,
+});
+
 logInfo("seeding complete.");
