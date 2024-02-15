@@ -593,6 +593,8 @@ for (const dessert of desserts) {
 
 // Dining tables
 
+await db.delete(diningTable).where(eq(diningTable.id, diningTable.id));
+
 const tables: (typeof diningTable.$inferInsert)[] = [
   {
     id: generateUuid(),
