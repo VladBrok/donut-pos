@@ -15,7 +15,7 @@
         </q-avatar>
         <q-toolbar-title>
           <h1 class="text-h6 text-weight-regular line-height-normal">
-            {{ $route.meta.title || "" }}
+            {{ t[$route.meta.title?.toString() || ""] }}
           </h1>
         </q-toolbar-title>
         <LanguageSwitch class="q-mr-xs" />
@@ -61,7 +61,9 @@
             <template v-for="(menuItem, index) in menuList" :key="index">
               <q-item
                 clickable
-                :active="$route.meta.title === menuItem.meta"
+                :active="
+                  t[$route.meta.title?.toString() || ''] === menuItem.meta
+                "
                 v-ripple
                 :to="menuItem.to"
                 role=""

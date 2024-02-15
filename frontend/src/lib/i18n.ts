@@ -42,7 +42,7 @@ export const i18n = createI18n(locale, {
   },
 });
 
-export const messages = i18n("messages", {
+export const messagesObj = {
   // Config
   weightGram: "g",
 
@@ -389,7 +389,9 @@ export const messages = i18n("messages", {
   [USER_WITH_PHONE_EXISTS]:
     "User with the same phone already exists. Please choose another phone",
   [AUTH_BEFORE_ORDER_CREATE]: "Plase Sign Up or Login to create an order",
-});
+} as const;
+
+export const messages = i18n("messages", messagesObj);
 
 export function useI18nStore() {
   return useNanoStore(messages);
