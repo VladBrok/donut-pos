@@ -669,7 +669,8 @@ export default function ordersModule(server: Server) {
     req.on("data", (chunk) => {
       body += chunk;
     });
-    req.on("error", () => {
+    req.on("error", (err) => {
+      logError("stripe webhook error (req.on):", err);
       end(400);
     });
     req.on("end", async () => {
@@ -682,6 +683,7 @@ export default function ordersModule(server: Server) {
       try {
         event = stripe.webhooks.constructEvent(body, sig, endpointSecret);
       } catch (err) {
+        logError("stripe webhook error (contruct even):", err);
         end(400);
         return;
       }
