@@ -93,9 +93,7 @@ const password = ref("");
 const firstName = ref("");
 const lastName = ref("");
 const route = useRoute();
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-const text = computed(() => t.value[route.query?.text?.toString()] || "");
+const text = computed(() => t.value[route.query?.text?.toString() || ""] || "");
 
 const onSubmit = async () => {
   isSigningUp.value = true;

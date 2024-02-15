@@ -5,7 +5,12 @@
     icon-name="o_restaurant_menu"
   >
     <template v-slot:title>
-      {{ t.clientLoginPageTitle }}
+      <span>{{ t.clientLoginPageTitle }}</span>
+    </template>
+    <template v-slot:subtitle>
+      <p v-if="text" class="text-h6">
+        {{ text }}
+      </p>
     </template>
     <template v-slot:bottom>
       <div class="text-center text-h6 q-mt-xl text-weight-regular">
@@ -19,8 +24,8 @@
 <script setup lang="ts">
 import { loginAction } from "donut-shared/src/actions/auth";
 import { createOrderAfterAuth } from "src/lib/create-order";
-import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { computed, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import LoginPage from "../../components/LoginPage.vue";
 import { useI18nStore } from "../../lib/i18n";
 import { useStore } from "../../store";
@@ -29,6 +34,8 @@ const t = useI18nStore();
 const store = useStore();
 const router = useRouter();
 const isLoggingIn = ref(false);
+const route = useRoute();
+const text = computed(() => t.value[route.query?.text?.toString() || ""] || "");
 
 const onSubmit = async (data: { password: string; email: string }) => {
   isLoggingIn.value = true;

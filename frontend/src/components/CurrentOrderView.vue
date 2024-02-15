@@ -552,7 +552,7 @@ async function onSubmit() {
         value: true,
       })
     );
-    router.push(`/sign-up?text=${AUTH_BEFORE_ORDER_CREATE}`);
+    router.push(`/login?text=${AUTH_BEFORE_ORDER_CREATE}`);
     return;
   }
 
