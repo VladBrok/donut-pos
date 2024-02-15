@@ -35,6 +35,7 @@ import {
   CREATE_MODIFICATION_KEY,
   CREATE_SALE_POINT_KEY,
   DASHBOARD_KEY,
+  DEMO_KEY,
   DINING_TABLES_KEY,
   DISHES_KEY,
   DISH_CATEGORIES_KEY,
@@ -355,6 +356,15 @@ export const messagesObj = {
   hidePassword: "Hide password",
   alreadyHaveAccount: "Already have an account?",
   dontHaveAccount: "Don't have an account?",
+
+  // Demo
+  [DEMO_KEY]: "Demo",
+  demoTitle: "Donut POS demo",
+  adminPanel: "Admin panel",
+  waiterApp: "Waiter app",
+  clientApp: "Client app",
+  courierApp: "Courier app",
+  kitchenDisplay: "Kitchen display",
 
   // Misc
   scanToOrder: "Scan to order",

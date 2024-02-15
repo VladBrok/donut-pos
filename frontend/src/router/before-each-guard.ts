@@ -66,7 +66,8 @@ export const beforeEachGuard: NavigationGuardWithThis<undefined> = (
     !to.path.startsWith("/courier") &&
     !to.path.startsWith("/waiter") &&
     !to.path.startsWith("/kitchen") &&
-    !to.path.startsWith("/admin")
+    !to.path.startsWith("/admin") &&
+    !to.path.startsWith("/demo")
   ) {
     return "/login";
   }

@@ -1,6 +1,13 @@
 {
   "messages": {
     "weightGram": "g",
+    "demo": "Demonstracja",
+    "demoTitle": "Donut POS demo",
+    "adminPanel": "Panel administracyjny",
+    "waiterApp": "Aplikacja kelnera",
+    "clientApp": "Aplikacja klienta",
+    "courierApp": "Aplikacja kurierska",
+    "kitchenDisplay": "Aplikacja kuchni",
     "pl": "Polski",
     "en": "Angielski",
     "dashboard": "Panel",

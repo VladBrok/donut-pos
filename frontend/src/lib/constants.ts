@@ -36,3 +36,4 @@ export const PAYMENT_SUCCESS_PAGE_KEY = "paymentSuccessPageTitle";
 export const ORDER_DETAILS_KEY = "orderDetails";
 export const SIGNUP_KEY = "signUp";
 export const ADDRESSES_KEY = "addresses";
+export const DEMO_KEY = "demo";

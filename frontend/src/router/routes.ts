@@ -8,6 +8,7 @@ import {
   CREATE_MODIFICATION_KEY,
   CREATE_SALE_POINT_KEY,
   DASHBOARD_KEY,
+  DEMO_KEY,
   DINING_TABLES_KEY,
   DISHES_KEY,
   DISH_CATEGORIES_KEY,
@@ -384,6 +385,15 @@ const routes: RouteRecordRaw[] = [
         },
       },
     ],
+  },
+
+  // Demo
+  {
+    path: "/demo",
+    component: () => import("src/pages/ProjectDemo.vue"),
+    meta: {
+      title: DEMO_KEY,
+    },
   },
 
   // Always leave this as last one,

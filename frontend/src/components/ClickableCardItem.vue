@@ -7,7 +7,6 @@
         v-close-popup
         class="q-px-md q-py-sm"
         @click="emit('click')"
-        :title="t.close"
       >
         <q-item-section avatar class="q-mr-xs">
           <q-img :src="imageSrc" alt="" fit="contain" class="image-xs-sm" />
