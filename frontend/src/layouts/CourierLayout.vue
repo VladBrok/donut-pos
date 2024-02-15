@@ -3,17 +3,18 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
 import MainLayout from "../components/MainLayout.vue";
 import { useI18nStore } from "../lib/i18n";
 
 const t = useI18nStore();
 
-const menuList = [
+const menuList = computed(() => [
   {
     icon: "o_receipt_long",
     label: t.value.orders,
     to: "/courier/orders",
     meta: t.value.orders,
   },
-];
+]);
 </script>
