@@ -8,6 +8,7 @@
         <h1 class="text-h3">
           <slot name="title"></slot>
         </h1>
+        <slot name="subtitle" />
       </div>
       <q-form
         @submit="onSubmit"

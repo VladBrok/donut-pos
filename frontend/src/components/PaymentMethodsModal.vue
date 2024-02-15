@@ -13,16 +13,16 @@
       </q-card-section>
 
       <q-card-section>
-        <PaymentMethodCard
+        <ClickableCardItem
           image-src="/images/cash.svg"
           @click="isCashPaymentModalOpen = true"
         >
           <template #text>
             {{ t.cash }}
           </template>
-        </PaymentMethodCard>
+        </ClickableCardItem>
 
-        <PaymentMethodCard
+        <ClickableCardItem
           class="q-mt-lg"
           image-src="/images/credit-card.svg"
           @click="
@@ -31,9 +31,9 @@
           "
         >
           <template #text> {{ t.creditCard }} </template>
-        </PaymentMethodCard>
+        </ClickableCardItem>
 
-        <PaymentMethodCard
+        <ClickableCardItem
           class="q-mt-lg"
           image-src="/images/blik.png"
           @click="
@@ -42,7 +42,7 @@
           "
         >
           <template #text> {{ t.blik }} </template>
-        </PaymentMethodCard>
+        </ClickableCardItem>
       </q-card-section>
     </q-card>
   </q-dialog>
@@ -80,10 +80,10 @@
 
 <script setup lang="ts">
 import { ORDER_TYPES, OrderType } from "donut-shared";
+import ClickableCardItem from "src/components/ClickableCardItem.vue";
 import ClientDineInCashPaymentModal from "src/components/ClientDineInCashPaymentModal.vue";
 import ClientTakeoutDeliveryCashPaymentModal from "src/components/ClientTakeoutDeliveryCashPaymentModal.vue";
 import CreditCardOrBlikPaymentModal from "src/components/CreditCardOrBlikPaymentModal.vue";
-import PaymentMethodCard from "src/components/PaymentMethodCard.vue";
 import WaiterCashPaymentModal from "src/components/WaiterCashPaymentModal.vue";
 import { useI18nStore } from "src/lib/i18n";
 import { useStore } from "src/store";

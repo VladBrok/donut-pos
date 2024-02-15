@@ -1,3 +1,4 @@
+import { useIsLoggedIn } from "src/lib/composables/useIsLoggedIn";
 import { NavigationGuardWithThis } from "vue-router";
 import { useStore } from "../store";
 
@@ -7,6 +8,7 @@ export const beforeEachGuard: NavigationGuardWithThis<undefined> = (
 ) => {
   const store = useStore();
   const user = store.state.auth.user;
+  const isLoggedIn = useIsLoggedIn();
 
   if (
     to.path.startsWith("/admin") &&
@@ -54,6 +56,20 @@ export const beforeEachGuard: NavigationGuardWithThis<undefined> = (
 
   if (to.path.startsWith("/courier/login") && user.permissions?.courier) {
     return "/courier";
+  }
+
+  if (
+    isLoggedIn.value &&
+    !user.permissions?.client &&
+    !to.path.startsWith("/login") &&
+    !to.path.startsWith("/sign-up") &&
+    !to.path.startsWith("/courier") &&
+    !to.path.startsWith("/waiter") &&
+    !to.path.startsWith("/kitchen") &&
+    !to.path.startsWith("/admin") &&
+    !to.path.startsWith("/demo")
+  ) {
+    return "/login";
   }
 
   if (

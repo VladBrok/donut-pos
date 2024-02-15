@@ -1,3 +1,33 @@
+import {
+  ADDRESSES_KEY,
+  CLIENTS_KEY,
+  CREATE_DINING_TABLE_KEY,
+  CREATE_DISH_CATEGORY_KEY,
+  CREATE_DISH_KEY,
+  CREATE_EMPLOYEE_KEY,
+  CREATE_MODIFICATION_KEY,
+  CREATE_SALE_POINT_KEY,
+  DASHBOARD_KEY,
+  DEMO_KEY,
+  DINING_TABLES_KEY,
+  DISHES_KEY,
+  DISH_CATEGORIES_KEY,
+  EMPLOYEES_KEY,
+  LOGIN_KEY,
+  MENU_KEY,
+  MODIFICATIONS_KEY,
+  ORDERS_KEY,
+  ORDER_DETAILS_KEY,
+  PAYMENT_SUCCESS_PAGE_KEY,
+  SALE_POINTS_KEY,
+  SIGNUP_KEY,
+  UDPATE_SALE_POINT_KEY,
+  UPDATE_DINING_TABLE_KEY,
+  UPDATE_DISH_CATEGORY_KEY,
+  UPDATE_DISH_KEY,
+  UPDATE_EMPLOYEE_KEY,
+  UPDATE_MODIFICATION_KEY,
+} from "src/lib/constants";
 import { RouteRecordRaw } from "vue-router";
 
 const routes: RouteRecordRaw[] = [
@@ -6,7 +36,7 @@ const routes: RouteRecordRaw[] = [
     path: "/admin/login",
     component: () => import("pages/admin/AdminLogin.vue"),
     meta: {
-      title: "logIn",
+      title: LOGIN_KEY,
     },
   },
   {
@@ -21,7 +51,7 @@ const routes: RouteRecordRaw[] = [
         path: "dashboard",
         component: () => import("pages/admin/AdminDashboard.vue"),
         meta: {
-          title: "dashboard",
+          title: DASHBOARD_KEY,
         },
       },
 
@@ -31,7 +61,7 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import("src/pages/admin/dish-categories/AdminDishCategories.vue"),
         meta: {
-          title: "dishCategories",
+          title: DISH_CATEGORIES_KEY,
         },
       },
       {
@@ -41,7 +71,7 @@ const routes: RouteRecordRaw[] = [
             "src/pages/admin/dish-categories/AdminCreateUpdateDishCategory.vue"
           ),
         meta: {
-          title: "createDishCategory",
+          title: CREATE_DISH_CATEGORY_KEY,
         },
       },
       {
@@ -51,7 +81,7 @@ const routes: RouteRecordRaw[] = [
             "src/pages/admin/dish-categories/AdminCreateUpdateDishCategory.vue"
           ),
         meta: {
-          title: "updateDishCategory",
+          title: UPDATE_DISH_CATEGORY_KEY,
         },
       },
 
@@ -60,7 +90,7 @@ const routes: RouteRecordRaw[] = [
         path: "dishes",
         component: () => import("src/pages/admin/dishes/AdminDishes.vue"),
         meta: {
-          title: "dishes",
+          title: DISHES_KEY,
         },
       },
       {
@@ -68,7 +98,7 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import("src/pages/admin/dishes/AdminCreateUpdateDish.vue"),
         meta: {
-          title: "createDish",
+          title: CREATE_DISH_KEY,
         },
       },
       {
@@ -76,7 +106,7 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import("src/pages/admin/dishes/AdminCreateUpdateDish.vue"),
         meta: {
-          title: "updateDish",
+          title: UPDATE_DISH_KEY,
         },
       },
 
@@ -86,7 +116,7 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import("src/pages/admin/modifications/AdminModifications.vue"),
         meta: {
-          title: "modifications",
+          title: MODIFICATIONS_KEY,
         },
       },
       {
@@ -96,7 +126,7 @@ const routes: RouteRecordRaw[] = [
             "src/pages/admin/modifications/AdminCreateUpdateModification.vue"
           ),
         meta: {
-          title: "createModification",
+          title: CREATE_MODIFICATION_KEY,
         },
       },
       {
@@ -106,7 +136,7 @@ const routes: RouteRecordRaw[] = [
             "src/pages/admin/modifications/AdminCreateUpdateModification.vue"
           ),
         meta: {
-          title: "updateModification",
+          title: UPDATE_MODIFICATION_KEY,
         },
       },
 
@@ -115,7 +145,7 @@ const routes: RouteRecordRaw[] = [
         path: "employees",
         component: () => import("src/pages/admin/employees/AdminEmployees.vue"),
         meta: {
-          title: "employees",
+          title: EMPLOYEES_KEY,
         },
       },
       {
@@ -123,7 +153,7 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import("src/pages/admin/employees/AdminCreateUpdateEmployee.vue"),
         meta: {
-          title: "createEmployee",
+          title: CREATE_EMPLOYEE_KEY,
         },
       },
       {
@@ -131,7 +161,7 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import("src/pages/admin/employees/AdminCreateUpdateEmployee.vue"),
         meta: {
-          title: "updateEmployee",
+          title: UPDATE_EMPLOYEE_KEY,
         },
       },
 
@@ -141,7 +171,7 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import("src/pages/admin/dining-tables/AdminDiningTables.vue"),
         meta: {
-          title: "diningTables",
+          title: DINING_TABLES_KEY,
         },
       },
       {
@@ -151,7 +181,7 @@ const routes: RouteRecordRaw[] = [
             "src/pages/admin/dining-tables/AdminCreateUpdateDiningTable.vue"
           ),
         meta: {
-          title: "createDiningTable",
+          title: CREATE_DINING_TABLE_KEY,
         },
       },
       {
@@ -161,7 +191,7 @@ const routes: RouteRecordRaw[] = [
             "src/pages/admin/dining-tables/AdminCreateUpdateDiningTable.vue"
           ),
         meta: {
-          title: "updateDiningTable",
+          title: UPDATE_DINING_TABLE_KEY,
         },
       },
 
@@ -170,7 +200,7 @@ const routes: RouteRecordRaw[] = [
         path: "clients",
         component: () => import("src/pages/admin/clients/AdminClients.vue"),
         meta: {
-          title: "clients",
+          title: CLIENTS_KEY,
         },
       },
 
@@ -180,7 +210,7 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import("src/pages/admin/sale-points/AdminSalePoints.vue"),
         meta: {
-          title: "salePoints",
+          title: SALE_POINTS_KEY,
         },
       },
       {
@@ -188,7 +218,7 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import("src/pages/admin/sale-points/AdminCreateUpdateSalePoint.vue"),
         meta: {
-          title: "createSalePoint",
+          title: CREATE_SALE_POINT_KEY,
         },
       },
       {
@@ -196,7 +226,7 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import("src/pages/admin/sale-points/AdminCreateUpdateSalePoint.vue"),
         meta: {
-          title: "updateSalePoint",
+          title: UDPATE_SALE_POINT_KEY,
         },
       },
     ],
@@ -207,7 +237,7 @@ const routes: RouteRecordRaw[] = [
     path: "/waiter/login",
     component: () => import("pages/waiter/WaiterLogin.vue"),
     meta: {
-      title: "logIn",
+      title: LOGIN_KEY,
     },
   },
   {
@@ -222,14 +252,14 @@ const routes: RouteRecordRaw[] = [
         path: "menu",
         component: () => import("src/pages/waiter/WaiterMenuPage.vue"),
         meta: {
-          title: "menu",
+          title: MENU_KEY,
         },
       },
       {
         path: "orders",
         component: () => import("pages/waiter/WaiterOrdersPage.vue"),
         meta: {
-          title: "orders",
+          title: ORDERS_KEY,
         },
       },
     ],
@@ -240,7 +270,7 @@ const routes: RouteRecordRaw[] = [
     path: "/kitchen/login",
     component: () => import("pages/kitchen/KitchenLogin.vue"),
     meta: {
-      title: "logIn",
+      title: LOGIN_KEY,
     },
   },
   {
@@ -255,7 +285,7 @@ const routes: RouteRecordRaw[] = [
         path: "orders",
         component: () => import("pages/kitchen/KitchenOrdersPage.vue"),
         meta: {
-          title: "orders",
+          title: ORDERS_KEY,
         },
       },
     ],
@@ -266,7 +296,7 @@ const routes: RouteRecordRaw[] = [
     path: "/payment-success/:orderNumber",
     component: () => import("src/pages/PaymentSuccess.vue"),
     meta: {
-      title: "paymentSuccessPageTitle",
+      title: PAYMENT_SUCCESS_PAGE_KEY,
     },
   },
 
@@ -275,28 +305,28 @@ const routes: RouteRecordRaw[] = [
     path: "/orders/:orderNumber",
     component: () => import("src/pages/client/ClientSingleOrder.vue"),
     meta: {
-      title: "orderDetails",
+      title: ORDER_DETAILS_KEY,
     },
   },
   {
     path: "/order-via-qr", // TODO: remove this page later
     component: () => import("src/pages/OrderViaQR.vue"),
     meta: {
-      title: "orderDetails",
+      title: ORDER_DETAILS_KEY,
     },
   },
   {
     path: "/login",
     component: () => import("pages/client/ClientLogin.vue"),
     meta: {
-      title: "logIn",
+      title: LOGIN_KEY,
     },
   },
   {
     path: "/sign-up",
     component: () => import("pages/client/ClientSignUp.vue"),
     meta: {
-      title: "signUp",
+      title: SIGNUP_KEY,
     },
   },
   {
@@ -311,21 +341,21 @@ const routes: RouteRecordRaw[] = [
         path: "menu",
         component: () => import("src/pages/client/ClientMenuPage.vue"),
         meta: {
-          title: "menu",
+          title: MENU_KEY,
         },
       },
       {
         path: "orders",
         component: () => import("pages/client/ClientOrdersPage.vue"),
         meta: {
-          title: "orders",
+          title: ORDERS_KEY,
         },
       },
       {
         path: "addresses",
         component: () => import("pages/client/ClientAddressesPage.vue"),
         meta: {
-          title: "addresses",
+          title: ADDRESSES_KEY,
         },
       },
     ],
@@ -336,7 +366,7 @@ const routes: RouteRecordRaw[] = [
     path: "/courier/login",
     component: () => import("pages/courier/CourierLogin.vue"),
     meta: {
-      title: "logIn",
+      title: LOGIN_KEY,
     },
   },
   {
@@ -351,10 +381,19 @@ const routes: RouteRecordRaw[] = [
         path: "orders",
         component: () => import("pages/courier/CourierOrdersPage.vue"),
         meta: {
-          title: "orders",
+          title: ORDERS_KEY,
         },
       },
     ],
+  },
+
+  // Demo
+  {
+    path: "/demo",
+    component: () => import("src/pages/ProjectDemo.vue"),
+    meta: {
+      title: DEMO_KEY,
+    },
   },
 
   // Always leave this as last one,
