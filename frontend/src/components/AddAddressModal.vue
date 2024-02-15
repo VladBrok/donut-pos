@@ -3,7 +3,7 @@
     <q-card class="q-pb-sm dialog-md">
       <q-card-section class="row items-center">
         <q-space />
-        <div class="text-h6">{{ t.addAddress }}</div>
+        <div class="text-h6">{{ title }}</div>
         <q-space />
         <q-btn icon="close" flat round dense v-close-popup :title="t.close" />
       </q-card-section>
@@ -120,6 +120,9 @@ const emit = defineEmits<{
 }>();
 
 const originalAddress = computed(() => props.originalAddress);
+const title = computed(() =>
+  originalAddress.value ? t.value.editAddress : t.value.addAddress
+);
 const isSubmitYourself = computed(() => props.submitYourself);
 const t = useI18nStore();
 const linkKey =
