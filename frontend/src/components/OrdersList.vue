@@ -48,7 +48,7 @@
           <template v-slot:body-cell-status="props">
             <q-td :props="props">
               <span :class="`text-${props.row.status}`">{{
-                props.row.status
+                t[`orderStatus_${props.row.status}`].toString().toLowerCase()
               }}</span>
             </q-td>
           </template>
