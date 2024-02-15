@@ -1,7 +1,4 @@
 import { RouteRecordRaw } from "vue-router";
-import { useI18nStore } from "../lib/i18n";
-
-const t = useI18nStore();
 
 const routes: RouteRecordRaw[] = [
   // Admin
@@ -9,7 +6,7 @@ const routes: RouteRecordRaw[] = [
     path: "/admin/login",
     component: () => import("pages/admin/AdminLogin.vue"),
     meta: {
-      title: t.value.logIn,
+      title: "logIn",
     },
   },
   {
@@ -24,7 +21,7 @@ const routes: RouteRecordRaw[] = [
         path: "dashboard",
         component: () => import("pages/admin/AdminDashboard.vue"),
         meta: {
-          title: t.value.dashboard,
+          title: "dashboard",
         },
       },
 
@@ -34,7 +31,7 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import("src/pages/admin/dish-categories/AdminDishCategories.vue"),
         meta: {
-          title: t.value.dishCategories,
+          title: "dishCategories",
         },
       },
       {
@@ -44,7 +41,7 @@ const routes: RouteRecordRaw[] = [
             "src/pages/admin/dish-categories/AdminCreateUpdateDishCategory.vue"
           ),
         meta: {
-          title: t.value.createDishCategory,
+          title: "createDishCategory",
         },
       },
       {
@@ -54,7 +51,7 @@ const routes: RouteRecordRaw[] = [
             "src/pages/admin/dish-categories/AdminCreateUpdateDishCategory.vue"
           ),
         meta: {
-          title: t.value.updateDishCategory,
+          title: "updateDishCategory",
         },
       },
 
@@ -63,7 +60,7 @@ const routes: RouteRecordRaw[] = [
         path: "dishes",
         component: () => import("src/pages/admin/dishes/AdminDishes.vue"),
         meta: {
-          title: t.value.dishes,
+          title: "dishes",
         },
       },
       {
@@ -71,7 +68,7 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import("src/pages/admin/dishes/AdminCreateUpdateDish.vue"),
         meta: {
-          title: t.value.createDish,
+          title: "createDish",
         },
       },
       {
@@ -79,7 +76,7 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import("src/pages/admin/dishes/AdminCreateUpdateDish.vue"),
         meta: {
-          title: t.value.updateDish,
+          title: "updateDish",
         },
       },
 
@@ -89,7 +86,7 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import("src/pages/admin/modifications/AdminModifications.vue"),
         meta: {
-          title: t.value.modifications,
+          title: "modifications",
         },
       },
       {
@@ -99,7 +96,7 @@ const routes: RouteRecordRaw[] = [
             "src/pages/admin/modifications/AdminCreateUpdateModification.vue"
           ),
         meta: {
-          title: t.value.createModification,
+          title: "createModification",
         },
       },
       {
@@ -109,7 +106,7 @@ const routes: RouteRecordRaw[] = [
             "src/pages/admin/modifications/AdminCreateUpdateModification.vue"
           ),
         meta: {
-          title: t.value.updateModification,
+          title: "updateModification",
         },
       },
 
@@ -118,7 +115,7 @@ const routes: RouteRecordRaw[] = [
         path: "employees",
         component: () => import("src/pages/admin/employees/AdminEmployees.vue"),
         meta: {
-          title: t.value.employees,
+          title: "employees",
         },
       },
       {
@@ -126,7 +123,7 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import("src/pages/admin/employees/AdminCreateUpdateEmployee.vue"),
         meta: {
-          title: t.value.createEmployee,
+          title: "createEmployee",
         },
       },
       {
@@ -134,7 +131,7 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import("src/pages/admin/employees/AdminCreateUpdateEmployee.vue"),
         meta: {
-          title: t.value.updateEmployee,
+          title: "updateEmployee",
         },
       },
 
@@ -144,7 +141,7 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import("src/pages/admin/dining-tables/AdminDiningTables.vue"),
         meta: {
-          title: t.value.diningTables,
+          title: "diningTables",
         },
       },
       {
@@ -154,7 +151,7 @@ const routes: RouteRecordRaw[] = [
             "src/pages/admin/dining-tables/AdminCreateUpdateDiningTable.vue"
           ),
         meta: {
-          title: t.value.createDiningTable,
+          title: "createDiningTable",
         },
       },
       {
@@ -164,7 +161,7 @@ const routes: RouteRecordRaw[] = [
             "src/pages/admin/dining-tables/AdminCreateUpdateDiningTable.vue"
           ),
         meta: {
-          title: t.value.updateDiningTable,
+          title: "updateDiningTable",
         },
       },
 
@@ -173,7 +170,7 @@ const routes: RouteRecordRaw[] = [
         path: "clients",
         component: () => import("src/pages/admin/clients/AdminClients.vue"),
         meta: {
-          title: t.value.clients,
+          title: "clients",
         },
       },
 
@@ -183,7 +180,7 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import("src/pages/admin/sale-points/AdminSalePoints.vue"),
         meta: {
-          title: t.value.salePoints,
+          title: "salePoints",
         },
       },
       {
@@ -191,7 +188,7 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import("src/pages/admin/sale-points/AdminCreateUpdateSalePoint.vue"),
         meta: {
-          title: t.value.createSalePoint,
+          title: "createSalePoint",
         },
       },
       {
@@ -199,7 +196,7 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import("src/pages/admin/sale-points/AdminCreateUpdateSalePoint.vue"),
         meta: {
-          title: t.value.updateSalePoint,
+          title: "updateSalePoint",
         },
       },
     ],
@@ -210,7 +207,7 @@ const routes: RouteRecordRaw[] = [
     path: "/waiter/login",
     component: () => import("pages/waiter/WaiterLogin.vue"),
     meta: {
-      title: t.value.logIn,
+      title: "logIn",
     },
   },
   {
@@ -225,14 +222,14 @@ const routes: RouteRecordRaw[] = [
         path: "menu",
         component: () => import("src/pages/waiter/WaiterMenuPage.vue"),
         meta: {
-          title: t.value.menu,
+          title: "menu",
         },
       },
       {
         path: "orders",
         component: () => import("pages/waiter/WaiterOrdersPage.vue"),
         meta: {
-          title: t.value.orders,
+          title: "orders",
         },
       },
     ],
@@ -243,7 +240,7 @@ const routes: RouteRecordRaw[] = [
     path: "/kitchen/login",
     component: () => import("pages/kitchen/KitchenLogin.vue"),
     meta: {
-      title: t.value.logIn,
+      title: "logIn",
     },
   },
   {
@@ -258,7 +255,7 @@ const routes: RouteRecordRaw[] = [
         path: "orders",
         component: () => import("pages/kitchen/KitchenOrdersPage.vue"),
         meta: {
-          title: t.value.orders,
+          title: "orders",
         },
       },
     ],
@@ -269,7 +266,7 @@ const routes: RouteRecordRaw[] = [
     path: "/payment-success/:orderNumber",
     component: () => import("src/pages/PaymentSuccess.vue"),
     meta: {
-      title: t.value.paymentSuccessPageTitle,
+      title: "paymentSuccessPageTitle",
     },
   },
 
@@ -278,28 +275,28 @@ const routes: RouteRecordRaw[] = [
     path: "/orders/:orderNumber",
     component: () => import("src/pages/client/ClientSingleOrder.vue"),
     meta: {
-      title: t.value.orderDetails,
+      title: "orderDetails",
     },
   },
   {
     path: "/order-via-qr", // TODO: remove this page later
     component: () => import("src/pages/OrderViaQR.vue"),
     meta: {
-      title: t.value.orderDetails,
+      title: "orderDetails",
     },
   },
   {
     path: "/login",
     component: () => import("pages/client/ClientLogin.vue"),
     meta: {
-      title: t.value.logIn,
+      title: "logIn",
     },
   },
   {
     path: "/sign-up",
     component: () => import("pages/client/ClientSignUp.vue"),
     meta: {
-      title: t.value.signUp,
+      title: "signUp",
     },
   },
   {
@@ -314,21 +311,21 @@ const routes: RouteRecordRaw[] = [
         path: "menu",
         component: () => import("src/pages/client/ClientMenuPage.vue"),
         meta: {
-          title: t.value.menu,
+          title: "menu",
         },
       },
       {
         path: "orders",
         component: () => import("pages/client/ClientOrdersPage.vue"),
         meta: {
-          title: t.value.orders,
+          title: "orders",
         },
       },
       {
         path: "addresses",
         component: () => import("pages/client/ClientAddressesPage.vue"),
         meta: {
-          title: t.value.addresses,
+          title: "addresses",
         },
       },
     ],
@@ -339,7 +336,7 @@ const routes: RouteRecordRaw[] = [
     path: "/courier/login",
     component: () => import("pages/courier/CourierLogin.vue"),
     meta: {
-      title: t.value.logIn,
+      title: "logIn",
     },
   },
   {
@@ -354,7 +351,7 @@ const routes: RouteRecordRaw[] = [
         path: "orders",
         component: () => import("pages/courier/CourierOrdersPage.vue"),
         meta: {
-          title: t.value.orders,
+          title: "orders",
         },
       },
     ],

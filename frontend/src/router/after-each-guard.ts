@@ -1,10 +1,12 @@
+import { useI18nStore } from "src/lib/i18n";
+import { updateDocumentTitle } from "src/lib/update-document-title";
 import { nextTick } from "vue";
 import { NavigationHookAfter } from "vue-router";
 
 export const afterEachGuard: NavigationHookAfter = (to, from) => {
+  const t = useI18nStore();
+
   nextTick(() => {
-    document.title = to.meta.title
-      ? `${to.meta.title as string} | Donut`
-      : "Donut";
+    updateDocumentTitle(to.meta.title as string, t);
   });
 };

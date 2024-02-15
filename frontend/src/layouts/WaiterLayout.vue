@@ -96,7 +96,7 @@ import MainLayout from "../components/MainLayout.vue";
 import { useI18nStore } from "../lib/i18n";
 
 const t = useI18nStore();
-const menuList = [
+const menuList = computed(() => [
   {
     icon: "o_restaurant_menu",
     label: t.value.menu,
@@ -109,7 +109,7 @@ const menuList = [
     to: "/waiter/orders",
     meta: t.value.orders,
   },
-];
+]);
 
 const store = useStore();
 const isCurrentOrderOpen = computed(

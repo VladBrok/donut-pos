@@ -25,6 +25,8 @@ import {
   WRONG_PASSWORD,
 } from "donut-shared";
 import { AUTH_BEFORE_ORDER_CREATE } from "src/lib/constants";
+import { updateDocumentTitle } from "src/lib/update-document-title";
+import router from "src/router";
 
 export const setting = persistentAtom<string | undefined>("locale");
 export const AVAILABLE_LOCALES = ["en", "pl"];
@@ -42,7 +44,7 @@ export const i18n = createI18n(locale, {
   },
 });
 
-export const messages = i18n("messages", {
+export const messagesObj = {
   // Config
   weightGram: "g",
 
@@ -114,6 +116,7 @@ export const messages = i18n("messages", {
   deleteButton: "Delete",
   confirm: "Confirm",
   addAddress: "Add address",
+  editAddress: "Edit address",
   noResults: "No results",
   dishDescriptionPlaceholder: "The best dish",
   search: "Search",
@@ -388,8 +391,15 @@ export const messages = i18n("messages", {
   [USER_WITH_PHONE_EXISTS]:
     "User with the same phone already exists. Please choose another phone",
   [AUTH_BEFORE_ORDER_CREATE]: "Plase Sign Up or Login to create an order",
-});
+} as const;
+
+export const messages = i18n("messages", messagesObj);
 
 export function useI18nStore() {
   return useNanoStore(messages);
 }
+
+locale.subscribe(() => {
+  const t = useI18nStore();
+  updateDocumentTitle(router.currentRoute.value.meta.title as string, t);
+});
