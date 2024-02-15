@@ -1,10 +1,8 @@
-import { route } from "quasar/wrappers";
 import {
   createMemoryHistory,
   createRouter,
   createWebHistory,
 } from "vue-router";
-import { StateInterface } from "../store";
 
 import { afterEachGuard } from "./after-each-guard";
 import { beforeEachGuard } from "./before-each-guard";
@@ -19,23 +17,25 @@ import routes from "./routes";
  * with the Router instance.
  */
 
-export default route<StateInterface>(function (/* { store, ssrContext } */) {
-  const createHistory = process.env.SERVER
-    ? createMemoryHistory
-    : createWebHistory;
+// export default route<StateInterface>(function (/* { store, ssrContext } */) {
 
-  const Router = createRouter({
-    scrollBehavior: () => ({ left: 0, top: 0 }),
-    routes,
+// });
 
-    // Leave this as is and make changes in quasar.conf.js instead!
-    // quasar.conf.js -> build -> vueRouterMode
-    // quasar.conf.js -> build -> publicPath
-    history: createHistory(process.env.VUE_ROUTER_BASE),
-  });
+const createHistory = process.env.SERVER
+  ? createMemoryHistory
+  : createWebHistory;
 
-  Router.beforeEach(beforeEachGuard);
-  Router.afterEach(afterEachGuard);
+const Router = createRouter({
+  scrollBehavior: () => ({ left: 0, top: 0 }),
+  routes,
 
-  return Router;
+  // Leave this as is and make changes in quasar.conf.js instead!
+  // quasar.conf.js -> build -> vueRouterMode
+  // quasar.conf.js -> build -> publicPath
+  history: createHistory(process.env.VUE_ROUTER_BASE),
 });
+
+Router.beforeEach(beforeEachGuard);
+Router.afterEach(afterEachGuard);
+
+export default Router;

@@ -25,6 +25,8 @@ import {
   WRONG_PASSWORD,
 } from "donut-shared";
 import { AUTH_BEFORE_ORDER_CREATE } from "src/lib/constants";
+import { updateDocumentTitle } from "src/lib/update-document-title";
+import router from "src/router";
 
 export const setting = persistentAtom<string | undefined>("locale");
 export const AVAILABLE_LOCALES = ["en", "pl"];
@@ -396,3 +398,8 @@ export const messages = i18n("messages", messagesObj);
 export function useI18nStore() {
   return useNanoStore(messages);
 }
+
+locale.subscribe(() => {
+  const t = useI18nStore();
+  updateDocumentTitle(router.currentRoute.value.meta.title as string, t);
+});
