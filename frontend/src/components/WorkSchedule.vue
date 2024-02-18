@@ -118,6 +118,7 @@
           v-if="scheduleEntry.breakStart != null"
           name="o_restaurant_menu"
           style="font-size: 22px"
+          class="q-pl-sm"
         >
         </q-icon>
         <q-input
