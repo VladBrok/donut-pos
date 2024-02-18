@@ -107,28 +107,34 @@ a:hover {
 
 .min-height-window {
   min-height: 100vh;
+  min-height: calc(var(--vh, 1vh) * 100);
 }
 
 .restricted-height-50vh {
   max-height: 50vh;
+  max-height: calc(var(--vh, 1vh) * 50);
 }
 
 .restricted-height-modal {
   max-height: calc(70vh - 118px);
+  max-height: calc(calc(var(--vh, 1vh) * 70) - 118px);
 }
 
 .order-view-content-height {
   height: calc(100vh - 230px);
+  height: calc(calc(var(--vh, 1vh) * 100) - 230px);
 }
 
 @media screen and (min-width: 1023px) {
   .order-view-content-height {
     height: calc(100vh - 310px);
+    height: calc(calc(var(--vh, 1vh) * 100) - 310px);
   }
 }
 
 .page-wrapper-height {
   height: calc(100vh - 71px);
+  height: calc(calc(var(--vh, 1vh) * 100) - 71px);
 }
 
 .dialog-md {

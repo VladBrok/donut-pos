@@ -3,9 +3,25 @@
 </template>
 
 <script setup lang="ts">
+import { debounce } from "quasar";
+import { onMounted, onUnmounted } from "vue";
 import { useMutationsWatcher } from "./lib/composables/useMutationsWatcher";
 
 useMutationsWatcher();
+
+const setCustomVh = debounce(() => {
+  const doc = document.documentElement;
+  doc.style.setProperty("--vh", window.innerHeight * 0.01 + "px");
+}, 100);
+
+onMounted(() => {
+  window.addEventListener("resize", setCustomVh);
+  setCustomVh();
+});
+
+onUnmounted(() => {
+  window.removeEventListener("resize", setCustomVh);
+});
 
 // TODO: it's an example of subscribing to the `users/:id` channel.
 
