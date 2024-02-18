@@ -25,7 +25,7 @@ export function addDishToCurrentOrder(
       const startTop =
         originalImg.getBoundingClientRect().top +
         document.documentElement.scrollTop -
-        20;
+        25;
 
       const basket = document.querySelector(".shopping-basket") as HTMLElement;
       const diffLeft =
