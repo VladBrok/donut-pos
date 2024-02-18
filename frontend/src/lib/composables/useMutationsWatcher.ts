@@ -42,6 +42,7 @@ export const useMutationsWatcher = () => {
   onMounted(() => {
     unsubscribe.value = store.subscribe((mutation, state) => {
       if (mutation.type === loggedInAction.type) {
+        window.location.reload();
         saveUserToStorage(state.auth.user);
         if (mutation.payload.payload.isNewUser) {
           setTimeout(() => {
