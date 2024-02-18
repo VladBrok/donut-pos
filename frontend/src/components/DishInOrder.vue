@@ -56,7 +56,7 @@
             @click="expand"
             :title="t.viewDetails"
           >
-            <q-tooltip>{{ t.viewDetails }}</q-tooltip>
+            <common-tooltip>{{ t.viewDetails }}</common-tooltip>
           </q-btn>
         </div>
       </div>
@@ -106,6 +106,7 @@
 
 <script setup lang="ts">
 import { QBtn } from "quasar";
+import CommonTooltip from "src/components/CommonTooltip.vue";
 import ProductCounter from "src/components/ProductCounter.vue";
 import { capitalize } from "src/lib/capitalize";
 import { formatCurrency } from "src/lib/currency";

@@ -17,9 +17,9 @@
         <div class="q-mr-sm" :class="textClass">
           <div>
             {{ textSize === "sm" ? cutText(name, 20) : name }}
-            <q-tooltip v-if="textSize === 'sm'">
+            <common-tooltip v-if="textSize === 'sm'">
               {{ name }}
-            </q-tooltip>
+            </common-tooltip>
           </div>
           <div class="text-body2 text-dark-gray">
             {{ formatWeightGram(weight) }}
@@ -38,6 +38,7 @@
 </template>
 
 <script setup lang="ts">
+import CommonTooltip from "src/components/CommonTooltip.vue";
 import { formatWeightGram } from "src/lib/weight";
 import { computed } from "vue";
 import { formatCurrency } from "../lib/currency";

@@ -82,9 +82,9 @@
                     @click="isAddAddressModalOpen = true"
                     :title="t.addNewDeliveryAddress"
                   >
-                    <q-tooltip>
+                    <common-tooltip>
                       {{ t.addNewDeliveryAddress }}
-                    </q-tooltip>
+                    </common-tooltip>
                   </q-btn>
                 </template>
                 <template v-slot:no-option>
@@ -244,7 +244,7 @@
             :disable="hasDishOutOfStock || requiredAddressNotSpecified"
           >
             {{ t.createOrder }}
-            <q-tooltip
+            <common-tooltip
               v-if="hasDishOutOfStock || requiredAddressNotSpecified"
               class="bg-negative text-white text-body1"
               max-width="200px"
@@ -254,7 +254,7 @@
                   ? t.cannotCreateOrderWithOutOfStock
                   : t.specifyDeliveryAddress
               }}
-            </q-tooltip>
+            </common-tooltip>
           </q-btn>
         </div>
       </template>
@@ -366,6 +366,7 @@ import {
 } from "donut-shared/src/actions/orders";
 import AddAddressModal from "src/components/AddAddressModal.vue";
 import BigSpinner from "src/components/BigSpinner.vue";
+import CommonTooltip from "src/components/CommonTooltip.vue";
 import DishInOrder from "src/components/DishInOrder.vue";
 import OrderNumberTitle from "src/components/OrderNumberTitle.vue";
 import OrderView from "src/components/OrderView.vue";

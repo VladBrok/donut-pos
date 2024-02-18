@@ -17,9 +17,9 @@
               @click="openMap"
               :title="t.showOnMap"
             >
-              <q-tooltip>
+              <common-tooltip>
                 {{ t.showOnMap }}
-              </q-tooltip>
+              </common-tooltip>
             </q-btn>
             <div>
               {{ formatAddress(defaultSalePoint?.address) }}
@@ -35,9 +35,9 @@
               @click="call"
               :title="t.callUs"
             >
-              <q-tooltip>
+              <common-tooltip>
                 {{ t.callUs }}
-              </q-tooltip>
+              </common-tooltip>
             </q-btn>
             <div>
               {{ formatPhoneNumber(defaultSalePoint?.phone || "") }}
@@ -53,9 +53,9 @@
               @click="writeEmail"
               :title="t.writeUsEmail"
             >
-              <q-tooltip>
+              <common-tooltip>
                 {{ t.writeUsEmail }}
-              </q-tooltip>
+              </common-tooltip>
             </q-btn>
             <div>
               {{ defaultSalePoint?.email }}
@@ -79,6 +79,7 @@
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
 import { CHANNELS } from "donut-shared/src/constants/channels";
+import CommonTooltip from "src/components/CommonTooltip.vue";
 import LogoImage from "src/components/LogoImage.vue";
 import { formatAddress, makeGoogleMapSearchQuery } from "src/lib/address";
 import { useI18nStore } from "src/lib/i18n";

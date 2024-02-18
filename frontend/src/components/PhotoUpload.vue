@@ -32,9 +32,9 @@
         @click="triggerFilePick"
         :title="t.uploadImage"
       >
-        <q-tooltip>
+        <common-tooltip>
           {{ t.uploadImage }}
-        </q-tooltip>
+        </common-tooltip>
       </q-btn>
     </div>
   </div>
@@ -49,6 +49,7 @@ import {
   assert,
 } from "donut-shared";
 import { QFile } from "quasar";
+import CommonTooltip from "src/components/CommonTooltip.vue";
 import { computed, onUnmounted, ref } from "vue";
 import { useI18nStore } from "../lib/i18n";
 

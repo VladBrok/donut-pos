@@ -29,7 +29,7 @@
           @click="isLogoutConfirmOpen = true"
           :title="t.logout"
         >
-          <q-tooltip> {{ t.logout }} </q-tooltip>
+          <common-tooltip> {{ t.logout }} </common-tooltip>
         </q-btn>
         <q-btn
           v-if="!isLoggedIn"
@@ -40,7 +40,7 @@
           to="/login"
           :title="t.logIn"
         >
-          <q-tooltip> {{ t.logIn }} </q-tooltip>
+          <common-tooltip> {{ t.logIn }} </common-tooltip>
         </q-btn>
       </q-toolbar>
     </q-header>
@@ -132,6 +132,7 @@
 import { useSubscription } from "@logux/vuex";
 import { logoutAction } from "donut-shared/src/actions/auth";
 import BigSpinner from "src/components/BigSpinner.vue";
+import CommonTooltip from "src/components/CommonTooltip.vue";
 import ConfirmDialog from "src/components/ConfirmDialog.vue";
 import LanguageSwitch from "src/components/LanguageSwitch.vue";
 import LogoImage from "src/components/LogoImage.vue";

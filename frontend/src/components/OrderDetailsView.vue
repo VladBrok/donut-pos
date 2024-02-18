@@ -48,9 +48,9 @@
                 @click="openMap"
                 :title="t.showOnMap"
               >
-                <q-tooltip>
+                <common-tooltip>
                   {{ t.showOnMap }}
-                </q-tooltip>
+                </common-tooltip>
               </q-btn>
             </template>
           </q-input>
@@ -134,6 +134,7 @@ import {
   getOrderDishTotalCost,
   getOrderTotalCost,
 } from "donut-shared";
+import CommonTooltip from "src/components/CommonTooltip.vue";
 import DishInOrder from "src/components/DishInOrder.vue";
 import OrderHistory from "src/components/OrderHistory.vue";
 import OrderView from "src/components/OrderView.vue";

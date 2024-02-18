@@ -6,7 +6,7 @@
     icon="o_notifications"
     :title="t.showNotifications"
   >
-    <q-tooltip> {{ t.showNotifications }} </q-tooltip>
+    <common-tooltip> {{ t.showNotifications }} </common-tooltip>
     <q-spinner-rings
       v-if="isLoading"
       color="primary"
@@ -34,6 +34,7 @@
 </template>
 
 <script setup lang="ts">
+import CommonTooltip from "src/components/CommonTooltip.vue";
 import NoData from "src/components/NoData.vue";
 import { useI18nStore } from "../lib/i18n";
 

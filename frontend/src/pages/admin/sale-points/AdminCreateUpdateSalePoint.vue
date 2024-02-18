@@ -41,9 +41,9 @@
                 @click="isAddAddressModalOpen = true"
                 :title="t.addNewAddress"
               >
-                <q-tooltip>
+                <common-tooltip>
                   {{ t.addNewAddress }}
-                </q-tooltip>
+                </common-tooltip>
               </q-btn>
             </template>
             <template v-slot:no-option>
@@ -107,6 +107,7 @@ import {
 } from "donut-shared";
 import { Notify } from "quasar";
 import AddAddressModal from "src/components/AddAddressModal.vue";
+import CommonTooltip from "src/components/CommonTooltip.vue";
 import EmailInput from "src/components/EmailInput.vue";
 import PhoneInput from "src/components/PhoneInput.vue";
 import WorkSchedule from "src/components/WorkSchedule.vue";

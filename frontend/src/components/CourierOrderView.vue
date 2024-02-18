@@ -33,9 +33,9 @@
                     @click="openMap"
                     :title="t.showOnMap"
                   >
-                    <q-tooltip>
+                    <common-tooltip>
                       {{ t.showOnMap }}
-                    </q-tooltip>
+                    </common-tooltip>
                   </q-btn>
                 </template>
               </q-input>
@@ -65,9 +65,9 @@
                     @click="callClient"
                     :title="t.callClient"
                   >
-                    <q-tooltip>
+                    <common-tooltip>
                       {{ t.callClient }}
-                    </q-tooltip>
+                    </common-tooltip>
                   </q-btn>
                 </template>
               </q-input>
@@ -102,6 +102,7 @@
 <script setup lang="ts">
 import { getOrderTotalCost } from "donut-shared";
 import { IOrder } from "donut-shared/src/actions/orders";
+import CommonTooltip from "src/components/CommonTooltip.vue";
 import CourierOrderStatusButton from "src/components/CourierOrderStatusButton.vue";
 import OrderNumberTitle from "src/components/OrderNumberTitle.vue";
 import OrderView from "src/components/OrderView.vue";

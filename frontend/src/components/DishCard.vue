@@ -19,9 +19,9 @@
           :title="t.openDetails"
         >
           <span class="text-h5 q-pr-sm">+</span>
-          <q-tooltip>
+          <common-tooltip>
             {{ t.openDetails }}
-          </q-tooltip>
+          </common-tooltip>
         </q-btn>
         <q-btn
           v-if="dish.isActive"
@@ -32,9 +32,9 @@
           :title="t.addToCurrentOrder"
         >
           <span class="text-h5">+</span>
-          <q-tooltip>
+          <common-tooltip>
             {{ t.addToCurrentOrder }}
-          </q-tooltip>
+          </common-tooltip>
         </q-btn>
       </q-card-section>
       <q-card-section v-if="expanded && dish.description">
@@ -48,6 +48,7 @@
 </template>
 
 <script setup lang="ts">
+import CommonTooltip from "src/components/CommonTooltip.vue";
 import { ref } from "vue";
 import { useI18nStore } from "../lib/i18n";
 import { sanitizeHtml } from "../lib/sanitize-html";

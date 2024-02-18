@@ -8,14 +8,15 @@
     @click="copy(text)"
     :title="tooltip"
   >
-    <q-tooltip>
+    <common-tooltip>
       {{ tooltip }}
-    </q-tooltip>
+    </common-tooltip>
   </q-btn>
 </template>
 
 <script setup lang="ts">
 import { Notify, copyToClipboard } from "quasar";
+import CommonTooltip from "src/components/CommonTooltip.vue";
 import { ERROR_TIMEOUT_MS, SUCCESS_TIMEOUT_MS } from "src/lib/constants";
 import { useI18nStore } from "src/lib/i18n";
 import { logError } from "../../../shared/src/lib/log";

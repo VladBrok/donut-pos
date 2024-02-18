@@ -51,7 +51,7 @@
         @click="toggleCurrentOrderDrawer"
         :title="t.openCurrentOrder"
       >
-        <q-tooltip> {{ t.openCurrentOrder }} </q-tooltip>
+        <common-tooltip> {{ t.openCurrentOrder }} </common-tooltip>
         <CurrentOrderDishesBadge />
       </q-btn>
     </template>
@@ -82,6 +82,7 @@ import {
   openCurrentOrderAction,
 } from "donut-shared/src/actions/order-drawer";
 import CashPaymentRequest from "src/components/CashPaymentRequest.vue";
+import CommonTooltip from "src/components/CommonTooltip.vue";
 import CookedDishStatusButton from "src/components/CookedDishStatusButton.vue";
 import CookedOrderNotification from "src/components/CookedOrderNotification.vue";
 import CurrentOrderDishesBadge from "src/components/CurrentOrderDishesBadge.vue";

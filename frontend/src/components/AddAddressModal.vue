@@ -73,13 +73,13 @@
               title="map"
             >
             </iframe>
-            <q-tooltip
+            <common-tooltip
               anchor="center middle"
               self="center middle"
               class="bg-negative text-white text-body2"
             >
               {{ t.readonlyMap }}
-            </q-tooltip>
+            </common-tooltip>
           </div>
           <q-btn
             color="primary"
@@ -103,6 +103,7 @@ import {
   updateAddressAction,
 } from "donut-shared/src/actions/addresses";
 import { Notify, debounce } from "quasar";
+import CommonTooltip from "src/components/CommonTooltip.vue";
 import { makeGoogleMapSearchQuery } from "src/lib/address";
 import { SUCCESS_TIMEOUT_MS } from "src/lib/constants";
 import { useI18nStore } from "src/lib/i18n";

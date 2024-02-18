@@ -27,9 +27,9 @@
           "
           :title="t.addWorkTime"
         >
-          <q-tooltip>
+          <common-tooltip>
             {{ t.addWorkTime }}
-          </q-tooltip>
+          </common-tooltip>
         </q-btn>
         <q-input
           hide-bottom-space
@@ -82,9 +82,9 @@
           "
           :title="t.removeWorkTime"
         >
-          <q-tooltip>
+          <common-tooltip>
             {{ t.removeWorkTime }}
-          </q-tooltip>
+          </common-tooltip>
         </q-btn>
       </div>
 
@@ -110,9 +110,9 @@
           "
           :title="t.addLunchBreak"
         >
-          <q-tooltip>
+          <common-tooltip>
             {{ t.addLunchBreak }}
-          </q-tooltip>
+          </common-tooltip>
         </q-btn>
         <q-icon
           v-if="scheduleEntry.breakStart != null"
@@ -175,9 +175,9 @@
           "
           :title="t.removeLunchBreak"
         >
-          <q-tooltip>
+          <common-tooltip>
             {{ t.removeLunchBreak }}
-          </q-tooltip>
+          </common-tooltip>
         </q-btn>
       </div>
     </div>
@@ -187,6 +187,7 @@
 <script setup lang="ts">
 import dayjs from "dayjs";
 import { IWorkSchedule } from "donut-shared";
+import CommonTooltip from "src/components/CommonTooltip.vue";
 import { useI18nStore } from "src/lib/i18n";
 import { computed, reactive, watch } from "vue";
 

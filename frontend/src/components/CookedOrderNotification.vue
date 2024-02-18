@@ -25,9 +25,9 @@
             @click="openMap"
             :title="t.showOnMap"
           >
-            <q-tooltip>
+            <common-tooltip>
               {{ t.showOnMap }}
-            </q-tooltip>
+            </common-tooltip>
           </q-btn>
         </div>
       </div>
@@ -71,6 +71,7 @@ import {
   ICookedOrder,
   deliverOrderAction,
 } from "donut-shared/src/actions/orders";
+import CommonTooltip from "src/components/CommonTooltip.vue";
 import OrderNumberTitle from "src/components/OrderNumberTitle.vue";
 import PaymentMethodsModal from "src/components/PaymentMethodsModal.vue";
 import { formatAddress, makeGoogleMapSearchQuery } from "src/lib/address";
