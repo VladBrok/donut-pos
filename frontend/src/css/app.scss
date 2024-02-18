@@ -32,6 +32,11 @@ a:hover {
 
 // Utility classes
 
+.notification-bell-menu {
+  overflow-x: hidden;
+  min-width: 300px !important;
+}
+
 .country-icon {
   width: 25px;
   height: 15px;

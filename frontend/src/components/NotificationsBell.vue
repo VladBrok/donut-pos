@@ -20,7 +20,7 @@
       color="red"
       :label="notificationCount || ''"
     />
-    <q-menu fit style="overflow-x: hidden; min-width: 300px" role="">
+    <q-menu fit class="notification-bell-menu" role="">
       <div class="q-px-xs" style="min-width: 300px">
         <TransitionGroup tag="div" name="fade" style="min-width: 300px">
           <p v-if="!notificationCount">
