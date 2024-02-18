@@ -1,0 +1,1 @@
+import{bf as e}from"./index.080b44f7.js";e("dishCategories/load");const s=e("dishCategories/create");e("dishCategories/created");const a=e("dishCategories/update");e("dishCategories/updated");const i=e("dishCategories/delete");e("dishCategories/deleted");export{s as c,i as d,a as u};
