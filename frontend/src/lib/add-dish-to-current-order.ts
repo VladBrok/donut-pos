@@ -12,6 +12,7 @@ export function addDishToCurrentOrder(
   if (container) {
     const originalImg = container.querySelector(".product-card-image");
     const cloned = originalImg?.cloneNode(true);
+
     if (originalImg && cloned) {
       const clonedImg = cloned as HTMLElement;
       clonedImg.style.position = "absolute";
@@ -37,6 +38,7 @@ export function addDishToCurrentOrder(
         document.documentElement.scrollTop -
         10 -
         startTop;
+
       const startWidth = originalImg.getBoundingClientRect().width;
       const startHeight = originalImg.getBoundingClientRect().height;
       const widthDiff = startWidth / 4 - startWidth;
