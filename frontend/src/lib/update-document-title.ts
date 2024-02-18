@@ -5,6 +5,6 @@ export function updateDocumentTitle(
   t: ReturnType<typeof useI18nStore>
 ) {
   document.title = titleKey
-    ? `${t.value[titleKey as string]} | Donut`
-    : "Donut";
+    ? `${t.value[titleKey as string]} | Donut POS`
+    : "Donut POS";
 }
