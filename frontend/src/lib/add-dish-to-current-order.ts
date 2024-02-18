@@ -21,11 +21,11 @@ export function addDishToCurrentOrder(
       const startLeft =
         originalImg.getBoundingClientRect().left +
         document.documentElement.scrollLeft +
-        10;
+        15;
       const startTop =
         originalImg.getBoundingClientRect().top +
         document.documentElement.scrollTop -
-        10;
+        20;
 
       const basket = document.querySelector(".shopping-basket") as HTMLElement;
       const diffLeft =
