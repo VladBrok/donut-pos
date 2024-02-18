@@ -1,5 +1,5 @@
 <template>
-  <q-dialog :transition-hide="'fade'" :transition-show="'fade'">
+  <q-dialog>
     <q-card class="dialog-md">
       <q-card-section class="row items-center q-pb-none">
         <q-space />
