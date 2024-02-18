@@ -45,7 +45,7 @@ export function watchSyncStatus(client: CrossTabClient) {
         message: t.value.synchronized,
         caption: "",
       });
-    } else if (current === "synchronized") {
+    } else if (current === "synchronized" || current === "connecting") {
       updateStatusNotification();
     } else if (current === "disconnected") {
       updateStatusNotification({
