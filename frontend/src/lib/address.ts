@@ -1,7 +1,11 @@
 import { IAddress } from "donut-shared";
 import { capitalize } from "src/lib/capitalize";
 
-export function makeGoogleMapSearchQuery(data: IAddress) {
+export function makeGoogleMapSearchQuery(data?: IAddress): string {
+  if (!data) {
+    return "";
+  }
+
   return encodeURIComponent(
     `${data.city} ${data.street} ${data.homeNumber} ${data.postalCode}`.trim()
   );

@@ -1,1 +1,0 @@
-import{c as r}from"./capitalize.b0e9fa3f.js";function t(e){return encodeURIComponent(`${e.city} ${e.street} ${e.homeNumber} ${e.postalCode}`.trim())}function m(e){return e?`ul. ${r(e.street)} ${e.homeNumber}, ${e.postalCode} ${r(e.city)}`:""}export{m as f,t as m};
