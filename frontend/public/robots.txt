@@ -6,4 +6,4 @@ Allow: /orders
 Allow: /addresses
 Disallow: /
 
-Sitemap: https://donut-preprod.my.to/sitemap.xml
+Sitemap: https://donut-preprod.my.to/sitemap.txt
