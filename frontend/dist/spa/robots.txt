@@ -1,9 +1,11 @@
 User-agent: *
-Allow: /login
-Allow: /sign-up
-Allow: /menu
-Allow: /orders
-Allow: /addresses
-Disallow: /
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /waiter
+Disallow: /waiter/*
+Disallow: /courier
+Disallow: /courier/*
+Disallow: /kitchen
+Disallow: /kitchen/*
 
 Sitemap: https://donut-preprod.my.to/sitemap.txt
