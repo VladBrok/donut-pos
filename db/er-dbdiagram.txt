@@ -119,16 +119,6 @@ Table sale_point {
   }
 }
 
-Table dish_to_sale_point {
-  id UUID [pk]
-  dish_id UUID
-  sale_point_id UUID
-  Indexes {
-    dish_id [name: 'dish_to_sale_point_dish_id_idx']
-    sale_point_id [name: 'dish_to_sale_point_sale_point_id_idx']
-  }
-}
-
 Table modification {
   id UUID [pk]
   name TEXT
@@ -194,8 +184,6 @@ Ref: role_to_permission.role_id > role.id [delete: set null]
 Ref: role_to_permission.permission_id > permission.id [delete: set null]
 Ref: employee.role_id > role.id [delete: set null]
 Ref: sale_point.address_id > address.id [delete: set null]
-Ref: dish_to_sale_point.dish_id > dish.id [delete: set null]
-Ref: dish_to_sale_point.sale_point_id > sale_point.id [delete: set null]
 Ref: order.employee_id > employee.id [delete: set null]
 Ref: order.client_id > client.id [delete: set null]
 Ref: order.dining_table_id > dining_table.id [delete: set null]

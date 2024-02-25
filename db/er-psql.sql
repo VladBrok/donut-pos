@@ -89,12 +89,6 @@ CREATE TABLE "sale_point" (
   "work_schedule" JSONB
 );
 
-CREATE TABLE "dish_to_sale_point" (
-  "id" UUID PRIMARY KEY,
-  "dish_id" UUID,
-  "sale_point_id" UUID
-);
-
 CREATE TABLE "modification" (
   "id" UUID PRIMARY KEY,
   "name" TEXT,
@@ -162,10 +156,6 @@ CREATE INDEX "dish_category_id_idx" ON "dish" ("category_id");
 
 CREATE INDEX "sale_point_address_id_idx" ON "sale_point" ("address_id");
 
-CREATE INDEX "dish_to_sale_point_dish_id_idx" ON "dish_to_sale_point" ("dish_id");
-
-CREATE INDEX "dish_to_sale_point_sale_point_id_idx" ON "dish_to_sale_point" ("sale_point_id");
-
 CREATE INDEX "dish_to_modification_dish_id_idx" ON "dish_to_modification" ("dish_id");
 
 CREATE INDEX "dish_to_modification_modification_id_idx" ON "dish_to_modification" ("modification_id");
@@ -203,10 +193,6 @@ ALTER TABLE "role_to_permission" ADD FOREIGN KEY ("permission_id") REFERENCES "p
 ALTER TABLE "employee" ADD FOREIGN KEY ("role_id") REFERENCES "role" ("id") ON DELETE SET NULL;
 
 ALTER TABLE "sale_point" ADD FOREIGN KEY ("address_id") REFERENCES "address" ("id") ON DELETE SET NULL;
-
-ALTER TABLE "dish_to_sale_point" ADD FOREIGN KEY ("dish_id") REFERENCES "dish" ("id") ON DELETE SET NULL;
-
-ALTER TABLE "dish_to_sale_point" ADD FOREIGN KEY ("sale_point_id") REFERENCES "sale_point" ("id") ON DELETE SET NULL;
 
 ALTER TABLE "order" ADD FOREIGN KEY ("employee_id") REFERENCES "employee" ("id") ON DELETE SET NULL;
 
