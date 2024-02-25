@@ -66,18 +66,6 @@ export const permission = pgTable("permission", {
 	codeName: text("code_name"),
 });
 
-export const dishToSalePoint = pgTable("dish_to_sale_point", {
-	id: uuid("id").primaryKey().notNull(),
-	dishId: uuid("dish_id").references(() => dish.id, { onDelete: "set null" } ).references(() => dish.id, { onDelete: "set null" } ).references(() => dish.id, { onDelete: "set null" } ).references(() => dish.id, { onDelete: "set null" } ),
-	salePointId: uuid("sale_point_id").references(() => salePoint.id, { onDelete: "set null" } ).references(() => salePoint.id, { onDelete: "set null" } ).references(() => salePoint.id, { onDelete: "set null" } ).references(() => salePoint.id, { onDelete: "set null" } ),
-},
-(table) => {
-	return {
-		dishIdIdx: index("dish_to_sale_point_dish_id_idx").on(table.dishId),
-		salePointIdIdx: index("dish_to_sale_point_sale_point_id_idx").on(table.salePointId),
-	}
-});
-
 export const dishToModification = pgTable("dish_to_modification", {
 	id: uuid("id").primaryKey().notNull(),
 	dishId: uuid("dish_id").references(() => dish.id, { onDelete: "set null" } ).references(() => dish.id, { onDelete: "set null" } ).references(() => dish.id, { onDelete: "set null" } ).references(() => dish.id, { onDelete: "set null" } ),
