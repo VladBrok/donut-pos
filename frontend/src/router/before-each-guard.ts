@@ -42,7 +42,7 @@ export const beforeEachGuard: NavigationGuardWithThis<undefined> = (
     return "/kitchen/login";
   }
 
-  if (to.path.startsWith("/kitchen/login") && user.permissions?.waiter) {
+  if (to.path.startsWith("/kitchen/login") && user.permissions?.cook) {
     return "/kitchen";
   }
 
