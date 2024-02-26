@@ -1,20 +1,11 @@
 <template>
-  <div
-    class="fullscreen bg-blue text-white text-center q-pa-md flex flex-center"
-  >
+  <div class="fullscreen bg-gray-lightest text-center q-pa-md flex flex-center">
     <div>
-      <div style="font-size: 30vh">404</div>
+      <h1 class="text-h1">404</h1>
 
-      <div class="text-h2" style="opacity: 0.4">Oops. Nothing here...</div>
+      <div class="text-h4" style="opacity: 0.4">Page not found</div>
 
-      <q-btn
-        class="q-mt-xl"
-        color="white"
-        text-color="blue"
-        to="/"
-        label="Go Home"
-        no-caps
-      />
+      <q-btn class="q-mt-xl" to="/" label="Go Home" no-caps color="primary" />
     </div>
   </div>
 </template>
