@@ -1,1 +1,0 @@
-import{Q as e}from"./QImg.18303433.js";import{d as t,e as n,o as r}from"./index.e78f07d2.js";const l=t({__name:"LogoImage",props:{noText:{type:Boolean}},setup(p){return(o,a)=>(r(),n(e,{src:o.noText?"/logo-no-text.png":"/logo-text.png",alt:"Donut POS logo",fit:"cover"},null,8,["src"]))}});export{l as _};
