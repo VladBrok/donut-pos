@@ -123,7 +123,7 @@ const confirmDelete = ref<null | IDiningTable>(null);
 const isDeleting = ref(false);
 const searchInput = ref("");
 
-const columns: any[] = [
+const columns = computed<any[]>(() => [
   {
     name: "index",
     label: "#",
@@ -144,7 +144,7 @@ const columns: any[] = [
       row.employee?.lastName + " " + row.employee?.firstName,
   },
   { name: "actions", label: "", align: "right" },
-];
+]);
 
 const onDeleteAttempt = (row: IDiningTable) => {
   confirmDelete.value = row;

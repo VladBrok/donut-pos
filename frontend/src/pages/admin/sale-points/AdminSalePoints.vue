@@ -151,7 +151,7 @@ const confirmDelete = ref<null | ISalePoint>(null);
 const isDeleting = ref(false);
 const searchInput = ref("");
 
-const columns: any[] = [
+const columns = computed<any[]>(() => [
   {
     name: "index",
     label: "#",
@@ -192,7 +192,7 @@ const columns: any[] = [
     field: "isDefault",
   },
   { name: "actions", label: "", align: "right" },
-];
+]);
 
 const onDeleteAttempt = (row: ISalePoint) => {
   confirmDelete.value = row;

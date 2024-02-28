@@ -158,7 +158,7 @@ const isAddAddressModalOpen = ref(false);
 const isEditAddressModalOpen = ref(false);
 const editingAddress = ref<IAddress>();
 
-const columns: any[] = [
+const columns = computed<any[]>(() => [
   {
     name: "index",
     label: "#",
@@ -192,7 +192,7 @@ const columns: any[] = [
     field: "postalCode",
   },
   { name: "actions", label: "", align: "right" },
-];
+]);
 
 const onDeleteAttempt = (row: IAddress) => {
   confirmDelete.value = row;

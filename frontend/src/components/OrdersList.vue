@@ -103,7 +103,7 @@ const props = defineProps<{
 const store = useStore();
 const t = useI18nStore();
 const ordersPage = computed(() => store.state.orders.ordersPage);
-const userId = computed(() => store.state.auth.user.userId);
+const userId = ref(store.state.auth.user.userId);
 const channels = computed(() => {
   return userId.value === ANONYMOUS.userId
     ? []
@@ -133,7 +133,7 @@ const pagination = ref({
 });
 const isClient = computed(() => store.state.auth.user.permissions?.client);
 
-const columns: any[] = [
+const columns = computed<any[]>(() => [
   {
     name: "orderNumber",
     label: t.value.orderNumber,
@@ -175,7 +175,7 @@ const columns: any[] = [
     align: "left",
     field: "paidDate",
   },
-];
+]);
 
 const stopWatchingSubscribing = watch(isSubscribing, () => {
   if (!isSubscribing.value) {

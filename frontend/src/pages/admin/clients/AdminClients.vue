@@ -112,7 +112,7 @@ const pagination = ref({
 });
 const isUpdatingPage = ref(false);
 
-const columns: any[] = [
+const columns = computed<any[]>(() => [
   {
     name: "index",
     label: "#",
@@ -169,7 +169,7 @@ const columns: any[] = [
     align: "center",
     field: "isAnonymous",
   },
-];
+]);
 
 const stopWatchingSubscribing = watch(isSubscribing, () => {
   if (!isSubscribing.value) {

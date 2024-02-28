@@ -14,9 +14,6 @@
         rowsPerPage: ROWS_PER_TABLE_PAGE,
       }"
     >
-      <!-- @row-click="
-        (_, row) => $router.push(`/admin/dish-categories/update/${row.id}`)
-      " -->
       <template v-slot:top-right>
         <q-input
           dense
@@ -135,7 +132,7 @@ const confirmDelete = ref<null | IDishCategoriesState["categories"][number]>(
 const isDeleting = ref(false);
 const searchInput = ref("");
 
-const columns: any[] = [
+const columns = computed<any[]>(() => [
   {
     name: "index",
     label: "#",
@@ -156,7 +153,7 @@ const columns: any[] = [
     sortable: true,
   },
   { name: "actions", label: "", align: "right" },
-];
+]);
 
 const onDeleteAttempt = (row: IDishCategoriesState["categories"][number]) => {
   confirmDelete.value = row;

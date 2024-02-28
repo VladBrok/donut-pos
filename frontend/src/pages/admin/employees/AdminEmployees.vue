@@ -146,7 +146,7 @@ const confirmDelete = ref<null | IEmployeesState["employees"][number]>(null);
 const isDeleting = ref(false);
 const searchInput = ref("");
 
-const columns: any[] = [
+const columns = computed<any[]>(() => [
   {
     name: "index",
     label: "#",
@@ -199,7 +199,7 @@ const columns: any[] = [
     sortable: true,
   },
   { name: "actions", label: "", align: "right" },
-];
+]);
 
 const onDeleteAttempt = (row: IEmployeesState["employees"][number]) => {
   confirmDelete.value = row;

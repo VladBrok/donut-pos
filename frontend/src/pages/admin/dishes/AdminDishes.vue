@@ -152,7 +152,7 @@ const confirmDelete = ref<null | IDishesState["dishes"][number]>(null);
 const isDeleting = ref(false);
 const searchInput = ref("");
 
-const columns: any[] = [
+const columns = computed<any[]>(() => [
   {
     name: "index",
     label: "#",
@@ -204,7 +204,7 @@ const columns: any[] = [
     sortable: true,
   },
   { name: "actions", label: "", align: "right" },
-];
+]);
 
 const onDeleteAttempt = (row: IDishesState["dishes"][number]) => {
   confirmDelete.value = row;
