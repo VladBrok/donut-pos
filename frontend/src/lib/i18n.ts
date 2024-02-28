@@ -265,7 +265,7 @@ export const messagesObj = {
   next: "Next",
 
   // Client pages
-  clickToPay: "Click on the button to pay",
+  waitForRedirect: "Redirecting...",
   readonlyMap: "The map is view-only",
   changeDeliveryAddress: "Change delivery address",
   addNewDeliveryAddress: "Add new delivery address",

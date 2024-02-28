@@ -182,7 +182,7 @@
     "orderReceiveInstruction": "Przed otrzymaniem zamówienia kliknij „Potwierdź otrzymanie”",
     "takeoutOrderDeliverInstruction": "Po złożeniu zamówienia klientowi kliknij „Dostarczono”.",
     "next": "Następny",
-    "clickToPay": "Kliknij przycisk, aby zapłacić",
+    "waitForRedirect": "Przekierowanie...",
     "readonlyMap": "Mapa jest przeznaczona tylko do przeglądania",
     "changeDeliveryAddress": "Zmień adres dostawy",
     "addNewDeliveryAddress": "Dodaj nowy adres dostawy",
