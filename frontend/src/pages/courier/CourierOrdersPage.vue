@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
 import { useSubscription } from "@logux/vuex";
-import { CHANNELS } from "donut-shared";
+import { ANONYMOUS, CHANNELS } from "donut-shared";
 import BigSpinner from "src/components/BigSpinner.vue";
 import CourierOrderView from "src/components/CourierOrderView.vue";
 import NoData from "src/components/NoData.vue";
@@ -36,7 +36,9 @@ const orders = computed(() =>
   )
 );
 const channels = computed(() => {
-  return [CHANNELS.ORDERS_FOR_COURIERS];
+  return userId.value === ANONYMOUS.userId
+    ? []
+    : [CHANNELS.ORDERS_FOR_COURIERS];
 });
 const isSubscribing = useSubscription(channels, { store: store as any });
 </script>
