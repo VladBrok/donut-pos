@@ -114,7 +114,7 @@ const onSubmit = async () => {
       );
 
       if (store.state.orders.createOrderAfterAuth) {
-        return createOrderAfterAuth(store, t, router);
+        return createOrderAfterAuth(store, t);
       }
 
       return router.push("/");

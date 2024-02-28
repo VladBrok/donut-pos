@@ -25,14 +25,13 @@
 import { loginAction } from "donut-shared/src/actions/auth";
 import { createOrderAfterAuth } from "src/lib/create-order";
 import { computed, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import LoginPage from "../../components/LoginPage.vue";
 import { useI18nStore } from "../../lib/i18n";
 import { useStore } from "../../store";
 
 const t = useI18nStore();
 const store = useStore();
-const router = useRouter();
 const isLoggingIn = ref(false);
 const route = useRoute();
 const text = computed(() => t.value[route.query?.text?.toString() || ""] || "");
@@ -56,12 +55,13 @@ const onSubmit = async (data: { password: string; email: string }) => {
       );
 
       if (store.state.orders.createOrderAfterAuth) {
-        return createOrderAfterAuth(store, t, router);
+        return createOrderAfterAuth(store, t);
       }
 
-      return router.push("/");
+      const url = new URL("/", window.location.origin);
+      window.location.href = url.toString();
     })
-    .finally(() => {
+    .catch(() => {
       isLoggingIn.value = false;
     });
 };

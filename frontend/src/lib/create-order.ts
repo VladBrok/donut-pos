@@ -4,7 +4,6 @@ import { logError } from "donut-shared/src/lib/log";
 import { Notify } from "quasar";
 import { SUCCESS_TIMEOUT_MS } from "src/lib/constants";
 import { useI18nStore } from "src/lib/i18n";
-import { useRouter } from "vue-router";
 import { useStore } from "../store";
 
 export function createOrder(
@@ -42,8 +41,7 @@ export function createOrder(
 
 export function createOrderAfterAuth(
   store: ReturnType<typeof useStore>,
-  t: ReturnType<typeof useI18nStore>,
-  router: ReturnType<typeof useRouter>
+  t: ReturnType<typeof useI18nStore>
 ) {
   store.commit.crossTab(
     updateCreateOrderAfterAuthAction({
@@ -51,5 +49,8 @@ export function createOrderAfterAuth(
     })
   );
 
-  return createOrder(store, t)?.then(() => router.push("/menu"));
+  return createOrder(store, t)?.then(() => {
+    const url = new URL("/menu", window.location.origin);
+    window.location.href = url.toString();
+  });
 }
