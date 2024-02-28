@@ -74,7 +74,7 @@ const clients: (typeof client.$inferInsert)[] = [
   {
     id: mainClientId,
     email: "client@donut.com",
-    passwordHash: await hash("1234Db_3333>"),
+    passwordHash: await hash("zx9_1234Db_3333>"),
     firstName: "Ivan",
     lastName: "Drago",
     registeredAt: new Date(),
@@ -86,7 +86,7 @@ const clients: (typeof client.$inferInsert)[] = [
   {
     id: generateUuid(),
     email: "client-2@donut.com",
-    passwordHash: await hash("1234Db_3333>"),
+    passwordHash: await hash("zx9_1234Db_3333>"),
     firstName: "Mark",
     lastName: "Peterson",
     registeredAt: new Date(),
@@ -98,7 +98,7 @@ const clients: (typeof client.$inferInsert)[] = [
   {
     id: generateUuid(),
     email: "client-3@donut.com",
-    passwordHash: await hash("1234Db_3333>"),
+    passwordHash: await hash("zx9_1234Db_3333>"),
     firstName: "Ben",
     lastName: "Shapiro",
     registeredAt: new Date(),
@@ -230,7 +230,7 @@ const employees: (typeof employee.$inferInsert)[] = [
   {
     id: generateUuid(),
     email: "admin@donut.com",
-    passwordHash: await hash("1234"),
+    passwordHash: await hash("zx9_1234Db_3333>"),
     firstName: "Big",
     lastName: "Boss",
     isEmailVerified: true,
@@ -241,7 +241,7 @@ const employees: (typeof employee.$inferInsert)[] = [
   {
     id: waiterUuid,
     email: "waiter@donut.com",
-    passwordHash: await hash("1234Db_3333>"),
+    passwordHash: await hash("zx9_1234Db_3333>"),
     firstName: "Patrick",
     lastName: "Bateman",
     isEmailVerified: true,
@@ -252,7 +252,7 @@ const employees: (typeof employee.$inferInsert)[] = [
   {
     id: generateUuid(),
     email: "kitchen@donut.com",
-    passwordHash: await hash("1234Db_3333>"),
+    passwordHash: await hash("zx9_1234Db_3333>"),
     firstName: "Victor",
     lastName: "Barinow",
     isEmailVerified: true,
@@ -263,7 +263,7 @@ const employees: (typeof employee.$inferInsert)[] = [
   {
     id: courierUuid,
     email: "courier@donut.com",
-    passwordHash: await hash("1234Db_3333>"),
+    passwordHash: await hash("zx9_1234Db_3333>"),
     firstName: "Usain",
     lastName: "Bolt",
     isEmailVerified: true,

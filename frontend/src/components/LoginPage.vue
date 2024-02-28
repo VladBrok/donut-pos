@@ -70,9 +70,7 @@ const email = ref(
     ? "courier@donut.com"
     : "client@donut.com"
 ); // TODO: remove
-const password = ref(
-  router.currentRoute.value.path.includes("admin") ? "1234" : "1234Db_3333>"
-); // TODO: remove
+const password = ref("zx9_1234Db_3333>"); // TODO: remove
 
 const onSubmit = async () => {
   emit("submit", {
