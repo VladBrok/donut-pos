@@ -1,1 +1,0 @@
-import{d as a}from"./dayjs.min.78c0669c.js";function m(t){return a.utc(t).local().format("DD.MM.YYYY, HH:mm")}function n(t){return a.utc(t).local().format("MMM DD, YYYY HH:mm")}function u(t,o){return t.slice().sort((r,c)=>a.utc(o(r)).unix()-a.utc(o(c)).unix())}export{m as a,n as f,u as s};

@@ -1,1 +1,0 @@
-function u(r){return r*100}function n(r){return r/100}function a(r,t=!0){return new Intl.NumberFormat("pl-PL",{...t&&{style:"currency"},...t&&{currency:"PLN"},minimumFractionDigits:2,maximumFractionDigits:2}).format(n(r))}export{n as a,a as f,u as w};
