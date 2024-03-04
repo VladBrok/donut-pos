@@ -1,1 +1,1 @@
-# Donut Frontend
+# Donut POS Frontend
