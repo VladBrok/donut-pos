@@ -15,27 +15,24 @@
 $primary: #356fed;
 $secondary: #26a69a;
 $accent: #9c27b0;
-
 $dark: #1b1b1b;
 $dark-page: #121212;
-
 $positive: #21ba45;
 $negative: #c10015;
 $info: #31ccec;
 $warning: #f2c037;
-
 $body-font-size: 16px;
 $button-font-size: 14px;
 $input-font-size: 16px;
 $generic-border-radius: 12px;
 $button-border-radius: 4px;
 $tooltip-fontsize: 12px;
-
 $work-schedule-day-of-week-width: 30px;
 
 .text-dark-lighter {
   color: #3f3f3f !important;
 }
+
 .bg-dark-ligher {
   background: #3f3f3f !important;
 }
@@ -43,6 +40,7 @@ $work-schedule-day-of-week-width: 30px;
 .text-dark-gray {
   color: #5f5f5f !important;
 }
+
 .bg-dark-gray {
   background: #5f5f5f !important;
 }
@@ -50,6 +48,7 @@ $work-schedule-day-of-week-width: 30px;
 .text-gray-lightest {
   color: #f4f5fc;
 }
+
 .bg-gray-lightest {
   background: #f4f5fc;
 }
@@ -57,6 +56,7 @@ $work-schedule-day-of-week-width: 30px;
 .text-created {
   color: #3f51b5 !important;
 }
+
 .bg-created {
   background: #3f51b5 !important;
 }
@@ -64,6 +64,7 @@ $work-schedule-day-of-week-width: 30px;
 .text-cooking {
   color: #f57c00 !important;
 }
+
 .bg-cooking {
   background: #f57c00 !important;
 }
@@ -71,6 +72,7 @@ $work-schedule-day-of-week-width: 30px;
 .text-cooked {
   color: #43a047 !important;
 }
+
 .bg-cooked {
   background: #43a047 !important;
 }
@@ -78,6 +80,7 @@ $work-schedule-day-of-week-width: 30px;
 .text-paid {
   color: #ffc107 !important;
 }
+
 .bg-paid {
   background: #ffc107 !important;
 }
@@ -85,6 +88,7 @@ $work-schedule-day-of-week-width: 30px;
 .text-delivering {
   color: #795548 !important;
 }
+
 .bg-delivering {
   background: #795548 !important;
 }
@@ -92,6 +96,7 @@ $work-schedule-day-of-week-width: 30px;
 .text-delivered {
   color: #009688;
 }
+
 .bg-delivered {
   background: #009688;
 }
@@ -99,6 +104,7 @@ $work-schedule-day-of-week-width: 30px;
 .text-completed {
   color: $positive !important;
 }
+
 .bg-completed {
   background: $positive !important;
 }
